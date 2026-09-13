@@ -37,6 +37,15 @@ checkpoints/opt_abl_a_best.pt
 checkpoints/opt_abl_b_best.pt
 checkpoints/opt_abl_ab_best.pt
 
+# 完整 checkpoint（含 AdamW 优化器状态）的体积备份：**不入库**。
+# 入库的 checkpoints/*_best.pt 是「推理态交付版」——模型张量与完整版**逐位相同**
+# （max|Δ| = 0.0，706 个张量全部一致），只去掉了仅用于断点续训的
+# optimizer / scheduler / scaler / rng_state（AdamW 两份动量约占 38 MB/份）。
+# 原因：GitHub 的 Git Data API 单个 blob 有请求体上限，57.6 MB 的完整 ckpt 会被
+# 422 "input too large" 拒绝（实测）；瘦身后 19.4 MB 可正常入库。
+# 完整版仍在本机 checkpoints/_full/，需要断点续训时从这里取。
+checkpoints/_full/
+
 # ---- ONNX：提交 4 个（3 个基础交付 + 1 个家族型号，满足进阶①「≥4 型号部署」）----
 # 不提交 m1_5(56 MB) / m2_3(92 MB)：它们只用于家族帕累托图的延迟点，
 # 其指标与延迟已入库（outputs/benchmarks/*_benchmark.json、summary.csv），

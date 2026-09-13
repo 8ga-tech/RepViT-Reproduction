@@ -9,9 +9,9 @@ RepViT（*Revisiting Mobile CNN From ViT Perspective*, CVPR 2024, [arXiv:2307.09
 
 > **一句话结论**：RepViT-M0.9 是一个**纯卷积**网络（无自注意力）。它在 ImageNet-1K
 > 指定子集上 Top-1 = **78.20%**（官方权重实测，官方公布 78.7%）；迁移到 Pet 37 类后
-> test Top-1 = **92.26%**、Macro-F1 = **92.14%**；结构重参数化前后 logits
-> `max|Δ| = 2.27e-06`；三个 ONNX 模型在 ONNX Runtime CPU 上批量 1 / FP32 /
-> 224×224 的推理延迟为 **12.7 ~ 17.5 ms**。
+> test Top-1 = **92.34%**、Macro-F1 = **92.22%**；结构重参数化前后 logits
+> `max|Δ| = 7.09e-06`；六个 ONNX 模型在 ONNX Runtime CPU 上批量 1 / FP32 /
+> 224×224 的推理延迟为 **7.1 ~ 32.7 ms**，PyTorch↔ONNX Top-1 一致率 **100%**。
 
 ---
 
@@ -117,12 +117,17 @@ python tools/check_weights.py --dir checkpoints/pretrained
 | `repvit_m0_9_distill_300e.pth` | 22,422,548 | `857eb0e6a992591a` |
 | `repvit_m1_0_distill_300e.pth` | 29,675,245 | `283bb9865f705481` |
 | `repvit_m1_1_distill_300e.pth` | 35,668,677 | `1b364220241273d5` |
-| `repvit_m1_5_distill_300e.pth` | 43,449,459 | `be4ed4de3623f939` |
+| `repvit_m1_5_distill_300e.pth` | **59,375,411** | `b434320aed41372a` |
 | `repvit_m2_3_distill_300e.pth` | 95,860,931 | `be53c7dfb059ae6d` |
 
 > **来源声明**：本机直连 `github.com` 返回 HTTP 000（不可达），权重经
 > `https://ghfast.top/https://github.com/...` 前置代理取得。字节数与官方 Release
 > 逐位一致，SHA256 已记录在 `outputs/metrics/weight_sha256.json`。
+>
+> **一个实测教训**：`repvit_m1_5` 曾出现「字节数与期望值完全一致、但 `torch.load`
+> 报 `PytorchStreamReader failed reading zip archive`」的情况——字节数一致**不等于**
+> 内容完好。`tools/check_weights.py` 已加固为「字节数 + zip 中央目录 + torch.load 实测」
+> 三道校验（`loadable=False` 计数必须为 0）。
 
 ## 4. 如何运行官方模型评价
 
@@ -169,8 +174,8 @@ python tools/train.py --cfg configs/baseline.yaml \
 产物：`checkpoints/baseline_{best,last}.pt`、`outputs/logs/baseline_metrics.{csv,jsonl}`、
 `outputs/metrics/baseline_test.json`、`outputs/predictions/baseline_test_preds.csv`。
 
-**实测结果**：val Macro-F1（best）= **0.9502**；test Top-1 = **92.26%**、
-Top-5 = **99.24%**、Macro-F1 = **92.14%**（`eval_count=1`，test 只评价一次）。
+**实测结果**：val Macro-F1（best）= **0.9462**；test Top-1 = **92.34%**、
+Top-5 = **99.26%**、Macro-F1 = **92.22%**（`eval_count=1`，test 只评价一次）。
 
 > **训练协议**：固定 40 epoch 满预算。`early_stop_patience` 统一设为 999（等价于关闭），
 > 这是**控制变量的硬性要求**——早停若在不同实验臂上触发时机不同，「训练得更久」
@@ -398,6 +403,24 @@ python tools/selfcheck.py      # 全局自检（DoD 逐条）
 - **AI 辅助**：训练循环、评测与部署脚本的初稿由 AI 辅助生成，经本机实测修正
   （修正记录见 `PROGRESS.md` 的决策记录与 `tools/` 内的注释），
   所有结论数字均可在 `outputs/` 中溯源。
+
+## 关于提交的 checkpoint（重要说明）
+
+`checkpoints/baseline_best.pt` 与 `checkpoints/opt_combo_best.pt` 是**推理态交付版**：
+
+- **模型张量与训练产出的完整版逐位相同**（706 个张量，逐张量 `max|Δ| = 0.0`，已实测）；
+- 仅去掉了 `optimizer` / `scheduler` / `scaler` / `rng_state` 四个仅用于**断点续训**
+  的键（AdamW 的两份动量约占 38 MB/份）；
+- 保留 `epoch` / `config` / `seed` / `class_names` / `arch` / `impl` / `best_val_macro_f1` /
+  `val_metrics` 等全部选模与溯源元信息，`tools/evaluate.py`、`tools/gradcam.py`、
+  `tools/reparam_verify.py`、`deploy/model_registry.py` 全部可正常加载。
+
+**为什么这样交付**：本机 `github.com` 直连被阻断，推送只能走 GitHub 的 Git Data API，
+而该 API 对单个 blob 的请求体有上限——57.6 MB 的完整 checkpoint 会被
+`422 input too large` 拒绝（实测）。瘦身后 19.4 MB 可正常入库。
+需要从 checkpoint 继续训练时，请用本机的 `checkpoints/_full/*.pt`（未入库）。
+
+---
 
 ## 许可与致谢
 
