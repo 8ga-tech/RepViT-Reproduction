@@ -1,0 +1,101 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" data-pptx-page-role="content">
+  <rect id="bg-canvas" data-pptx-role="background" x="0" y="0" width="1280" height="720" fill="#0B1220"/>
+
+  <g id="page-header" data-pptx-bounds="72 44 1136 100">
+    <text x="72" y="82" font-family="Microsoft YaHei" font-size="34" font-weight="bold" fill="#E6EDF7">两套数据两套标签，三层划分零泄漏</text>
+    <text x="72" y="118" font-family="Microsoft YaHei" font-size="16" fill="#93A4C0">37 类与 1000 类必须分别使用各自的标签文件；混用会让 Top-5 名称整体错乱</text>
+    <line x1="72" y1="136" x2="1208" y2="136" stroke="#1E3050" stroke-width="2"/>
+  </g>
+
+  <g id="split-flow" data-pptx-bounds="72 168 700 268">
+    <rect x="72" y="168" width="700" height="268" rx="10" fill="#0F1728" stroke="#1E3050" stroke-width="1"/>
+    <text x="100" y="204" font-family="Microsoft YaHei" font-size="18" font-weight="bold" fill="#E6EDF7">Oxford-IIIT Pet 划分（唯一划分脚本，seed=42）</text>
+    <line x1="100" y1="218" x2="744" y2="218" stroke="#1E3050" stroke-width="1"/>
+
+    <g id="split-official">
+      <rect x="100" y="238" width="200" height="56" rx="6" fill="#1B2740"/>
+      <text x="200" y="264" font-family="Consolas" font-size="15" fill="#93A4C0" text-anchor="middle">trainval.txt</text>
+      <text x="200" y="284" font-family="Consolas" font-size="14" fill="#5C7096" text-anchor="middle">3680 行</text>
+    </g>
+
+    <g id="split-train">
+      <rect x="340" y="238" width="180" height="56" rx="6" fill="#12233A" stroke="#35D0F0" stroke-width="1"/>
+      <text x="430" y="264" font-family="Consolas" font-size="15" fill="#35D0F0" text-anchor="middle">pet_train.txt</text>
+      <text x="430" y="284" font-family="Consolas" font-size="14" fill="#E6EDF7" text-anchor="middle">2940 行 · 每类 73~80</text>
+    </g>
+
+    <g id="split-val">
+      <rect x="560" y="238" width="180" height="56" rx="6" fill="#12233A" stroke="#35D0F0" stroke-width="1"/>
+      <text x="650" y="264" font-family="Consolas" font-size="15" fill="#35D0F0" text-anchor="middle">pet_val.txt</text>
+      <text x="650" y="284" font-family="Consolas" font-size="14" fill="#E6EDF7" text-anchor="middle">740 行 · 每类恰好 20</text>
+    </g>
+
+    <g id="split-test">
+      <rect x="100" y="326" width="200" height="56" rx="6" fill="#1B2740"/>
+      <text x="200" y="352" font-family="Consolas" font-size="15" fill="#93A4C0" text-anchor="middle">test.txt</text>
+      <text x="200" y="372" font-family="Consolas" font-size="14" fill="#5C7096" text-anchor="middle">3669 行</text>
+    </g>
+
+    <g id="split-test-out">
+      <rect x="340" y="326" width="180" height="56" rx="6" fill="#12233A" stroke="#3FDB9B" stroke-width="1"/>
+      <text x="430" y="352" font-family="Consolas" font-size="15" fill="#3FDB9B" text-anchor="middle">pet_test.txt</text>
+      <text x="430" y="372" font-family="Consolas" font-size="14" fill="#E6EDF7" text-anchor="middle">3669 行 · 每类 88~100</text>
+    </g>
+
+    <g id="split-note">
+      <text x="560" y="352" font-family="Microsoft YaHei" font-size="14" fill="#FFC857">test 只评价一次</text>
+      <text x="560" y="372" font-family="Consolas" font-size="14" fill="#93A4C0">eval_count = 1</text>
+      <text x="100" y="412" font-family="Microsoft YaHei" font-size="14" fill="#5C7096">官方 CLASS-ID 是 1-based，0-based 标签 = CLASS-ID − 1；类名用 rsplit('_', 1) 取前缀</text>
+    </g>
+  </g>
+
+  <g id="leak-check" data-pptx-bounds="804 168 404 268">
+    <rect x="804" y="168" width="404" height="268" rx="10" fill="#131C2E" stroke="#1E3050" stroke-width="1"/>
+    <text x="830" y="204" font-family="Microsoft YaHei" font-size="18" font-weight="bold" fill="#E6EDF7">泄漏检查（三层 + 内容级）</text>
+    <line x1="830" y1="218" x2="1182" y2="218" stroke="#1E3050" stroke-width="1"/>
+    <text x="830" y="254" font-family="Microsoft YaHei" font-size="15" fill="#93A4C0">文件名交集</text>
+    <text x="1182" y="254" font-family="Consolas" font-size="16" fill="#3FDB9B" text-anchor="end">0 / 0 / 0</text>
+    <text x="830" y="290" font-family="Microsoft YaHei" font-size="15" fill="#93A4C0">MD5 交集（防改名）</text>
+    <text x="1182" y="290" font-family="Consolas" font-size="16" fill="#3FDB9B" text-anchor="end">0 / 0 / 0</text>
+    <text x="830" y="326" font-family="Microsoft YaHei" font-size="15" fill="#93A4C0">孤儿图误入</text>
+    <text x="1182" y="326" font-family="Consolas" font-size="16" fill="#3FDB9B" text-anchor="end">0</text>
+    <text x="830" y="362" font-family="Microsoft YaHei" font-size="15" fill="#93A4C0">划分内部重复图</text>
+    <text x="1182" y="362" font-family="Consolas" font-size="16" fill="#3FDB9B" text-anchor="end">0</text>
+    <line x1="830" y1="384" x2="1182" y2="384" stroke="#1E3050" stroke-width="1"/>
+    <text x="830" y="414" font-family="Microsoft YaHei" font-size="14" fill="#5C7096">python datasets/audit_leakage.py</text>
+  </g>
+
+  <g id="fact-baseline" data-pptx-bounds="72 456 1136 180">
+    <rect x="72" y="456" width="1136" height="180" rx="10" fill="#0F1728" stroke="#1E3050" stroke-width="1"/>
+    <text x="100" y="492" font-family="Microsoft YaHei" font-size="18" font-weight="bold" fill="#E6EDF7">官方数据事实基线（全部实测）</text>
+    <line x1="100" y1="506" x2="1180" y2="506" stroke="#1E3050" stroke-width="1"/>
+
+    <g id="fact-1">
+      <text x="100" y="544" font-family="Consolas" font-size="28" font-weight="bold" fill="#35D0F0">7390</text>
+      <text x="100" y="572" font-family="Microsoft YaHei" font-size="14" fill="#93A4C0">images/ 下的 jpg</text>
+    </g>
+    <g id="fact-2">
+      <text x="330" y="544" font-family="Consolas" font-size="28" font-weight="bold" fill="#35D0F0">3680</text>
+      <text x="330" y="572" font-family="Microsoft YaHei" font-size="14" fill="#93A4C0">trainval.txt 行数</text>
+    </g>
+    <g id="fact-3">
+      <text x="560" y="544" font-family="Consolas" font-size="28" font-weight="bold" fill="#35D0F0">3669</text>
+      <text x="560" y="572" font-family="Microsoft YaHei" font-size="14" fill="#93A4C0">test.txt 行数</text>
+    </g>
+    <g id="fact-4">
+      <text x="790" y="544" font-family="Consolas" font-size="28" font-weight="bold" fill="#FFC857">12 / 25</text>
+      <text x="790" y="572" font-family="Microsoft YaHei" font-size="14" fill="#93A4C0">猫 / 狗 类别数</text>
+    </g>
+    <g id="fact-5">
+      <text x="1020" y="544" font-family="Consolas" font-size="28" font-weight="bold" fill="#FFC857">1-based</text>
+      <text x="1020" y="572" font-family="Microsoft YaHei" font-size="14" fill="#93A4C0">官方 CLASS-ID</text>
+    </g>
+    <text x="100" y="612" font-family="Microsoft YaHei" font-size="14" fill="#5C7096">官方不存在 train.txt / val.txt，只有 trainval.txt 与 test.txt；train/val 必须自行分层切分</text>
+  </g>
+
+  <g id="page-footer" data-pptx-bounds="72 652 1136 44">
+    <line x1="72" y1="652" x2="1208" y2="652" stroke="#1E3050" stroke-width="1"/>
+    <text x="72" y="680" font-family="Microsoft YaHei" font-size="13" fill="#5C7096">数据来源：outputs/metrics/leakage_check.json · dataset_report.json · pet_label_audit.json · split_audit.json</text>
+    <text x="1208" y="680" font-family="Consolas" font-size="14" fill="#5C7096" text-anchor="end">06</text>
+  </g>
+</svg>

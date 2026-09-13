@@ -1,0 +1,5 @@
+,width,width,width,height,height,height,aspect,aspect,aspect,short_side,short_side,short_side,brightness_mean,brightness_mean,brightness_mean,brightness_std,brightness_std,brightness_std,saturation_mean,saturation_mean,saturation_mean,edge_density,edge_density,edge_density,bg_complexity_ratio,bg_complexity_ratio,bg_complexity_ratio
+,mean,std,median,mean,std,median,mean,std,median,mean,std,median,mean,std,median,mean,std,median,mean,std,median,mean,std,median,mean,std,median
+group,,,,,,,,,,,,,,,,,,,,,,,,,,,
+dataset,434.7275,90.9117,500.0,390.09,92.4661,375.0,1.1706,0.327,1.3333,348.1725,62.5546,339.5,0.4547,0.1207,0.456,0.2175,0.0546,0.214,0.3031,0.1568,0.2806,0.1318,0.0711,0.1138,0.478,0.4789,0.3768
+external,484.375,44.1942,500.0,396.5,49.4542,382.0,1.2455,0.2209,1.3093,380.875,26.503,375.0,0.5034,0.0926,0.5081,0.2555,0.0556,0.2634,0.2394,0.0852,0.2116,0.1483,0.0666,0.1407,0.5928,0.4372,0.4748

@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" data-pptx-page-role="content">
+  <rect id="bg-canvas" data-pptx-role="background" x="0" y="0" width="1280" height="720" fill="#0B1220"/>
+
+  <g id="page-header" data-pptx-bounds="72 48 1136 92">
+    <text x="72" y="86" font-family="Microsoft YaHei" font-size="34" font-weight="bold" fill="#E6EDF7">六个考核环节全部交付，37 条验收项自检 0 失败</text>
+    <text x="72" y="122" font-family="Microsoft YaHei" font-size="16" fill="#93A4C0">运行 → 迁移 → 优化 → 可视化 → 重参数化 → 部署，每个数字都可在仓库中溯源</text>
+    <line x1="72" y1="140" x2="1208" y2="140" stroke="#1E3050" stroke-width="2"/>
+  </g>
+
+  <g id="stage-1" data-pptx-bounds="72 176 358 208">
+    <rect x="72" y="176" width="358" height="208" rx="10" fill="#131C2E" stroke="#1E3050" stroke-width="1"/>
+    <text x="98" y="218" font-family="Consolas" font-size="15" font-weight="bold" fill="#35D0F0">01</text>
+    <text x="98" y="256" font-family="Microsoft YaHei" font-size="22" font-weight="bold" fill="#E6EDF7">官方模型评价</text>
+    <line x1="98" y1="274" x2="404" y2="274" stroke="#1E3050" stroke-width="1"/>
+    <text x="98" y="306" font-family="Microsoft YaHei" font-size="16" fill="#93A4C0">5 个型号 · 1000 张子集</text>
+    <text x="98" y="334" font-family="Consolas" font-size="16" fill="#3FDB9B">M0.9 Top-1 78.20%</text>
+    <text x="98" y="362" font-family="Microsoft YaHei" font-size="14" fill="#5C7096">outputs/pretrained_eval/</text>
+  </g>
+
+  <g id="stage-2" data-pptx-bounds="460 176 358 208">
+    <rect x="460" y="176" width="358" height="208" rx="10" fill="#131C2E" stroke="#1E3050" stroke-width="1"/>
+    <text x="486" y="218" font-family="Consolas" font-size="15" font-weight="bold" fill="#35D0F0">02</text>
+    <text x="486" y="256" font-family="Microsoft YaHei" font-size="22" font-weight="bold" fill="#E6EDF7">M0.9 迁移训练</text>
+    <line x1="486" y1="274" x2="792" y2="274" stroke="#1E3050" stroke-width="1"/>
+    <text x="486" y="306" font-family="Microsoft YaHei" font-size="16" fill="#93A4C0">Pet 37 类 · 40 epoch</text>
+    <text x="486" y="334" font-family="Consolas" font-size="16" fill="#3FDB9B">test Top-1 92.34%</text>
+    <text x="486" y="362" font-family="Microsoft YaHei" font-size="14" fill="#5C7096">checkpoints/baseline_best.pt</text>
+  </g>
+
+  <g id="stage-3" data-pptx-bounds="848 176 360 208">
+    <rect x="848" y="176" width="360" height="208" rx="10" fill="#131C2E" stroke="#1E3050" stroke-width="1"/>
+    <text x="874" y="218" font-family="Consolas" font-size="15" font-weight="bold" fill="#35D0F0">03</text>
+    <text x="874" y="256" font-family="Microsoft YaHei" font-size="22" font-weight="bold" fill="#E6EDF7">控制变量优化</text>
+    <line x1="874" y1="274" x2="1182" y2="274" stroke="#1E3050" stroke-width="1"/>
+    <text x="874" y="306" font-family="Microsoft YaHei" font-size="16" fill="#93A4C0">4 方案 + 3 组消融</text>
+    <text x="874" y="334" font-family="Consolas" font-size="16" fill="#FFC857">7 份配置 DIFF PASS</text>
+    <text x="874" y="362" font-family="Microsoft YaHei" font-size="14" fill="#5C7096">configs/opt_*.yaml</text>
+  </g>
+
+  <g id="stage-4" data-pptx-bounds="72 404 358 208">
+    <rect x="72" y="404" width="358" height="208" rx="10" fill="#131C2E" stroke="#1E3050" stroke-width="1"/>
+    <text x="98" y="446" font-family="Consolas" font-size="15" font-weight="bold" fill="#35D0F0">04</text>
+    <text x="98" y="484" font-family="Microsoft YaHei" font-size="22" font-weight="bold" fill="#E6EDF7">可视化与可解释性</text>
+    <line x1="98" y1="502" x2="404" y2="502" stroke="#1E3050" stroke-width="1"/>
+    <text x="98" y="534" font-family="Microsoft YaHei" font-size="16" fill="#93A4C0">五曲线 · 混淆矩阵 · Grad-CAM</text>
+    <text x="98" y="562" font-family="Consolas" font-size="16" fill="#3FDB9B">跨物种错误仅 3.56%</text>
+    <text x="98" y="590" font-family="Microsoft YaHei" font-size="14" fill="#5C7096">outputs/gradcam/</text>
+  </g>
+
+  <g id="stage-5" data-pptx-bounds="460 404 358 208">
+    <rect x="460" y="404" width="358" height="208" rx="10" fill="#131C2E" stroke="#1E3050" stroke-width="1"/>
+    <text x="486" y="446" font-family="Consolas" font-size="15" font-weight="bold" fill="#35D0F0">05</text>
+    <text x="486" y="484" font-family="Microsoft YaHei" font-size="22" font-weight="bold" fill="#E6EDF7">结构重参数化</text>
+    <line x1="486" y1="502" x2="792" y2="502" stroke="#1E3050" stroke-width="1"/>
+    <text x="486" y="534" font-family="Microsoft YaHei" font-size="16" fill="#93A4C0">BN 108 → 0 · Conv 126 → 103</text>
+    <text x="486" y="562" font-family="Consolas" font-size="16" fill="#3FDB9B">max|Δ| 7.1e-06 · Top-1 32/32</text>
+    <text x="486" y="590" font-family="Microsoft YaHei" font-size="14" fill="#5C7096">outputs/reparam/</text>
+  </g>
+
+  <g id="stage-6" data-pptx-bounds="848 404 360 208">
+    <rect x="848" y="404" width="360" height="208" rx="10" fill="#131C2E" stroke="#1E3050" stroke-width="1"/>
+    <text x="874" y="446" font-family="Consolas" font-size="15" font-weight="bold" fill="#35D0F0">06</text>
+    <text x="874" y="484" font-family="Microsoft YaHei" font-size="22" font-weight="bold" fill="#E6EDF7">ONNX 多模型部署</text>
+    <line x1="874" y1="502" x2="1182" y2="502" stroke="#1E3050" stroke-width="1"/>
+    <text x="874" y="534" font-family="Microsoft YaHei" font-size="16" fill="#93A4C0">6 个 ONNX · ORT CPU</text>
+    <text x="874" y="562" font-family="Consolas" font-size="16" fill="#3FDB9B">P50 7.1 ~ 32.7 ms</text>
+    <text x="874" y="590" font-family="Microsoft YaHei" font-size="14" fill="#5C7096">onnx/*.onnx</text>
+  </g>
+
+  <g id="page-footer" data-pptx-bounds="72 636 1136 40">
+    <line x1="72" y1="636" x2="1208" y2="636" stroke="#1E3050" stroke-width="1"/>
+    <text x="72" y="664" font-family="Microsoft YaHei" font-size="14" fill="#5C7096">范围声明：不做第八章拓展任务（INT8 量化 / 知识蒸馏 / 剪枝 / 多随机种子 / 边缘部署 / 核心模块独立实现）</text>
+    <text x="1208" y="664" font-family="Consolas" font-size="14" fill="#5C7096" text-anchor="end">02</text>
+  </g>
+</svg>

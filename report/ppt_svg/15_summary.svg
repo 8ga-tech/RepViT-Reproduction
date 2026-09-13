@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" data-pptx-page-role="ending">
+  <rect id="bg-canvas" data-pptx-role="background" x="0" y="0" width="1280" height="720" fill="#0B1220"/>
+
+  <g id="deco-lines" data-pptx-role="decoration" data-pptx-bounds="0 0 1280 720">
+    <line x1="0" y1="150" x2="1280" y2="150" stroke="#16233A" stroke-width="1"/>
+    <line x1="0" y1="600" x2="1280" y2="600" stroke="#16233A" stroke-width="1"/>
+  </g>
+
+  <g id="page-header" data-pptx-bounds="72 44 1136 100">
+    <text x="72" y="82" font-family="Microsoft YaHei" font-size="34" font-weight="bold" fill="#E6EDF7">复现链路完整、数字可溯源、控制变量有工程化校验</text>
+    <text x="72" y="118" font-family="Microsoft YaHei" font-size="16" fill="#93A4C0">37 条验收项自检 0 失败；代码零写死绝对路径；每个数字都能回到 outputs/ 里的文件</text>
+    <line x1="72" y1="136" x2="1208" y2="136" stroke="#1E3050" stroke-width="2"/>
+  </g>
+
+  <g id="problems" data-pptx-bounds="72 168 1136 196">
+    <rect x="72" y="168" width="1136" height="196" rx="10" fill="#0F1728" stroke="#1E3050" stroke-width="1"/>
+    <text x="100" y="204" font-family="Microsoft YaHei" font-size="18" font-weight="bold" fill="#E6EDF7">三个最有代表性的问题</text>
+    <line x1="100" y1="218" x2="1180" y2="218" stroke="#1E3050" stroke-width="1"/>
+
+    <g id="pb-1">
+      <text x="100" y="252" font-family="Consolas" font-size="15" font-weight="bold" fill="#35D0F0">01</text>
+      <text x="150" y="252" font-family="Microsoft YaHei" font-size="15" fill="#E6EDF7">官方 .pth 与 timm 键名交集为 0（713 vs 389）</text>
+      <text x="150" y="278" font-family="Microsoft YaHei" font-size="14" fill="#3FDB9B">实测证明两条路线权重逐位等价（max|Δlogits| = 0），省去手写键转换器</text>
+    </g>
+    <g id="pb-2">
+      <text x="100" y="312" font-family="Consolas" font-size="15" font-weight="bold" fill="#35D0F0">02</text>
+      <text x="150" y="312" font-family="Microsoft YaHei" font-size="15" fill="#E6EDF7">data/provided/ 在 29 页试题 PDF 中从未定义</text>
+      <text x="150" y="338" font-family="Microsoft YaHei" font-size="14" fill="#3FDB9B">改判为结构性偏差，改用官方归档 + 自建子集，并在 README 与报告中显式声明</text>
+    </g>
+  </g>
+
+  <g id="problem-3" data-pptx-bounds="72 376 1136 92">
+    <rect x="72" y="376" width="1136" height="92" rx="10" fill="#1A1408" stroke="#FFC857" stroke-width="1"/>
+    <text x="100" y="410" font-family="Consolas" font-size="15" font-weight="bold" fill="#FFC857">03</text>
+    <text x="150" y="410" font-family="Microsoft YaHei" font-size="15" fill="#E6EDF7">早停导致训练预算不等价（opt_mix 25 epoch vs baseline 40 epoch，差 37.5%）</text>
+    <text x="150" y="438" font-family="Microsoft YaHei" font-size="14" fill="#93A4C0">处置：统一关闭早停，8 组实验全部 40 epoch 满预算；把预算等价性固化成可执行检查 same_budget.py</text>
+  </g>
+
+  <g id="conclusion" data-pptx-bounds="72 488 700 172">
+    <rect x="72" y="488" width="700" height="172" rx="10" fill="#131C2E" stroke="#1E3050" stroke-width="1"/>
+    <text x="100" y="524" font-family="Microsoft YaHei" font-size="18" font-weight="bold" fill="#E6EDF7">结论</text>
+    <line x1="100" y1="538" x2="744" y2="538" stroke="#1E3050" stroke-width="1"/>
+    <text x="100" y="570" font-family="Microsoft YaHei" font-size="15" fill="#93A4C0">① RepViT 确为纯卷积，M0.9 实测 78.20%，贴近官方 78.7%</text>
+    <text x="100" y="596" font-family="Microsoft YaHei" font-size="15" fill="#93A4C0">② Pet-37 test Top-1 92.34%，跨物种错误仅 3.56%</text>
+    <text x="100" y="622" font-family="Microsoft YaHei" font-size="15" fill="#93A4C0">③ 重参数化数值等价、BN 归零；ONNX 一致率 100%</text>
+    <text x="100" y="648" font-family="Microsoft YaHei" font-size="15" fill="#FFC857">④ 四项优化均未超出噪声：这本身是有价值的负面结论</text>
+  </g>
+
+  <g id="next" data-pptx-bounds="804 488 404 172">
+    <rect x="804" y="488" width="404" height="172" rx="10" fill="#131C2E" stroke="#1E3050" stroke-width="1"/>
+    <text x="830" y="524" font-family="Microsoft YaHei" font-size="18" font-weight="bold" fill="#E6EDF7">后续计划</text>
+    <line x1="830" y1="538" x2="1182" y2="538" stroke="#1E3050" stroke-width="1"/>
+    <text x="830" y="570" font-family="Microsoft YaHei" font-size="14" fill="#93A4C0">INT8 量化 / 知识蒸馏（M2.3 → M0.9）</text>
+    <text x="830" y="596" font-family="Microsoft YaHei" font-size="14" fill="#93A4C0">集显后端（本机无集显，需换设备）</text>
+    <text x="830" y="622" font-family="Microsoft YaHei" font-size="14" fill="#93A4C0">置信度校准（实测温度 T = 0.615）</text>
+    <text x="830" y="648" font-family="Microsoft YaHei" font-size="14" fill="#93A4C0">七类鲁棒性扰动已跑，可扩展 severity 级</text>
+  </g>
+
+  <g id="page-footer" data-pptx-bounds="72 664 1136 32">
+    <text x="72" y="684" font-family="Consolas" font-size="14" fill="#5C7096">github.com/8ga-tech/RepViT-Reproduction</text>
+    <text x="1208" y="684" font-family="Microsoft YaHei" font-size="13" fill="#5C7096" text-anchor="end">感谢聆听 · 敬请提问</text>
+  </g>
+</svg>

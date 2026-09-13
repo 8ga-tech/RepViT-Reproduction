@@ -1,0 +1,16 @@
+{
+  "seed": 42,
+  "num": 4,
+  "indices": [
+    179,
+    1061,
+    2679,
+    3133
+  ],
+  "image_ids": [
+    "Bengal_82",
+    "Siamese_79",
+    "miniature_pinscher_98",
+    "samoyed_56"
+  ]
+}

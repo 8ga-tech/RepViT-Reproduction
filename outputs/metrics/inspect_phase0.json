@@ -1,0 +1,95 @@
+{
+  "ckpt": {
+    "file": "repvit_m0_9_distill_300e.pth",
+    "bytes": 22422548,
+    "n_keys": 713,
+    "wrapper_keys": [
+      "model"
+    ],
+    "top_prefix": {
+      "features.1": 29,
+      "features.5": 29,
+      "features.9": 29,
+      "features.11": 29,
+      "features.13": 29,
+      "features.15": 29,
+      "features.17": 29,
+      "features.19": 29,
+      "features.21": 29,
+      "features.25": 29,
+      "features.2": 25,
+      "features.3": 25,
+      "features.6": 25,
+      "features.7": 25,
+      "features.10": 25,
+      "features.12": 25,
+      "features.14": 25,
+      "features.16": 25,
+      "features.18": 25,
+      "features.20": 25,
+      "features.22": 25,
+      "features.23": 25,
+      "features.26": 25,
+      "features.4": 24,
+      "features.8": 24,
+      "features.24": 24,
+      "features.0": 12,
+      "classifier.classifier": 7,
+      "classifier.classifier_dist": 7
+    }
+  },
+  "timm_head": {
+    "type": "RepVit",
+    "has_head_dist": false,
+    "child_modules": [
+      "stem",
+      "stages",
+      "head_drop",
+      "head"
+    ],
+    "head_area_params": {
+      "head.head.bn.weight": 384,
+      "head.head.bn.bias": 384,
+      "head.head.l.weight": 384000,
+      "head.head.l.bias": 1000,
+      "head.head_dist.bn.weight": 384,
+      "head.head_dist.bn.bias": 384,
+      "head.head_dist.l.weight": 384000,
+      "head.head_dist.l.bias": 1000
+    },
+    "n_params_named": 389
+  },
+  "key_overlap_official_vs_timm": {
+    "official": 713,
+    "timm": 389,
+    "intersection": 0,
+    "only_official": 713
+  },
+  "official_load_distill_True": {
+    "n_params": 5489328,
+    "n_missing": 0,
+    "n_unexpected": 0,
+    "missing": [],
+    "unexpected": []
+  },
+  "official_load_distill_False": {
+    "n_params": 5103560,
+    "n_missing": 0,
+    "n_unexpected": 7,
+    "missing": [],
+    "unexpected": [
+      "classifier.classifier_dist.bn.weight",
+      "classifier.classifier_dist.bn.bias",
+      "classifier.classifier_dist.bn.running_mean",
+      "classifier.classifier_dist.bn.running_var",
+      "classifier.classifier_dist.bn.num_batches_tracked",
+      "classifier.classifier_dist.l.weight",
+      "classifier.classifier_dist.l.bias"
+    ]
+  },
+  "official_fuse": {
+    "before": 5103560,
+    "after": 5103560,
+    "delta": 0
+  }
+}

@@ -1,0 +1,14 @@
+block_index:
+  22
+block_type:
+  RepViTBlock
+stride:
+  None
+branches:
+  ['3x3 depthwise conv + BN', '1x1 depthwise conv (bias=True)', 'identity']
+outer_bn:
+  BatchNorm2d(ed) 吸收进 final_conv
+steps:
+  ["① 融合 3x3 分支的 BN: W' = W·γ/√(σ²+ε), b' = β − μ·γ/√(σ²+ε)", '② 1x1 核 pad 成 3×3、identity pad 成中心为 1 的 3×3，三者逐元素相加', '③ 融合外层 BN: W_f = W_m·t, b_f = β + (b_m − μ)·t', '产物：单个带 bias 的 3×3 depthwise Conv2d（不可再分）']
+detail:
+  {'C': 384, 'branch_3x3_W_shape': [384, 1, 3, 3], 'branch_1x1_W_shape': [384, 1, 1, 1], 'identity_kernel': 'center=1, ring=0 (3x3 depthwise)', 'W_final_shape': [384, 1, 3, 3], 'b_final_shape': [384], 't_range': [0.08363427221775055, 41.12293243408203], 'params_before': 5760, 'params_after': 3840}

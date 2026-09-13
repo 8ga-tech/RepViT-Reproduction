@@ -1,0 +1,111 @@
+# =============================================================================
+# configs/pretrained_eval.yaml —— 官方预训练权重评测（tools/eval_pretrained.py）唯一配置真源
+# 约定：本文件不存在 _base_ 继承，所有键都是显式的，便于答辩时逐键解释。
+#       配置文件是唯一的配置传入通道（--cfg），命令行只做键值覆盖（--set）；
+#       不存在 --model / --crop-pct 之类独立 flag，一律写
+#       `--set pretrained_eval.<键>=<值>`（可一次给多组，空格分隔）。
+#       例：
+#         python tools/eval_pretrained.py --cfg configs/pretrained_eval.yaml \
+#           --set pretrained_eval.model=repvit_m0_9 \
+#                 pretrained_eval.weights=checkpoints/pretrained/repvit_m0_9_distill_300e.pth \
+#                 pretrained_eval.out_dir=outputs/pretrained_eval/repvit_m0_9
+# 值域注解写在每个字段右侧：默认值 | 取值范围 | 说明
+# 所有相对路径一律相对仓库根（由 Path(__file__).resolve().parents[N] 推导），
+# 代码中禁止出现任何个人电脑的绝对路径。
+# =============================================================================
+
+# ---- 实验标识 ---------------------------------------------------------------
+experiment_name: pretrained_eval    # str | 安全文件名 | 仅用于日志名与生效配置快照，不参与产物目录命名（目录由 model 推）
+seed: 42                            # int | 0 ~ 2**31-1 | 同时固定 random/numpy/torch；评测本身无随机性，仅保证可复现
+
+# ---- 官方预训练评测（tools/eval_pretrained.py 的全部入参） -------------------
+pretrained_eval:
+  model: repvit_m0_9                # str  | timm 已注册的 repvit* 白名单 | 结构由它决定，与权重文件解耦；允许带权重 tag（repvit_m0_9.dist_300e_in1k），产物目录一律取裸名 name.split('.')[0]
+  weights: checkpoints/pretrained/repvit_m0_9_distill_300e.pth   # str | 本地 .pth 相对路径 / null | null 时回落 timm.create_model(pretrained=True) 走 HF 下载；官方 _distill_*.pth 是 {'model': {...}} 单键字典且 storage 在 cuda:0，必须 map_location='cpu' 后取 ['model']
+  data_list: datasets/lists/imagenet_val_subset.txt   # str | 每行 "<相对路径>\t<0-based 标签>" | 解析必须用 line.rsplit(None, 1)，不能用 line.split()（Windows 中文路径可能含空格）
+  labels: labels/imagenet_classes.txt                 # str | 1000 行类别名，索引即模型输出下标 | 锚点自检：第 0 行 tench / 第 65 行 sea snake / 第 285 行 Egyptian cat / 第 999 行 toilet tissue
+  input_size: 224                   # int  | 224（勿改） | 改动必须同步改 crop_pct，否则有效感受野与官方口径不一致
+  batch_size: 64                    # int  | 32 ~ 128 | CPU 上 M0.9 用 64 约占 1.2 GB 内存；8 GB 机器降到 32
+  out_dir: null                     # str | 相对路径 / null | null -> outputs/pretrained_eval/<model 裸名>；脚本自动建 cases/ 子目录
+  crop_pct: 0.875                   # float| 0.875 / 0.95 | 本工具最关键的默认值。0.875 = 官方口径 floor(256/224 反向)即 int((256/224)*224)=256；0.95 = timm pretrained_cfg 口径 floor(224/0.95)=235。默认走官方口径
+  also_eval_crop_pct: [0.875, 0.95] # [float,...] | [0.875, 0.95] | 两套预处理口径各跑一遍并分别记录，用于量化「Resize 256 vs 235」对 Top-1 的影响；与 crop_pct 重复的那一次复用主结果，不重复推理
+  interpolation: bicubic            # enum | bilinear / bicubic | 官方与 timm 均为 bicubic（torchvision InterpolationMode.BICUBIC 整数码 = 3）；任务书正文写的 bilinear 属简化表述，不要照抄
+  impl: auto                        # enum | auto / official / timm | auto 按 weights 判型；official 走 vendored 官方 models/repvit_official.py + replace_batchnorm，timm 走 timm 的 RepVit.fuse()
+  fuse: true                        # bool | true/false | 推理前是否做结构重参数化。报告里必须同时给出 fused/unfused 两组延迟
+  device: auto                      # enum | auto / cpu / cuda | auto = cuda if torch.cuda.is_available() else cpu
+  amp: false                        # bool | true/false | 仅 CUDA 生效；CPU 上开 AMP 不加速且 metrics.json 的 precision 记为 fp32
+  threads: null                     # int  | null / 4 ~ 8 | null 时打印 torch.get_num_threads() 但不修改；CUDA 或多型号横向对比必须显式传入（建议 4）
+  warmup: 10                        # int  | 10 | 与考核统一复测约定一致，前 10 次不计入统计
+  runs: 50                          # int  | 50 | 延迟统计次数，与 warmup 共同决定 latency.json 的 mean/p95
+  check_data: false                 # bool | true/false | true 时只校验 list 与 labels 的对齐并打印诊断，不加载模型（预检用）
+
+# ---- 待评测官方型号清单（顺序固定，基础 2 个 + 进阶家族扫描 3 个） -----------
+# 用途：tools/run_all_pretrained.py 的批量默认清单；单型号运行只看 pretrained_eval.model / .weights。
+# key  = deploy/model_registry.py 的登记键（供 ONNX 导出与标签解析复用）
+# model= timm 裸名（可写进 eval_pretrained.py 的 --set pretrained_eval.model）
+models:
+  # ---- 基础必做 1 ----
+  - key: repvit_m0_9_in1k           # str | 登记键 | deploy/model_registry.py 中的唯一标识
+    model: repvit_m0_9              # str | timm 裸名 | 与 tag 形式 repvit_m0_9.dist_300e_in1k 落到同一产物目录
+    impl: official                  # enum | official / timm | 官方 .pth 与 vendored 官方实现逐键对齐（missing=0 unexpected=0）
+    ckpt: checkpoints/pretrained/repvit_m0_9_distill_300e.pth  # str | 相对路径 | 22,422,548 字节 = 21.38 MiB，ckpt['model'] 713 键
+    num_classes: 1000               # int | 1000 | ImageNet-1K
+    crop_pct: 0.95                  # float | 0.95 | timm pretrained_cfg 口径；与 pretrained_eval.crop_pct 的 0.875 由 also_eval_crop_pct 同时覆盖
+    params_M: 5.1                   # float | - | 官方 README 口径（含蒸馏头）；单头未融合为 4.72M（timm 实测 4,732,805 @ 37 类）
+    macs_G: 0.8                     # float | - | 官方 README 口径
+    file_mb: 21.38                  # float | - | os.path.getsize()/1024**2
+    official_top1: 78.7             # float | - | 官方 300e Top-1（%）；本仓库 metrics.json 的 top1 同为百分数，可直接对照
+    official_top5: 94.01            # float | - | 官方 300e Top-5（%）
+  # ---- 基础必做 2 ----
+  - key: repvit_m1_0_in1k
+    model: repvit_m1_0
+    impl: official
+    ckpt: checkpoints/pretrained/repvit_m1_0_distill_300e.pth
+    num_classes: 1000
+    crop_pct: 0.95
+    params_M: 6.8
+    macs_G: 1.1
+    file_mb: 28.30
+    official_top1: 80.0
+    official_top5: 94.76
+  # ---- 进阶①：模型家族速度—精度扫描（累计 ≥4 个型号，判断帕累托前沿） ----
+  - key: repvit_m1_1_in1k
+    model: repvit_m1_1
+    impl: official
+    ckpt: checkpoints/pretrained/repvit_m1_1_distill_300e.pth
+    num_classes: 1000
+    crop_pct: 0.95
+    params_M: 8.2
+    macs_G: 1.3
+    file_mb: 34.02
+    official_top1: 80.7
+    official_top5: 95.15
+  - key: repvit_m1_5_in1k
+    model: repvit_m1_5
+    impl: official
+    ckpt: checkpoints/pretrained/repvit_m1_5_distill_300e.pth
+    num_classes: 1000
+    crop_pct: 0.95
+    params_M: 14.0
+    macs_G: 2.3
+    file_mb: 56.62
+    official_top1: 82.3
+    official_top5: 95.94
+  - key: repvit_m2_3_in1k
+    model: repvit_m2_3
+    impl: official
+    ckpt: checkpoints/pretrained/repvit_m2_3_distill_300e.pth
+    num_classes: 1000
+    crop_pct: 0.95
+    params_M: 22.9
+    macs_G: 4.5
+    file_mb: 91.42
+    official_top1: 83.3
+    official_top5: 96.47
+
+# ---- 基准测试执行环境 -------------------------------------------------------
+# 注意：warmup / runs / threads 的唯一真源是上面的 pretrained_eval 段（5.2 规定所有键都在该段下，
+# run_all_pretrained.py 也以 --set pretrained_eval.warmup=... 形式覆盖），此处不重复声明以免两处漂移。
+benchmark:
+  providers: [CPUExecutionProvider]  # [str,...] | CPUExecutionProvider / AzureExecutionProvider | onnxruntime 1.30.0 本机只有这两个 EP，无 CUDAExecutionProvider
+  # 说明：延迟统计必须在同一进程、同一线程数下完成；CUDA 与 CPU 的数字禁止混入同一张表。

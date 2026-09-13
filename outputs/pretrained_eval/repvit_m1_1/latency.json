@@ -1,0 +1,19 @@
+{
+  "warmup": 10,
+  "runs": 50,
+  "mean_ms": 10.45705399941653,
+  "p50_ms": 11.809499963419512,
+  "p95_ms": 13.696485012769699,
+  "min_ms": 6.469600019045174,
+  "max_ms": 13.762500020675361,
+  "threads": 4,
+  "device": "cuda",
+  "cpu_model": "Intel64 Family 6 Model 183 Stepping 1, GenuineIntel",
+  "os": "Windows-11-10.0.26200-SP0",
+  "torch_version": "2.14.0+cu126",
+  "ep": null,
+  "ort_version": null,
+  "mean_ms_unfused": 12.739686000859365,
+  "p50_ms_unfused": 12.525350000942126,
+  "p95_ms_unfused": 14.383489976171404
+}

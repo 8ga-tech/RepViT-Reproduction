@@ -1,0 +1,144 @@
+# =============================================================================
+# configs/expected_diff.yaml —— 「控制变量差异键白名单」的集中登记表（唯一真源）
+#
+# 与 tools/diff_config.py 的关系（读该文件源码后的结论，必须按此约定使用）：
+#   1. diff_config.py 的实际判定入口是每份 opt_*.yaml 内部的 `_expected_diff_` 列表
+#      （`expect = list(cb.get('_expected_diff_', []))`），它按扁平化后的键值对求差，
+#      出现 `UNEXPECTED` 行即 FAIL；声明了但未变化则按 `missing` 告警/失败。
+#   2. 因此本文件不是被 diff_config.py 直接读取的，而是那些 `_expected_diff_` 的
+#      汇总视图 + 唯一真源：每一份 opt_*.yaml 的 `_expected_diff_` 必须与本文件对应
+#      experiment 的 expect 列表**逐字、逐序一致**。改这里就必须同步改那份 yaml，
+#      反之亦然。tools/selfcheck.py 与报告第三章用它做交叉核对
+#      （验收条目 23：「打印全部差异键，行数与 configs/expected_diff.yaml 一致」）。
+#   3. 键名一律是 utils/config.py 深合并后、diff_config.flatten() 展平得到的点分路径，
+#      例如 aug.train.color_jitter.brightness；`_` 开头的键是元信息，不参与差异。
+#        结构：<experiment_name>:
+#                config:   对应的配置文件（相对仓库根）
+#                desc:     方案说明（答辩口径）
+#                expect:   差异键白名单（= 该配置的 _expected_diff_）
+#                union_of: 该实验是哪些实验的并集（仅组合实验有）
+# =============================================================================
+
+# ---- 方案 B：Mixup / CutMix 数据混合（3 个差异键） ---------------------------
+opt_mix:
+  config: configs/opt_mix.yaml
+  desc: >-
+    方案 B。只动 train 段的混合策略：mixup_alpha=0.2（Mixup 原论文 ImageNet 表格值）、
+    cutmix_alpha=1.0（timm 默认，等价 lambda~U(0,1)）、mixup_prob=1.0（逐 batch 触发）。
+    Baseline 三者均为 0.0，即整支关闭。
+  expect:
+    - train.mixup_alpha
+    - train.cutmix_alpha
+    - train.mixup_prob
+
+# ---- 方案 C：RandAugment 加强增强（5 个差异键） -----------------------------
+opt_randaug:
+  config: configs/opt_randaug.yaml
+  desc: >-
+    方案 C。只动 aug.train 段：random_resized_crop.scale 收到 [0.25,1.0]（比 Baseline 的
+    [0.35,1.0] 更激进）、color_jitter 三项 0.4->0.5、打开 randaugment {n:2, m:9, inc1:false}。
+    ratio / hue / random_erasing 保持不变，所以它们不是差异键。
+  expect:
+    - aug.train.random_resized_crop.scale
+    - aug.train.color_jitter.brightness
+    - aug.train.color_jitter.contrast
+    - aug.train.color_jitter.saturation
+    - aug.train.randaugment
+
+# ---- 方案 D：骨干差异化学习率（1 个差异键） ---------------------------------
+opt_disc:
+  config: configs/opt_disc.yaml
+  desc: >-
+    方案 D。只动 optim.backbone_lr_scale：0.1 -> 0.05，即 backbone 有效 lr 由 1e-4 降到 5e-5，
+    head 仍为 1e-3。这是最干净的单变量对照，[DIFF COUNT] 必须等于 1。
+  expect:
+    - optim.backbone_lr_scale
+
+# ---- 方案 A+B+C+D 组合（9 个差异键 = B(3) + C(5) + D(1)） -------------------
+opt_combo:
+  config: configs/opt_combo.yaml
+  desc: >-
+    方案 B + C + D 的全量组合：混合策略 3 键 + 增强 5 键 + 差异化 lr 1 键。
+    交互分析注意：C 与其它增强方案同动 aug.train.*，因此与 C 单独对照时差异键数会少于 9。
+  union_of: [opt_mix, opt_randaug, opt_disc]
+  expect:
+    - aug.train.random_resized_crop.scale
+    - aug.train.color_jitter.brightness
+    - aug.train.color_jitter.contrast
+    - aug.train.color_jitter.saturation
+    - aug.train.randaugment
+    - optim.backbone_lr_scale
+    - train.mixup_alpha
+    - train.cutmix_alpha
+    - train.mixup_prob
+
+# ---- 进阶消融：实验 A = 方案 C（RandAugment 加强增强，5 个差异键） ----------
+opt_abl_a:
+  config: configs/opt_abl_a.yaml
+  desc: >-
+    进阶「第二项优化及组合消融」的实验 A，等价于方案 C（RandAugment 加强增强）。
+    与 opt_randaug.yaml 的差异键完全相同，二者可互相校验；单独成文件是为了让消融四组
+    （baseline / A / B / A+B）在命名上自成一体，产物前缀不重叠。
+  expect:
+    - aug.train.random_resized_crop.scale
+    - aug.train.color_jitter.brightness
+    - aug.train.color_jitter.contrast
+    - aug.train.color_jitter.saturation
+    - aug.train.randaugment
+
+# ---- 进阶消融：实验 B = 方案 D（差异化学习率，1 个差异键） ------------------
+opt_abl_b:
+  config: configs/opt_abl_b.yaml
+  desc: >-
+    进阶消融的实验 B，等价于方案 D（backbone_lr_scale 0.1 -> 0.05）。
+    单变量对照，[DIFF COUNT] 必须等于 1。
+  expect:
+    - optim.backbone_lr_scale
+
+# ---- 进阶消融：实验 A+B 组合（6 个差异键 = A(5) + B(1)） --------------------
+opt_abl_ab:
+  config: configs/opt_abl_ab.yaml
+  desc: >-
+    进阶消融的 A+B 组合：加强增强 5 键 + 差异化 lr 1 键。
+    判据：若 A+B 的 val_macro_f1 增益 <= max(A,B) 的单点增益 + 0.5 个点，
+    则两方案在本数据集上无正交互补，报告需如实写明而不是强行宣布「组合最优」。
+  union_of: [opt_abl_a, opt_abl_b]
+  expect:
+    - aug.train.random_resized_crop.scale
+    - aug.train.color_jitter.brightness
+    - aug.train.color_jitter.contrast
+    - aug.train.color_jitter.saturation
+    - aug.train.randaugment
+    - optim.backbone_lr_scale
+
+# ---- 汇总：供自检脚本一次性核对（不参与 diff_config.py 的判定） -------------
+_meta_:
+  baseline_config: configs/baseline.yaml
+  diff_tool: tools/diff_config.py
+  experiments: [opt_mix, opt_randaug, opt_disc, opt_combo, opt_abl_a, opt_abl_b, opt_abl_ab]
+  diff_counts: {opt_mix: 3, opt_randaug: 5, opt_disc: 1, opt_combo: 9, opt_abl_a: 5, opt_abl_b: 1, opt_abl_ab: 6}
+  union_keys:                      # 全部实验并集（10 个键），用于核对「没有实验动了别的变量」
+    - aug.train.random_resized_crop.scale
+    - aug.train.color_jitter.brightness
+    - aug.train.color_jitter.contrast
+    - aug.train.color_jitter.saturation
+    - aug.train.randaugment
+    - optim.backbone_lr_scale
+    - train.mixup_alpha
+    - train.cutmix_alpha
+    - train.mixup_prob
+  note: >-
+    差异键落在白名单内只是必要条件，不是充分条件：`_base_` 相对路径写错会导致继承失败、
+    整份配置被当成覆盖，此时 [DIFF COUNT] 会暴涨到几十，务必同时核对 [KEY SPACE] 与
+    [DIFF COUNT] 两个数字。
+  known_flatten_pitfall: >-
+    tools/diff_config.py 的 flatten() 对 dict 递归展开，而 baseline 的
+    aug.train.randaugment 是 null、opt_randaug / opt_combo / opt_abl_a / opt_abl_ab 里是
+    {n,m,inc1} 字典，因此这三份配置的实际 [DIFF COUNT] 会比本文件的 diff_counts 多 3
+    （randaugment 被拆成 .n / .m / .inc1 三行，父键本身不再是叶子键）。
+    opt_randaug 实测 8、opt_combo 实测 12、opt_abl_a 实测 8、opt_abl_ab 实测 9。
+    diff_counts 记的是「配置语义口径」的变量数（与验收条目 23、报告第三章的
+    A=9 / B=3 / C=5 / D=1 一致）。四种解法任选其一并在报告中写明：①把子键补进
+    _expected_diff_；②改 diff_config.flatten 在显式声明的父键处停止展开；
+    ③在 baseline 里把 randaugment 写成占位字典而非 null；④接受行数差异并单独说明。
+    改动前请先确认 opt_randaug.yaml / opt_combo.yaml 的现状，避免只改一半造成口径分裂。

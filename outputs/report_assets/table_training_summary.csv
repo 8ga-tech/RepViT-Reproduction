@@ -1,0 +1,9 @@
+﻿experiment_name,epochs,best_epoch,best_val_top1,best_val_top5,best_val_macro_f1,final_train_loss,final_val_loss,total_time_min,csv_path
+baseline,39,34,0.9459,0.9986,0.9462,0.7361,0.3523,4.7,C:/Users/14675/Desktop/one团队秋招ai算法/RepViT-Reproduction/outputs/logs/baseline_metrics.csv
+opt_abl_a,39,30,0.9500,0.9986,0.9502,0.7821,0.3342,6.4,C:/Users/14675/Desktop/one团队秋招ai算法/RepViT-Reproduction/outputs/logs/opt_abl_a_metrics.csv
+opt_abl_ab,39,22,0.9486,0.9973,0.9487,0.8171,0.3297,6.1,C:/Users/14675/Desktop/one团队秋招ai算法/RepViT-Reproduction/outputs/logs/opt_abl_ab_metrics.csv
+opt_abl_b,39,32,0.9432,0.9946,0.9433,0.7611,0.3474,4.8,C:/Users/14675/Desktop/one团队秋招ai算法/RepViT-Reproduction/outputs/logs/opt_abl_b_metrics.csv
+opt_combo,39,39,0.9486,0.9986,0.9489,1.5284,0.4535,7.0,C:/Users/14675/Desktop/one团队秋招ai算法/RepViT-Reproduction/outputs/logs/opt_combo_metrics.csv
+opt_disc,39,15,0.9419,0.9986,0.9421,0.7612,0.3473,8.6,C:/Users/14675/Desktop/one团队秋招ai算法/RepViT-Reproduction/outputs/logs/opt_disc_metrics.csv
+opt_mix,39,36,0.9486,0.9986,0.9489,1.3866,0.4554,6.8,C:/Users/14675/Desktop/one团队秋招ai算法/RepViT-Reproduction/outputs/logs/opt_mix_metrics.csv
+opt_randaug,39,23,0.9500,0.9973,0.9502,0.7813,0.3450,7.6,C:/Users/14675/Desktop/one团队秋招ai算法/RepViT-Reproduction/outputs/logs/opt_randaug_metrics.csv

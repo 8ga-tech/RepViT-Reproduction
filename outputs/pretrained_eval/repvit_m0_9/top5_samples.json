@@ -1,0 +1,202 @@
+{
+  "samples": [
+    {
+      "image_path": "data/imagenet/val/n03000684/ILSVRC2012_val_00000491_00.JPEG",
+      "true_label_idx": 491,
+      "true_label_name": "chain saw",
+      "top5": [
+        {
+          "idx": 491,
+          "name": "chain saw",
+          "prob": 0.9999850988388062
+        },
+        {
+          "idx": 740,
+          "name": "power drill",
+          "prob": 1.278489889955381e-05
+        },
+        {
+          "idx": 621,
+          "name": "lawn mower",
+          "prob": 7.057094535412034e-07
+        },
+        {
+          "idx": 758,
+          "name": "reel",
+          "prob": 5.195681183067791e-07
+        },
+        {
+          "idx": 410,
+          "name": "apiary",
+          "prob": 1.7303163701853919e-07
+        }
+      ],
+      "correct": true
+    },
+    {
+      "image_path": "data/imagenet/val/n03942813/ILSVRC2012_val_00000722_34.JPEG",
+      "true_label_idx": 722,
+      "true_label_name": "ping-pong ball",
+      "top5": [
+        {
+          "idx": 722,
+          "name": "ping-pong ball",
+          "prob": 0.9999632835388184
+        },
+        {
+          "idx": 752,
+          "name": "racket",
+          "prob": 5.747682735091075e-06
+        },
+        {
+          "idx": 852,
+          "name": "tennis ball",
+          "prob": 3.3976946269831387e-06
+        },
+        {
+          "idx": 681,
+          "name": "notebook",
+          "prob": 1.981969262487837e-06
+        },
+        {
+          "idx": 429,
+          "name": "baseball",
+          "prob": 1.5652028650947614e-06
+        }
+      ],
+      "correct": true
+    },
+    {
+      "image_path": "data/imagenet/val/n02909870/ILSVRC2012_val_00000463_08.JPEG",
+      "true_label_idx": 463,
+      "true_label_name": "bucket",
+      "top5": [
+        {
+          "idx": 429,
+          "name": "baseball",
+          "prob": 0.9977678060531616
+        },
+        {
+          "idx": 574,
+          "name": "golf ball",
+          "prob": 0.00024024711456149817
+        },
+        {
+          "idx": 544,
+          "name": "Dutch oven",
+          "prob": 6.257210770854726e-05
+        },
+        {
+          "idx": 981,
+          "name": "ballplayer",
+          "prob": 5.3152900363784283e-05
+        },
+        {
+          "idx": 942,
+          "name": "butternut squash",
+          "prob": 4.828871169593185e-05
+        }
+      ],
+      "correct": false
+    },
+    {
+      "image_path": "data/imagenet/val/n02085782/ILSVRC2012_val_00000152_13.JPEG",
+      "true_label_idx": 152,
+      "true_label_name": "Japanese spaniel",
+      "top5": [
+        {
+          "idx": 156,
+          "name": "Blenheim spaniel",
+          "prob": 0.9875739216804504
+        },
+        {
+          "idx": 152,
+          "name": "Japanese spaniel",
+          "prob": 0.0020315723959356546
+        },
+        {
+          "idx": 218,
+          "name": "Welsh springer spaniel",
+          "prob": 0.0019984242971986532
+        },
+        {
+          "idx": 157,
+          "name": "papillon",
+          "prob": 0.0007373210974037647
+        },
+        {
+          "idx": 247,
+          "name": "Saint Bernard",
+          "prob": 0.0005453219637274742
+        }
+      ],
+      "correct": false
+    },
+    {
+      "image_path": "data/imagenet/val/n02066245/ILSVRC2012_val_00000147_01.JPEG",
+      "true_label_idx": 147,
+      "true_label_name": "grey whale",
+      "top5": [
+        {
+          "idx": 147,
+          "name": "grey whale",
+          "prob": 0.9048388600349426
+        },
+        {
+          "idx": 148,
+          "name": "killer whale",
+          "prob": 0.0831453949213028
+        },
+        {
+          "idx": 913,
+          "name": "wreck",
+          "prob": 0.001331027946434915
+        },
+        {
+          "idx": 2,
+          "name": "great white shark",
+          "prob": 0.0010416333097964525
+        },
+        {
+          "idx": 833,
+          "name": "submarine",
+          "prob": 0.0009534803102724254
+        }
+      ],
+      "correct": true
+    },
+    {
+      "image_path": "data/imagenet/val/n04367480/ILSVRC2012_val_00000840_02.JPEG",
+      "true_label_idx": 840,
+      "true_label_name": "swab",
+      "top5": [
+        {
+          "idx": 840,
+          "name": "swab",
+          "prob": 0.9051581025123596
+        },
+        {
+          "idx": 462,
+          "name": "broom",
+          "prob": 0.08361717313528061
+        },
+        {
+          "idx": 749,
+          "name": "quill",
+          "prob": 0.0018707739654928446
+        },
+        {
+          "idx": 784,
+          "name": "screwdriver",
+          "prob": 0.0012958578299731016
+        },
+        {
+          "idx": 456,
+          "name": "bow",
+          "prob": 0.0012618160108104348
+        }
+      ],
+      "correct": true
+    }
+  ]
+}

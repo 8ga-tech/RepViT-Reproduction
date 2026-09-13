@@ -1,0 +1,23 @@
+{
+  "model": "repvit_m0_9_in1k",
+  "arch": "repvit_m0_9_in1k",
+  "onnx_path": "C:\\Users\\14675\\Desktop\\one\u56e2\u961f\u79cb\u62dbai\u7b97\u6cd5\\RepViT-Reproduction\\onnx\\repvit_m0_9_in1k.onnx",
+  "num_classes": 1000,
+  "label_file": "labels/imagenet_classes.txt",
+  "source": "imagenet_val_subset",
+  "images": "C:\\Users\\14675\\Desktop\\one\u56e2\u961f\u79cb\u62dbai\u7b97\u6cd5\\RepViT-Reproduction\\datasets\\lists\\imagenet_val_subset.txt",
+  "n": 12,
+  "max_abs_logits": 1.71661376953125e-05,
+  "mean_abs_logits": 2.360081756099438e-06,
+  "top1_agree_rate": 1.0,
+  "top5_set_agree_rate": 1.0,
+  "mismatches": [],
+  "mismatch_count": 0,
+  "threshold": {
+    "top1_agree_rate": 0.99,
+    "max_abs_logits": 0.001
+  },
+  "top1_agree": 1.0,
+  "top1_agreement": 1.0,
+  "verdict": "PASS"
+}

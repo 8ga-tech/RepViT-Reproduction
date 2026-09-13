@@ -1,0 +1,96 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" data-pptx-page-role="content">
+  <rect id="bg-canvas" data-pptx-role="background" x="0" y="0" width="1280" height="720" fill="#0B1220"/>
+
+  <g id="page-header" data-pptx-bounds="72 44 1136 100">
+    <text x="72" y="82" font-family="Microsoft YaHei" font-size="34" font-weight="bold" fill="#E6EDF7">名字里有 ViT，但结构里没有一个注意力算子</text>
+    <text x="72" y="118" font-family="Microsoft YaHei" font-size="16" fill="#93A4C0">RepViT 借鉴的是轻量 ViT 的宏观架构选择，而非多头自注意力本身</text>
+    <line x1="72" y1="136" x2="1208" y2="136" stroke="#1E3050" stroke-width="2"/>
+  </g>
+
+  <g id="table-compare" data-pptx-bounds="72 168 800 466">
+    <rect x="72" y="168" width="800" height="466" rx="10" fill="#0F1728" stroke="#1E3050" stroke-width="1"/>
+
+    <g id="tbl-head">
+      <rect x="72" y="168" width="800" height="52" rx="10" fill="#1B2740"/>
+      <text x="240" y="202" font-family="Microsoft YaHei" font-size="17" font-weight="bold" fill="#93A4C0" text-anchor="middle">标准 ViT</text>
+      <text x="600" y="202" font-family="Microsoft YaHei" font-size="17" font-weight="bold" fill="#35D0F0" text-anchor="middle">RepViT</text>
+    </g>
+
+    <g id="row-1">
+      <text x="100" y="262" font-family="Microsoft YaHei" font-size="16" fill="#93A4C0">空间混合</text>
+      <text x="240" y="262" font-family="Microsoft YaHei" font-size="15" fill="#E6EDF7" text-anchor="middle">Multi-Head Self-Attention</text>
+      <text x="600" y="262" font-family="Consolas" font-size="15" fill="#3FDB9B" text-anchor="middle">RepVGGDW（3×3 dw + 1×1 dw）</text>
+      <line x1="100" y1="282" x2="844" y2="282" stroke="#1E3050" stroke-width="1"/>
+    </g>
+
+    <g id="row-2">
+      <text x="100" y="320" font-family="Microsoft YaHei" font-size="16" fill="#93A4C0">通道混合</text>
+      <text x="240" y="320" font-family="Microsoft YaHei" font-size="15" fill="#E6EDF7" text-anchor="middle">MLP / FFN</text>
+      <text x="600" y="320" font-family="Consolas" font-size="15" fill="#3FDB9B" text-anchor="middle">Channel Mixer（1×1 → GELU → 1×1）</text>
+      <line x1="100" y1="340" x2="844" y2="340" stroke="#1E3050" stroke-width="1"/>
+    </g>
+
+    <g id="row-3">
+      <text x="100" y="378" font-family="Microsoft YaHei" font-size="16" fill="#93A4C0">下采样</text>
+      <text x="240" y="378" font-family="Microsoft YaHei" font-size="15" fill="#E6EDF7" text-anchor="middle">patchify（stride=16 大核）</text>
+      <text x="600" y="378" font-family="Consolas" font-size="15" fill="#3FDB9B" text-anchor="middle">Early Conv Stem（两组 stride=2）</text>
+      <line x1="100" y1="398" x2="844" y2="398" stroke="#1E3050" stroke-width="1"/>
+    </g>
+
+    <g id="row-4">
+      <text x="100" y="436" font-family="Microsoft YaHei" font-size="16" fill="#93A4C0">归纳偏置</text>
+      <text x="240" y="436" font-family="Microsoft YaHei" font-size="15" fill="#E6EDF7" text-anchor="middle">弱，依赖大数据</text>
+      <text x="600" y="436" font-family="Microsoft YaHei" font-size="15" fill="#3FDB9B" text-anchor="middle">强（卷积自带局部性 / 平移等变）</text>
+      <line x1="100" y1="456" x2="844" y2="456" stroke="#1E3050" stroke-width="1"/>
+    </g>
+
+    <g id="row-5">
+      <text x="100" y="494" font-family="Microsoft YaHei" font-size="16" fill="#93A4C0">ONNX 图内</text>
+      <text x="240" y="494" font-family="Microsoft YaHei" font-size="15" fill="#E6EDF7" text-anchor="middle">MatMul + Softmax</text>
+      <text x="600" y="494" font-family="Consolas" font-size="15" fill="#3FDB9B" text-anchor="middle">无注意力算子</text>
+      <line x1="100" y1="514" x2="844" y2="514" stroke="#1E3050" stroke-width="1"/>
+    </g>
+
+    <g id="row-note">
+      <text x="100" y="556" font-family="Microsoft YaHei" font-size="15" fill="#93A4C0">全部算术节点</text>
+      <text x="100" y="586" font-family="Consolas" font-size="14" fill="#FFC857">Conv / Gemm / Add / Mul / Div / Clip / Relu</text>
+      <text x="100" y="612" font-family="Microsoft YaHei" font-size="14" fill="#5C7096">实证：onnx/*.onnx 的 op_histogram 与 outputs/reparam/*_onnx_nodes.json</text>
+    </g>
+  </g>
+
+  <g id="side-designs" data-pptx-bounds="904 168 304 466">
+    <rect x="904" y="168" width="304" height="466" rx="10" fill="#131C2E" stroke="#1E3050" stroke-width="1"/>
+    <text x="928" y="204" font-family="Microsoft YaHei" font-size="19" font-weight="bold" fill="#E6EDF7">四个关键设计</text>
+    <line x1="928" y1="218" x2="1184" y2="218" stroke="#1E3050" stroke-width="1"/>
+
+    <g id="design-1">
+      <text x="928" y="252" font-family="Microsoft YaHei" font-size="16" font-weight="bold" fill="#35D0F0">分离 Token / Channel Mixer</text>
+      <text x="928" y="278" font-family="Microsoft YaHei" font-size="14" fill="#93A4C0">空间与通道容量可独立调节</text>
+      <line x1="928" y1="298" x2="1184" y2="298" stroke="#1E3050" stroke-width="1"/>
+    </g>
+
+    <g id="design-2">
+      <text x="928" y="332" font-family="Microsoft YaHei" font-size="16" font-weight="bold" fill="#35D0F0">扩张比降到约 2，同时加宽</text>
+      <text x="928" y="358" font-family="Microsoft YaHei" font-size="14" fill="#93A4C0">省下的 MACs 换成通道数</text>
+      <line x1="928" y1="378" x2="1184" y2="378" stroke="#1E3050" stroke-width="1"/>
+    </g>
+
+    <g id="design-3">
+      <text x="928" y="412" font-family="Microsoft YaHei" font-size="16" font-weight="bold" fill="#35D0F0">SE 不做每块都放</text>
+      <text x="928" y="438" font-family="Microsoft YaHei" font-size="14" fill="#93A4C0">全局池化的延迟不可忽略</text>
+      <line x1="928" y1="458" x2="1184" y2="458" stroke="#1E3050" stroke-width="1"/>
+    </g>
+
+    <g id="design-4">
+      <text x="928" y="492" font-family="Microsoft YaHei" font-size="16" font-weight="bold" fill="#35D0F0">简单分类头</text>
+      <text x="928" y="518" font-family="Microsoft YaHei" font-size="14" fill="#93A4C0">单个 BN + Linear，省真实延迟</text>
+      <text x="928" y="560" font-family="Microsoft YaHei" font-size="14" fill="#5C7096">M0.9 实测：20 个 Block</text>
+      <text x="928" y="586" font-family="Consolas" font-size="14" fill="#5C7096">[2, 2, 14, 2]</text>
+    </g>
+  </g>
+
+  <g id="page-footer" data-pptx-bounds="72 664 1136 32">
+    <text x="72" y="684" font-family="Microsoft YaHei" font-size="13" fill="#5C7096">数据来源：outputs/architecture/repvit_m0_9_arch.md · outputs/reparam/repvit_m0_9_onnx_nodes.json</text>
+    <text x="1208" y="684" font-family="Consolas" font-size="14" fill="#5C7096" text-anchor="end">04</text>
+  </g>
+</svg>

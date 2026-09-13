@@ -1,0 +1,202 @@
+{
+  "samples": [
+    {
+      "image_path": "data/imagenet/val/n03000684/ILSVRC2012_val_00000491_00.JPEG",
+      "true_label_idx": 491,
+      "true_label_name": "chain saw",
+      "top5": [
+        {
+          "idx": 491,
+          "name": "chain saw",
+          "prob": 0.9999278783798218
+        },
+        {
+          "idx": 740,
+          "name": "power drill",
+          "prob": 5.786012116004713e-05
+        },
+        {
+          "idx": 621,
+          "name": "lawn mower",
+          "prob": 3.272642061347142e-06
+        },
+        {
+          "idx": 899,
+          "name": "water jug",
+          "prob": 1.3570953569796984e-06
+        },
+        {
+          "idx": 758,
+          "name": "reel",
+          "prob": 9.020947118187905e-07
+        }
+      ],
+      "correct": true
+    },
+    {
+      "image_path": "data/imagenet/val/n03942813/ILSVRC2012_val_00000722_34.JPEG",
+      "true_label_idx": 722,
+      "true_label_name": "ping-pong ball",
+      "top5": [
+        {
+          "idx": 722,
+          "name": "ping-pong ball",
+          "prob": 0.9998834133148193
+        },
+        {
+          "idx": 752,
+          "name": "racket",
+          "prob": 1.1360159078321885e-05
+        },
+        {
+          "idx": 702,
+          "name": "parallel bars",
+          "prob": 9.690752449387219e-06
+        },
+        {
+          "idx": 429,
+          "name": "baseball",
+          "prob": 6.4711507548054215e-06
+        },
+        {
+          "idx": 852,
+          "name": "tennis ball",
+          "prob": 4.691176400228869e-06
+        }
+      ],
+      "correct": true
+    },
+    {
+      "image_path": "data/imagenet/val/n02909870/ILSVRC2012_val_00000463_08.JPEG",
+      "true_label_idx": 463,
+      "true_label_name": "bucket",
+      "top5": [
+        {
+          "idx": 429,
+          "name": "baseball",
+          "prob": 0.9985468983650208
+        },
+        {
+          "idx": 574,
+          "name": "golf ball",
+          "prob": 0.00010630743054207414
+        },
+        {
+          "idx": 86,
+          "name": "partridge",
+          "prob": 8.694708230905235e-05
+        },
+        {
+          "idx": 117,
+          "name": "chambered nautilus",
+          "prob": 4.280597568140365e-05
+        },
+        {
+          "idx": 852,
+          "name": "tennis ball",
+          "prob": 3.1641895475331694e-05
+        }
+      ],
+      "correct": false
+    },
+    {
+      "image_path": "data/imagenet/val/n03216828/ILSVRC2012_val_00000536_26.JPEG",
+      "true_label_idx": 536,
+      "true_label_name": "dock",
+      "top5": [
+        {
+          "idx": 510,
+          "name": "container ship",
+          "prob": 0.9918562173843384
+        },
+        {
+          "idx": 628,
+          "name": "liner",
+          "prob": 0.0005575358518399298
+        },
+        {
+          "idx": 565,
+          "name": "freight car",
+          "prob": 0.0003297668881714344
+        },
+        {
+          "idx": 718,
+          "name": "pier",
+          "prob": 0.0003256357740610838
+        },
+        {
+          "idx": 540,
+          "name": "drilling platform",
+          "prob": 0.00029740348691120744
+        }
+      ],
+      "correct": false
+    },
+    {
+      "image_path": "data/imagenet/val/n04258138/ILSVRC2012_val_00000807_09.JPEG",
+      "true_label_idx": 807,
+      "true_label_name": "solar dish",
+      "top5": [
+        {
+          "idx": 807,
+          "name": "solar dish",
+          "prob": 0.9374383687973022
+        },
+        {
+          "idx": 744,
+          "name": "projectile",
+          "prob": 0.00833769328892231
+        },
+        {
+          "idx": 657,
+          "name": "missile",
+          "prob": 0.006988948211073875
+        },
+        {
+          "idx": 517,
+          "name": "crane",
+          "prob": 0.0026977118104696274
+        },
+        {
+          "idx": 409,
+          "name": "analog clock",
+          "prob": 0.002458038041368127
+        }
+      ],
+      "correct": true
+    },
+    {
+      "image_path": "data/imagenet/val/n02123159/ILSVRC2012_val_00000282_17.JPEG",
+      "true_label_idx": 282,
+      "true_label_name": "tiger cat",
+      "top5": [
+        {
+          "idx": 797,
+          "name": "sleeping bag",
+          "prob": 0.9374592900276184
+        },
+        {
+          "idx": 281,
+          "name": "tabby",
+          "prob": 0.015801673755049706
+        },
+        {
+          "idx": 750,
+          "name": "quilt",
+          "prob": 0.014326912350952625
+        },
+        {
+          "idx": 282,
+          "name": "tiger cat",
+          "prob": 0.01121722161769867
+        },
+        {
+          "idx": 285,
+          "name": "Egyptian cat",
+          "prob": 0.005453028250485659
+        }
+      ],
+      "correct": false
+    }
+  ]
+}

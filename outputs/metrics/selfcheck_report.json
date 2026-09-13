@@ -1,0 +1,250 @@
+{
+  "generated_at": "2026-09-13T17:36:51",
+  "python": "3.14.5",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "summary": {
+    "total": 34,
+    "pass": 34,
+    "fail": 0
+  },
+  "checks": [
+    {
+      "id": "ablation",
+      "title": "消融矩阵完整 (baseline/A/B/A+B)",
+      "status": "PASS",
+      "detail": "列=['A', 'A+B', 'B', 'baseline', 'metric']",
+      "fix": ""
+    },
+    {
+      "id": "train.backbone",
+      "title": "骨干参数已更新",
+      "status": "PASS",
+      "detail": "落在 4 个 stage 上的参数已随训练保存: [0, 1, 2, 3]",
+      "fix": ""
+    },
+    {
+      "id": "bench.meta",
+      "title": "benchmark 元信息与次数",
+      "status": "PASS",
+      "detail": "['repvit_m0_9_in1k:P50=13.601 P95=16.664', 'repvit_m1_0_in1k:P50=17.177 P95=20.823', 'repvit_m0_9_pet37:P50=12.476 P95=15.996', 'repvit_m0_9_in1k:P50=7.373 P95=8.002', 'repvit_m1_0_in1k:P50=9.147 P95=9.76', 'repvit_m1_1_in1k:P50=10.234 P95=11.241', 'repvit_m1_5_in1k:P50=17.647 P95=18.926', 'repvit_m2_3_in1k:P50=32.687 P95=33.322', 'repvit_m0_9_pet37:P50=7.122 P95=7.692'] 问题=[]",
+      "fix": ""
+    },
+    {
+      "id": "bench.ep",
+      "title": "已记录真实 Execution Provider",
+      "status": "PASS",
+      "detail": "{'repvit_m0_9_in1k': (['CPUExecutionProvider'], ['CPUExecutionProvider']), 'repvit_m1_0_in1k': (['CPUExecutionProvider'], ['CPUExecutionProvider']), 'repvit_m0_9_pet37': (['CPUExecutionProvider'], ['CPUExecutionProvider']), 'repvit_m1_1_in1k': (['CPUExecutionProvider'], ['CPUExecutionProvider']), 'repvit_m1_5_in1k': (['CPUExecutionProvider'], ['CPUExecutionProvider']), 'repvit_m2_3_in1k': (['CPUEx",
+      "fix": ""
+    },
+    {
+      "id": "cam.layer",
+      "title": "Grad-CAM 目标层合法",
+      "status": "PASS",
+      "detail": "target_layer=stages[-1].blocks[-1] 张数=12 失败案例=6 非零占比=0.8874960140306123 值域=0.0~1.0",
+      "fix": ""
+    },
+    {
+      "id": "ckpt.keys",
+      "title": "ckpt 键名结构",
+      "status": "PASS",
+      "detail": "前4键=['features.0.0.c.weight', 'features.0.0.bn.weight', 'features.0.0.bn.bias', 'features.0.0.bn.running_mean']",
+      "fix": ""
+    },
+    {
+      "id": "data.classes",
+      "title": "类别名顺序正确",
+      "status": "PASS",
+      "detail": "n=37 first=Abyssinian last=Yorkshire Terrier",
+      "fix": ""
+    },
+    {
+      "id": "viz.cm",
+      "title": "混淆矩阵为行归一化",
+      "status": "PASS",
+      "detail": "shape=(37, 37) 行和范围=[0.999999,1.000000]",
+      "fix": ""
+    },
+    {
+      "id": "env",
+      "title": "环境版本矩阵",
+      "status": "PASS",
+      "detail": "全部命中",
+      "fix": ""
+    },
+    {
+      "id": "data.labels",
+      "title": "Pet 标签集合 = {0..36}",
+      "status": "PASS",
+      "detail": "min=0 max=36 n=37 每类最少=20",
+      "fix": ""
+    },
+    {
+      "id": "labels.pair",
+      "title": "标签文件与类别数配对",
+      "status": "PASS",
+      "detail": "['repvit_m0_9_in1k:1000类/labels/imagenet_classes.txt', 'repvit_m0_9_pet37:37类/labels/pet_classes.txt', 'repvit_m1_0_in1k:1000类/labels/imagenet_classes.txt'] 错配=[]",
+      "fix": ""
+    },
+    {
+      "id": "data.leak",
+      "title": "train/val/test 无交集",
+      "status": "PASS",
+      "detail": "{'train∩val': 0, 'train∩test': 0, 'val∩test': 0} sizes=2940/740/3669",
+      "fix": ""
+    },
+    {
+      "id": "macs",
+      "title": "MACs 口径一致性",
+      "status": "PASS",
+      "detail": "thop MACs=0.847G fvcore FLOPs=0.832G",
+      "fix": ""
+    },
+    {
+      "id": "model.size",
+      "title": "权重文件大小与参数量吻合",
+      "status": "PASS",
+      "detail": "baseline_best.pt = 57.61 MB（模型 ~19MB + AdamW 两动量 ~38MB）",
+      "fix": ""
+    },
+    {
+      "id": "official.latency",
+      "title": "官方评价延迟元信息完整",
+      "status": "PASS",
+      "detail": "5 个模型元信息齐全（ep/ort_version 走 PyTorch 路线时为 null，但键必须存在）",
+      "fix": ""
+    },
+    {
+      "id": "official.top1",
+      "title": "官方模型 Top-1 落在 70~82",
+      "status": "PASS",
+      "detail": "['repvit_m0_9:78.20%(官方78.7)', 'repvit_m1_0:79.90%(官方80.0)', 'repvit_m1_1:79.90%(官方80.7)', 'repvit_m1_5:82.80%(官方82.3)', 'repvit_m2_3:83.10%(官方83.3)'] 全部在官方值 ±1.5 内",
+      "fix": ""
+    },
+    {
+      "id": "onnx.bn",
+      "title": "ONNX 图中无 BatchNormalization",
+      "status": "PASS",
+      "detail": "['repvit_m0_9_in1k:BN=0,Conv=103,nodes=388', 'repvit_m0_9_pet37:BN=0,Conv=103,nodes=387', 'repvit_m1_0_in1k:BN=0,Conv=103,nodes=388', 'repvit_m1_1_in1k:BN=0,Conv=95,nodes=358', 'repvit_m1_5_in1k:BN=0,Conv=167,nodes=628', 'repvit_m2_3_in1k:BN=0,Conv=215,nodes=808'] 未融合=[]",
+      "fix": ""
+    },
+    {
+      "id": "onnx.consistency",
+      "title": "PyTorch vs ONNX 一致率 >= 0.99",
+      "status": "PASS",
+      "detail": "['repvit_m0_9_in1k:1.0', 'repvit_m0_9_pet37:1.0', 'repvit_m1_0_in1k:1.0'] 全部 >=0.99，共 3 个模型",
+      "fix": ""
+    },
+    {
+      "id": "onnx.realimg",
+      "title": "一致性用真实图片计算",
+      "status": "PASS",
+      "detail": "数据来源={'imagenet_val_subset', 'pet_test'}（必须是固定划分列表，不能是 torch.randn）",
+      "fix": ""
+    },
+    {
+      "id": "opt.budget",
+      "title": "训练预算等价",
+      "status": "PASS",
+      "detail": "(epochs, steps_per_epoch)={'baseline': (40, 45), 'opt_randaug': (40, 45)} epochs 差值=0",
+      "fix": ""
+    },
+    {
+      "id": "opt.diff",
+      "title": "控制变量 diff 唯一",
+      "status": "PASS",
+      "detail": "['opt_abl_a:8键/声明8', 'opt_abl_ab:9键/声明9', 'opt_abl_b:1键/声明1', 'opt_combo:12键/声明15', 'opt_disc:1键/声明1', 'opt_mix:3键/声明3', 'opt_randaug:8键/声明8']（叶子级，与 diff_config.py 同口径）",
+      "fix": ""
+    },
+    {
+      "id": "params",
+      "title": "参数量三口径",
+      "status": "PASS",
+      "detail": "双头=5,489,328 分类头合计=771,536 单头=5,103,560 融合后=5,067,056（约 5.067M，净减 36,504；以本机实测为准）",
+      "fix": ""
+    },
+    {
+      "id": "paths",
+      "title": "无写死绝对路径",
+      "status": "PASS",
+      "detail": "0 处",
+      "fix": ""
+    },
+    {
+      "id": "readme",
+      "title": "README 12 项齐全",
+      "status": "PASS",
+      "detail": "12 项全部命中",
+      "fix": ""
+    },
+    {
+      "id": "rep.verify",
+      "title": "融合前后数值等价且 BN 归零",
+      "status": "PASS",
+      "detail": "BN 108->0 max|Δlogits|=4.991888999938965e-07 Top-1一致=1.0 整体判定=True",
+      "fix": ""
+    },
+    {
+      "id": "skeleton",
+      "title": "目录骨架齐全",
+      "status": "PASS",
+      "detail": "33 项全部就位",
+      "fix": ""
+    },
+    {
+      "id": "data.source",
+      "title": "train 全部来自官方 trainval",
+      "status": "PASS",
+      "detail": "越界文件数=0",
+      "fix": ""
+    },
+    {
+      "id": "submit",
+      "title": "提交物清单齐全",
+      "status": "PASS",
+      "detail": "齐全",
+      "fix": ""
+    },
+    {
+      "id": "tag",
+      "title": "timm 权重 tag 解析",
+      "status": "PASS",
+      "detail": "tag=dist_300e_in1k hf_id=timm/repvit_m0_9.dist_300e_in1k",
+      "fix": ""
+    },
+    {
+      "id": "train.test_once",
+      "title": "test 只评价一次",
+      "status": "PASS",
+      "detail": "找到 ['baseline_test.json']",
+      "fix": ""
+    },
+    {
+      "id": "train.ckpt",
+      "title": "best / last checkpoint 存在",
+      "status": "PASS",
+      "detail": "epoch best=34 last=39",
+      "fix": ""
+    },
+    {
+      "id": "train.log",
+      "title": "训练日志字段齐全",
+      "status": "PASS",
+      "detail": "9 字段齐全",
+      "fix": ""
+    },
+    {
+      "id": "train.valmetrics",
+      "title": "val 三指标与每类指标落盘",
+      "status": "PASS",
+      "detail": "末行 val_top1=0.940541 val_top5=0.997297 val_macro_f1=0.940726 per_class=37 行",
+      "fix": ""
+    },
+    {
+      "id": "viz",
+      "title": "八类可视化产物齐全",
+      "status": "PASS",
+      "detail": "curves=1 cm=2 preds=23 compare=3 cam=16",
+      "fix": ""
+    }
+  ]
+}

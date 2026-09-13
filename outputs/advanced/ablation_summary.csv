@@ -1,0 +1,5 @@
+﻿experiment_name,top1,top5,macro_f1,best_epoch
+baseline,95.0,99.865,0.950245,34
+opt_abl_a,95.0,100.0,0.950207,31
+opt_abl_b,94.324,99.46,0.943284,32
+opt_abl_ab,94.865,99.865,0.948833,31

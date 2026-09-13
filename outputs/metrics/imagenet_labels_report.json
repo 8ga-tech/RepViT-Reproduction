@@ -1,0 +1,36 @@
+{
+  "source": "C:\\Users\\14675\\AppData\\Roaming\\Python\\Python314\\site-packages\\timm\\data\\_info",
+  "n_wnids": 1000,
+  "n_names": 1000,
+  "n_missing_lemma": 0,
+  "missing_lemma": [],
+  "order": "wnid 字典序（timm/data/_info/imagenet_synsets.txt 的行序）",
+  "dod10_anchors": {
+    "0": {
+      "expect": "tench",
+      "got": "tench",
+      "pass": true
+    },
+    "207": {
+      "expect": "golden retriever",
+      "got": "golden retriever",
+      "pass": true
+    },
+    "281": {
+      "expect": "tabby",
+      "got": "tabby",
+      "pass": true
+    },
+    "999": {
+      "expect": "toilet tissue",
+      "got": "toilet tissue",
+      "pass": true
+    }
+  },
+  "dod10_pass": true,
+  "duplicate_names": {
+    "crane": 2,
+    "maillot": 2
+  },
+  "n_unique_names": 998
+}

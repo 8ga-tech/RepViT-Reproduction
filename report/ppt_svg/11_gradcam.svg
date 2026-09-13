@@ -1,0 +1,91 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" data-pptx-page-role="content">
+  <rect id="bg-canvas" data-pptx-role="background" x="0" y="0" width="1280" height="720" fill="#0B1220"/>
+
+  <g id="page-header" data-pptx-bounds="72 44 1136 100">
+    <text x="72" y="82" font-family="Microsoft YaHei" font-size="34" font-weight="bold" fill="#E6EDF7">手写 Grad-CAM 定位到主体，外部实拍 8/8 判对</text>
+    <text x="72" y="118" font-family="Microsoft YaHei" font-size="16" fill="#93A4C0">不依赖 pytorch-grad-cam，按 Selvaraju et al. ICCV 2017 公式 (1)(2) 自行实现</text>
+    <line x1="72" y1="136" x2="1208" y2="136" stroke="#1E3050" stroke-width="2"/>
+  </g>
+
+  <g id="cam-mount" data-pptx-bounds="72 168 620 224">
+    <rect x="72" y="168" width="620" height="224" rx="10" fill="#0F1728" stroke="#1E3050" stroke-width="1"/>
+    <text x="98" y="204" font-family="Microsoft YaHei" font-size="18" font-weight="bold" fill="#E6EDF7">两个规范挂载点（不等价，已出对比图）</text>
+    <line x1="98" y1="218" x2="666" y2="218" stroke="#1E3050" stroke-width="1"/>
+
+    <g id="cam-a">
+      <rect x="98" y="234" width="568" height="62" rx="6" fill="#12233A" stroke="#35D0F0" stroke-width="1"/>
+      <text x="118" y="258" font-family="Consolas" font-size="15" font-weight="bold" fill="#35D0F0">A（默认）stages[-1].blocks[-1]</text>
+      <text x="118" y="282" font-family="Microsoft YaHei" font-size="14" fill="#93A4C0">残差相加后的激活，(B, C, 7, 7)</text>
+    </g>
+
+    <g id="cam-b">
+      <rect x="98" y="308" width="568" height="62" rx="6" fill="#12233A" stroke="#35D0F0" stroke-width="1"/>
+      <text x="118" y="332" font-family="Consolas" font-size="15" font-weight="bold" fill="#35D0F0">B（细粒度）…channel_mixer.conv2</text>
+      <text x="118" y="356" font-family="Microsoft YaHei" font-size="14" fill="#93A4C0">残差相加前最后一个 1×1 卷积输出</text>
+    </g>
+
+    <text x="98" y="386" font-family="Microsoft YaHei" font-size="14" fill="#FF6B6B">绝不能挂 head / classifier：输出 2D，反传抛 Invalid grads shape</text>
+  </g>
+
+  <g id="cam-output" data-pptx-bounds="712 168 496 224">
+    <rect x="712" y="168" width="496" height="224" rx="10" fill="#131C2E" stroke="#1E3050" stroke-width="1"/>
+    <text x="738" y="204" font-family="Microsoft YaHei" font-size="18" font-weight="bold" fill="#E6EDF7">产出与观察</text>
+    <line x1="738" y1="218" x2="1182" y2="218" stroke="#1E3050" stroke-width="1"/>
+    <text x="738" y="252" font-family="Microsoft YaHei" font-size="15" fill="#3FDB9B">✓ 正确案例 6 张 · 错误案例 6 张</text>
+    <text x="738" y="282" font-family="Microsoft YaHei" font-size="15" fill="#93A4C0">正确案例：热力图集中在头部与躯干轮廓</text>
+    <text x="738" y="312" font-family="Microsoft YaHei" font-size="15" fill="#93A4C0">错误案例：同时点亮两类共有的特征区，</text>
+    <text x="738" y="336" font-family="Microsoft YaHei" font-size="15" fill="#93A4C0">说明抓到的区域对，但判别力不足</text>
+    <text x="738" y="366" font-family="Microsoft YaHei" font-size="14" fill="#FFC857">约 6.2% 样本在背景上有明显响应 —— 数据集偏置</text>
+  </g>
+
+  <g id="external" data-pptx-bounds="72 412 1136 158">
+    <rect x="72" y="412" width="1136" height="158" rx="10" fill="#0F1728" stroke="#1E3050" stroke-width="1"/>
+    <text x="100" y="446" font-family="Microsoft YaHei" font-size="18" font-weight="bold" fill="#E6EDF7">训练集以外的实际图片（跨集合实拍，ImageNet 同品种样本）</text>
+    <line x1="100" y1="460" x2="1180" y2="460" stroke="#1E3050" stroke-width="1"/>
+
+    <g id="ext-1">
+      <text x="100" y="494" font-family="Consolas" font-size="15" fill="#E6EDF7">beagle</text>
+      <text x="100" y="518" font-family="Consolas" font-size="16" font-weight="bold" fill="#3FDB9B">90.32%</text>
+    </g>
+    <g id="ext-2">
+      <text x="240" y="494" font-family="Consolas" font-size="15" fill="#E6EDF7">pug</text>
+      <text x="240" y="518" font-family="Consolas" font-size="16" font-weight="bold" fill="#3FDB9B">43.86%</text>
+    </g>
+    <g id="ext-3">
+      <text x="380" y="494" font-family="Consolas" font-size="15" fill="#E6EDF7">boxer</text>
+      <text x="380" y="518" font-family="Consolas" font-size="16" font-weight="bold" fill="#3FDB9B">64.28%</text>
+    </g>
+    <g id="ext-4">
+      <text x="520" y="494" font-family="Consolas" font-size="15" fill="#E6EDF7">chihuahua</text>
+      <text x="520" y="518" font-family="Consolas" font-size="16" font-weight="bold" fill="#3FDB9B">67.98%</text>
+    </g>
+    <g id="ext-5">
+      <text x="660" y="494" font-family="Consolas" font-size="15" fill="#E6EDF7">samoyed</text>
+      <text x="660" y="518" font-family="Consolas" font-size="16" font-weight="bold" fill="#3FDB9B">83.50%</text>
+    </g>
+    <g id="ext-6">
+      <text x="800" y="494" font-family="Consolas" font-size="15" fill="#E6EDF7">newfoundland</text>
+      <text x="800" y="518" font-family="Consolas" font-size="16" font-weight="bold" fill="#3FDB9B">77.14%</text>
+    </g>
+    <g id="ext-7">
+      <text x="940" y="494" font-family="Consolas" font-size="15" fill="#E6EDF7">great_pyrenees</text>
+      <text x="940" y="518" font-family="Consolas" font-size="16" font-weight="bold" fill="#3FDB9B">86.95%</text>
+    </g>
+    <g id="ext-8">
+      <text x="1080" y="494" font-family="Consolas" font-size="15" fill="#E6EDF7">pomeranian</text>
+      <text x="1080" y="518" font-family="Consolas" font-size="16" font-weight="bold" fill="#3FDB9B">36.91%</text>
+    </g>
+    <text x="100" y="552" font-family="Microsoft YaHei" font-size="14" fill="#FFC857">8/8 全部判断正确 —— 模型没有过拟合到 Pet 的拍摄风格</text>
+  </g>
+
+  <g id="dist-shift" data-pptx-bounds="72 586 1136 64">
+    <rect x="72" y="586" width="1136" height="64" rx="10" fill="#131C2E" stroke="#1E3050" stroke-width="1"/>
+    <text x="100" y="614" font-family="Microsoft YaHei" font-size="15" fill="#93A4C0">分布差异：外部图短边中位数 +10.5% · 亮度 +10.6% · 背景复杂度 +24%</text>
+    <text x="100" y="638" font-family="Microsoft YaHei" font-size="13" fill="#5C7096">来源声明：Wikimedia 不可达，改用 ImageNet 跨集合实拍图，逐张登记许可，不声称原创</text>
+  </g>
+
+  <g id="page-footer" data-pptx-bounds="72 662 1136 34">
+    <text x="72" y="684" font-family="Microsoft YaHei" font-size="13" fill="#5C7096">数据来源：outputs/gradcam/ · outputs/benchmarks/external_top5_repvit_m0_9_pet37.csv · external/images_manifest.csv</text>
+    <text x="1208" y="684" font-family="Consolas" font-size="14" fill="#5C7096" text-anchor="end">11</text>
+  </g>
+</svg>

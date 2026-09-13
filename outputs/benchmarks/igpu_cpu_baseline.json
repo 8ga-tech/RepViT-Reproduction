@@ -1,0 +1,71 @@
+{
+  "env": {
+    "os": "Windows-11-10.0.26200-SP0",
+    "machine": "AMD64",
+    "python": "3.14.5",
+    "ort": "1.30.0",
+    "ort_device": "CPU",
+    "available_providers": [
+      "AzureExecutionProvider",
+      "CPUExecutionProvider"
+    ],
+    "cpu": "Intel64 Family 6 Model 183 Stepping 1, GenuineIntel"
+  },
+  "backend": "cpu",
+  "requested_device": "GPU",
+  "threads": 4,
+  "results": [
+    {
+      "mean": 7.273730000015348,
+      "p50": 7.21539999358356,
+      "p95": 7.843565018265507,
+      "mx": 8.565600030124187,
+      "std": 0.31977112427319554,
+      "n": 50,
+      "percentile_method": "linear",
+      "requested_ep": "CPUExecutionProvider",
+      "actual_providers": [
+        "CPUExecutionProvider"
+      ],
+      "provider_options": {
+        "CPUExecutionProvider": {}
+      },
+      "model": "repvit_m0_9_in1k",
+      "onnx": "C:\\Users\\14675\\Desktop\\one\u56e2\u961f\u79cb\u62dbai\u7b97\u6cd5\\RepViT-Reproduction\\onnx\\repvit_m0_9_in1k.onnx",
+      "backend": "cpu",
+      "threads": 4,
+      "file_MB": 20.359,
+      "batch": 1,
+      "precision": "FP32",
+      "warmup": 10,
+      "runs": 50,
+      "input": "1x3x224x224"
+    },
+    {
+      "mean": 9.331939996918663,
+      "p50": 9.265400003641844,
+      "p95": 9.859130025142804,
+      "mx": 10.67210000474006,
+      "std": 0.32350793401912636,
+      "n": 50,
+      "percentile_method": "linear",
+      "requested_ep": "CPUExecutionProvider",
+      "actual_providers": [
+        "CPUExecutionProvider"
+      ],
+      "provider_options": {
+        "CPUExecutionProvider": {}
+      },
+      "model": "repvit_m1_0_in1k",
+      "onnx": "C:\\Users\\14675\\Desktop\\one\u56e2\u961f\u79cb\u62dbai\u7b97\u6cd5\\RepViT-Reproduction\\onnx\\repvit_m1_0_in1k.onnx",
+      "backend": "cpu",
+      "threads": 4,
+      "file_MB": 27.332,
+      "batch": 1,
+      "precision": "FP32",
+      "warmup": 10,
+      "runs": 50,
+      "input": "1x3x224x224"
+    }
+  ]
+}

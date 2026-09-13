@@ -1,0 +1,116 @@
+[run] C:\Python314\python.exe tools/eval_pretrained.py --cfg configs/pretrained_eval.yaml --set pretrained_eval.model=repvit_m0_9 pretrained_eval.weights=checkpoints/pretrained\repvit_m0_9_distill_300e.pth pretrained_eval.out_dir=outputs/pretrained_eval\repvit_m0_9 --set pretrained_eval.data_list=datasets/lists/imagenet_val_subset.txt pretrained_eval.labels=labels/imagenet_classes.txt pretrained_eval.input_size=224 pretrained_eval.batch_size=64 pretrained_eval.crop_pct=0.875 pretrained_eval.interpolation=bicubic pretrained_eval.warmup=10 pretrained_eval.runs=50 pretrained_eval.threads=4
+==============================================================================
+[cfg]   configs/pretrained_eval.yaml  |  model=repvit_m0_9  impl=auto  fuse=True
+[cfg]   device=cuda amp=False input=224 crop_pct=0.875 interp=bicubic bs=64
+[cfg]   out_dir=outputs/pretrained_eval/repvit_m0_9/
+[list]  1000 lines -> 可用 1000 张, 坏图/缺图 0 张, label range 0..999, 类别数 1000, mode 分布 {'RGB': 979, 'L': 21}
+[tf]    Resize(256, bicubic) -> CenterCrop(224) -> ToTensor -> Normalize(mean=(0.485, 0.456, 0.406), std=(0.229, 0.224, 0.225))
+[w]     checkpoints/pretrained/repvit_m0_9_distill_300e.pth  22,422,548 B  sha256=857eb0e6a992...
+[w]     判型: 顶层容器=是 (首键 features.0.0.c.weight) -> style=official, 蒸馏双头=True, 713 个张量
+[model] repvit_m0_9  impl=official  params_total=5,489,328 (distillation=True)
+[load]  已加载 713 个张量, 按形状丢弃 0, missing=0, unexpected=0
+[fuse]  replace_batchnorm -> params=5,067,056（未融合 5,489,328，净减 422,272 = 蒸馏头 385,768 + BN 折进卷积 36,504）, max|logits diff| = 3.07e-05
+[macs]  未融合 0.847050816GMACs -> 融合后 0.8156GMACs（thop）
+[eval]  1000 images, top1=78.20%  top5=93.70%  （分母已剔除 0 张坏图）
+[sweep] crop_pct=0.95 -> Resize(235) top1=78.60% top5=93.00% (主干口径 0.875 为 78.20%；两套口径结果不可比)
+[lat]   mean=7.97ms p50=7.79ms p95=9.22ms (threads=4, warmup=10, runs=50, unfused mean=14.11ms)
+[write] outputs/pretrained_eval/repvit_m0_9/{metrics.json,latency.json,top5_samples.json,predictions.csv}
+[write] outputs/pretrained_eval/repvit_m0_9/cases/correct_1..2.png, wrong_1..2.png
+        metrics: outputs/pretrained_eval/repvit_m0_9/metrics.json
+        latency: outputs/pretrained_eval/repvit_m0_9/latency.json
+        top5_samples: outputs/pretrained_eval/repvit_m0_9/top5_samples.json
+        predictions: outputs/pretrained_eval/repvit_m0_9/predictions.csv
+[run] C:\Python314\python.exe tools/eval_pretrained.py --cfg configs/pretrained_eval.yaml --set pretrained_eval.model=repvit_m1_0 pretrained_eval.weights=checkpoints/pretrained\repvit_m1_0_distill_300e.pth pretrained_eval.out_dir=outputs/pretrained_eval\repvit_m1_0 --set pretrained_eval.data_list=datasets/lists/imagenet_val_subset.txt pretrained_eval.labels=labels/imagenet_classes.txt pretrained_eval.input_size=224 pretrained_eval.batch_size=64 pretrained_eval.crop_pct=0.875 pretrained_eval.interpolation=bicubic pretrained_eval.warmup=10 pretrained_eval.runs=50 pretrained_eval.threads=4
+==============================================================================
+[cfg]   configs/pretrained_eval.yaml  |  model=repvit_m1_0  impl=auto  fuse=True
+[cfg]   device=cuda amp=False input=224 crop_pct=0.875 interp=bicubic bs=64
+[cfg]   out_dir=outputs/pretrained_eval/repvit_m1_0/
+[list]  1000 lines -> 可用 1000 张, 坏图/缺图 0 张, label range 0..999, 类别数 1000, mode 分布 {'RGB': 979, 'L': 21}
+[tf]    Resize(256, bicubic) -> CenterCrop(224) -> ToTensor -> Normalize(mean=(0.485, 0.456, 0.406), std=(0.229, 0.224, 0.225))
+[w]     checkpoints/pretrained/repvit_m1_0_distill_300e.pth  29,675,245 B  sha256=283bb9865f70...
+[w]     判型: 顶层容器=是 (首键 features.0.0.c.weight) -> style=official, 蒸馏双头=True, 690 个张量
+[model] repvit_m1_0  impl=official  params_total=7,302,796 (distillation=True)
+[load]  已加载 690 个张量, 按形状丢弃 0, missing=0, unexpected=0
+[fuse]  replace_batchnorm -> params=6,810,312（未融合 7,302,796，净减 492,484 = 蒸馏头 385,768 + BN 折进卷积 36,504）, max|logits diff| = 3.29e-05
+[macs]  未融合 1.142809248GMACs -> 融合后 1.1061GMACs（thop）
+[eval]  1000 images, top1=79.90%  top5=94.20%  （分母已剔除 0 张坏图）
+[sweep] crop_pct=0.95 -> Resize(235) top1=80.00% top5=93.90% (主干口径 0.875 为 79.90%；两套口径结果不可比)
+[lat]   mean=8.53ms p50=8.06ms p95=12.46ms (threads=4, warmup=10, runs=50, unfused mean=14.07ms)
+[write] outputs/pretrained_eval/repvit_m1_0/{metrics.json,latency.json,top5_samples.json,predictions.csv}
+[write] outputs/pretrained_eval/repvit_m1_0/cases/correct_1..2.png, wrong_1..2.png
+        metrics: outputs/pretrained_eval/repvit_m1_0/metrics.json
+        latency: outputs/pretrained_eval/repvit_m1_0/latency.json
+        top5_samples: outputs/pretrained_eval/repvit_m1_0/top5_samples.json
+        predictions: outputs/pretrained_eval/repvit_m1_0/predictions.csv
+[run] C:\Python314\python.exe tools/eval_pretrained.py --cfg configs/pretrained_eval.yaml --set pretrained_eval.model=repvit_m1_1 pretrained_eval.weights=checkpoints/pretrained\repvit_m1_1_distill_300e.pth pretrained_eval.out_dir=outputs/pretrained_eval\repvit_m1_1 --set pretrained_eval.data_list=datasets/lists/imagenet_val_subset.txt pretrained_eval.labels=labels/imagenet_classes.txt pretrained_eval.input_size=224 pretrained_eval.batch_size=64 pretrained_eval.crop_pct=0.875 pretrained_eval.interpolation=bicubic pretrained_eval.warmup=10 pretrained_eval.runs=50 pretrained_eval.threads=4
+==============================================================================
+[cfg]   configs/pretrained_eval.yaml  |  model=repvit_m1_1  impl=auto  fuse=True
+[cfg]   device=cuda amp=False input=224 crop_pct=0.875 interp=bicubic bs=64
+[cfg]   out_dir=outputs/pretrained_eval/repvit_m1_1/
+[list]  1000 lines -> 可用 1000 张, 坏图/缺图 0 张, label range 0..999, 类别数 1000, mode 分布 {'RGB': 979, 'L': 21}
+[tf]    Resize(256, bicubic) -> CenterCrop(224) -> ToTensor -> Normalize(mean=(0.485, 0.456, 0.406), std=(0.229, 0.224, 0.225))
+[w]     checkpoints/pretrained/repvit_m1_1_distill_300e.pth  35,668,677 B  sha256=1b3642202412...
+[w]     判型: 顶层容器=是 (首键 features.0.0.c.weight) -> style=official, 蒸馏双头=True, 638 个张量
+[model] repvit_m1_1  impl=official  params_total=8,802,912 (distillation=True)
+[load]  已加载 638 个张量, 按形状丢弃 0, missing=0, unexpected=0
+[fuse]  replace_batchnorm -> params=8,244,312（未融合 8,802,912，净减 558,600 = 蒸馏头 385,768 + BN 折进卷积 36,504）, max|logits diff| = 2.22e-05
+[macs]  未融合 1.376928512GMACs -> 融合后 1.3371GMACs（thop）
+[eval]  1000 images, top1=79.90%  top5=94.50%  （分母已剔除 0 张坏图）
+[sweep] crop_pct=0.95 -> Resize(235) top1=79.80% top5=94.90% (主干口径 0.875 为 79.90%；两套口径结果不可比)
+[lat]   mean=10.46ms p50=11.81ms p95=13.70ms (threads=4, warmup=10, runs=50, unfused mean=12.74ms)
+[write] outputs/pretrained_eval/repvit_m1_1/{metrics.json,latency.json,top5_samples.json,predictions.csv}
+[write] outputs/pretrained_eval/repvit_m1_1/cases/correct_1..2.png, wrong_1..2.png
+        metrics: outputs/pretrained_eval/repvit_m1_1/metrics.json
+        latency: outputs/pretrained_eval/repvit_m1_1/latency.json
+        top5_samples: outputs/pretrained_eval/repvit_m1_1/top5_samples.json
+        predictions: outputs/pretrained_eval/repvit_m1_1/predictions.csv
+[run] C:\Python314\python.exe tools/eval_pretrained.py --cfg configs/pretrained_eval.yaml --set pretrained_eval.model=repvit_m1_5 pretrained_eval.weights=checkpoints/pretrained\repvit_m1_5_distill_300e.pth pretrained_eval.out_dir=outputs/pretrained_eval\repvit_m1_5 --set pretrained_eval.data_list=datasets/lists/imagenet_val_subset.txt pretrained_eval.labels=labels/imagenet_classes.txt pretrained_eval.input_size=224 pretrained_eval.batch_size=64 pretrained_eval.crop_pct=0.875 pretrained_eval.interpolation=bicubic pretrained_eval.warmup=10 pretrained_eval.runs=50 pretrained_eval.threads=4
+==============================================================================
+[cfg]   configs/pretrained_eval.yaml  |  model=repvit_m1_5  impl=auto  fuse=True
+[cfg]   device=cuda amp=False input=224 crop_pct=0.875 interp=bicubic bs=64
+[cfg]   out_dir=outputs/pretrained_eval/repvit_m1_5/
+[list]  1000 lines -> 可用 1000 张, 坏图/缺图 0 张, label range 0..999, 类别数 1000, mode 分布 {'RGB': 979, 'L': 21}
+[tf]    Resize(256, bicubic) -> CenterCrop(224) -> ToTensor -> Normalize(mean=(0.485, 0.456, 0.406), std=(0.229, 0.224, 0.225))
+[w]     checkpoints/pretrained/repvit_m1_5_distill_300e.pth  59,375,411 B  sha256=b434320aed41...
+[w]     判型: 顶层容器=是 (首键 features.0.0.c.weight) -> style=official, 蒸馏双头=True, 1106 个张量
+[model] repvit_m1_5  impl=official  params_total=14,644,432 (distillation=True)
+[load]  已加载 1106 个张量, 按形状丢弃 0, missing=0, unexpected=0
+[fuse]  replace_batchnorm -> params=14,049,992（未融合 14,644,432，净减 594,440 = 蒸馏头 385,768 + BN 折进卷积 36,504）, max|logits diff| = 2.59e-05
+[macs]  未融合 2.339742464GMACs -> 融合后 2.2736GMACs（thop）
+[eval]  1000 images, top1=82.80%  top5=95.90%  （分母已剔除 0 张坏图）
+[sweep] crop_pct=0.95 -> Resize(235) top1=82.60% top5=96.10% (主干口径 0.875 为 82.80%；两套口径结果不可比)
+[lat]   mean=13.42ms p50=12.62ms p95=18.53ms (threads=4, warmup=10, runs=50, unfused mean=29.53ms)
+[write] outputs/pretrained_eval/repvit_m1_5/{metrics.json,latency.json,top5_samples.json,predictions.csv}
+[write] outputs/pretrained_eval/repvit_m1_5/cases/correct_1..2.png, wrong_1..2.png
+        metrics: outputs/pretrained_eval/repvit_m1_5/metrics.json
+        latency: outputs/pretrained_eval/repvit_m1_5/latency.json
+        top5_samples: outputs/pretrained_eval/repvit_m1_5/top5_samples.json
+        predictions: outputs/pretrained_eval/repvit_m1_5/predictions.csv
+[run] C:\Python314\python.exe tools/eval_pretrained.py --cfg configs/pretrained_eval.yaml --set pretrained_eval.model=repvit_m2_3 pretrained_eval.weights=checkpoints/pretrained\repvit_m2_3_distill_300e.pth pretrained_eval.out_dir=outputs/pretrained_eval\repvit_m2_3 --set pretrained_eval.data_list=datasets/lists/imagenet_val_subset.txt pretrained_eval.labels=labels/imagenet_classes.txt pretrained_eval.input_size=224 pretrained_eval.batch_size=64 pretrained_eval.crop_pct=0.875 pretrained_eval.interpolation=bicubic pretrained_eval.warmup=10 pretrained_eval.runs=50 pretrained_eval.threads=4
+==============================================================================
+[cfg]   configs/pretrained_eval.yaml  |  model=repvit_m2_3  impl=auto  fuse=True
+[cfg]   device=cuda amp=False input=224 crop_pct=0.875 interp=bicubic bs=64
+[cfg]   out_dir=outputs/pretrained_eval/repvit_m2_3/
+[list]  1000 lines -> 可用 1000 张, 坏图/缺图 0 张, label range 0..999, 类别数 1000, mode 分布 {'RGB': 979, 'L': 21}
+[tf]    Resize(256, bicubic) -> CenterCrop(224) -> ToTensor -> Normalize(mean=(0.485, 0.456, 0.406), std=(0.229, 0.224, 0.225))
+[w]     checkpoints/pretrained/repvit_m2_3_distill_300e.pth  95,860,931 B  sha256=20eaa47f5d2f...
+[w]     判型: 顶层容器=是 (首键 features.0.0.c.weight) -> style=official, 蒸馏双头=True, 1418 个张量
+[model] repvit_m2_3  impl=official  params_total=23,688,792 (distillation=True)
+[load]  已加载 1418 个张量, 按形状丢弃 0, missing=0, unexpected=0
+[fuse]  replace_batchnorm -> params=22,926,792（未融合 23,688,792，净减 762,000 = 蒸馏头 385,768 + BN 折进卷积 36,504）, max|logits diff| = 5.92e-05
+[macs]  未融合 4.62630112GMACs -> 融合后 4.516GMACs（thop）
+[eval]  1000 images, top1=83.10%  top5=96.20%  （分母已剔除 0 张坏图）
+[sweep] crop_pct=0.95 -> Resize(235) top1=82.30% top5=96.50% (主干口径 0.875 为 83.10%；两套口径结果不可比)
+[lat]   mean=20.63ms p50=19.02ms p95=30.04ms (threads=4, warmup=10, runs=50, unfused mean=42.16ms)
+[write] outputs/pretrained_eval/repvit_m2_3/{metrics.json,latency.json,top5_samples.json,predictions.csv}
+[write] outputs/pretrained_eval/repvit_m2_3/cases/correct_1..2.png, wrong_1..2.png
+        metrics: outputs/pretrained_eval/repvit_m2_3/metrics.json
+        latency: outputs/pretrained_eval/repvit_m2_3/latency.json
+        top5_samples: outputs/pretrained_eval/repvit_m2_3/top5_samples.json
+        predictions: outputs/pretrained_eval/repvit_m2_3/predictions.csv
+汇总 -> C:\Users\14675\Desktop\one团队秋招ai算法\RepViT-Reproduction\outputs\pretrained_eval\summary.csv
+repvit_m0_9          5.067M 0.8471G   21.38MiB top1=  78.2 top5=  93.7    7.97ms/   9.22ms
+repvit_m1_0           6.81M 1.1428G    28.3MiB top1=  79.9 top5=  94.2    8.53ms/  12.46ms
+repvit_m1_1          8.244M 1.3769G   34.02MiB top1=  79.9 top5=  94.5   10.46ms/   13.7ms
+repvit_m1_5          14.05M 2.3397G   56.62MiB top1=  82.8 top5=  95.9   13.42ms/  18.53ms
+repvit_m2_3         22.927M 4.6263G   91.42MiB top1=  83.1 top5=  96.2   20.63ms/  30.04ms

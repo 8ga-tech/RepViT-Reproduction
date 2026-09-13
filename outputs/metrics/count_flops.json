@@ -1,0 +1,60 @@
+{
+  "experiment": "count_flops",
+  "timestamp": "2026-09-13T14:19:27+08:00",
+  "command": "tools/count_flops.py --model repvit_m0_9 --input-size 224",
+  "cwd_rel": ".",
+  "host": "LXY",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "python": "3.14.5",
+  "model": "repvit_m0_9",
+  "impl": "timm",
+  "unit": "MACs",
+  "unit_definition": "MACs = multiply-accumulate count；1 MAC = 1 mul + 1 add；不乘 2",
+  "input_shape": [
+    1,
+    3,
+    224,
+    224
+  ],
+  "num_classes": 1000,
+  "distillation": 1,
+  "eval_before_count": true,
+  "canonical_mode": "unfused_eval",
+  "canonical_macs": 847050816,
+  "results_by_mode": {
+    "unfused_eval": {
+      "thop": {
+        "macs": 847050816,
+        "params": 5489328
+      },
+      "fvcore": {
+        "macs": 832165824,
+        "params": 5489328
+      }
+    },
+    "fused_eval": {
+      "thop": {
+        "macs": 815617344,
+        "params": 5067056
+      },
+      "fvcore": {
+        "macs": 815617344,
+        "params": 5067056
+      }
+    }
+  },
+  "reference": {
+    "thop": 847050816,
+    "fvcore": 832165824
+  },
+  "matches_reference": {
+    "thop": true,
+    "fvcore": true
+  },
+  "available_backends": [
+    "thop",
+    "fvcore"
+  ],
+  "missing_backends": [],
+  "note": "thop 与 fvcore 都是 MACs 口径；差值 14884992 来自 BN / 逐元素加法是否计入的计法差异"
+}

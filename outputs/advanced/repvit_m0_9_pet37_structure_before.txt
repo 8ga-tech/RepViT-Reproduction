@@ -1,0 +1,673 @@
+RepVit(
+  (stem): RepVitStem(
+    (conv1): ConvNorm(
+      (c): Conv2d(3, 24, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1), bias=False)
+      (bn): BatchNorm2d(24, eps=1e-05, momentum=0.1, affine=True, bias=True, track_running_stats=True)
+    )
+    (act1): GELU(approximate='none')
+    (conv2): ConvNorm(
+      (c): Conv2d(24, 48, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1), bias=False)
+      (bn): BatchNorm2d(48, eps=1e-05, momentum=0.1, affine=True, bias=True, track_running_stats=True)
+    )
+  )
+  (stages): Sequential(
+    (0): RepVitStage(
+      (downsample): Identity()
+      (blocks): Sequential(
+        (0): RepViTBlock(
+          (token_mixer): RepVggDw(
+            (conv): ConvNorm(
+              (c): Conv2d(48, 48, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=48, bias=False)
+              (bn): BatchNorm2d(48, eps=1e-05, momentum=0.1, affine=True, bias=True, track_running_stats=True)
+            )
+            (conv1): Conv2d(48, 48, kernel_size=(1, 1), stride=(1, 1), groups=48)
+            (bn): BatchNorm2d(48, eps=1e-05, momentum=0.1, affine=True, bias=True, track_running_stats=True)
+          )
+          (se): SEModule(
+            (fc1): Conv2d(48, 16, kernel_size=(1, 1), stride=(1, 1))
+            (bn): Identity()
+            (act): ReLU(inplace=True)
+            (fc2): Conv2d(16, 48, kernel_size=(1, 1), stride=(1, 1))
+            (gate): Sigmoid()
+          )
+          (channel_mixer): RepVitMlp(
+            (conv1): ConvNorm(
+              (c): Conv2d(48, 96, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (bn): BatchNorm2d(96, eps=1e-05, momentum=0.1, affine=True, bias=True, track_running_stats=True)
+            )
+            (act): GELU(approximate='none')
+            (conv2): ConvNorm(
+              (c): Conv2d(96, 48, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (bn): BatchNorm2d(48, eps=1e-05, momentum=0.1, affine=True, bias=True, track_running_stats=True)
+            )
+          )
+        )
+        (1): RepViTBlock(
+          (token_mixer): RepVggDw(
+            (conv): ConvNorm(
+              (c): Conv2d(48, 48, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=48, bias=False)
+              (bn): BatchNorm2d(48, eps=1e-05, momentum=0.1, affine=True, bias=True, track_running_stats=True)
+            )
+            (conv1): Conv2d(48, 48, kernel_size=(1, 1), stride=(1, 1), groups=48)
+            (bn): BatchNorm2d(48, eps=1e-05, momentum=0.1, affine=True, bias=True, track_running_stats=True)
+          )
+          (se): Identity()
+          (channel_mixer): RepVitMlp(
+            (conv1): ConvNorm(
+              (c): Conv2d(48, 96, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (bn): BatchNorm2d(96, eps=1e-05, momentum=0.1, affine=True, bias=True, track_running_stats=True)
+            )
+            (act): GELU(approximate='none')
+            (conv2): ConvNorm(
+              (c): Conv2d(96, 48, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (bn): BatchNorm2d(48, eps=1e-05, momentum=0.1, affine=True, bias=True, track_running_stats=True)
+            )
+          )
+        )
+      )
+    )
+    (1): RepVitStage(
+      (downsample): RepVitDownsample(
+        (pre_block): RepViTBlock(
+          (token_mixer): RepVggDw(
+            (conv): ConvNorm(
+              (c): Conv2d(48, 48, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=48, bias=False)
+              (bn): BatchNorm2d(48, eps=1e-05, momentum=0.1, affine=True, bias=True, track_running_stats=True)
+            )
+            (conv1): Conv2d(48, 48, kernel_size=(1, 1), stride=(1, 1), groups=48)
+            (bn): BatchNorm2d(48, eps=1e-05, momentum=0.1, affine=True, bias=True, track_running_stats=True)
+          )
+          (se): Identity()
+          (channel_mixer): RepVitMlp(
+            (conv1): ConvNorm(
+              (c): Conv2d(48, 96, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (bn): BatchNorm2d(96, eps=1e-05, momentum=0.1, affine=True, bias=True, track_running_stats=True)
+            )
+            (act): GELU(approximate='none')
+            (conv2): ConvNorm(
+              (c): Conv2d(96, 48, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (bn): BatchNorm2d(48, eps=1e-05, momentum=0.1, affine=True, bias=True, track_running_stats=True)
+            )
+          )
+        )
+        (spatial_downsample): ConvNorm(
+          (c): Conv2d(48, 48, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1), groups=48, bias=False)
+          (bn): BatchNorm2d(48, eps=1e-05, momentum=0.1, affine=True, bias=True, track_running_stats=True)
+        )
+        (channel_downsample): ConvNorm(
+          (c): Conv2d(48, 96, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (bn): BatchNorm2d(96, eps=1e-05, momentum=0.1, affine=True, bias=True, track_running_stats=True)
+        )
+        (ffn): RepVitMlp(
+          (conv1): ConvNorm(
+            (c): Conv2d(96, 192, kernel_size=(1, 1), stride=(1, 1), bias=False)
+            (bn): BatchNorm2d(192, eps=1e-05, momentum=0.1, affine=True, bias=True, track_running_stats=True)
+          )
+          (act): GELU(approximate='none')
+          (conv2): ConvNorm(
+            (c): Conv2d(192, 96, kernel_size=(1, 1), stride=(1, 1), bias=False)
+            (bn): BatchNorm2d(96, eps=1e-05, momentum=0.1, affine=True, bias=True, track_running_stats=True)
+          )
+        )
+      )
+      (blocks): Sequential(
+        (0): RepViTBlock(
+          (token_mixer): RepVggDw(
+            (conv): ConvNorm(
+              (c): Conv2d(96, 96, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=96, bias=False)
+              (bn): BatchNorm2d(96, eps=1e-05, momentum=0.1, affine=True, bias=True, track_running_stats=True)
+            )
+            (conv1): Conv2d(96, 96, kernel_size=(1, 1), stride=(1, 1), groups=96)
+            (bn): BatchNorm2d(96, eps=1e-05, momentum=0.1, affine=True, bias=True, track_running_stats=True)
+          )
+          (se): SEModule(
+            (fc1): Conv2d(96, 24, kernel_size=(1, 1), stride=(1, 1))
+            (bn): Identity()
+            (act): ReLU(inplace=True)
+            (fc2): Conv2d(24, 96, kernel_size=(1, 1), stride=(1, 1))
+            (gate): Sigmoid()
+          )
+          (channel_mixer): RepVitMlp(
+            (conv1): ConvNorm(
+              (c): Conv2d(96, 192, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (bn): BatchNorm2d(192, eps=1e-05, momentum=0.1, affine=True, bias=True, track_running_stats=True)
+            )
+            (act): GELU(approximate='none')
+            (conv2): ConvNorm(
+              (c): Conv2d(192, 96, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (bn): BatchNorm2d(96, eps=1e-05, momentum=0.1, affine=True, bias=True, track_running_stats=True)
+            )
+          )
+        )
+        (1): RepViTBlock(
+          (token_mixer): RepVggDw(
+            (conv): ConvNorm(
+              (c): Conv2d(96, 96, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=96, bias=False)
+              (bn): BatchNorm2d(96, eps=1e-05, momentum=0.1, affine=True, bias=True, track_running_stats=True)
+            )
+            (conv1): Conv2d(96, 96, kernel_size=(1, 1), stride=(1, 1), groups=96)
+            (bn): BatchNorm2d(96, eps=1e-05, momentum=0.1, affine=True, bias=True, track_running_stats=True)
+          )
+          (se): Identity()
+          (channel_mixer): RepVitMlp(
+            (conv1): ConvNorm(
+              (c): Conv2d(96, 192, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (bn): BatchNorm2d(192, eps=1e-05, momentum=0.1, affine=True, bias=True, track_running_stats=True)
+            )
+            (act): GELU(approximate='none')
+            (conv2): ConvNorm(
+              (c): Conv2d(192, 96, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (bn): BatchNorm2d(96, eps=1e-05, momentum=0.1, affine=True, bias=True, track_running_stats=True)
+            )
+          )
+        )
+      )
+    )
+    (2): RepVitStage(
+      (downsample): RepVitDownsample(
+        (pre_block): RepViTBlock(
+          (token_mixer): RepVggDw(
+            (conv): ConvNorm(
+              (c): Conv2d(96, 96, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=96, bias=False)
+              (bn): BatchNorm2d(96, eps=1e-05, momentum=0.1, affine=True, bias=True, track_running_stats=True)
+            )
+            (conv1): Conv2d(96, 96, kernel_size=(1, 1), stride=(1, 1), groups=96)
+            (bn): BatchNorm2d(96, eps=1e-05, momentum=0.1, affine=True, bias=True, track_running_stats=True)
+          )
+          (se): Identity()
+          (channel_mixer): RepVitMlp(
+            (conv1): ConvNorm(
+              (c): Conv2d(96, 192, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (bn): BatchNorm2d(192, eps=1e-05, momentum=0.1, affine=True, bias=True, track_running_stats=True)
+            )
+            (act): GELU(approximate='none')
+            (conv2): ConvNorm(
+              (c): Conv2d(192, 96, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (bn): BatchNorm2d(96, eps=1e-05, momentum=0.1, affine=True, bias=True, track_running_stats=True)
+            )
+          )
+        )
+        (spatial_downsample): ConvNorm(
+          (c): Conv2d(96, 96, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1), groups=96, bias=False)
+          (bn): BatchNorm2d(96, eps=1e-05, momentum=0.1, affine=True, bias=True, track_running_stats=True)
+        )
+        (channel_downsample): ConvNorm(
+          (c): Conv2d(96, 192, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (bn): BatchNorm2d(192, eps=1e-05, momentum=0.1, affine=True, bias=True, track_running_stats=True)
+        )
+        (ffn): RepVitMlp(
+          (conv1): ConvNorm(
+            (c): Conv2d(192, 384, kernel_size=(1, 1), stride=(1, 1), bias=False)
+            (bn): BatchNorm2d(384, eps=1e-05, momentum=0.1, affine=True, bias=True, track_running_stats=True)
+          )
+          (act): GELU(approximate='none')
+          (conv2): ConvNorm(
+            (c): Conv2d(384, 192, kernel_size=(1, 1), stride=(1, 1), bias=False)
+            (bn): BatchNorm2d(192, eps=1e-05, momentum=0.1, affine=True, bias=True, track_running_stats=True)
+          )
+        )
+      )
+      (blocks): Sequential(
+        (0): RepViTBlock(
+          (token_mixer): RepVggDw(
+            (conv): ConvNorm(
+              (c): Conv2d(192, 192, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=192, bias=False)
+              (bn): BatchNorm2d(192, eps=1e-05, momentum=0.1, affine=True, bias=True, track_running_stats=True)
+            )
+            (conv1): Conv2d(192, 192, kernel_size=(1, 1), stride=(1, 1), groups=192)
+            (bn): BatchNorm2d(192, eps=1e-05, momentum=0.1, affine=True, bias=True, track_running_stats=True)
+          )
+          (se): SEModule(
+            (fc1): Conv2d(192, 48, kernel_size=(1, 1), stride=(1, 1))
+            (bn): Identity()
+            (act): ReLU(inplace=True)
+            (fc2): Conv2d(48, 192, kernel_size=(1, 1), stride=(1, 1))
+            (gate): Sigmoid()
+          )
+          (channel_mixer): RepVitMlp(
+            (conv1): ConvNorm(
+              (c): Conv2d(192, 384, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (bn): BatchNorm2d(384, eps=1e-05, momentum=0.1, affine=True, bias=True, track_running_stats=True)
+            )
+            (act): GELU(approximate='none')
+            (conv2): ConvNorm(
+              (c): Conv2d(384, 192, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (bn): BatchNorm2d(192, eps=1e-05, momentum=0.1, affine=True, bias=True, track_running_stats=True)
+            )
+          )
+        )
+        (1): RepViTBlock(
+          (token_mixer): RepVggDw(
+            (conv): ConvNorm(
+              (c): Conv2d(192, 192, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=192, bias=False)
+              (bn): BatchNorm2d(192, eps=1e-05, momentum=0.1, affine=True, bias=True, track_running_stats=True)
+            )
+            (conv1): Conv2d(192, 192, kernel_size=(1, 1), stride=(1, 1), groups=192)
+            (bn): BatchNorm2d(192, eps=1e-05, momentum=0.1, affine=True, bias=True, track_running_stats=True)
+          )
+          (se): Identity()
+          (channel_mixer): RepVitMlp(
+            (conv1): ConvNorm(
+              (c): Conv2d(192, 384, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (bn): BatchNorm2d(384, eps=1e-05, momentum=0.1, affine=True, bias=True, track_running_stats=True)
+            )
+            (act): GELU(approximate='none')
+            (conv2): ConvNorm(
+              (c): Conv2d(384, 192, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (bn): BatchNorm2d(192, eps=1e-05, momentum=0.1, affine=True, bias=True, track_running_stats=True)
+            )
+          )
+        )
+        (2): RepViTBlock(
+          (token_mixer): RepVggDw(
+            (conv): ConvNorm(
+              (c): Conv2d(192, 192, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=192, bias=False)
+              (bn): BatchNorm2d(192, eps=1e-05, momentum=0.1, affine=True, bias=True, track_running_stats=True)
+            )
+            (conv1): Conv2d(192, 192, kernel_size=(1, 1), stride=(1, 1), groups=192)
+            (bn): BatchNorm2d(192, eps=1e-05, momentum=0.1, affine=True, bias=True, track_running_stats=True)
+          )
+          (se): SEModule(
+            (fc1): Conv2d(192, 48, kernel_size=(1, 1), stride=(1, 1))
+            (bn): Identity()
+            (act): ReLU(inplace=True)
+            (fc2): Conv2d(48, 192, kernel_size=(1, 1), stride=(1, 1))
+            (gate): Sigmoid()
+          )
+          (channel_mixer): RepVitMlp(
+            (conv1): ConvNorm(
+              (c): Conv2d(192, 384, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (bn): BatchNorm2d(384, eps=1e-05, momentum=0.1, affine=True, bias=True, track_running_stats=True)
+            )
+            (act): GELU(approximate='none')
+            (conv2): ConvNorm(
+              (c): Conv2d(384, 192, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (bn): BatchNorm2d(192, eps=1e-05, momentum=0.1, affine=True, bias=True, track_running_stats=True)
+            )
+          )
+        )
+        (3): RepViTBlock(
+          (token_mixer): RepVggDw(
+            (conv): ConvNorm(
+              (c): Conv2d(192, 192, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=192, bias=False)
+              (bn): BatchNorm2d(192, eps=1e-05, momentum=0.1, affine=True, bias=True, track_running_stats=True)
+            )
+            (conv1): Conv2d(192, 192, kernel_size=(1, 1), stride=(1, 1), groups=192)
+            (bn): BatchNorm2d(192, eps=1e-05, momentum=0.1, affine=True, bias=True, track_running_stats=True)
+          )
+          (se): Identity()
+          (channel_mixer): RepVitMlp(
+            (conv1): ConvNorm(
+              (c): Conv2d(192, 384, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (bn): BatchNorm2d(384, eps=1e-05, momentum=0.1, affine=True, bias=True, track_running_stats=True)
+            )
+            (act): GELU(approximate='none')
+            (conv2): ConvNorm(
+              (c): Conv2d(384, 192, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (bn): BatchNorm2d(192, eps=1e-05, momentum=0.1, affine=True, bias=True, track_running_stats=True)
+            )
+          )
+        )
+        (4): RepViTBlock(
+          (token_mixer): RepVggDw(
+            (conv): ConvNorm(
+              (c): Conv2d(192, 192, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=192, bias=False)
+              (bn): BatchNorm2d(192, eps=1e-05, momentum=0.1, affine=True, bias=True, track_running_stats=True)
+            )
+            (conv1): Conv2d(192, 192, kernel_size=(1, 1), stride=(1, 1), groups=192)
+            (bn): BatchNorm2d(192, eps=1e-05, momentum=0.1, affine=True, bias=True, track_running_stats=True)
+          )
+          (se): SEModule(
+            (fc1): Conv2d(192, 48, kernel_size=(1, 1), stride=(1, 1))
+            (bn): Identity()
+            (act): ReLU(inplace=True)
+            (fc2): Conv2d(48, 192, kernel_size=(1, 1), stride=(1, 1))
+            (gate): Sigmoid()
+          )
+          (channel_mixer): RepVitMlp(
+            (conv1): ConvNorm(
+              (c): Conv2d(192, 384, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (bn): BatchNorm2d(384, eps=1e-05, momentum=0.1, affine=True, bias=True, track_running_stats=True)
+            )
+            (act): GELU(approximate='none')
+            (conv2): ConvNorm(
+              (c): Conv2d(384, 192, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (bn): BatchNorm2d(192, eps=1e-05, momentum=0.1, affine=True, bias=True, track_running_stats=True)
+            )
+          )
+        )
+        (5): RepViTBlock(
+          (token_mixer): RepVggDw(
+            (conv): ConvNorm(
+              (c): Conv2d(192, 192, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=192, bias=False)
+              (bn): BatchNorm2d(192, eps=1e-05, momentum=0.1, affine=True, bias=True, track_running_stats=True)
+            )
+            (conv1): Conv2d(192, 192, kernel_size=(1, 1), stride=(1, 1), groups=192)
+            (bn): BatchNorm2d(192, eps=1e-05, momentum=0.1, affine=True, bias=True, track_running_stats=True)
+          )
+          (se): Identity()
+          (channel_mixer): RepVitMlp(
+            (conv1): ConvNorm(
+              (c): Conv2d(192, 384, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (bn): BatchNorm2d(384, eps=1e-05, momentum=0.1, affine=True, bias=True, track_running_stats=True)
+            )
+            (act): GELU(approximate='none')
+            (conv2): ConvNorm(
+              (c): Conv2d(384, 192, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (bn): BatchNorm2d(192, eps=1e-05, momentum=0.1, affine=True, bias=True, track_running_stats=True)
+            )
+          )
+        )
+        (6): RepViTBlock(
+          (token_mixer): RepVggDw(
+            (conv): ConvNorm(
+              (c): Conv2d(192, 192, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=192, bias=False)
+              (bn): BatchNorm2d(192, eps=1e-05, momentum=0.1, affine=True, bias=True, track_running_stats=True)
+            )
+            (conv1): Conv2d(192, 192, kernel_size=(1, 1), stride=(1, 1), groups=192)
+            (bn): BatchNorm2d(192, eps=1e-05, momentum=0.1, affine=True, bias=True, track_running_stats=True)
+          )
+          (se): SEModule(
+            (fc1): Conv2d(192, 48, kernel_size=(1, 1), stride=(1, 1))
+            (bn): Identity()
+            (act): ReLU(inplace=True)
+            (fc2): Conv2d(48, 192, kernel_size=(1, 1), stride=(1, 1))
+            (gate): Sigmoid()
+          )
+          (channel_mixer): RepVitMlp(
+            (conv1): ConvNorm(
+              (c): Conv2d(192, 384, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (bn): BatchNorm2d(384, eps=1e-05, momentum=0.1, affine=True, bias=True, track_running_stats=True)
+            )
+            (act): GELU(approximate='none')
+            (conv2): ConvNorm(
+              (c): Conv2d(384, 192, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (bn): BatchNorm2d(192, eps=1e-05, momentum=0.1, affine=True, bias=True, track_running_stats=True)
+            )
+          )
+        )
+        (7): RepViTBlock(
+          (token_mixer): RepVggDw(
+            (conv): ConvNorm(
+              (c): Conv2d(192, 192, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=192, bias=False)
+              (bn): BatchNorm2d(192, eps=1e-05, momentum=0.1, affine=True, bias=True, track_running_stats=True)
+            )
+            (conv1): Conv2d(192, 192, kernel_size=(1, 1), stride=(1, 1), groups=192)
+            (bn): BatchNorm2d(192, eps=1e-05, momentum=0.1, affine=True, bias=True, track_running_stats=True)
+          )
+          (se): Identity()
+          (channel_mixer): RepVitMlp(
+            (conv1): ConvNorm(
+              (c): Conv2d(192, 384, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (bn): BatchNorm2d(384, eps=1e-05, momentum=0.1, affine=True, bias=True, track_running_stats=True)
+            )
+            (act): GELU(approximate='none')
+            (conv2): ConvNorm(
+              (c): Conv2d(384, 192, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (bn): BatchNorm2d(192, eps=1e-05, momentum=0.1, affine=True, bias=True, track_running_stats=True)
+            )
+          )
+        )
+        (8): RepViTBlock(
+          (token_mixer): RepVggDw(
+            (conv): ConvNorm(
+              (c): Conv2d(192, 192, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=192, bias=False)
+              (bn): BatchNorm2d(192, eps=1e-05, momentum=0.1, affine=True, bias=True, track_running_stats=True)
+            )
+            (conv1): Conv2d(192, 192, kernel_size=(1, 1), stride=(1, 1), groups=192)
+            (bn): BatchNorm2d(192, eps=1e-05, momentum=0.1, affine=True, bias=True, track_running_stats=True)
+          )
+          (se): SEModule(
+            (fc1): Conv2d(192, 48, kernel_size=(1, 1), stride=(1, 1))
+            (bn): Identity()
+            (act): ReLU(inplace=True)
+            (fc2): Conv2d(48, 192, kernel_size=(1, 1), stride=(1, 1))
+            (gate): Sigmoid()
+          )
+          (channel_mixer): RepVitMlp(
+            (conv1): ConvNorm(
+              (c): Conv2d(192, 384, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (bn): BatchNorm2d(384, eps=1e-05, momentum=0.1, affine=True, bias=True, track_running_stats=True)
+            )
+            (act): GELU(approximate='none')
+            (conv2): ConvNorm(
+              (c): Conv2d(384, 192, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (bn): BatchNorm2d(192, eps=1e-05, momentum=0.1, affine=True, bias=True, track_running_stats=True)
+            )
+          )
+        )
+        (9): RepViTBlock(
+          (token_mixer): RepVggDw(
+            (conv): ConvNorm(
+              (c): Conv2d(192, 192, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=192, bias=False)
+              (bn): BatchNorm2d(192, eps=1e-05, momentum=0.1, affine=True, bias=True, track_running_stats=True)
+            )
+            (conv1): Conv2d(192, 192, kernel_size=(1, 1), stride=(1, 1), groups=192)
+            (bn): BatchNorm2d(192, eps=1e-05, momentum=0.1, affine=True, bias=True, track_running_stats=True)
+          )
+          (se): Identity()
+          (channel_mixer): RepVitMlp(
+            (conv1): ConvNorm(
+              (c): Conv2d(192, 384, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (bn): BatchNorm2d(384, eps=1e-05, momentum=0.1, affine=True, bias=True, track_running_stats=True)
+            )
+            (act): GELU(approximate='none')
+            (conv2): ConvNorm(
+              (c): Conv2d(384, 192, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (bn): BatchNorm2d(192, eps=1e-05, momentum=0.1, affine=True, bias=True, track_running_stats=True)
+            )
+          )
+        )
+        (10): RepViTBlock(
+          (token_mixer): RepVggDw(
+            (conv): ConvNorm(
+              (c): Conv2d(192, 192, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=192, bias=False)
+              (bn): BatchNorm2d(192, eps=1e-05, momentum=0.1, affine=True, bias=True, track_running_stats=True)
+            )
+            (conv1): Conv2d(192, 192, kernel_size=(1, 1), stride=(1, 1), groups=192)
+            (bn): BatchNorm2d(192, eps=1e-05, momentum=0.1, affine=True, bias=True, track_running_stats=True)
+          )
+          (se): SEModule(
+            (fc1): Conv2d(192, 48, kernel_size=(1, 1), stride=(1, 1))
+            (bn): Identity()
+            (act): ReLU(inplace=True)
+            (fc2): Conv2d(48, 192, kernel_size=(1, 1), stride=(1, 1))
+            (gate): Sigmoid()
+          )
+          (channel_mixer): RepVitMlp(
+            (conv1): ConvNorm(
+              (c): Conv2d(192, 384, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (bn): BatchNorm2d(384, eps=1e-05, momentum=0.1, affine=True, bias=True, track_running_stats=True)
+            )
+            (act): GELU(approximate='none')
+            (conv2): ConvNorm(
+              (c): Conv2d(384, 192, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (bn): BatchNorm2d(192, eps=1e-05, momentum=0.1, affine=True, bias=True, track_running_stats=True)
+            )
+          )
+        )
+        (11): RepViTBlock(
+          (token_mixer): RepVggDw(
+            (conv): ConvNorm(
+              (c): Conv2d(192, 192, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=192, bias=False)
+              (bn): BatchNorm2d(192, eps=1e-05, momentum=0.1, affine=True, bias=True, track_running_stats=True)
+            )
+            (conv1): Conv2d(192, 192, kernel_size=(1, 1), stride=(1, 1), groups=192)
+            (bn): BatchNorm2d(192, eps=1e-05, momentum=0.1, affine=True, bias=True, track_running_stats=True)
+          )
+          (se): Identity()
+          (channel_mixer): RepVitMlp(
+            (conv1): ConvNorm(
+              (c): Conv2d(192, 384, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (bn): BatchNorm2d(384, eps=1e-05, momentum=0.1, affine=True, bias=True, track_running_stats=True)
+            )
+            (act): GELU(approximate='none')
+            (conv2): ConvNorm(
+              (c): Conv2d(384, 192, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (bn): BatchNorm2d(192, eps=1e-05, momentum=0.1, affine=True, bias=True, track_running_stats=True)
+            )
+          )
+        )
+        (12): RepViTBlock(
+          (token_mixer): RepVggDw(
+            (conv): ConvNorm(
+              (c): Conv2d(192, 192, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=192, bias=False)
+              (bn): BatchNorm2d(192, eps=1e-05, momentum=0.1, affine=True, bias=True, track_running_stats=True)
+            )
+            (conv1): Conv2d(192, 192, kernel_size=(1, 1), stride=(1, 1), groups=192)
+            (bn): BatchNorm2d(192, eps=1e-05, momentum=0.1, affine=True, bias=True, track_running_stats=True)
+          )
+          (se): SEModule(
+            (fc1): Conv2d(192, 48, kernel_size=(1, 1), stride=(1, 1))
+            (bn): Identity()
+            (act): ReLU(inplace=True)
+            (fc2): Conv2d(48, 192, kernel_size=(1, 1), stride=(1, 1))
+            (gate): Sigmoid()
+          )
+          (channel_mixer): RepVitMlp(
+            (conv1): ConvNorm(
+              (c): Conv2d(192, 384, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (bn): BatchNorm2d(384, eps=1e-05, momentum=0.1, affine=True, bias=True, track_running_stats=True)
+            )
+            (act): GELU(approximate='none')
+            (conv2): ConvNorm(
+              (c): Conv2d(384, 192, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (bn): BatchNorm2d(192, eps=1e-05, momentum=0.1, affine=True, bias=True, track_running_stats=True)
+            )
+          )
+        )
+        (13): RepViTBlock(
+          (token_mixer): RepVggDw(
+            (conv): ConvNorm(
+              (c): Conv2d(192, 192, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=192, bias=False)
+              (bn): BatchNorm2d(192, eps=1e-05, momentum=0.1, affine=True, bias=True, track_running_stats=True)
+            )
+            (conv1): Conv2d(192, 192, kernel_size=(1, 1), stride=(1, 1), groups=192)
+            (bn): BatchNorm2d(192, eps=1e-05, momentum=0.1, affine=True, bias=True, track_running_stats=True)
+          )
+          (se): Identity()
+          (channel_mixer): RepVitMlp(
+            (conv1): ConvNorm(
+              (c): Conv2d(192, 384, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (bn): BatchNorm2d(384, eps=1e-05, momentum=0.1, affine=True, bias=True, track_running_stats=True)
+            )
+            (act): GELU(approximate='none')
+            (conv2): ConvNorm(
+              (c): Conv2d(384, 192, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (bn): BatchNorm2d(192, eps=1e-05, momentum=0.1, affine=True, bias=True, track_running_stats=True)
+            )
+          )
+        )
+      )
+    )
+    (3): RepVitStage(
+      (downsample): RepVitDownsample(
+        (pre_block): RepViTBlock(
+          (token_mixer): RepVggDw(
+            (conv): ConvNorm(
+              (c): Conv2d(192, 192, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=192, bias=False)
+              (bn): BatchNorm2d(192, eps=1e-05, momentum=0.1, affine=True, bias=True, track_running_stats=True)
+            )
+            (conv1): Conv2d(192, 192, kernel_size=(1, 1), stride=(1, 1), groups=192)
+            (bn): BatchNorm2d(192, eps=1e-05, momentum=0.1, affine=True, bias=True, track_running_stats=True)
+          )
+          (se): Identity()
+          (channel_mixer): RepVitMlp(
+            (conv1): ConvNorm(
+              (c): Conv2d(192, 384, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (bn): BatchNorm2d(384, eps=1e-05, momentum=0.1, affine=True, bias=True, track_running_stats=True)
+            )
+            (act): GELU(approximate='none')
+            (conv2): ConvNorm(
+              (c): Conv2d(384, 192, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (bn): BatchNorm2d(192, eps=1e-05, momentum=0.1, affine=True, bias=True, track_running_stats=True)
+            )
+          )
+        )
+        (spatial_downsample): ConvNorm(
+          (c): Conv2d(192, 192, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1), groups=192, bias=False)
+          (bn): BatchNorm2d(192, eps=1e-05, momentum=0.1, affine=True, bias=True, track_running_stats=True)
+        )
+        (channel_downsample): ConvNorm(
+          (c): Conv2d(192, 384, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (bn): BatchNorm2d(384, eps=1e-05, momentum=0.1, affine=True, bias=True, track_running_stats=True)
+        )
+        (ffn): RepVitMlp(
+          (conv1): ConvNorm(
+            (c): Conv2d(384, 768, kernel_size=(1, 1), stride=(1, 1), bias=False)
+            (bn): BatchNorm2d(768, eps=1e-05, momentum=0.1, affine=True, bias=True, track_running_stats=True)
+          )
+          (act): GELU(approximate='none')
+          (conv2): ConvNorm(
+            (c): Conv2d(768, 384, kernel_size=(1, 1), stride=(1, 1), bias=False)
+            (bn): BatchNorm2d(384, eps=1e-05, momentum=0.1, affine=True, bias=True, track_running_stats=True)
+          )
+        )
+      )
+      (blocks): Sequential(
+        (0): RepViTBlock(
+          (token_mixer): RepVggDw(
+            (conv): ConvNorm(
+              (c): Conv2d(384, 384, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=384, bias=False)
+              (bn): BatchNorm2d(384, eps=1e-05, momentum=0.1, affine=True, bias=True, track_running_stats=True)
+            )
+            (conv1): Conv2d(384, 384, kernel_size=(1, 1), stride=(1, 1), groups=384)
+            (bn): BatchNorm2d(384, eps=1e-05, momentum=0.1, affine=True, bias=True, track_running_stats=True)
+          )
+          (se): SEModule(
+            (fc1): Conv2d(384, 96, kernel_size=(1, 1), stride=(1, 1))
+            (bn): Identity()
+            (act): ReLU(inplace=True)
+            (fc2): Conv2d(96, 384, kernel_size=(1, 1), stride=(1, 1))
+            (gate): Sigmoid()
+          )
+          (channel_mixer): RepVitMlp(
+            (conv1): ConvNorm(
+              (c): Conv2d(384, 768, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (bn): BatchNorm2d(768, eps=1e-05, momentum=0.1, affine=True, bias=True, track_running_stats=True)
+            )
+            (act): GELU(approximate='none')
+            (conv2): ConvNorm(
+              (c): Conv2d(768, 384, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (bn): BatchNorm2d(384, eps=1e-05, momentum=0.1, affine=True, bias=True, track_running_stats=True)
+            )
+          )
+        )
+        (1): RepViTBlock(
+          (token_mixer): RepVggDw(
+            (conv): ConvNorm(
+              (c): Conv2d(384, 384, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=384, bias=False)
+              (bn): BatchNorm2d(384, eps=1e-05, momentum=0.1, affine=True, bias=True, track_running_stats=True)
+            )
+            (conv1): Conv2d(384, 384, kernel_size=(1, 1), stride=(1, 1), groups=384)
+            (bn): BatchNorm2d(384, eps=1e-05, momentum=0.1, affine=True, bias=True, track_running_stats=True)
+          )
+          (se): Identity()
+          (channel_mixer): RepVitMlp(
+            (conv1): ConvNorm(
+              (c): Conv2d(384, 768, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (bn): BatchNorm2d(768, eps=1e-05, momentum=0.1, affine=True, bias=True, track_running_stats=True)
+            )
+            (act): GELU(approximate='none')
+            (conv2): ConvNorm(
+              (c): Conv2d(768, 384, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (bn): BatchNorm2d(384, eps=1e-05, momentum=0.1, affine=True, bias=True, track_running_stats=True)
+            )
+          )
+        )
+      )
+    )
+  )
+  (head_drop): Dropout(p=0.0, inplace=False)
+  (head): RepVitClassifier(
+    (head_drop): Dropout(p=0.0, inplace=False)
+    (head): NormLinear(
+      (bn): BatchNorm1d(384, eps=1e-05, momentum=0.1, affine=True, bias=True, track_running_stats=True)
+      (l): Linear(in_features=384, out_features=37, bias=True)
+    )
+    (head_dist): NormLinear(
+      (bn): BatchNorm1d(384, eps=1e-05, momentum=0.1, affine=True, bias=True, track_running_stats=True)
+      (l): Linear(in_features=384, out_features=37, bias=True)
+    )
+  )
+)

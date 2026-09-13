@@ -1,0 +1,25 @@
+# configs/opt_randaug.yaml
+_base_: baseline.yaml
+
+experiment_name: opt_randaug
+
+aug:
+  train:
+    random_resized_crop: {scale: [0.25, 1.0], ratio: [0.75, 1.333]}   # 差异键 1：裁剪更激进
+    color_jitter: {brightness: 0.5, contrast: 0.5, saturation: 0.5, hue: 0.1}  # 差异键 2~4
+    randaugment: {n: 2, m: 9, inc1: false}                            # 差异键 5
+
+_expected_diff_:
+# 说明：baseline 里 aug.train.randaugment 是 null，实验里是 {n,m,inc1} 字典。
+# diff_config.py 按**叶子键**展开，因此 null->dict 会同时产生 4 个差异键：
+#   父键 aug.train.randaugment（值 None -> '<MISSING>'）
+#   三个叶子 n / m / inc1（'<MISSING>' -> 2 / 9 / false）
+# 四者都必须声明，否则会被判为「未声明的变量差异」。
+  - aug.train.random_resized_crop.scale
+  - aug.train.color_jitter.brightness
+  - aug.train.color_jitter.contrast
+  - aug.train.color_jitter.saturation
+  - aug.train.randaugment
+  - aug.train.randaugment.n
+  - aug.train.randaugment.m
+  - aug.train.randaugment.inc1

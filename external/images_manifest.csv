@@ -1,0 +1,9 @@
+filename,source,license,note,imagenet_wnid,pet_class
+beagle__ILSVRC2012_val_00000162_00.JPEG,ImageNet-1K val (n02088364),ImageNet 数据集条款（非商业研究用途）；本仓库仅作课程考核的可解释性演示,ImageNet 类 'beagle' -> Pet 品种 'Beagle'；跨集合真实照片,n02088364,Beagle
+pug__ILSVRC2012_val_00000254_00.JPEG,ImageNet-1K val (n02110958),ImageNet 数据集条款（非商业研究用途）；本仓库仅作课程考核的可解释性演示,ImageNet 类 'pug' -> Pet 品种 'Pug'；跨集合真实照片,n02110958,Pug
+boxer__ILSVRC2012_val_00000242_00.JPEG,ImageNet-1K val (n02108089),ImageNet 数据集条款（非商业研究用途）；本仓库仅作课程考核的可解释性演示,ImageNet 类 'boxer' -> Pet 品种 'Boxer'；跨集合真实照片,n02108089,Boxer
+chihuahua__ILSVRC2012_val_00000151_00.JPEG,ImageNet-1K val (n02085620),ImageNet 数据集条款（非商业研究用途）；本仓库仅作课程考核的可解释性演示,ImageNet 类 'Chihuahua' -> Pet 品种 'Chihuahua'；跨集合真实照片,n02085620,Chihuahua
+samoyed__ILSVRC2012_val_00000258_00.JPEG,ImageNet-1K val (n02111889),ImageNet 数据集条款（非商业研究用途）；本仓库仅作课程考核的可解释性演示,ImageNet 类 'Samoyed' -> Pet 品种 'Samoyed'；跨集合真实照片,n02111889,Samoyed
+newfoundland__ILSVRC2012_val_00000256_00.JPEG,ImageNet-1K val (n02111277),ImageNet 数据集条款（非商业研究用途）；本仓库仅作课程考核的可解释性演示,ImageNet 类 'Newfoundland' -> Pet 品种 'Newfoundland'；跨集合真实照片,n02111277,Newfoundland
+great_pyrenees__ILSVRC2012_val_00000257_00.JPEG,ImageNet-1K val (n02111500),ImageNet 数据集条款（非商业研究用途）；本仓库仅作课程考核的可解释性演示,ImageNet 类 'Great Pyrenees' -> Pet 品种 'Great Pyrenees'；跨集合真实照片,n02111500,Great Pyrenees
+pomeranian__ILSVRC2012_val_00000259_00.JPEG,ImageNet-1K val (n02112018),ImageNet 数据集条款（非商业研究用途）；本仓库仅作课程考核的可解释性演示,ImageNet 类 'Pomeranian' -> Pet 品种 'Pomeranian'；跨集合真实照片,n02112018,Pomeranian

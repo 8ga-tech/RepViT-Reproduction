@@ -1,0 +1,202 @@
+{
+  "samples": [
+    {
+      "image_path": "data/imagenet/val/n04357314/ILSVRC2012_val_00000838_32.JPEG",
+      "true_label_idx": 838,
+      "true_label_name": "sunscreen",
+      "top5": [
+        {
+          "idx": 838,
+          "name": "sunscreen",
+          "prob": 0.9997414946556091
+        },
+        {
+          "idx": 631,
+          "name": "lotion",
+          "prob": 0.00023255968699231744
+        },
+        {
+          "idx": 739,
+          "name": "potter's wheel",
+          "prob": 4.153842837695265e-06
+        },
+        {
+          "idx": 696,
+          "name": "paintbrush",
+          "prob": 1.6965044551398023e-06
+        },
+        {
+          "idx": 842,
+          "name": "swimming trunks",
+          "prob": 1.5820220369278104e-06
+        }
+      ],
+      "correct": true
+    },
+    {
+      "image_path": "data/imagenet/val/n01930112/ILSVRC2012_val_00000111_11.JPEG",
+      "true_label_idx": 111,
+      "true_label_name": "nematode",
+      "top5": [
+        {
+          "idx": 111,
+          "name": "nematode",
+          "prob": 0.999326229095459
+        },
+        {
+          "idx": 59,
+          "name": "vine snake",
+          "prob": 4.320708831073716e-05
+        },
+        {
+          "idx": 712,
+          "name": "Petri dish",
+          "prob": 1.6144016626640223e-05
+        },
+        {
+          "idx": 592,
+          "name": "hard disc",
+          "prob": 1.2337529369688127e-05
+        },
+        {
+          "idx": 26,
+          "name": "common newt",
+          "prob": 1.0088803719554562e-05
+        }
+      ],
+      "correct": true
+    },
+    {
+      "image_path": "data/imagenet/val/n03759954/ILSVRC2012_val_00000650_07.JPEG",
+      "true_label_idx": 650,
+      "true_label_name": "microphone",
+      "top5": [
+        {
+          "idx": 593,
+          "name": "harmonica",
+          "prob": 0.9963364601135254
+        },
+        {
+          "idx": 699,
+          "name": "panpipe",
+          "prob": 0.0013205916620790958
+        },
+        {
+          "idx": 684,
+          "name": "ocarina",
+          "prob": 0.00042614442645572126
+        },
+        {
+          "idx": 650,
+          "name": "microphone",
+          "prob": 0.00040959674515761435
+        },
+        {
+          "idx": 558,
+          "name": "flute",
+          "prob": 0.00021193378779571503
+        }
+      ],
+      "correct": false
+    },
+    {
+      "image_path": "data/imagenet/val/n02125311/ILSVRC2012_val_00000286_10.JPEG",
+      "true_label_idx": 286,
+      "true_label_name": "cougar",
+      "top5": [
+        {
+          "idx": 293,
+          "name": "cheetah",
+          "prob": 0.9948509335517883
+        },
+        {
+          "idx": 291,
+          "name": "lion",
+          "prob": 0.00048097199760377407
+        },
+        {
+          "idx": 286,
+          "name": "cougar",
+          "prob": 0.00024378136731684208
+        },
+        {
+          "idx": 289,
+          "name": "snow leopard",
+          "prob": 0.0001656656531849876
+        },
+        {
+          "idx": 288,
+          "name": "leopard",
+          "prob": 0.0001656391250435263
+        }
+      ],
+      "correct": false
+    },
+    {
+      "image_path": "data/imagenet/val/n02859443/ILSVRC2012_val_00000449_17.JPEG",
+      "true_label_idx": 449,
+      "true_label_name": "boathouse",
+      "top5": [
+        {
+          "idx": 449,
+          "name": "boathouse",
+          "prob": 0.9731166362762451
+        },
+        {
+          "idx": 975,
+          "name": "lakeside",
+          "prob": 0.008091877214610577
+        },
+        {
+          "idx": 979,
+          "name": "valley",
+          "prob": 0.001991265220567584
+        },
+        {
+          "idx": 525,
+          "name": "dam",
+          "prob": 0.001801533275283873
+        },
+        {
+          "idx": 472,
+          "name": "canoe",
+          "prob": 0.0014054004568606615
+        }
+      ],
+      "correct": true
+    },
+    {
+      "image_path": "data/imagenet/val/n02444819/ILSVRC2012_val_00000360_18.JPEG",
+      "true_label_idx": 360,
+      "true_label_name": "otter",
+      "top5": [
+        {
+          "idx": 360,
+          "name": "otter",
+          "prob": 0.9732992053031921
+        },
+        {
+          "idx": 337,
+          "name": "beaver",
+          "prob": 0.007455348502844572
+        },
+        {
+          "idx": 150,
+          "name": "sea lion",
+          "prob": 0.003088927362114191
+        },
+        {
+          "idx": 357,
+          "name": "mink",
+          "prob": 0.0018563360208645463
+        },
+        {
+          "idx": 356,
+          "name": "weasel",
+          "prob": 0.001133400364778936
+        }
+      ],
+      "correct": true
+    }
+  ]
+}

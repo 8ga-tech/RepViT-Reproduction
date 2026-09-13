@@ -1,0 +1,262 @@
+{
+  "cli": {
+    "model": "repvit_m0_9",
+    "impl": "timm",
+    "weights": "checkpoints/baseline_best.pt",
+    "num_classes": 37,
+    "input_size": 224,
+    "batch_size": 8,
+    "num_samples": 32,
+    "seed": 20240912,
+    "opset": 13,
+    "distillation": false,
+    "skip_onnx": false,
+    "out_dir": "outputs/reparam",
+    "registry_key": "repvit_m0_9_pet37"
+  },
+  "fatal": null,
+  "env": {
+    "torch": "2.14.0+cu126",
+    "timm": "1.0.29",
+    "onnx": "1.22.0"
+  },
+  "weights": {
+    "source": "checkpoints/baseline_best.pt",
+    "missing": [],
+    "unexpected": [],
+    "n_keys_loaded": 706,
+    "state_dict_probe": {
+      "n_running_var": 107,
+      "n_bias": 151,
+      "fused": false
+    },
+    "n_missing": 0,
+    "n_unexpected": 0
+  },
+  "params": {
+    "before": {
+      "params_total": 4732805,
+      "params_trainable": 4732805,
+      "buffers_numel": 47867,
+      "state_dict_keys": 706
+    },
+    "after": {
+      "params_total": 4696301,
+      "params_trainable": 4696301,
+      "buffers_numel": 0,
+      "state_dict_keys": 208
+    },
+    "delta": {
+      "params_total": -36504,
+      "params_trainable": -36504,
+      "buffers_numel": -47867,
+      "state_dict_keys": -498
+    }
+  },
+  "modules": {
+    "before": {
+      "n_bn": 107,
+      "n_conv2d": 126,
+      "n_sequential": 5,
+      "n_repvggdw": 23,
+      "n_linear": 1,
+      "type_histogram": {
+        "Conv2d": 126,
+        "BatchNorm2d": 106,
+        "ConvNorm": 83,
+        "GELU": 27,
+        "RepVitMlp": 26,
+        "Identity": 24,
+        "RepVggDw": 23,
+        "RepViTBlock": 23,
+        "ReLU": 10,
+        "SEModule": 10,
+        "Sigmoid": 10,
+        "Sequential": 5,
+        "RepVitStage": 4,
+        "RepVitDownsample": 3,
+        "Dropout": 2,
+        "BatchNorm1d": 1,
+        "Linear": 1,
+        "NormLinear": 1,
+        "RepVit": 1,
+        "RepVitClassifier": 1,
+        "RepVitStem": 1
+      }
+    },
+    "after": {
+      "n_bn": 0,
+      "n_conv2d": 103,
+      "n_sequential": 5,
+      "n_repvggdw": 0,
+      "n_linear": 1,
+      "type_histogram": {
+        "Conv2d": 103,
+        "GELU": 27,
+        "RepVitMlp": 26,
+        "Identity": 24,
+        "RepViTBlock": 23,
+        "ReLU": 10,
+        "SEModule": 10,
+        "Sigmoid": 10,
+        "Sequential": 5,
+        "RepVitStage": 4,
+        "RepVitDownsample": 3,
+        "Dropout": 1,
+        "Linear": 1,
+        "RepVit": 1,
+        "RepVitStem": 1
+      }
+    }
+  },
+  "before": {
+    "n_bn": 107,
+    "n_conv2d": 126,
+    "n_sequential": 5,
+    "n_repvggdw": 23,
+    "n_linear": 1,
+    "type_histogram": {
+      "Conv2d": 126,
+      "BatchNorm2d": 106,
+      "ConvNorm": 83,
+      "GELU": 27,
+      "RepVitMlp": 26,
+      "Identity": 24,
+      "RepVggDw": 23,
+      "RepViTBlock": 23,
+      "ReLU": 10,
+      "SEModule": 10,
+      "Sigmoid": 10,
+      "Sequential": 5,
+      "RepVitStage": 4,
+      "RepVitDownsample": 3,
+      "Dropout": 2,
+      "BatchNorm1d": 1,
+      "Linear": 1,
+      "NormLinear": 1,
+      "RepVit": 1,
+      "RepVitClassifier": 1,
+      "RepVitStem": 1
+    }
+  },
+  "after": {
+    "n_bn": 0,
+    "n_conv2d": 103,
+    "n_sequential": 5,
+    "n_repvggdw": 0,
+    "n_linear": 1,
+    "type_histogram": {
+      "Conv2d": 103,
+      "GELU": 27,
+      "RepVitMlp": 26,
+      "Identity": 24,
+      "RepViTBlock": 23,
+      "ReLU": 10,
+      "SEModule": 10,
+      "Sigmoid": 10,
+      "Sequential": 5,
+      "RepVitStage": 4,
+      "RepVitDownsample": 3,
+      "Dropout": 1,
+      "Linear": 1,
+      "RepVit": 1,
+      "RepVitStem": 1
+    }
+  },
+  "diff": {
+    "num_samples": 32,
+    "max_abs_err": 7.092952728271484e-06,
+    "mean_abs_err": 2.030726818702533e-06,
+    "max_rel_err": 0.009947390295565128,
+    "rel_err_definition": "|before-after| / (|before| + 1e-6)\uff0c\u4ec5\u62a5\u544a\u4e0d\u4f5c\u95e8\u9650",
+    "logits_abs_max": 1.399425983428955,
+    "top1_same_count": 32,
+    "top1_same_rate": 1.0,
+    "top5_overlap_histogram": {
+      "0": 0,
+      "1": 0,
+      "2": 0,
+      "3": 0,
+      "4": 0,
+      "5": 32
+    },
+    "top5_min_overlap": 5,
+    "top5_full_overlap_rate": 1.0,
+    "thresholds": {
+      "max_abs_err": 0.0001,
+      "top1_same_rate": 1.0,
+      "top5_min_overlap": 5
+    }
+  },
+  "judge": {
+    "numeric_pass": true,
+    "top1_pass": true,
+    "top5_pass": true,
+    "pass": true,
+    "max_abs_err": 7.092952728271484e-06,
+    "mean_abs_err": 2.030726818702533e-06,
+    "top1_agree": 1.0
+  },
+  "max_abs_err": 7.092952728271484e-06,
+  "mean_abs_err": 2.030726818702533e-06,
+  "top1_same_rate": 1.0,
+  "top1_identical": true,
+  "num_samples": 32,
+  "onnx": {
+    "before": {
+      "file": "onnx_before.onnx",
+      "size_bytes": 19028154,
+      "total_nodes": 480,
+      "BatchNormalization": 24,
+      "Conv": 126,
+      "Add": 99,
+      "Mul": 64,
+      "Div": 27,
+      "Gemm": 1,
+      "initializer_count": 350,
+      "initializer_numel": 4722317,
+      "op_histogram": {
+        "Conv": 126,
+        "Add": 99,
+        "Constant": 81,
+        "Mul": 64,
+        "Div": 27,
+        "Erf": 27,
+        "BatchNormalization": 24,
+        "ReduceMean": 11,
+        "Relu": 10,
+        "Sigmoid": 10,
+        "Gemm": 1
+      }
+    },
+    "after": {
+      "file": "onnx_after.onnx",
+      "size_bytes": 18893159,
+      "total_nodes": 387,
+      "BatchNormalization": 0,
+      "Conv": 103,
+      "Add": 53,
+      "Mul": 64,
+      "Div": 27,
+      "Gemm": 1,
+      "initializer_count": 208,
+      "initializer_numel": 4696301,
+      "op_histogram": {
+        "Conv": 103,
+        "Constant": 81,
+        "Mul": 64,
+        "Add": 53,
+        "Div": 27,
+        "Erf": 27,
+        "ReduceMean": 11,
+        "Relu": 10,
+        "Sigmoid": 10,
+        "Gemm": 1
+      }
+    }
+  },
+  "onnx_size_mb": {
+    "before": 19.028154,
+    "after": 18.893159
+  }
+}

@@ -1,0 +1,52 @@
+{
+  "model_name": "repvit_m1_0",
+  "top1": 79.9,
+  "top5": 94.2,
+  "weights_path": "checkpoints/pretrained/repvit_m1_0_distill_300e.pth",
+  "weights_sha256": "283bb9865f705481785ac302f15b8bdd1a7b50556f6be8a5e576ec44422a0737",
+  "num_images": 1000,
+  "num_classes": 1000,
+  "params_total": 6810312,
+  "params_trainable": 6810312,
+  "macs_g": 1.1428,
+  "macs_g_fused": 1.1061,
+  "macs_source": "thop",
+  "model_file_size_mb": 28.3,
+  "input_size": 224,
+  "crop_pct": 0.875,
+  "interpolation": "bicubic",
+  "crop_pct_sweep": [
+    {
+      "crop_pct": 0.875,
+      "scale": 256,
+      "top1": 79.9,
+      "top5": 94.2,
+      "reused": true
+    },
+    {
+      "crop_pct": 0.95,
+      "scale": 235,
+      "top1": 80.0,
+      "top5": 93.9,
+      "reused": false
+    }
+  ],
+  "batch_size": 64,
+  "precision": "fp32",
+  "device": "cuda",
+  "torch_version": "2.14.0+cu126",
+  "timm_version": "1.0.29",
+  "timestamp": "2026-09-13T16:47:57",
+  "impl": "official",
+  "fused": true,
+  "params_unfused": 7302796,
+  "params_fused_delta": 492484,
+  "fuse_max_abs_logits_diff": 3.2901763916015625e-05,
+  "bad_images": [],
+  "n_bad_images": 0,
+  "weights_dropped_shape": [],
+  "weights_missing": [],
+  "latency_mean_ms": 8.5261,
+  "latency_p95_ms": 12.4612,
+  "elapsed_sec": 23.27
+}

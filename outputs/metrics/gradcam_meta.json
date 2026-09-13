@@ -1,0 +1,11 @@
+{
+  "tag": "baseline",
+  "which": "A",
+  "target_layer": "stages[-1].blocks[-1]",
+  "n_images": 12,
+  "n_wrong_cases": 6,
+  "nonzero_ratio": 0.8874960140306123,
+  "vmin": 0.0,
+  "vmax": 1.0,
+  "note": "CAM \u503c\u57df\u6052\u4e3a [0,1]\uff08\u9010\u6837\u672c min-max \u5f52\u4e00\u5316\uff09\u3002\u6302\u8f7d\u5c42\u53d6 stages[-1].blocks[-1]\uff08A\uff09\u6216 .channel_mixer.conv2\uff08B\uff09\uff0c\u4e24\u8005\u4e0d\u662f\u540c\u4e00\u5f20\u5f20\u91cf\u3001\u8f93\u51fa\u6570\u503c\u4e0d\u540c\uff0c\u4e0d\u7b49\u4ef7\u3002"
+}

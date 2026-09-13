@@ -1,0 +1,22 @@
+# report/sources/literature.yaml  —— 手工维护，每项必须带 url
+paper:
+  dataset: ImageNet-1K
+  num_classes: 1000
+  top1: 0.787            # RepViT 论文 Table 1，M0.9 300e 蒸馏
+  params_m: 5.1          # 融合后单头口径
+  params_caliber: "融合后单头"
+  macs_g: 0.8
+  latency_ms: 0.9        # iPhone 12 (iOS 16) + Core ML Tools + XCode 14，batch=1
+  latency_note: "iPhone 12/CoreML/bs=1，不可与本地 ORT CPU 对比"
+  url: https://arxiv.org/abs/2307.09283
+official_repo:
+  dataset: ImageNet-1K
+  num_classes: 1000
+  top1: 0.787
+  top5: 0.791            # README Model Zoo 表 300e/450e 两列
+  params_m: 5.1
+  params_caliber: "融合后单头（flops.py: replace_batchnorm 后取值）"
+  macs_g: 0.8
+  latency_ms: 0.9
+  latency_note: "同论文口径"
+  url: https://github.com/THU-MIG/RepViT

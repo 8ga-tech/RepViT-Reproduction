@@ -1,0 +1,36 @@
+{
+  "min": 0,
+  "max": 36,
+  "n_classes": 37,
+  "min_count": 20,
+  "per_split": {
+    "train": {
+      "n": 2940,
+      "n_unique_ids": 2940,
+      "label_min": 0,
+      "label_max": 36,
+      "n_classes_present": 37,
+      "min_count": 73,
+      "max_count": 80
+    },
+    "val": {
+      "n": 740,
+      "n_unique_ids": 740,
+      "label_min": 0,
+      "label_max": 36,
+      "n_classes_present": 37,
+      "min_count": 20,
+      "max_count": 20
+    },
+    "test": {
+      "n": 3669,
+      "n_unique_ids": 3669,
+      "label_min": 0,
+      "label_max": 36,
+      "n_classes_present": 37,
+      "min_count": 88,
+      "max_count": 100
+    }
+  },
+  "note": "\u6807\u7b7e 0-based\uff08= \u5b98\u65b9 CLASS-ID - 1\uff09\u3002\u6f0f\u51cf 1 \u4f1a\u8ba9\u6807\u7b7e\u51fa\u73b0 37\uff0cCrossEntropyLoss \u76f4\u63a5\u5d29\uff1b\u8bef\u7528 list.txt \u7b2c 4 \u5217\uff08BREED-ID\uff09\u4f1a\u8ba9\u7c7b\u522b\u584c\u5230 0..2\u3002"
+}

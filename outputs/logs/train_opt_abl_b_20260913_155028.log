@@ -1,0 +1,70 @@
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Unexpected keys (head.head_dist.bn.num_batches_tracked, head.head_dist.bn.bias, head.head_dist.bn.running_mean, head.head_dist.bn.running_var, head.head_dist.bn.weight) found while loading pretrained weights. This may be expected if model is being adapted.
+OpenBLAS error: Memory allocation still failed after 10 retries, giving up.
+OpenBLAS error: Memory allocation stilOpenBLAS error: Memory allocation still failed after 10 retries, giving up.
+OpenBLAS error: Memory allocation still failed after 10 retries, giving up.
+l failed after 10 retries, giving up.
+OpenBLAS error: MemorOpenOpenBLASOpe error:y allocation still failed after 10 retries, giving up.
+nBLBLAS error: MemoOA Memory allocation still failed after 10 retries, giving up.
+S error: Memory allocation still failed after 10 retries, giving up.
+Ory allocation still failed after 10 retries, giving up.
+OpenBLAS error: Memory allocation still failed after 10 retries, giving up.
+OpenBLAS error: Memory allocation still failed after 10 retries, giving up.
+penBLAS error: Memory allocation still failed after 10 retries, giving up.
+penBLAS error: Memory allocation still failed after 10 retries, giving up.
+OpenBLOAS errorpenBLAS error: Memory allocation still failed af: Memory allocation still failed after 10 retries, giving up.
+ter 10 retries, giving up.
+OpenBLAS error: Memory allocationOpenBOLAS error: MemoO still failed after 10 retries, giving up.
+pernBLAS erroy allocation still failed after 10OpenBLAS err: Memory allocation still failed after 10 retries, giving up.
+ror: MemoOpenBLAS error: Memory allocary allocation still failed after 10 retries, giving up.
+tion still failed after 10 retries, giving up.
+OpenBLAS error: Memory allocation still failed after 10 retries, giving up.
+OpenBLAS errorOpenBLAS error: Memory : Memory allocation still failed after 10 retries, giving up.
+allocation still failed after 10 retries, giving up.
+OpenBLAS error: Memory allocation still failed after 10 retries, giving up.
+OpenBLAS error: Memory allocation still failed after 10 retries, giving up.
+OpenBLAS erroOr: Memory allocation still failed after 10 retries, giving up.
+[env] torch=2.14.0+cu126 timm=1.0.29 cuda=True device=cuda | python=3.14.5
+[label] K=37 | 0=Abyssinian | 1=American Bulldog | 36=Yorkshire Terrier
+[data] train=2940 val=740 test=3669 | 类别覆盖 train=37/val=37/test=37 (K=37)
+[data] root=data/oxford-iiit-pet train_list=datasets/lists/pet_train.txt val_list=datasets/lists/pet_val.txt test_list=datasets/lists/pet_test.txt
+[model] name=repvit_m0_9 tag=dist_300e_in1k hf_hub_id=timm/repvit_m0_9.dist_300e_in1k distillation=False
+[model] 参数量 total=4,732,805 trainable=4,732,805 head=15,013
+[model] 口径：未融合、单头、C=37 = 4,732,805（≈4.73M），本任务应命中此值；timm 裸 create_model 的未融合蒸馏双头 C=1000 = 5,489,328（≈5.49M）；未融合、单头、C=1000 = 5,103,560（≈5.10M）；融合后单头 = 5,067,056（C=1000，融合后单头）/ 4,696,301（C=37，融合后单头），净减 36,504，以本机实测为准
+[optim] group=backbone_decay     n_params=126  lr=5.000e-05 wd=0.05
+[optim] group=backbone_no_decay  n_params=255  lr=5.000e-05 wd=0.0
+[optim] group=head_no_decay      n_params=3    lr=1.000e-03 wd=0.0
+[optim] group=head_decay         n_params=1    lr=1.000e-03 wd=0.05
+Traceback (most recent call last):
+  File "C:\Users\14675\AppData\Roaming\Python\Python314\site-packages\torch\utils\data\dataloader.py", line 1293, in _try_get_data
+    data = self._data_queue.get(timeout=timeout)
+  File "C:\Python314\Lib\queue.py", line 209, in get
+    raise Empty
+_queue.Empty
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\14675\Desktop\one团队秋招ai算法\RepViT-Reproduction\tools\train.py", line 798, in <module>
+    main()
+    ~~~~^^
+  File "C:\Users\14675\Desktop\one团队秋招ai算法\RepViT-Reproduction\tools\train.py", line 683, in main
+    va = evaluate(model, val_loader, device, K)
+  File "C:\Users\14675\AppData\Roaming\Python\Python314\site-packages\torch\utils\_contextlib.py", line 124, in decorate_context
+    return func(*args, **kwargs)
+  File "C:\Users\14675\Desktop\one团队秋招ai算法\RepViT-Reproduction\tools\train.py", line 454, in evaluate
+    for x, y, stem in loader:
+                      ^^^^^^
+  File "C:\Users\14675\AppData\Roaming\Python\Python314\site-packages\torch\utils\data\dataloader.py", line 725, in __next__
+    data = self._next_data()
+  File "C:\Users\14675\AppData\Roaming\Python\Python314\site-packages\torch\utils\data\dataloader.py", line 1507, in _next_data
+    idx, data = self._get_data()
+                ~~~~~~~~~~~~~~^^
+  File "C:\Users\14675\AppData\Roaming\Python\Python314\site-packages\torch\utils\data\dataloader.py", line 1456, in _get_data
+    success, data = self._try_get_data()
+                    ~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\14675\AppData\Roaming\Python\Python314\site-packages\torch\utils\data\dataloader.py", line 1306, in _try_get_data
+    raise RuntimeError(
+        f"DataLoader worker (pid(s) {pids_str}) exited unexpectedly"
+    ) from e
+RuntimeError: DataLoader worker (pid(s) 34128, 27936, 31752, 33632) exited unexpectedly

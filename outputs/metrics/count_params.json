@@ -1,0 +1,92 @@
+{
+  "experiment": "count_params",
+  "timestamp": "2026-09-13T14:19:16+08:00",
+  "command": "tools/count_params.py",
+  "cwd_rel": ".",
+  "host": "LXY",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "python": "3.14.5",
+  "model": "repvit_m0_9",
+  "impl": "timm",
+  "unit": "params（可学习参数张量元素数，不含 buffer）",
+  "param_definition": "sum(p.numel() for p in model.parameters())",
+  "backbone_definition": "named_parameters() 去掉 head/classifier 前缀后的元素数之和",
+  "fuse_definition": "eval() 后 timm 用 model.fuse()，official 用等价 replace_batchnorm 递归融合",
+  "results": {
+    "m0_9_params_train_double_head": 5489328,
+    "m0_9_params_single_head_unfused": 5103560,
+    "m0_9_params_backbone": 4717792,
+    "m0_9_params_pet37_unfused": 4732805,
+    "m0_9_params_fused_c1000": 5067056,
+    "m0_9_params_fused_c37": 4696301,
+    "m0_9_params_fused_delta": 36504
+  },
+  "items": [
+    {
+      "item": 1,
+      "key": "m0_9_params_train_double_head",
+      "desc": "训练态双头（含蒸馏头，C=1000，未融合）",
+      "value": 5489328,
+      "reference": 5489328,
+      "flag": "OK",
+      "delta_vs_reference": 0
+    },
+    {
+      "item": 2,
+      "key": "m0_9_params_single_head_unfused",
+      "desc": "未融合单头（C=1000）",
+      "value": 5103560,
+      "reference": 5103560,
+      "flag": "OK",
+      "delta_vs_reference": 0
+    },
+    {
+      "item": 3,
+      "key": "m0_9_params_backbone",
+      "desc": "骨干（不含任何分类头 head/classifier）",
+      "value": 4717792,
+      "reference": 4717792,
+      "flag": "OK",
+      "delta_vs_reference": 0
+    },
+    {
+      "item": 4,
+      "key": "m0_9_params_pet37_unfused",
+      "desc": "未融合单头（C=37，本任务 Pet 建网形态）",
+      "value": 4732805,
+      "reference": 4732805,
+      "flag": "OK",
+      "delta_vs_reference": 0
+    },
+    {
+      "item": 5,
+      "key": "m0_9_params_fused_c1000",
+      "desc": "融合后单头（C=1000，model.fuse() 之后）",
+      "value": 5067056,
+      "reference": 5067056,
+      "flag": "OK",
+      "delta_vs_reference": 0
+    },
+    {
+      "item": 6,
+      "key": "m0_9_params_fused_c37",
+      "desc": "融合后单头（C=37，model.fuse() 之后）",
+      "value": 4696301,
+      "reference": 4696301,
+      "flag": "OK",
+      "delta_vs_reference": 0
+    },
+    {
+      "item": 7,
+      "key": "m0_9_params_fused_delta",
+      "desc": "融合净减（未融合单头 C=1000 − 融合后单头 C=1000）",
+      "value": 36504,
+      "reference": 36504,
+      "flag": "OK",
+      "delta_vs_reference": 0
+    }
+  ],
+  "reference_source": "02_AI_Agent执行规格书.md 模块 9 / PROGRESS.md 关键数字表（本机实测复现）",
+  "matches_reference_all": true,
+  "n_items_diff_from_reference": 0
+}

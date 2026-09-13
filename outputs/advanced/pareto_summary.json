@@ -1,0 +1,52 @@
+{
+  "pareto_by_params": [
+    "repvit_m0_9_in1k",
+    "repvit_m1_0_in1k",
+    "repvit_m1_5_in1k",
+    "repvit_m2_3_in1k"
+  ],
+  "pareto_by_latency": [
+    "repvit_m0_9_in1k",
+    "repvit_m1_0_in1k",
+    "repvit_m1_5_in1k",
+    "repvit_m2_3_in1k"
+  ],
+  "pareto_by_macs": [
+    "repvit_m0_9_in1k",
+    "repvit_m1_0_in1k",
+    "repvit_m1_5_in1k",
+    "repvit_m2_3_in1k"
+  ],
+  "recommended": [
+    {
+      "device": "Intel Iris Xe iGPU / 4-thread CPU",
+      "constraint": "P50 <= 15.0 ms",
+      "model": "repvit_m0_9_in1k",
+      "score": 0.9842,
+      "top1": 78.1,
+      "lat_p50_ms": 7.373,
+      "lat_p95_ms": 8.002,
+      "reason": "P50=7.37ms \u843d\u5728 15.0ms \u9884\u7b97\u5185\uff1bTop-1 \u76f8\u5bf9\u8be5\u9884\u7b97\u5185\u6700\u4f18 79.90% \u5dee 1.80 \u4e2a\u70b9"
+    },
+    {
+      "device": "Intel Iris Xe iGPU / 4-thread CPU",
+      "constraint": "P50 <= 15.0 ms",
+      "model": "repvit_m1_0_in1k",
+      "score": 0.946,
+      "top1": 79.9,
+      "lat_p50_ms": 9.147,
+      "lat_p95_ms": 9.76,
+      "reason": "P50=9.15ms \u843d\u5728 15.0ms \u9884\u7b97\u5185\uff1bTop-1 \u76f8\u5bf9\u8be5\u9884\u7b97\u5185\u6700\u4f18 79.90% \u5dee 0.00 \u4e2a\u70b9"
+    },
+    {
+      "device": "Intel Iris Xe iGPU / 4-thread CPU",
+      "constraint": "P50 <= 15.0 ms",
+      "model": "repvit_m1_1_in1k",
+      "score": 0.9136,
+      "top1": 79.9,
+      "lat_p50_ms": 10.234,
+      "lat_p95_ms": 11.241,
+      "reason": "P50=10.23ms \u843d\u5728 15.0ms \u9884\u7b97\u5185\uff1bTop-1 \u76f8\u5bf9\u8be5\u9884\u7b97\u5185\u6700\u4f18 79.90% \u5dee 0.00 \u4e2a\u70b9"
+    }
+  ]
+}

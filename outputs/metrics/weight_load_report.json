@@ -1,0 +1,44 @@
+{
+  "timestamp": "2026-09-13T14:17:40+08:00",
+  "command": "tools/weight_load_report.py --ckpt checkpoints/pretrained/repvit_m0_9_distill_300e.pth",
+  "n_missing": 2,
+  "n_unexpected": 0,
+  "route_canonical": "B_official",
+  "route_b": {
+    "route": "B_official",
+    "ckpt_path": "checkpoints/pretrained/repvit_m0_9_distill_300e.pth",
+    "ckpt_bytes": 22422548,
+    "ckpt_format": "official_dict",
+    "ckpt_tensors": 713,
+    "model_keys": 706,
+    "num_classes": 37,
+    "distillation": false,
+    "n_missing": 2,
+    "n_unexpected": 0,
+    "missing_keys": [
+      "classifier.classifier.l.weight",
+      "classifier.classifier.l.bias"
+    ],
+    "unexpected_keys": [],
+    "dropped_by_shape": [
+      "classifier.classifier.l.weight",
+      "classifier.classifier.l.bias"
+    ],
+    "dropped_by_prefix": [
+      "classifier.classifier.l.weight",
+      "classifier.classifier.l.bias",
+      "classifier.classifier_dist.bn.weight",
+      "classifier.classifier_dist.bn.bias",
+      "classifier.classifier_dist.bn.running_mean",
+      "classifier.classifier_dist.bn.running_var",
+      "classifier.classifier_dist.bn.num_batches_tracked",
+      "classifier.classifier_dist.l.weight",
+      "classifier.classifier_dist.l.bias"
+    ],
+    "model_params": 4732805
+  },
+  "route_a": null,
+  "equivalence_official_vs_timm": null,
+  "head_key_regex": "^(classifier\\.classifier|classifier\\.classifier_dist|head\\.head|head\\.head_dist)",
+  "note": "n_missing/n_unexpected \u53d6\u81ea\u8def\u7ebf B\uff08\u5b98\u65b9 .pth \u914d vendored \u5b98\u65b9\u5b9e\u73b0\uff0c\u540c\u4f53\u7cfb\u914d\u5bf9\uff09\u3002\u5b98\u65b9 .pth \u4e0e timm \u5b9e\u73b0\u7684\u952e\u540d\u7a7a\u95f4\u4e0d\u76f8\u4ea4\uff08features.N.* / classifier.classifier.* \u5bf9 stages.M.* / head.head.*\uff0c\u5b9e\u6d4b\u4ea4\u96c6\u4e3a 0\uff09\uff0c\u8de8\u4f53\u7cfb\u52a0\u8f7d\u5fc5\u7136 unexpected=713\uff0c\u6545 DoD #12 \u7684\u5224\u636e\u53ea\u80fd\u5728\u540c\u4f53\u7cfb\u914d\u5bf9\u4e0b\u6210\u7acb\u3002"
+}
