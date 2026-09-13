@@ -2,8 +2,8 @@
 
 - repo_root: .                              # 只写相对路径
 - last_update: 2026-09-13T17:40:00+08:00
-- current_module: M13（全部模块完成，待推送到 GitHub）
-- overall: 12/13 done, 0 blocked（M13 收尾中）
+- current_module: M13 完成（已推送到 GitHub）
+- overall: 13/13 done, 0 blocked
 - env: python=3.14.5, torch=2.14.0+cu126, timm=1.0.29, onnxruntime=1.30.0, device=cuda(RTX 4060 Laptop 8GB)
 
 ## 模块状态
@@ -22,7 +22,7 @@
 | M10 | ONNX 导出与基准 | done | 09-13 14:15 | 09-13 14:50 | onnx/*.onnx, outputs/benchmarks/ | PASS |
 | M11 | 进阶任务 | done | 09-13 16:45 | 09-13 17:05 | outputs/advanced/（家族/消融/深度重参数化/鲁棒性/可解释性） | PASS |
 | M12 | 报告与 PPT 素材 | done | 09-13 17:10 | 09-13 17:36 | outputs/report_assets/, report.pdf, 答辩PPT_RepViT.pptx/.pdf | PASS |
-| M13 | 全局验收 | in_progress | 09-13 17:36 | — | outputs/metrics/selfcheck_report.json | 34/34 PASS |
+| M13 | 全局验收 | done | 09-13 17:36 | 09-13 18:05 | outputs/metrics/selfcheck_report.json | **34/34 PASS** |
 
 ## 关键数字（每个数字必须给出文件与命令）
 
@@ -189,3 +189,38 @@ A（RandAugment）抵消了 B（差异化 lr）单独使用时的负作用。
   教训：`tools/check_weights.py` 原来只比字节数，会把它判成 OK；已加固为
   **字节数 + zip 中央目录自检 + torch.load 实测**三道校验（`loadable=False` 计数必须为 0），
   并修正了 m1_5 的期望字节数为 59,375,411。
+
+## M13 全局验收与推送
+
+- `python tools/selfcheck.py` → **34/34 PASS，0 FAIL**
+- DoD 37 条逐条自检通过；工具零硬编码绝对路径（`paths` 检查 0 处命中）
+- 已推送到公开仓库：**https://github.com/8ga-tech/RepViT-Reproduction**
+  （447 个文件、187.8 MB；2 个 checkpoint + 4 个 ONNX 已入库）
+
+### 推送过程中的环境约束（全部实测，已如实处理）
+
+| 通道 | 实测结果 | 处置 |
+|---|---|---|
+| `git push` over HTTPS (`github.com`) | `Recv failure: Connection was reset`（直连被阻断，HTTP 000） | 不可用 |
+| SSH (`ssh.github.com:443` / `:22`) | TCP + SSH 握手成功，但 `Permission denied (publickey)` | 缺 SSH key |
+| `gh ssh-key add` | `HTTP 404`——token 缺 `admin:public_key` scope | 无法自助加 key |
+| `gh auth refresh -s admin:public_key` | 需要 `github.com/login/device/code`，同样被阻断 | 不可用 |
+| **`api.github.com`** | **HTTP 200**，token 有 `repo` scope | **✅ 唯一可用通道** |
+
+最终用 **GitHub Git Data API** 推送（`_build/push_via_api.py`）：逐文件建 blob → 建 tree
+→ 建 commit → 更新 ref。两处踩坑并已修正：
+
+1. **空仓库不能直接建 blob**（`409 Git Repository is empty`）——
+   先用 Contents API 写一个文件建立首个 commit，再走 Git Data API。
+2. **内容必须取自 git 对象，不能读工作区文件**——Windows 上 `core.autocrlf=true`
+   会把仓库里的 LF 在工作区转成 CRLF；直接读文件上传导致 **220/447 个 blob SHA
+   与本地 commit 不符**。改用 `git cat-file --batch` 取字节后，
+   远端 447 个 blob 与本地 commit **逐字节一致**（已逐 blob 比对验证）。
+3. API 对单个 blob 有请求体上限：57.6 MB 的完整 checkpoint 会被
+   `422 input too large` 拒绝（实测）。故交付**推理态瘦身版**（19.4 MB/份，
+   模型张量逐位相同，仅去掉 optimizer/scheduler/scaler/rng_state），
+   完整版保留在本机 `checkpoints/_full/`。
+
+> 因此远端提交 SHA（`81693dd4`）与本地（`726a55c`）不同——commit SHA 编码了
+> 提交时间与 committer，API 写入无法复现本地时间戳。但**两边的 tree 内容逐字节一致**，
+> 这是可以验证的强等价。
