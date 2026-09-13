@@ -1,7 +1,7 @@
 {
   "experiment": "same_budget",
-  "timestamp": "2026-09-13T16:42:12+08:00",
-  "command": "tools/same_budget.py --a outputs/logs/baseline_metrics.csv --b outputs/logs/opt_abl_ab_metrics.csv",
+  "timestamp": "2026-09-14T00:07:36+08:00",
+  "command": "tools/same_budget.py --a outputs/logs/baseline_metrics.csv --b outputs/logs/opt_combo_metrics.csv",
   "cwd_rel": ".",
   "host": "LXY",
   "platform": "Windows-11-10.0.26200-SP0",
@@ -26,8 +26,8 @@
     "spe_from_cfg": 45
   },
   "b": {
-    "experiment": "opt_abl_ab",
-    "csv": "C:/Users/14675/Desktop/one\u56e2\u961f\u79cb\u62dbai\u7b97\u6cd5/RepViT-Reproduction/outputs/logs/opt_abl_ab_metrics.csv",
+    "experiment": "opt_combo",
+    "csv": "C:/Users/14675/Desktop/one\u56e2\u961f\u79cb\u62dbai\u7b97\u6cd5/RepViT-Reproduction/outputs/logs/opt_combo_metrics.csv",
     "csv_epochs": 40,
     "step_col": null,
     "batch_size": 64,
@@ -39,8 +39,8 @@
     "steps_source": "config_effective.json \u63a8\u7b97",
     "total_iters": 1800,
     "total_iters_source": "config_effective: 2940 \u884c train_list / batch_size 64 \uff08drop_last=True\uff09* 40 epochs",
-    "config_effective": "C:/Users/14675/Desktop/one\u56e2\u961f\u79cb\u62dbai\u7b97\u6cd5/RepViT-Reproduction/outputs/logs/opt_abl_ab_config_effective.json",
-    "steps_jsonl": "C:/Users/14675/Desktop/one\u56e2\u961f\u79cb\u62dbai\u7b97\u6cd5/RepViT-Reproduction/outputs/logs/opt_abl_ab_steps.jsonl",
+    "config_effective": "C:/Users/14675/Desktop/one\u56e2\u961f\u79cb\u62dbai\u7b97\u6cd5/RepViT-Reproduction/outputs/logs/opt_combo_config_effective.json",
+    "steps_jsonl": "C:/Users/14675/Desktop/one\u56e2\u961f\u79cb\u62dbai\u7b97\u6cd5/RepViT-Reproduction/outputs/logs/opt_combo_steps.jsonl",
     "steps_jsonl_median_per_epoch": 40,
     "spe_from_cfg": 45
   },

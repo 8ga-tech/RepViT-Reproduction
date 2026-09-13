@@ -1,17 +1,17 @@
 {
   "experiment": "count_params",
-  "timestamp": "2026-09-13T14:19:16+08:00",
-  "command": "tools/count_params.py",
+  "timestamp": "2026-09-14T00:07:24+08:00",
+  "command": "tools/count_params.py --model repvit_m0_9",
   "cwd_rel": ".",
   "host": "LXY",
   "platform": "Windows-11-10.0.26200-SP0",
   "python": "3.14.5",
   "model": "repvit_m0_9",
   "impl": "timm",
-  "unit": "params（可学习参数张量元素数，不含 buffer）",
+  "unit": "params\uff08\u53ef\u5b66\u4e60\u53c2\u6570\u5f20\u91cf\u5143\u7d20\u6570\uff0c\u4e0d\u542b buffer\uff09",
   "param_definition": "sum(p.numel() for p in model.parameters())",
-  "backbone_definition": "named_parameters() 去掉 head/classifier 前缀后的元素数之和",
-  "fuse_definition": "eval() 后 timm 用 model.fuse()，official 用等价 replace_batchnorm 递归融合",
+  "backbone_definition": "named_parameters() \u53bb\u6389 head/classifier \u524d\u7f00\u540e\u7684\u5143\u7d20\u6570\u4e4b\u548c",
+  "fuse_definition": "eval() \u540e timm \u7528 model.fuse()\uff0cofficial \u7528\u7b49\u4ef7 replace_batchnorm \u9012\u5f52\u878d\u5408",
   "results": {
     "m0_9_params_train_double_head": 5489328,
     "m0_9_params_single_head_unfused": 5103560,
@@ -25,7 +25,7 @@
     {
       "item": 1,
       "key": "m0_9_params_train_double_head",
-      "desc": "训练态双头（含蒸馏头，C=1000，未融合）",
+      "desc": "\u8bad\u7ec3\u6001\u53cc\u5934\uff08\u542b\u84b8\u998f\u5934\uff0cC=1000\uff0c\u672a\u878d\u5408\uff09",
       "value": 5489328,
       "reference": 5489328,
       "flag": "OK",
@@ -34,7 +34,7 @@
     {
       "item": 2,
       "key": "m0_9_params_single_head_unfused",
-      "desc": "未融合单头（C=1000）",
+      "desc": "\u672a\u878d\u5408\u5355\u5934\uff08C=1000\uff09",
       "value": 5103560,
       "reference": 5103560,
       "flag": "OK",
@@ -43,7 +43,7 @@
     {
       "item": 3,
       "key": "m0_9_params_backbone",
-      "desc": "骨干（不含任何分类头 head/classifier）",
+      "desc": "\u9aa8\u5e72\uff08\u4e0d\u542b\u4efb\u4f55\u5206\u7c7b\u5934 head/classifier\uff09",
       "value": 4717792,
       "reference": 4717792,
       "flag": "OK",
@@ -52,7 +52,7 @@
     {
       "item": 4,
       "key": "m0_9_params_pet37_unfused",
-      "desc": "未融合单头（C=37，本任务 Pet 建网形态）",
+      "desc": "\u672a\u878d\u5408\u5355\u5934\uff08C=37\uff0c\u672c\u4efb\u52a1 Pet \u5efa\u7f51\u5f62\u6001\uff09",
       "value": 4732805,
       "reference": 4732805,
       "flag": "OK",
@@ -61,7 +61,7 @@
     {
       "item": 5,
       "key": "m0_9_params_fused_c1000",
-      "desc": "融合后单头（C=1000，model.fuse() 之后）",
+      "desc": "\u878d\u5408\u540e\u5355\u5934\uff08C=1000\uff0cmodel.fuse() \u4e4b\u540e\uff09",
       "value": 5067056,
       "reference": 5067056,
       "flag": "OK",
@@ -70,7 +70,7 @@
     {
       "item": 6,
       "key": "m0_9_params_fused_c37",
-      "desc": "融合后单头（C=37，model.fuse() 之后）",
+      "desc": "\u878d\u5408\u540e\u5355\u5934\uff08C=37\uff0cmodel.fuse() \u4e4b\u540e\uff09",
       "value": 4696301,
       "reference": 4696301,
       "flag": "OK",
@@ -79,14 +79,14 @@
     {
       "item": 7,
       "key": "m0_9_params_fused_delta",
-      "desc": "融合净减（未融合单头 C=1000 − 融合后单头 C=1000）",
+      "desc": "\u878d\u5408\u51c0\u51cf\uff08\u672a\u878d\u5408\u5355\u5934 C=1000 \u2212 \u878d\u5408\u540e\u5355\u5934 C=1000\uff09",
       "value": 36504,
       "reference": 36504,
       "flag": "OK",
       "delta_vs_reference": 0
     }
   ],
-  "reference_source": "02_AI_Agent执行规格书.md 模块 9 / PROGRESS.md 关键数字表（本机实测复现）",
+  "reference_source": "02_AI_Agent\u6267\u884c\u89c4\u683c\u4e66.md \u6a21\u5757 9 / PROGRESS.md \u5173\u952e\u6570\u5b57\u8868\uff08\u672c\u673a\u5b9e\u6d4b\u590d\u73b0\uff09",
   "matches_reference_all": true,
   "n_items_diff_from_reference": 0
 }

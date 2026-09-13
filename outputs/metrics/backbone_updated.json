@@ -1,6 +1,6 @@
 {
   "experiment": "backbone_updated",
-  "timestamp": "2026-09-13T14:29:34+08:00",
+  "timestamp": "2026-09-14T00:07:45+08:00",
   "command": "tools/check_backbone_updated.py --ckpt checkpoints/baseline_best.pt",
   "cwd_rel": ".",
   "host": "LXY",
@@ -11,9 +11,9 @@
   "impl": "timm",
   "num_classes": 37,
   "pretrained_source": "default_fallback",
-  "pretrained_path": "C:/Users/14675/Desktop/one团队秋招ai算法/RepViT-Reproduction/checkpoints/pretrained/repvit_m0_9_distill_300e.pth",
+  "pretrained_path": "C:/Users/14675/Desktop/one\u56e2\u961f\u79cb\u62dbai\u7b97\u6cd5/RepViT-Reproduction/checkpoints/pretrained/repvit_m0_9_distill_300e.pth",
   "compare_mode": "pretrained(position_prefix)",
-  "compare_note": "键名方案不一致（timm 的 stem/stages.* vs 官方的 features.*），改按「枚举顺序 + 形状序列」逐位对齐：比较前 706 个张量，其中 704 个形状完全一致（99.7%），可安全配对；形状对不上的 2 个（换头后的分类头）已剔除，保持随机初值。若两套结构有任何差异，形状比率不会达到 95%，此处会直接判定失败",
+  "compare_note": "\u952e\u540d\u65b9\u6848\u4e0d\u4e00\u81f4\uff08timm \u7684 stem/stages.* vs \u5b98\u65b9\u7684 features.*\uff09\uff0c\u6539\u6309\u300c\u679a\u4e3e\u987a\u5e8f + \u5f62\u72b6\u5e8f\u5217\u300d\u9010\u4f4d\u5bf9\u9f50\uff1a\u6bd4\u8f83\u524d 706 \u4e2a\u5f20\u91cf\uff0c\u5176\u4e2d 704 \u4e2a\u5f62\u72b6\u5b8c\u5168\u4e00\u81f4\uff0899.7%\uff09\uff0c\u53ef\u5b89\u5168\u914d\u5bf9\uff1b\u5f62\u72b6\u5bf9\u4e0d\u4e0a\u7684 2 \u4e2a\uff08\u6362\u5934\u540e\u7684\u5206\u7c7b\u5934\uff09\u5df2\u5254\u9664\uff0c\u4fdd\u6301\u968f\u673a\u521d\u503c\u3002\u82e5\u4e24\u5957\u7ed3\u6784\u6709\u4efb\u4f55\u5dee\u5f02\uff0c\u5f62\u72b6\u6bd4\u7387\u4e0d\u4f1a\u8fbe\u5230 95%\uff0c\u6b64\u5904\u4f1a\u76f4\u63a5\u5224\u5b9a\u5931\u8d25",
   "judgement": "(a-b).abs().max() > 0",
   "n_ckpt_tensors": 706,
   "n_comparable": 706,
@@ -28,5 +28,5 @@
   ],
   "stage_changed_count": 687,
   "pass": true,
-  "note": "changed_backbone 排除了 head/classifier 前缀；骨干为 0 时即便总变化数 > 0 也判 FAIL"
+  "note": "changed_backbone \u6392\u9664\u4e86 head/classifier \u524d\u7f00\uff1b\u9aa8\u5e72\u4e3a 0 \u65f6\u5373\u4fbf\u603b\u53d8\u5316\u6570 > 0 \u4e5f\u5224 FAIL"
 }

@@ -219,7 +219,7 @@ M1.0 相比 M0.9：参数量 +33.0%、MACs +34.9%，Top-1 只提升 **+1.70 个�
 （ONNX Runtime CPUExecutionProvider）、同一线程数（4）、batch=1、FP32、
 预热 10 次 + 正式 50 次。延迟取自 `outputs/benchmarks/*_benchmark.json`。
 
-| 型号 | 参数量（融合后单头，M） | MACs (G) | ONNX 文件 (MB) | 本机 Top-1 (%) | 官方公布 | **P50 (ms)** | P95 (ms) |
+| 型号 | 参数量 (M)<br>融合后单头 | MACs (G)<br>thop 未融合 | ONNX 文件 (MB) | 本机 Top-1 (%) | 官方公布 | **P50 (ms)**<br>ORT CPU | P95 (ms) |
 |---|---|---|---|---|---|---|---|
 | RepViT-M0.9 | 5.067 | 0.847 | 20.36 | 78.20 | 78.7 | **7.37** | 8.00 |
 | RepViT-M1.0 | 6.810 | 1.143 | 27.33 | 79.90 | 80.0 | 9.15 | 9.76 |
@@ -243,8 +243,14 @@ M1.0 相比 M0.9：参数量 +33.0%、MACs +34.9%，Top-1 只提升 **+1.70 个�
 
 > **结论**：M1.1 相对 M1.0 **零精度增益却多 1.09 ms**，属于被支配点；
 > M2.3 付出 4.4 倍延迟只换来 0.3 个点。**在 CPU 部署目标下，M0.9/M1.0 才是合理选择。**
-> 数据来源：`outputs/advanced/family_summary.csv`、`marginal_returns.csv`、
-> `model_recommendation.csv`、`pareto_summary.json` 与 `outputs/advanced/*_vs_acc.png`。
+> 数据来源：`outputs/pretrained_eval/summary.csv`（参数量、MACs）、
+> `outputs/benchmarks/summary.csv`（ONNX P50/P95）、`outputs/advanced/{marginal_returns,
+> model_recommendation,pareto_summary}.csv|json` 与 `outputs/advanced/*_vs_acc.png`。
+>
+> **注意不要把两张汇总表的数字混用**：`outputs/benchmarks/family_summary.csv` 是
+> `tools/eval_family.py` 的产物，它的 `params_M` 是**训练态双头**口径（M0.9 = 5.489M）、
+> 延迟是 **PyTorch CPU** 计时（M0.9 = 36.1 ms），与上表的"融合后单头 + ONNX 延迟"
+> 是两个不同口径，**不可混着引用**。
 
 ---
 
