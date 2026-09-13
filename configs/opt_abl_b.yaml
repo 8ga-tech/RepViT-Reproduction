@@ -1,0 +1,10 @@
+# configs/opt_abl_b.yaml
+_base_: baseline.yaml
+
+experiment_name: opt_abl_b
+
+optim:
+  backbone_lr_scale: 0.05   # 差异键 1：主干有效 lr = 0.001 x 0.05 = 5e-5
+
+_expected_diff_:              # 共 1 个差异键；与 configs/expected_diff.yaml 的 opt_abl_b.expect 逐字一致
+  - optim.backbone_lr_scale

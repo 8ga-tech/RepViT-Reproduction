@@ -1,0 +1,24 @@
+# RepViT-Reproduction — 运行时依赖（不含 torch / torchvision）
+#
+# torch 与 torchvision 必须单独安装，且必须走 PyTorch 官方通道而不是 PyPI：
+#   本机启用 CUDA（RTX 4060 Laptop 8GB）：
+#     python -m pip install --index-url https://download.pytorch.org/whl/cu126 \
+#            torch==2.14.0+cu126 torchvision==0.29.0+cu126
+#   纯 CPU 机器：
+#     python -m pip install torch==2.14.0 torchvision==0.29.0
+#
+# 为什么不能写进本文件：cu126 的 wheel 不在 PyPI 上，写进来 pip 会装成 PyPI 的默认构建。
+# 依规格书 §1.4.2 / §11.0.1。
+
+timm==1.0.29
+onnx==1.22.0
+onnxruntime==1.30.0
+pillow==12.3.0
+numpy==2.5.3
+pandas
+matplotlib
+scikit-learn
+umap-learn
+fvcore
+thop
+opencv-python

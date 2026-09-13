@@ -1,0 +1,119 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" data-pptx-page-role="content">
+  <rect id="bg-canvas" data-pptx-role="background" x="0" y="0" width="1280" height="720" fill="#0B1220"/>
+
+  <g id="page-header" data-pptx-bounds="72 44 1136 100">
+    <text x="72" y="82" font-family="Microsoft YaHei" font-size="34" font-weight="bold" fill="#E6EDF7">8 组实验落在 0.6 个点的窄带内 —— 这是噪声，不是提升</text>
+    <text x="72" y="118" font-family="Microsoft YaHei" font-size="16" fill="#93A4C0">诚实结论比「挑一个最好看的数」更有价值；题目明确允许优化结果不提升准确率</text>
+    <line x1="72" y1="136" x2="1208" y2="136" stroke="#1E3050" stroke-width="2"/>
+  </g>
+
+  <g id="result-table" data-pptx-bounds="72 168 800 316">
+    <rect x="72" y="168" width="800" height="316" rx="10" fill="#0F1728" stroke="#1E3050" stroke-width="1"/>
+    <g id="tbl-head">
+      <rect x="72" y="168" width="800" height="46" rx="10" fill="#1B2740"/>
+      <text x="100" y="198" font-family="Microsoft YaHei" font-size="14" font-weight="bold" fill="#93A4C0">实验</text>
+      <text x="290" y="198" font-family="Microsoft YaHei" font-size="14" font-weight="bold" fill="#93A4C0" text-anchor="middle">差异键</text>
+      <text x="430" y="198" font-family="Microsoft YaHei" font-size="14" font-weight="bold" fill="#93A4C0" text-anchor="middle">val Macro-F1</text>
+      <text x="600" y="198" font-family="Microsoft YaHei" font-size="14" font-weight="bold" fill="#93A4C0" text-anchor="middle">test Top-1</text>
+      <text x="770" y="198" font-family="Microsoft YaHei" font-size="14" font-weight="bold" fill="#93A4C0" text-anchor="middle">test Macro-F1</text>
+    </g>
+    <g id="r-baseline">
+      <text x="100" y="244" font-family="Consolas" font-size="15" fill="#E6EDF7">baseline</text>
+      <text x="290" y="244" font-family="Consolas" font-size="15" fill="#5C7096" text-anchor="middle">—</text>
+      <text x="430" y="244" font-family="Consolas" font-size="15" fill="#E6EDF7" text-anchor="middle">0.9462</text>
+      <text x="600" y="244" font-family="Consolas" font-size="15" fill="#E6EDF7" text-anchor="middle">92.34%</text>
+      <text x="770" y="244" font-family="Consolas" font-size="15" fill="#E6EDF7" text-anchor="middle">92.22%</text>
+    </g>
+    <g id="r-mix">
+      <text x="100" y="278" font-family="Consolas" font-size="15" fill="#93A4C0">opt_mix (B)</text>
+      <text x="290" y="278" font-family="Consolas" font-size="15" fill="#5C7096" text-anchor="middle">3</text>
+      <text x="430" y="278" font-family="Consolas" font-size="15" fill="#93A4C0" text-anchor="middle">0.9489</text>
+      <text x="600" y="278" font-family="Consolas" font-size="15" fill="#93A4C0" text-anchor="middle">92.42%</text>
+      <text x="770" y="278" font-family="Consolas" font-size="15" fill="#93A4C0" text-anchor="middle">92.27%</text>
+    </g>
+    <g id="r-rand">
+      <text x="100" y="312" font-family="Consolas" font-size="15" fill="#93A4C0">opt_randaug (C)</text>
+      <text x="290" y="312" font-family="Consolas" font-size="15" fill="#5C7096" text-anchor="middle">8</text>
+      <text x="430" y="312" font-family="Consolas" font-size="15" fill="#93A4C0" text-anchor="middle">0.9450</text>
+      <text x="600" y="312" font-family="Consolas" font-size="15" fill="#93A4C0" text-anchor="middle">92.18%</text>
+      <text x="770" y="312" font-family="Consolas" font-size="15" fill="#93A4C0" text-anchor="middle">92.06%</text>
+    </g>
+    <g id="r-disc">
+      <text x="100" y="346" font-family="Consolas" font-size="15" fill="#93A4C0">opt_disc (D)</text>
+      <text x="290" y="346" font-family="Consolas" font-size="15" fill="#5C7096" text-anchor="middle">1</text>
+      <text x="430" y="346" font-family="Consolas" font-size="15" fill="#93A4C0" text-anchor="middle">0.9421</text>
+      <text x="600" y="346" font-family="Consolas" font-size="15" fill="#93A4C0" text-anchor="middle">92.20%</text>
+      <text x="770" y="346" font-family="Consolas" font-size="15" fill="#93A4C0" text-anchor="middle">92.11%</text>
+    </g>
+    <g id="r-combo">
+      <text x="100" y="380" font-family="Consolas" font-size="15" fill="#35D0F0">opt_combo (A)</text>
+      <text x="290" y="380" font-family="Consolas" font-size="15" fill="#5C7096" text-anchor="middle">12</text>
+      <text x="430" y="380" font-family="Consolas" font-size="15" fill="#35D0F0" text-anchor="middle">0.9489</text>
+      <text x="600" y="380" font-family="Consolas" font-size="15" fill="#35D0F0" text-anchor="middle">92.12%</text>
+      <text x="770" y="380" font-family="Consolas" font-size="15" fill="#35D0F0" text-anchor="middle">92.01%</text>
+    </g>
+    <g id="r-abla">
+      <text x="100" y="414" font-family="Consolas" font-size="15" fill="#93A4C0">opt_abl_a (=C)</text>
+      <text x="290" y="414" font-family="Consolas" font-size="15" fill="#5C7096" text-anchor="middle">8</text>
+      <text x="430" y="414" font-family="Consolas" font-size="15" fill="#93A4C0" text-anchor="middle">0.9502</text>
+      <text x="600" y="414" font-family="Consolas" font-size="15" fill="#93A4C0" text-anchor="middle">92.48%</text>
+      <text x="770" y="414" font-family="Consolas" font-size="15" fill="#93A4C0" text-anchor="middle">92.36%</text>
+    </g>
+    <g id="r-ablb">
+      <text x="100" y="448" font-family="Consolas" font-size="15" fill="#93A4C0">opt_abl_b (=D)</text>
+      <text x="290" y="448" font-family="Consolas" font-size="15" fill="#5C7096" text-anchor="middle">1</text>
+      <text x="430" y="448" font-family="Consolas" font-size="15" fill="#93A4C0" text-anchor="middle">0.9433</text>
+      <text x="600" y="448" font-family="Consolas" font-size="15" fill="#93A4C0" text-anchor="middle">92.53%</text>
+      <text x="770" y="448" font-family="Consolas" font-size="15" fill="#93A4C0" text-anchor="middle">92.44%</text>
+    </g>
+  </g>
+
+  <g id="noise-argument" data-pptx-bounds="904 168 304 316">
+    <rect x="904" y="168" width="304" height="316" rx="10" fill="#1A1408" stroke="#FFC857" stroke-width="1"/>
+    <text x="928" y="202" font-family="Microsoft YaHei" font-size="17" font-weight="bold" fill="#FFC857">为什么说是噪声</text>
+    <line x1="928" y1="216" x2="1184" y2="216" stroke="#3A2E12" stroke-width="1"/>
+
+    <g id="nz-1">
+      <text x="928" y="250" font-family="Microsoft YaHei" font-size="14" fill="#E6EDF7">① 二项分布置信区间</text>
+      <text x="928" y="276" font-family="Microsoft YaHei" font-size="13" fill="#93A4C0">3669 张、Top-1≈0.92 时</text>
+      <text x="928" y="298" font-family="Consolas" font-size="14" fill="#FFC857">95% CI 半宽 ≈ ±0.9 个点</text>
+    </g>
+
+    <g id="nz-2">
+      <text x="928" y="336" font-family="Microsoft YaHei" font-size="14" fill="#E6EDF7">② 同配置重跑的波动</text>
+      <text x="928" y="362" font-family="Microsoft YaHei" font-size="13" fill="#93A4C0">baseline 重跑一次</text>
+      <text x="928" y="384" font-family="Consolas" font-size="14" fill="#FFC857">test 92.26 → 92.34</text>
+      <text x="928" y="406" font-family="Consolas" font-size="14" fill="#FFC857">val F1 0.9502 → 0.9462</text>
+    </g>
+
+    <g id="nz-3">
+      <text x="928" y="442" font-family="Microsoft YaHei" font-size="14" fill="#E6EDF7">③ 无单调关系</text>
+      <text x="928" y="466" font-family="Microsoft YaHei" font-size="13" fill="#93A4C0">三合一的 A 方案反而垫底</text>
+    </g>
+  </g>
+
+  <g id="ablation" data-pptx-bounds="72 500 1136 150">
+    <rect x="72" y="500" width="1136" height="150" rx="10" fill="#0F1728" stroke="#1E3050" stroke-width="1"/>
+    <text x="100" y="534" font-family="Microsoft YaHei" font-size="18" font-weight="bold" fill="#E6EDF7">组合消融：A 抵消了 B 单独使用时的负作用</text>
+    <line x1="100" y1="548" x2="1180" y2="548" stroke="#1E3050" stroke-width="1"/>
+
+    <g id="abl-a">
+      <text x="100" y="584" font-family="Consolas" font-size="20" font-weight="bold" fill="#35D0F0">ΔA = +0.000</text>
+      <text x="100" y="612" font-family="Microsoft YaHei" font-size="14" fill="#93A4C0">RandAugment 单独用：val Top-1 零变化</text>
+    </g>
+    <g id="abl-b">
+      <text x="450" y="584" font-family="Consolas" font-size="20" font-weight="bold" fill="#FF6B6B">ΔB = −0.676</text>
+      <text x="450" y="612" font-family="Microsoft YaHei" font-size="14" fill="#93A4C0">差异化 lr 单独用：val Top-1 掉 0.68 个点</text>
+    </g>
+    <g id="abl-ab">
+      <text x="800" y="584" font-family="Consolas" font-size="20" font-weight="bold" fill="#3FDB9B">I = +0.541</text>
+      <text x="800" y="612" font-family="Microsoft YaHei" font-size="14" fill="#93A4C0">交互项为正，判定超加性（协同）</text>
+    </g>
+  </g>
+
+  <g id="page-footer" data-pptx-bounds="72 652 1136 44">
+    <line x1="72" y1="652" x2="1208" y2="652" stroke="#1E3050" stroke-width="1"/>
+    <text x="72" y="680" font-family="Microsoft YaHei" font-size="13" fill="#5C7096">数据来源：outputs/logs/&lt;exp&gt;_metrics.csv · outputs/metrics/&lt;exp&gt;_test.json · advanced/ablation_summary.json</text>
+    <text x="1208" y="680" font-family="Consolas" font-size="14" fill="#5C7096" text-anchor="end">09</text>
+  </g>
+</svg>

@@ -1,0 +1,50 @@
+{
+  "cfg": {
+    "input_size": "(3, 224, 224)",
+    "interpolation": "bicubic",
+    "mean": "(0.485, 0.456, 0.406)",
+    "std": "(0.229, 0.224, 0.225)",
+    "crop_pct": "0.95",
+    "crop_mode": "center"
+  },
+  "n": 512,
+  "batch": 64,
+  "workers": {
+    "4": {
+      "img_per_sec": 352.77636376216594,
+      "batches": 8
+    }
+  },
+  "end_to_end": {
+    "steps_per_epoch": 8,
+    "workers": 4,
+    "batch": 64,
+    "device": "cuda",
+    "epochs": 4,
+    "epoch_sec": [
+      19.69114039998385,
+      1.4576695000287145,
+      1.4346802000072785,
+      1.3996356999850832
+    ],
+    "loss": [
+      3.63885498046875,
+      3.65924072265625,
+      3.6754150390625,
+      3.682403564453125
+    ],
+    "peak_mem_gb": 2.2
+  },
+  "end_to_end_extrapolation": {
+    "sec_per_step": 0.17883272500087818,
+    "min_40ep": 5.364981750026345,
+    "min_50ep": 6.706227187532932
+  },
+  "verdict": {
+    "gpu_img_per_sec": 557.7,
+    "best_dataloader_img_per_sec": 352.77636376216594,
+    "best_workers": 4,
+    "conclusion": "DATA-bound",
+    "effective_img_per_sec": 352.77636376216594
+  }
+}

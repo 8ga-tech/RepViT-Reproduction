@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" data-pptx-page-role="cover">
+  <rect id="bg-canvas" data-pptx-role="background" x="0" y="0" width="1280" height="720" fill="#0B1220"/>
+
+  <g id="deco-grid" data-pptx-role="decoration" data-pptx-bounds="0 0 1280 720">
+    <line x1="0" y1="180" x2="1280" y2="180" stroke="#16233A" stroke-width="1"/>
+    <line x1="0" y1="540" x2="1280" y2="540" stroke="#16233A" stroke-width="1"/>
+    <line x1="980" y1="0" x2="980" y2="720" stroke="#16233A" stroke-width="1"/>
+  </g>
+
+  <g id="cover-rings" data-pptx-role="decoration" data-pptx-bounds="960 20 300 300">
+    <circle cx="1120" cy="168" r="128" fill="none" stroke="#1E3050" stroke-width="2"/>
+    <circle cx="1120" cy="168" r="86" fill="none" stroke="#24406B" stroke-width="2"/>
+    <circle cx="1120" cy="168" r="14" fill="#35D0F0"/>
+    <line x1="992" y1="168" x2="1248" y2="168" stroke="#2A4A78" stroke-width="2"/>
+    <line x1="1120" y1="40" x2="1120" y2="296" stroke="#2A4A78" stroke-width="2"/>
+  </g>
+
+  <g id="cover-header" data-pptx-bounds="96 120 800 250">
+    <text x="96" y="150" font-family="Consolas" font-size="16" font-weight="bold" letter-spacing="4" fill="#35D0F0">REPVIT REPRODUCTION</text>
+    <text x="96" y="238" font-family="Microsoft YaHei" font-size="46" font-weight="bold" fill="#E6EDF7">RepViT 轻量图像分类模型<tspan x="96" dy="62">复现、优化与多模型部署</tspan></text>
+    <line x1="96" y1="330" x2="856" y2="330" stroke="#35D0F0" stroke-width="3"/>
+  </g>
+
+  <g id="cover-meta" data-pptx-bounds="96 320 820 120">
+    <text x="96" y="350" font-family="Microsoft YaHei" font-size="20" fill="#93A4C0">2026 秋 one 团队 AI 算法组考核 · 答辩汇报</text>
+    <text x="96" y="392" font-family="Consolas" font-size="16" fill="#5C7096">RepViT: Revisiting Mobile CNN From ViT Perspective · CVPR 2024 · arXiv:2307.09283<tspan x="96" dy="32">github.com/8ga-tech/RepViT-Reproduction</tspan></text>
+  </g>
+
+  <g id="cover-metrics" data-pptx-bounds="96 560 1090 110">
+    <line x1="96" y1="560" x2="1184" y2="560" stroke="#1E3050" stroke-width="2"/>
+    <g id="metric-1">
+      <text x="96" y="608" font-family="Consolas" font-size="38" font-weight="bold" fill="#35D0F0">78.20%</text>
+      <text x="96" y="642" font-family="Microsoft YaHei" font-size="15" fill="#93A4C0">ImageNet 子集 Top-1</text>
+    </g>
+    <g id="metric-2">
+      <text x="360" y="608" font-family="Consolas" font-size="38" font-weight="bold" fill="#3FDB9B">92.34%</text>
+      <text x="360" y="642" font-family="Microsoft YaHei" font-size="15" fill="#93A4C0">Pet-37 test Top-1</text>
+    </g>
+    <g id="metric-3">
+      <text x="624" y="608" font-family="Consolas" font-size="38" font-weight="bold" fill="#FFC857">7.1e-06</text>
+      <text x="624" y="642" font-family="Microsoft YaHei" font-size="15" fill="#93A4C0">重参数化 max|Δlogits|</text>
+    </g>
+    <g id="metric-4">
+      <text x="888" y="608" font-family="Consolas" font-size="38" font-weight="bold" fill="#C79BFF">100%</text>
+      <text x="888" y="642" font-family="Microsoft YaHei" font-size="15" fill="#93A4C0">PyTorch↔ONNX Top-1 一致</text>
+    </g>
+  </g>
+</svg>

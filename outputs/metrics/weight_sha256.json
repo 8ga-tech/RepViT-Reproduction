@@ -1,0 +1,90 @@
+{
+  "experiment": "weight_sha256",
+  "timestamp": "2026-09-13T16:46:55+08:00",
+  "command": "tools/check_weights.py --dir checkpoints/pretrained",
+  "cwd_rel": ".",
+  "host": "LXY",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "python": "3.14.5",
+  "dir": "checkpoints/pretrained",
+  "unit": "bytes + sha256",
+  "baseline_bytes": {
+    "repvit_m0_9_distill_300e.pth": 22422548,
+    "repvit_m1_0_distill_300e.pth": 29675245,
+    "repvit_m1_1_distill_300e.pth": 35668677,
+    "repvit_m2_3_distill_300e.pth": 95860931,
+    "repvit_m1_5_distill_300e.pth": 59375411
+  },
+  "files": [
+    {
+      "file": "repvit_m0_9_distill_300e.pth",
+      "zip_ok": true,
+      "zip_detail": "zip \u4e2d\u592e\u76ee\u5f55\u6b63\u5e38\uff08715 \u4e2a\u6210\u5458\uff09",
+      "loadable": true,
+      "load_detail": "\u53ef\u52a0\u8f7d\uff0c713 \u4e2a\u5f20\u91cf",
+      "path_rel": "checkpoints/pretrained/repvit_m0_9_distill_300e.pth",
+      "size_bytes": 22422548,
+      "sha256": "857eb0e6a992591a16ed96b22a73135270032d2b97c2c1f74dd3d0050e0c83e8",
+      "expected_size_bytes": 22422548,
+      "match": true,
+      "within_known_baseline": true
+    },
+    {
+      "file": "repvit_m1_0_distill_300e.pth",
+      "zip_ok": true,
+      "zip_detail": "zip \u4e2d\u592e\u76ee\u5f55\u6b63\u5e38\uff08692 \u4e2a\u6210\u5458\uff09",
+      "loadable": true,
+      "load_detail": "\u53ef\u52a0\u8f7d\uff0c690 \u4e2a\u5f20\u91cf",
+      "path_rel": "checkpoints/pretrained/repvit_m1_0_distill_300e.pth",
+      "size_bytes": 29675245,
+      "sha256": "283bb9865f705481785ac302f15b8bdd1a7b50556f6be8a5e576ec44422a0737",
+      "expected_size_bytes": 29675245,
+      "match": true,
+      "within_known_baseline": true
+    },
+    {
+      "file": "repvit_m1_1_distill_300e.pth",
+      "zip_ok": true,
+      "zip_detail": "zip \u4e2d\u592e\u76ee\u5f55\u6b63\u5e38\uff08640 \u4e2a\u6210\u5458\uff09",
+      "loadable": true,
+      "load_detail": "\u53ef\u52a0\u8f7d\uff0c638 \u4e2a\u5f20\u91cf",
+      "path_rel": "checkpoints/pretrained/repvit_m1_1_distill_300e.pth",
+      "size_bytes": 35668677,
+      "sha256": "1b364220241273d54547ef6632de7f892f71009c300f8aa4236e107974574570",
+      "expected_size_bytes": 35668677,
+      "match": true,
+      "within_known_baseline": true
+    },
+    {
+      "file": "repvit_m1_5_distill_300e.pth",
+      "zip_ok": true,
+      "zip_detail": "zip \u4e2d\u592e\u76ee\u5f55\u6b63\u5e38\uff081108 \u4e2a\u6210\u5458\uff09",
+      "loadable": true,
+      "load_detail": "\u53ef\u52a0\u8f7d\uff0c1106 \u4e2a\u5f20\u91cf",
+      "path_rel": "checkpoints/pretrained/repvit_m1_5_distill_300e.pth",
+      "size_bytes": 59375411,
+      "sha256": "b434320aed41372a9e061b602c35286d2022724d76384137eb3133eed9573433",
+      "expected_size_bytes": 59375411,
+      "match": true,
+      "within_known_baseline": true
+    },
+    {
+      "file": "repvit_m2_3_distill_300e.pth",
+      "zip_ok": true,
+      "zip_detail": "zip \u4e2d\u592e\u76ee\u5f55\u6b63\u5e38\uff081420 \u4e2a\u6210\u5458\uff09",
+      "loadable": true,
+      "load_detail": "\u53ef\u52a0\u8f7d\uff0c1418 \u4e2a\u5f20\u91cf",
+      "path_rel": "checkpoints/pretrained/repvit_m2_3_distill_300e.pth",
+      "size_bytes": 95860931,
+      "sha256": "20eaa47f5d2fcdc781f0238149e6929fa563b1d9da0b16dcc500a8b30b3b4468",
+      "expected_size_bytes": 95860931,
+      "match": true,
+      "within_known_baseline": true
+    }
+  ],
+  "n_files": 5,
+  "n_mismatch": 0,
+  "n_suspicious_size": 0,
+  "all_known_match": true,
+  "note": "\u5b57\u8282\u6570\u4e0d\u7b26\u65f6\u6253\u5370 [MISMATCH] \u4f46\u9000\u51fa\u7801\u4ecd\u4e3a 0\uff08\u5951\u7ea6\u8981\u6c42\u53ef\u6279\u91cf\u6838\u5bf9\uff09"
+}

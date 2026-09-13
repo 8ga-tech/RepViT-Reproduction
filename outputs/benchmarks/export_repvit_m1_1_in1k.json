@@ -1,0 +1,57 @@
+{
+  "model": "repvit_m1_1_in1k",
+  "onnx": "C:\\Users\\14675\\Desktop\\one\u56e2\u961f\u79cb\u62dbai\u7b97\u6cd5\\RepViT-Reproduction\\onnx\\repvit_m1_1_in1k.onnx",
+  "file_size_mb": 33.06,
+  "opset": [
+    [
+      "ai.onnx",
+      13
+    ]
+  ],
+  "ir_version": 7,
+  "producer": "pytorch 2.14.0",
+  "nodes": 358,
+  "node_hist": {
+    "Conv": 95,
+    "Constant": 75,
+    "Mul": 59,
+    "Add": 49,
+    "Div": 25,
+    "Erf": 25,
+    "ReduceMean": 9,
+    "Relu": 9,
+    "Sigmoid": 9,
+    "GlobalAveragePool": 1,
+    "Flatten": 1,
+    "Gemm": 1
+  },
+  "BatchNormalization": 0,
+  "Conv": 95,
+  "Add": 49,
+  "Gemm": 1,
+  "Erf": 25,
+  "Gelu": 0,
+  "GlobalAveragePool": 1,
+  "value_info_before": 0,
+  "value_info_after": 357,
+  "initializer_elems": 8244312,
+  "external_data": false,
+  "num_classes": 1000,
+  "input_name": "input",
+  "input_shape": [
+    1,
+    3,
+    224,
+    224
+  ],
+  "output_name": "logits",
+  "output_shape": [
+    1,
+    1000
+  ],
+  "ep": [
+    "CPUExecutionProvider"
+  ],
+  "torch_vs_onnx_max_abs": 9.298324584960938e-06,
+  "torch_vs_onnx_top1_same": true
+}

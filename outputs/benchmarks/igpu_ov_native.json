@@ -1,0 +1,18 @@
+{
+  "env": {
+    "os": "Windows-11-10.0.26200-SP0",
+    "machine": "AMD64",
+    "python": "3.14.5",
+    "ort": "1.30.0",
+    "ort_device": "CPU",
+    "available_providers": [
+      "AzureExecutionProvider",
+      "CPUExecutionProvider"
+    ],
+    "cpu": "Intel64 Family 6 Model 183 Stepping 1, GenuineIntel"
+  },
+  "backend": "ov_native",
+  "requested_device": "GPU",
+  "threads": 4,
+  "results": []
+}

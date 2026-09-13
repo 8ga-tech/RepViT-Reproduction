@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" data-pptx-page-role="content">
+  <rect id="bg-canvas" data-pptx-role="background" x="0" y="0" width="1280" height="720" fill="#0B1220"/>
+
+  <g id="page-header" data-pptx-bounds="72 44 1136 100">
+    <text x="72" y="82" font-family="Microsoft YaHei" font-size="34" font-weight="bold" fill="#E6EDF7">四组优化各有假设，控制变量由工具强制校验</text>
+    <text x="72" y="118" font-family="Microsoft YaHei" font-size="16" fill="#93A4C0">Baseline 有两个问题：样本仅 2940 张而参数 473 万（过拟合风险）；主干前期被大学习率推离预训练解</text>
+    <line x1="72" y1="136" x2="1208" y2="136" stroke="#1E3050" stroke-width="2"/>
+  </g>
+
+  <g id="plan-b" data-pptx-bounds="72 168 566 130">
+    <rect x="72" y="168" width="566" height="130" rx="10" fill="#131C2E" stroke="#1E3050" stroke-width="1"/>
+    <text x="98" y="202" font-family="Microsoft YaHei" font-size="18" font-weight="bold" fill="#35D0F0">B 混合增强</text>
+    <text x="556" y="202" font-family="Consolas" font-size="14" fill="#5C7096" text-anchor="end">3 个差异键</text>
+    <text x="98" y="234" font-family="Microsoft YaHei" font-size="15" fill="#93A4C0">Mixup α=0.2 + CutMix α=1.0，每个 batch 都做</text>
+    <text x="98" y="262" font-family="Microsoft YaHei" font-size="15" fill="#93A4C0">假设：软标签平滑决策面，等价于训练集扩容</text>
+    <text x="98" y="288" font-family="Microsoft YaHei" font-size="14" fill="#FFC857">代价：需要更多 epoch 才能收敛</text>
+  </g>
+
+  <g id="plan-c" data-pptx-bounds="646 168 562 130">
+    <rect x="646" y="168" width="562" height="130" rx="10" fill="#131C2E" stroke="#1E3050" stroke-width="1"/>
+    <text x="672" y="202" font-family="Microsoft YaHei" font-size="18" font-weight="bold" fill="#35D0F0">C 加强数据增强</text>
+    <text x="1182" y="202" font-family="Consolas" font-size="14" fill="#5C7096" text-anchor="end">8 个差异键</text>
+    <text x="672" y="234" font-family="Microsoft YaHei" font-size="15" fill="#93A4C0">RandAugment(n=2, m=9) + RRC scale 下限 0.35→0.25</text>
+    <text x="672" y="262" font-family="Microsoft YaHei" font-size="15" fill="#93A4C0">假设：覆盖旋转 / 剪切 / 色调变换，压缩纹理记忆</text>
+    <text x="672" y="288" font-family="Microsoft YaHei" font-size="14" fill="#FFC857">风险：2940 张下容易过增强</text>
+  </g>
+
+  <g id="plan-d" data-pptx-bounds="72 314 566 130">
+    <rect x="72" y="314" width="566" height="130" rx="10" fill="#131C2E" stroke="#1E3050" stroke-width="1"/>
+    <text x="98" y="348" font-family="Microsoft YaHei" font-size="18" font-weight="bold" fill="#35D0F0">D 差异化学习率</text>
+    <text x="556" y="348" font-family="Consolas" font-size="14" fill="#5C7096" text-anchor="end">1 个差异键</text>
+    <text x="98" y="380" font-family="Microsoft YaHei" font-size="15" fill="#93A4C0">主干倍率 0.1 → 0.05（有效 lr 1e-4 → 5e-5）</text>
+    <text x="98" y="408" font-family="Microsoft YaHei" font-size="15" fill="#93A4C0">假设：新头快速收敛，主干锚定在预训练解附近</text>
+    <text x="98" y="434" font-family="Microsoft YaHei" font-size="14" fill="#FFC857">代价：训练曲线整体右移</text>
+  </g>
+
+  <g id="plan-a" data-pptx-bounds="646 314 562 130">
+    <rect x="646" y="314" width="562" height="130" rx="10" fill="#17304A" stroke="#35D0F0" stroke-width="2"/>
+    <text x="672" y="348" font-family="Microsoft YaHei" font-size="18" font-weight="bold" fill="#35D0F0">A 组合式（基础任务所选项）</text>
+    <text x="1182" y="348" font-family="Consolas" font-size="14" fill="#35D0F0" text-anchor="end">12 个差异键</text>
+    <text x="672" y="380" font-family="Microsoft YaHei" font-size="15" fill="#93A4C0">B + C + D 全开</text>
+    <text x="672" y="408" font-family="Microsoft YaHei" font-size="15" fill="#93A4C0">假设：三者机制互补，前段更稳 + 末段更高</text>
+    <text x="672" y="434" font-family="Microsoft YaHei" font-size="14" fill="#FFC857">风险：正则叠加会延长收敛</text>
+  </g>
+
+  <g id="control-proof" data-pptx-bounds="72 460 1136 190">
+    <rect x="72" y="460" width="1136" height="190" rx="10" fill="#0F1728" stroke="#1E3050" stroke-width="1"/>
+    <text x="100" y="496" font-family="Microsoft YaHei" font-size="18" font-weight="bold" fill="#E6EDF7">控制变量不是靠自觉，而是可执行校验</text>
+    <line x1="100" y1="510" x2="1180" y2="510" stroke="#1E3050" stroke-width="1"/>
+
+    <g id="cp-tool">
+      <text x="100" y="544" font-family="Consolas" font-size="15" fill="#35D0F0">python tools/diff_config.py configs/baseline.yaml configs/opt_combo.yaml</text>
+      <text x="100" y="574" font-family="Microsoft YaHei" font-size="15" fill="#93A4C0">叶子级比对，实际差异键必须与配置声明的 _expected_diff_ 逐项一致</text>
+      <text x="100" y="602" font-family="Consolas" font-size="15" fill="#3FDB9B">7 份配置全部 DIFF PASS（3 / 8 / 1 / 12 / 8 / 1 / 9 键）</text>
+      <text x="100" y="630" font-family="Consolas" font-size="15" fill="#3FDB9B">python tools/same_budget.py → total_iters_equal=True（8 组均为 40 epoch × 45 step）</text>
+    </g>
+
+    <g id="cp-fixed">
+      <rect x="880" y="530" width="300" height="100" rx="8" fill="#12233A" stroke="#35D0F0" stroke-width="1"/>
+      <text x="904" y="558" font-family="Microsoft YaHei" font-size="15" font-weight="bold" fill="#35D0F0">保持不变</text>
+      <text x="904" y="584" font-family="Microsoft YaHei" font-size="13" fill="#93A4C0">数据划分 · 预训练权重 · 种子</text>
+      <text x="904" y="606" font-family="Microsoft YaHei" font-size="13" fill="#93A4C0">训练预算 · 评价方式 · 选模标准</text>
+    </g>
+  </g>
+
+  <g id="page-footer" data-pptx-bounds="72 652 1136 44">
+    <line x1="72" y1="652" x2="1208" y2="652" stroke="#1E3050" stroke-width="1"/>
+    <text x="72" y="680" font-family="Microsoft YaHei" font-size="13" fill="#5C7096">数据来源：configs/opt_*.yaml 的 _expected_diff_ · outputs/metrics/{check_opt_diff,same_budget}.json</text>
+    <text x="1208" y="680" font-family="Consolas" font-size="14" fill="#5C7096" text-anchor="end">08</text>
+  </g>
+</svg>

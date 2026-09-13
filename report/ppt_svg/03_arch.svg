@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" data-pptx-page-role="content">
+  <rect id="bg-canvas" data-pptx-role="background" x="0" y="0" width="1280" height="720" fill="#0B1220"/>
+
+  <g id="page-header" data-pptx-bounds="72 44 1136 100">
+    <text x="72" y="82" font-family="Microsoft YaHei" font-size="34" font-weight="bold" fill="#E6EDF7">M0.9 是 20 个 RepViT Block 的纯卷积流水线</text>
+    <text x="72" y="118" font-family="Microsoft YaHei" font-size="16" fill="#93A4C0">形状由 forward hook 现测，非论文插图；分辨率 224 → 7，通道 3 → 384</text>
+    <line x1="72" y1="136" x2="1208" y2="136" stroke="#1E3050" stroke-width="2"/>
+  </g>
+
+  <g id="arch-flow" data-pptx-bounds="72 168 742 486">
+    <rect x="72" y="168" width="742" height="486" rx="10" fill="#0F1728" stroke="#1E3050" stroke-width="1"/>
+
+    <g id="row-input">
+      <rect x="100" y="196" width="686" height="46" rx="6" fill="#1B2740"/>
+      <text x="120" y="226" font-family="Consolas" font-size="17" font-weight="bold" fill="#C79BFF">输入</text>
+      <text x="248" y="226" font-family="Consolas" font-size="17" fill="#E6EDF7">224 × 224 × 3   RGB</text>
+    </g>
+
+    <g id="row-stem">
+      <rect x="100" y="256" width="686" height="76" rx="6" fill="#12233A" stroke="#35D0F0" stroke-width="1"/>
+      <text x="120" y="286" font-family="Consolas" font-size="17" font-weight="bold" fill="#35D0F0">Stem</text>
+      <text x="248" y="286" font-family="Consolas" font-size="16" fill="#E6EDF7">conv1 3×3 s2 → 24ch 112×112</text>
+      <text x="248" y="314" font-family="Consolas" font-size="16" fill="#E6EDF7">conv2 3×3 s2 → 48ch 56×56</text>
+    </g>
+
+    <g id="row-stage0">
+      <rect x="100" y="346" width="686" height="52" rx="6" fill="#131C2E"/>
+      <text x="120" y="378" font-family="Consolas" font-size="17" font-weight="bold" fill="#93A4C0">Stage 0</text>
+      <text x="248" y="378" font-family="Consolas" font-size="16" fill="#E6EDF7">2 × RepViT Block      48ch   56×56</text>
+    </g>
+
+    <g id="row-stage1">
+      <rect x="100" y="408" width="686" height="52" rx="6" fill="#131C2E"/>
+      <text x="120" y="440" font-family="Consolas" font-size="17" font-weight="bold" fill="#93A4C0">Stage 1</text>
+      <text x="248" y="440" font-family="Consolas" font-size="16" fill="#E6EDF7">2 × RepViT Block      96ch   28×28</text>
+    </g>
+
+    <g id="row-stage2">
+      <rect x="100" y="470" width="686" height="60" rx="6" fill="#17304A" stroke="#35D0F0" stroke-width="1"/>
+      <text x="120" y="506" font-family="Consolas" font-size="17" font-weight="bold" fill="#35D0F0">Stage 2</text>
+      <text x="248" y="506" font-family="Consolas" font-size="16" fill="#E6EDF7">14 × RepViT Block    192ch   14×14</text>
+      <text x="248" y="524" font-family="Microsoft YaHei" font-size="13" fill="#35D0F0">Block 数最多 —— 与论文「第三阶段布置更多 Block」一致</text>
+    </g>
+
+    <g id="row-stage3">
+      <rect x="100" y="540" width="686" height="52" rx="6" fill="#131C2E"/>
+      <text x="120" y="572" font-family="Consolas" font-size="17" font-weight="bold" fill="#93A4C0">Stage 3</text>
+      <text x="248" y="572" font-family="Consolas" font-size="16" fill="#E6EDF7">2 × RepViT Block     384ch    7×7</text>
+    </g>
+
+    <g id="row-head">
+      <rect x="100" y="602" width="686" height="34" rx="6" fill="#1B2740"/>
+      <text x="120" y="625" font-family="Consolas" font-size="15" fill="#3FDB9B">GAP → 384 维</text>
+      <text x="290" y="625" font-family="Consolas" font-size="15" fill="#3FDB9B">Head RepVitClassifier (NormLinear) → 37 维</text>
+    </g>
+  </g>
+
+  <g id="side-block-anatomy" data-pptx-bounds="846 168 362 228">
+    <rect x="846" y="168" width="362" height="228" rx="10" fill="#131C2E" stroke="#1E3050" stroke-width="1"/>
+    <text x="872" y="204" font-family="Microsoft YaHei" font-size="19" font-weight="bold" fill="#E6EDF7">单个 RepViT Block</text>
+    <line x1="872" y1="218" x2="1182" y2="218" stroke="#1E3050" stroke-width="1"/>
+    <text x="872" y="250" font-family="Microsoft YaHei" font-size="15" fill="#93A4C0">Token Mixer（空间混合）</text>
+    <text x="890" y="276" font-family="Consolas" font-size="14" fill="#35D0F0">RepVGGDW = 3×3 dw + 1×1 dw</text>
+    <text x="872" y="308" font-family="Microsoft YaHei" font-size="15" fill="#93A4C0">Channel Mixer（通道混合）</text>
+    <text x="890" y="334" font-family="Consolas" font-size="14" fill="#35D0F0">1×1 升维 → GELU → 1×1 降维</text>
+    <text x="872" y="366" font-family="Microsoft YaHei" font-size="15" fill="#93A4C0">残差连接 + 部分 Block 带 SE</text>
+  </g>
+
+  <g id="side-contrast" data-pptx-bounds="846 412 362 242">
+    <rect x="846" y="412" width="362" height="242" rx="10" fill="#131C2E" stroke="#1E3050" stroke-width="1"/>
+    <text x="872" y="448" font-family="Microsoft YaHei" font-size="19" font-weight="bold" fill="#E6EDF7">训练态 vs 推理态</text>
+    <line x1="872" y1="462" x2="1182" y2="462" stroke="#1E3050" stroke-width="1"/>
+    <text x="872" y="494" font-family="Microsoft YaHei" font-size="15" fill="#FFC857">训练态</text>
+    <text x="872" y="520" font-family="Consolas" font-size="14" fill="#93A4C0">3×3 dw 分支 + 1×1 dw 分支<tspan x="872" dy="22">两条分支各自带 BatchNorm</tspan></text>
+    <text x="872" y="578" font-family="Microsoft YaHei" font-size="15" fill="#3FDB9B">推理态</text>
+    <text x="872" y="604" font-family="Consolas" font-size="14" fill="#93A4C0">BN 折进卷积核后相加<tspan x="872" dy="22">→ 单个 3×3 depthwise 卷积</tspan></text>
+  </g>
+
+  <g id="page-footer" data-pptx-bounds="72 664 1136 32">
+    <text x="72" y="684" font-family="Microsoft YaHei" font-size="13" fill="#5C7096">数据来源：outputs/architecture/repvit_m0_9_arch.png / .md（python tools/draw_arch.py）</text>
+    <text x="1208" y="684" font-family="Consolas" font-size="14" fill="#5C7096" text-anchor="end">03</text>
+  </g>
+</svg>

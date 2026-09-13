@@ -1,0 +1,32 @@
+{
+  "experiment": "backbone_updated",
+  "timestamp": "2026-09-13T14:29:34+08:00",
+  "command": "tools/check_backbone_updated.py --ckpt checkpoints/baseline_best.pt",
+  "cwd_rel": ".",
+  "host": "LXY",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "python": "3.14.5",
+  "ckpt": "checkpoints/baseline_best.pt",
+  "arch": "repvit_m0_9",
+  "impl": "timm",
+  "num_classes": 37,
+  "pretrained_source": "default_fallback",
+  "pretrained_path": "C:/Users/14675/Desktop/one团队秋招ai算法/RepViT-Reproduction/checkpoints/pretrained/repvit_m0_9_distill_300e.pth",
+  "compare_mode": "pretrained(position_prefix)",
+  "compare_note": "键名方案不一致（timm 的 stem/stages.* vs 官方的 features.*），改按「枚举顺序 + 形状序列」逐位对齐：比较前 706 个张量，其中 704 个形状完全一致（99.7%），可安全配对；形状对不上的 2 个（换头后的分类头）已剔除，保持随机初值。若两套结构有任何差异，形状比率不会达到 95%，此处会直接判定失败",
+  "judgement": "(a-b).abs().max() > 0",
+  "n_ckpt_tensors": 706,
+  "n_comparable": 706,
+  "n_shape_mismatch": 0,
+  "changed_tensors": 706,
+  "unchanged_tensors": 0,
+  "changed_backbone_tensors": 699,
+  "stage_changed_first3": [
+    "stages.0.blocks.0.token_mixer.conv.c.weight",
+    "stages.0.blocks.0.token_mixer.conv.bn.weight",
+    "stages.0.blocks.0.token_mixer.conv.bn.bias"
+  ],
+  "stage_changed_count": 687,
+  "pass": true,
+  "note": "changed_backbone 排除了 head/classifier 前缀；骨干为 0 时即便总变化数 > 0 也判 FAIL"
+}

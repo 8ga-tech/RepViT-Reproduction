@@ -1,0 +1,14 @@
+# configs/opt_mix.yaml
+_base_: baseline.yaml
+
+experiment_name: opt_mix
+
+train:
+  mixup_alpha: 0.2          # 差异键 1：来自 mixup 原论文 ImageNet 表格的 alpha=0.2
+  cutmix_alpha: 1.0         # 差异键 2：timm 默认，等价 lambda~U(0,1)
+  mixup_prob: 1.0           # 差异键 3：>0 即开启混合；每个 batch 都做
+
+_expected_diff_:            # diff_config.py 读取的白名单，必须与实际差异键完全一致
+  - train.mixup_alpha
+  - train.cutmix_alpha
+  - train.mixup_prob

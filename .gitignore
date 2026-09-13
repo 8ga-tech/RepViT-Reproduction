@@ -1,0 +1,72 @@
+# =============================================================================
+# .gitignore —— RepViT 复现任务
+#
+# 原则：**可再从公开来源取得的大文件不入库，自己的实验产物入库**。
+#   官方预训练权重（228 MB）在 README §3 给了一键下载命令，不入库；
+#   自己训练得到的 checkpoint、导出的 ONNX、全部曲线与可视化结果入库，
+#   因为它们是本任务的交付物，且无法从别处获得。
+# =============================================================================
+
+# ---- 数据集：体积大、且 README §2 有一键准备流程 ----
+data/
+
+# ---- 官方预训练权重：README §3 给了一键下载命令 + SHA256 校验 ----
+checkpoints/pretrained/*.pth
+checkpoints/pretrained/*.sha256
+checkpoints/pretrained/_manifest_raw.json
+
+# ---- 中间/可再生的模型副本 ----
+# 训练断点续训用的 last checkpoint（best 已入库，last 可由 best 说明其存在）
+checkpoints/*_last.pt
+# 重参数化验证用的训练态/推理态 ONNX 对照图（由 tools/reparam_verify.py 再生）
+outputs/reparam/*.onnx
+# 探针用的中间张量
+outputs/reparam/input_ref.pt
+
+# ---- 大体积权重：只提交题目要求的「Baseline 权重 + 最终优化模型权重」 ----
+# 提交：checkpoints/baseline_best.pt（Baseline）、checkpoints/opt_combo_best.pt（方案 A，最终优化模型）
+# 不提交：其余 6 组优化实验的 best（每份 57.6 MB，合计 345 MB）。
+#   它们的作用是消融分析的**中间对照**，其全部指标、曲线与逐图预测都已入库
+#   （outputs/logs/opt_*_metrics.csv、outputs/metrics/opt_*_test.json、
+#     outputs/predictions/opt_*_test_preds.csv），可用一条命令复现：
+#       python tools/train.py --cfg configs/opt_mix.yaml        # 换成任一 opt_*.yaml
+checkpoints/opt_mix_best.pt
+checkpoints/opt_randaug_best.pt
+checkpoints/opt_disc_best.pt
+checkpoints/opt_abl_a_best.pt
+checkpoints/opt_abl_b_best.pt
+checkpoints/opt_abl_ab_best.pt
+
+# ---- ONNX：提交 4 个（3 个基础交付 + 1 个家族型号，满足进阶①「≥4 型号部署」）----
+# 不提交 m1_5(56 MB) / m2_3(92 MB)：它们只用于家族帕累托图的延迟点，
+# 其指标与延迟已入库（outputs/benchmarks/*_benchmark.json、summary.csv），
+# 复现：python deploy/export_onnx.py --model repvit_m1_5_in1k repvit_m2_3_in1k
+onnx/repvit_m1_5_in1k.onnx
+onnx/repvit_m2_3_in1k.onnx
+
+# ---- 下载缓存与临时目录 ----
+_dl/
+*.tmp
+*.part
+
+# ---- Python ----
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+env/
+build/
+dist/
+
+# ---- 编辑器 / 系统 ----
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+desktop.ini
+# macOS 资源叉文件（Oxford-IIIT Pet 的 trimaps 里带了 7390 个，见 tools/assert_data.py 注释）
+._*
+
+# ---- TensorBoard 事件文件（曲线已导出为 PNG，事件文件是冗余的）----
+outputs/tb/
+runs/

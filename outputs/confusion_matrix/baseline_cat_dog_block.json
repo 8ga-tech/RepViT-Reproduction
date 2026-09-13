@@ -1,0 +1,17 @@
+{
+  "n_cat": 1183,
+  "n_dog": 2486,
+  "cat_to_cat": 1043,
+  "cat_to_dog": 8,
+  "dog_to_cat": 2,
+  "dog_to_dog": 2345,
+  "n_error": 281,
+  "n_cross_species_error": 10,
+  "n_within_species_error": 271,
+  "cat_recall": 0.8816568047337278,
+  "dog_recall": 0.9432823813354787,
+  "cat_dog_confusion_rate": 0.006762468300929839,
+  "dog_cat_confusion_rate": 0.0008045052292839903,
+  "cross_species_error_ratio": 0.03558718861209965,
+  "within_species_error_ratio": 0.9644128113879004
+}

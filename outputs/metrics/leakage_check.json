@@ -1,0 +1,55 @@
+{
+  "n": {
+    "train": 2940,
+    "val": 740,
+    "test": 3669
+  },
+  "missing_files": {
+    "train": [],
+    "val": [],
+    "test": []
+  },
+  "stem_intersection": {
+    "train_x_val": {
+      "count": 0,
+      "examples": []
+    },
+    "train_x_test": {
+      "count": 0,
+      "examples": []
+    },
+    "val_x_test": {
+      "count": 0,
+      "examples": []
+    }
+  },
+  "md5_intersection": {
+    "train_x_val": {
+      "count": 0,
+      "examples": []
+    },
+    "train_x_test": {
+      "count": 0,
+      "examples": []
+    },
+    "val_x_test": {
+      "count": 0,
+      "examples": []
+    }
+  },
+  "internal_duplicates": {
+    "train": {},
+    "val": {},
+    "test": {}
+  },
+  "orphan_images_used": [],
+  "train_val": 0,
+  "train_test": 0,
+  "val_test": 0,
+  "md5_intersections": {
+    "train_x_val": 0,
+    "train_x_test": 0,
+    "val_x_test": 0
+  },
+  "pass": true
+}

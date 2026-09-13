@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" data-pptx-page-role="content">
+  <rect id="bg-canvas" data-pptx-role="background" x="0" y="0" width="1280" height="720" fill="#0B1220"/>
+
+  <g id="page-header" data-pptx-bounds="72 44 1136 100">
+    <text x="72" y="82" font-family="Microsoft YaHei" font-size="34" font-weight="bold" fill="#E6EDF7">40 epoch 迁移训练把 test Top-1 做到 92.34%</text>
+    <text x="72" y="118" font-family="Microsoft YaHei" font-size="16" fill="#93A4C0">AdamW · cosine + 3ep warmup · Label Smoothing 0.1 · bf16 autocast · batch 64 · seed 42</text>
+    <line x1="72" y1="136" x2="1208" y2="136" stroke="#1E3050" stroke-width="2"/>
+  </g>
+
+  <g id="result-metrics" data-pptx-bounds="72 168 700 218">
+    <rect x="72" y="168" width="700" height="218" rx="10" fill="#0F1728" stroke="#1E3050" stroke-width="1"/>
+    <text x="100" y="204" font-family="Microsoft YaHei" font-size="18" font-weight="bold" fill="#E6EDF7">测试集（3669 张，只评价一次）</text>
+    <line x1="100" y1="218" x2="744" y2="218" stroke="#1E3050" stroke-width="1"/>
+
+    <g id="rm-1">
+      <text x="100" y="286" font-family="Consolas" font-size="46" font-weight="bold" fill="#3FDB9B">92.34%</text>
+      <text x="100" y="316" font-family="Microsoft YaHei" font-size="15" fill="#93A4C0">Top-1 Accuracy</text>
+    </g>
+    <g id="rm-2">
+      <text x="330" y="286" font-family="Consolas" font-size="46" font-weight="bold" fill="#35D0F0">99.26%</text>
+      <text x="330" y="316" font-family="Microsoft YaHei" font-size="15" fill="#93A4C0">Top-5 Accuracy</text>
+    </g>
+    <g id="rm-3">
+      <text x="560" y="286" font-family="Consolas" font-size="46" font-weight="bold" fill="#FFC857">92.22%</text>
+      <text x="560" y="316" font-family="Microsoft YaHei" font-size="15" fill="#93A4C0">Macro-F1</text>
+    </g>
+    <text x="100" y="358" font-family="Microsoft YaHei" font-size="14" fill="#5C7096">验证集（740 张）best 选模依据 val_macro_f1 = 0.9462 @ epoch 34</text>
+  </g>
+
+  <g id="checklist" data-pptx-bounds="804 168 404 218">
+    <rect x="804" y="168" width="404" height="218" rx="10" fill="#131C2E" stroke="#1E3050" stroke-width="1"/>
+    <text x="830" y="204" font-family="Microsoft YaHei" font-size="18" font-weight="bold" fill="#E6EDF7">合规性自证</text>
+    <line x1="830" y1="218" x2="1182" y2="218" stroke="#1E3050" stroke-width="1"/>
+    <text x="830" y="254" font-family="Microsoft YaHei" font-size="15" fill="#3FDB9B">✓ 骨干确实被训练</text>
+    <text x="1182" y="254" font-family="Consolas" font-size="14" fill="#93A4C0" text-anchor="end">706 张量</text>
+    <text x="830" y="288" font-family="Microsoft YaHei" font-size="15" fill="#3FDB9B">✓ 其中骨干张量</text>
+    <text x="1182" y="288" font-family="Consolas" font-size="14" fill="#93A4C0" text-anchor="end">699 个</text>
+    <text x="830" y="322" font-family="Microsoft YaHei" font-size="15" fill="#3FDB9B">✓ test 只评价一次</text>
+    <text x="1182" y="322" font-family="Consolas" font-size="14" fill="#93A4C0" text-anchor="end">eval_count=1</text>
+    <text x="830" y="356" font-family="Microsoft YaHei" font-size="15" fill="#3FDB9B">✓ 权重加载无异常</text>
+    <text x="1182" y="356" font-family="Consolas" font-size="14" fill="#93A4C0" text-anchor="end">unexpected=0</text>
+  </g>
+
+  <g id="head-replace" data-pptx-bounds="72 406 1136 230">
+    <rect x="72" y="406" width="1136" height="230" rx="10" fill="#0F1728" stroke="#1E3050" stroke-width="1"/>
+    <text x="100" y="442" font-family="Microsoft YaHei" font-size="18" font-weight="bold" fill="#E6EDF7">1000 类 → 37 类：怎么做、差异在哪</text>
+    <line x1="100" y1="456" x2="1180" y2="456" stroke="#1E3050" stroke-width="1"/>
+
+    <g id="hr-good">
+      <text x="100" y="492" font-family="Microsoft YaHei" font-size="15" font-weight="bold" fill="#3FDB9B">正确做法</text>
+      <text x="100" y="522" font-family="Consolas" font-size="14" fill="#E6EDF7">timm.create_model(..., num_classes=37,</text>
+      <text x="100" y="546" font-family="Consolas" font-size="14" fill="#E6EDF7">                  distillation=False)</text>
+      <text x="100" y="578" font-family="Microsoft YaHei" font-size="14" fill="#93A4C0">保留分类头的 BN 统计量（与类别数无关的迁移先验）</text>
+      <text x="100" y="604" font-family="Microsoft YaHei" font-size="14" fill="#93A4C0">missing = 2（仅换头后的 Linear weight / bias）</text>
+    </g>
+
+    <g id="hr-bad">
+      <rect x="620" y="478" width="560" height="140" rx="8" fill="#1F1114" stroke="#FF6B6B" stroke-width="1"/>
+      <text x="646" y="510" font-family="Microsoft YaHei" font-size="15" font-weight="bold" fill="#FF6B6B">禁止做法</text>
+      <text x="646" y="540" font-family="Consolas" font-size="14" fill="#E6EDF7">model.reset_classifier(37)</text>
+      <text x="646" y="570" font-family="Microsoft YaHei" font-size="14" fill="#93A4C0">会丢掉 head.head.bn 的统计量；distillation=False 时</text>
+      <text x="646" y="594" font-family="Microsoft YaHei" font-size="14" fill="#93A4C0">head_dist 属性被整体删除，后续断言必然失败</text>
+    </g>
+  </g>
+
+  <g id="page-footer" data-pptx-bounds="72 652 1136 44">
+    <line x1="72" y1="652" x2="1208" y2="652" stroke="#1E3050" stroke-width="1"/>
+    <text x="72" y="680" font-family="Microsoft YaHei" font-size="13" fill="#5C7096">数据来源：outputs/metrics/baseline_test.json · backbone_updated.json · weight_load_report.json</text>
+    <text x="1208" y="680" font-family="Consolas" font-size="14" fill="#5C7096" text-anchor="end">07</text>
+  </g>
+</svg>

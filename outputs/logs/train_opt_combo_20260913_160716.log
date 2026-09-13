@@ -1,0 +1,95 @@
+Unexpected keys (head.head_dist.bn.num_batches_tracked, head.head_dist.bn.bias, head.head_dist.bn.running_mean, head.head_dist.bn.running_var, head.head_dist.bn.weight) found while loading pretrained weights. This may be expected if model is being adapted.
+[env] torch=2.14.0+cu126 timm=1.0.29 cuda=True device=cuda | python=3.14.5
+[label] K=37 | 0=Abyssinian | 1=American Bulldog | 36=Yorkshire Terrier
+[data] train=2940 val=740 test=3669 | 类别覆盖 train=37/val=37/test=37 (K=37)
+[data] root=data/oxford-iiit-pet train_list=datasets/lists/pet_train.txt val_list=datasets/lists/pet_val.txt test_list=datasets/lists/pet_test.txt
+[model] name=repvit_m0_9 tag=dist_300e_in1k hf_hub_id=timm/repvit_m0_9.dist_300e_in1k distillation=False
+[model] 参数量 total=4,732,805 trainable=4,732,805 head=15,013
+[model] 口径：未融合、单头、C=37 = 4,732,805（≈4.73M），本任务应命中此值；timm 裸 create_model 的未融合蒸馏双头 C=1000 = 5,489,328（≈5.49M）；未融合、单头、C=1000 = 5,103,560（≈5.10M）；融合后单头 = 5,067,056（C=1000，融合后单头）/ 4,696,301（C=37，融合后单头），净减 36,504，以本机实测为准
+[optim] group=backbone_decay     n_params=126  lr=5.000e-05 wd=0.05
+[optim] group=backbone_no_decay  n_params=255  lr=5.000e-05 wd=0.0
+[optim] group=head_no_decay      n_params=3    lr=1.000e-03 wd=0.0
+[optim] group=head_decay         n_params=1    lr=1.000e-03 wd=0.05
+[eval] n=740 loss=3.6510 top1=1.35% top5=12.03% macroF1=1.38% balAcc=1.35% (37 类随机水平 2.70%)
+[Epoch 000/039] train_loss=3.6448 train_acc1=2.57% | val_loss=3.6510 val_top1=1.35% val_top5=12.03% macroF1=0.0138 | lr_bb=1.70e-05 lr_head=3.40e-04 | gnorm=1.77 | 111.1s | best=0.0138(ep0) | no_improve=0
+[eval] n=740 loss=3.0938 top1=55.14% top5=86.89% macroF1=53.03% balAcc=55.14% (37 类随机水平 2.70%)
+[Epoch 001/039] train_loss=3.4656 train_acc1=10.90% | val_loss=3.0938 val_top1=55.14% val_top5=86.89% macroF1=0.5303 | lr_bb=3.35e-05 lr_head=6.70e-04 | gnorm=1.82 | 7.9s | best=0.5303(ep1) | no_improve=0
+[eval] n=740 loss=2.0143 top1=79.86% top5=97.84% macroF1=78.36% balAcc=79.86% (37 类随机水平 2.70%)
+[Epoch 002/039] train_loss=2.9973 train_acc1=33.99% | val_loss=2.0143 val_top1=79.86% val_top5=97.84% macroF1=0.7836 | lr_bb=5.00e-05 lr_head=1.00e-03 | gnorm=2.00 | 7.9s | best=0.7836(ep2) | no_improve=0
+[eval] n=740 loss=0.9294 top1=88.11% top5=99.86% macroF1=87.72% balAcc=88.11% (37 类随机水平 2.70%)
+[Epoch 003/039] train_loss=2.3755 train_acc1=43.99% | val_loss=0.9294 val_top1=88.11% val_top5=99.86% macroF1=0.8772 | lr_bb=4.99e-05 lr_head=9.98e-04 | gnorm=2.27 | 7.8s | best=0.8772(ep3) | no_improve=0
+[eval] n=740 loss=0.6531 top1=90.81% top5=99.86% macroF1=90.66% balAcc=90.81% (37 类随机水平 2.70%)
+[Epoch 004/039] train_loss=1.9509 train_acc1=49.55% | val_loss=0.6531 val_top1=90.81% val_top5=99.86% macroF1=0.9066 | lr_bb=4.97e-05 lr_head=9.93e-04 | gnorm=2.60 | 7.9s | best=0.9066(ep4) | no_improve=0
+[eval] n=740 loss=0.5913 top1=91.49% top5=99.86% macroF1=91.44% balAcc=91.49% (37 类随机水平 2.70%)
+[Epoch 005/039] train_loss=1.9556 train_acc1=46.28% | val_loss=0.5913 val_top1=91.49% val_top5=99.86% macroF1=0.9144 | lr_bb=4.94e-05 lr_head=9.84e-04 | gnorm=2.79 | 7.7s | best=0.9144(ep5) | no_improve=0
+[eval] n=740 loss=0.5207 top1=92.03% top5=99.86% macroF1=91.96% balAcc=92.03% (37 类随机水平 2.70%)
+[Epoch 006/039] train_loss=1.7754 train_acc1=51.77% | val_loss=0.5207 val_top1=92.03% val_top5=99.86% macroF1=0.9196 | lr_bb=4.89e-05 lr_head=9.72e-04 | gnorm=2.87 | 8.0s | best=0.9196(ep6) | no_improve=0
+[eval] n=740 loss=0.5261 top1=92.03% top5=99.73% macroF1=91.93% balAcc=92.03% (37 类随机水平 2.70%)
+[Epoch 007/039] train_loss=1.7097 train_acc1=49.51% | val_loss=0.5261 val_top1=92.03% val_top5=99.73% macroF1=0.9193 | lr_bb=4.82e-05 lr_head=9.56e-04 | gnorm=2.71 | 7.8s | best=0.9196(ep6) | no_improve=1
+[eval] n=740 loss=0.5235 top1=92.57% top5=99.73% macroF1=92.52% balAcc=92.57% (37 类随机水平 2.70%)
+[Epoch 008/039] train_loss=1.8339 train_acc1=59.03% | val_loss=0.5235 val_top1=92.57% val_top5=99.73% macroF1=0.9252 | lr_bb=4.75e-05 lr_head=9.37e-04 | gnorm=3.04 | 7.8s | best=0.9252(ep8) | no_improve=0
+[eval] n=740 loss=0.5051 top1=93.11% top5=99.73% macroF1=93.08% balAcc=93.11% (37 类随机水平 2.70%)
+[Epoch 009/039] train_loss=1.6919 train_acc1=59.90% | val_loss=0.5051 val_top1=93.11% val_top5=99.73% macroF1=0.9308 | lr_bb=4.66e-05 lr_head=9.15e-04 | gnorm=2.81 | 7.9s | best=0.9308(ep9) | no_improve=0
+[eval] n=740 loss=0.4984 top1=92.30% top5=99.86% macroF1=92.29% balAcc=92.30% (37 类随机水平 2.70%)
+[Epoch 010/039] train_loss=1.7801 train_acc1=60.28% | val_loss=0.4984 val_top1=92.30% val_top5=99.86% macroF1=0.9229 | lr_bb=4.56e-05 lr_head=8.90e-04 | gnorm=3.21 | 7.9s | best=0.9308(ep9) | no_improve=1
+[eval] n=740 loss=0.5164 top1=92.97% top5=99.86% macroF1=92.99% balAcc=92.97% (37 类随机水平 2.70%)
+[Epoch 011/039] train_loss=1.6376 train_acc1=51.94% | val_loss=0.5163 val_top1=92.97% val_top5=99.86% macroF1=0.9299 | lr_bb=4.44e-05 lr_head=8.62e-04 | gnorm=2.90 | 7.9s | best=0.9308(ep9) | no_improve=2
+[eval] n=740 loss=0.4772 top1=93.51% top5=99.59% macroF1=93.54% balAcc=93.51% (37 类随机水平 2.70%)
+[Epoch 012/039] train_loss=1.6409 train_acc1=60.28% | val_loss=0.4772 val_top1=93.51% val_top5=99.59% macroF1=0.9354 | lr_bb=4.32e-05 lr_head=8.32e-04 | gnorm=2.91 | 7.9s | best=0.9354(ep12) | no_improve=0
+[eval] n=740 loss=0.5054 top1=93.11% top5=99.59% macroF1=93.12% balAcc=93.11% (37 类随机水平 2.70%)
+[Epoch 013/039] train_loss=1.7096 train_acc1=59.34% | val_loss=0.5054 val_top1=93.11% val_top5=99.59% macroF1=0.9312 | lr_bb=4.19e-05 lr_head=7.99e-04 | gnorm=2.84 | 7.9s | best=0.9354(ep12) | no_improve=1
+[eval] n=740 loss=0.4705 top1=92.84% top5=99.73% macroF1=92.83% balAcc=92.84% (37 类随机水平 2.70%)
+[Epoch 014/039] train_loss=1.6270 train_acc1=51.70% | val_loss=0.4705 val_top1=92.84% val_top5=99.73% macroF1=0.9283 | lr_bb=4.05e-05 lr_head=7.65e-04 | gnorm=3.02 | 8.0s | best=0.9354(ep12) | no_improve=2
+[eval] n=740 loss=0.4682 top1=93.65% top5=99.86% macroF1=93.65% balAcc=93.65% (37 类随机水平 2.70%)
+[Epoch 015/039] train_loss=1.5426 train_acc1=62.57% | val_loss=0.4682 val_top1=93.65% val_top5=99.86% macroF1=0.9365 | lr_bb=3.90e-05 lr_head=7.28e-04 | gnorm=3.01 | 8.1s | best=0.9365(ep15) | no_improve=0
+[eval] n=740 loss=0.4425 top1=94.05% top5=99.86% macroF1=94.07% balAcc=94.05% (37 类随机水平 2.70%)
+[Epoch 016/039] train_loss=1.5543 train_acc1=47.26% | val_loss=0.4425 val_top1=94.05% val_top5=99.86% macroF1=0.9407 | lr_bb=3.75e-05 lr_head=6.90e-04 | gnorm=2.76 | 8.3s | best=0.9407(ep16) | no_improve=0
+[eval] n=740 loss=0.4222 top1=93.78% top5=99.73% macroF1=93.79% balAcc=93.78% (37 类随机水平 2.70%)
+[Epoch 017/039] train_loss=1.5007 train_acc1=54.37% | val_loss=0.4223 val_top1=93.78% val_top5=99.73% macroF1=0.9379 | lr_bb=3.59e-05 lr_head=6.50e-04 | gnorm=2.84 | 8.3s | best=0.9407(ep16) | no_improve=1
+[eval] n=740 loss=0.4832 top1=93.65% top5=99.86% macroF1=93.66% balAcc=93.65% (37 类随机水平 2.70%)
+[Epoch 018/039] train_loss=1.5338 train_acc1=52.57% | val_loss=0.4832 val_top1=93.65% val_top5=99.86% macroF1=0.9366 | lr_bb=3.42e-05 lr_head=6.09e-04 | gnorm=3.02 | 8.1s | best=0.9407(ep16) | no_improve=2
+[eval] n=740 loss=0.4701 top1=93.92% top5=99.73% macroF1=93.95% balAcc=93.92% (37 类随机水平 2.70%)
+[Epoch 019/039] train_loss=1.6957 train_acc1=48.99% | val_loss=0.4701 val_top1=93.92% val_top5=99.73% macroF1=0.9395 | lr_bb=3.25e-05 lr_head=5.68e-04 | gnorm=3.01 | 8.0s | best=0.9407(ep16) | no_improve=3
+[eval] n=740 loss=0.5414 top1=94.46% top5=99.59% macroF1=94.46% balAcc=94.46% (37 类随机水平 2.70%)
+[Epoch 020/039] train_loss=1.6820 train_acc1=61.88% | val_loss=0.5414 val_top1=94.46% val_top5=99.59% macroF1=0.9446 | lr_bb=3.08e-05 lr_head=5.26e-04 | gnorm=3.12 | 7.9s | best=0.9446(ep20) | no_improve=0
+[eval] n=740 loss=0.4788 top1=94.46% top5=99.59% macroF1=94.48% balAcc=94.46% (37 类随机水平 2.70%)
+[Epoch 021/039] train_loss=1.6001 train_acc1=58.99% | val_loss=0.4788 val_top1=94.46% val_top5=99.59% macroF1=0.9448 | lr_bb=2.92e-05 lr_head=4.84e-04 | gnorm=3.31 | 8.0s | best=0.9448(ep21) | no_improve=0
+[eval] n=740 loss=0.4187 top1=94.32% top5=99.59% macroF1=94.35% balAcc=94.32% (37 类随机水平 2.70%)
+[Epoch 022/039] train_loss=1.5761 train_acc1=55.94% | val_loss=0.4187 val_top1=94.32% val_top5=99.59% macroF1=0.9435 | lr_bb=2.75e-05 lr_head=4.42e-04 | gnorm=2.89 | 8.0s | best=0.9448(ep21) | no_improve=1
+[eval] n=740 loss=0.4707 top1=94.59% top5=99.73% macroF1=94.61% balAcc=94.59% (37 类随机水平 2.70%)
+[Epoch 023/039] train_loss=1.4889 train_acc1=51.98% | val_loss=0.4707 val_top1=94.59% val_top5=99.73% macroF1=0.9461 | lr_bb=2.58e-05 lr_head=4.01e-04 | gnorm=2.82 | 8.0s | best=0.9461(ep23) | no_improve=0
+[eval] n=740 loss=0.4652 top1=94.05% top5=99.59% macroF1=94.08% balAcc=94.05% (37 类随机水平 2.70%)
+[Epoch 024/039] train_loss=1.5515 train_acc1=51.84% | val_loss=0.4652 val_top1=94.05% val_top5=99.59% macroF1=0.9408 | lr_bb=2.41e-05 lr_head=3.60e-04 | gnorm=3.00 | 7.8s | best=0.9461(ep23) | no_improve=1
+[eval] n=740 loss=0.4792 top1=94.05% top5=99.86% macroF1=94.07% balAcc=94.05% (37 类随机水平 2.70%)
+[Epoch 025/039] train_loss=1.5536 train_acc1=55.00% | val_loss=0.4792 val_top1=94.05% val_top5=99.86% macroF1=0.9407 | lr_bb=2.25e-05 lr_head=3.20e-04 | gnorm=2.99 | 7.9s | best=0.9461(ep23) | no_improve=2
+[eval] n=740 loss=0.4643 top1=94.19% top5=99.73% macroF1=94.20% balAcc=94.19% (37 类随机水平 2.70%)
+[Epoch 026/039] train_loss=1.5560 train_acc1=56.18% | val_loss=0.4643 val_top1=94.19% val_top5=99.73% macroF1=0.9420 | lr_bb=2.10e-05 lr_head=2.82e-04 | gnorm=2.80 | 7.9s | best=0.9461(ep23) | no_improve=3
+[eval] n=740 loss=0.4906 top1=93.92% top5=99.86% macroF1=93.93% balAcc=93.92% (37 类随机水平 2.70%)
+[Epoch 027/039] train_loss=1.6995 train_acc1=60.17% | val_loss=0.4906 val_top1=93.92% val_top5=99.86% macroF1=0.9393 | lr_bb=1.95e-05 lr_head=2.45e-04 | gnorm=2.92 | 7.9s | best=0.9461(ep23) | no_improve=4
+[eval] n=740 loss=0.4436 top1=94.05% top5=99.73% macroF1=94.07% balAcc=94.05% (37 类随机水平 2.70%)
+[Epoch 028/039] train_loss=1.5481 train_acc1=48.96% | val_loss=0.4436 val_top1=94.05% val_top5=99.73% macroF1=0.9407 | lr_bb=1.81e-05 lr_head=2.11e-04 | gnorm=2.88 | 8.0s | best=0.9461(ep23) | no_improve=5
+[eval] n=740 loss=0.4778 top1=94.73% top5=99.73% macroF1=94.74% balAcc=94.73% (37 类随机水平 2.70%)
+[Epoch 029/039] train_loss=1.5159 train_acc1=56.53% | val_loss=0.4778 val_top1=94.73% val_top5=99.73% macroF1=0.9474 | lr_bb=1.68e-05 lr_head=1.78e-04 | gnorm=2.86 | 8.0s | best=0.9474(ep29) | no_improve=0
+[eval] n=740 loss=0.4525 top1=94.59% top5=99.86% macroF1=94.61% balAcc=94.59% (37 类随机水平 2.70%)
+[Epoch 030/039] train_loss=1.6056 train_acc1=57.53% | val_loss=0.4525 val_top1=94.59% val_top5=99.86% macroF1=0.9461 | lr_bb=1.56e-05 lr_head=1.48e-04 | gnorm=2.90 | 7.9s | best=0.9474(ep29) | no_improve=1
+[eval] n=740 loss=0.4673 top1=94.73% top5=99.73% macroF1=94.74% balAcc=94.73% (37 类随机水平 2.70%)
+[Epoch 031/039] train_loss=1.6078 train_acc1=65.00% | val_loss=0.4673 val_top1=94.73% val_top5=99.73% macroF1=0.9474 | lr_bb=1.44e-05 lr_head=1.20e-04 | gnorm=2.77 | 7.9s | best=0.9474(ep31) | no_improve=0
+[eval] n=740 loss=0.4131 top1=94.59% top5=99.86% macroF1=94.62% balAcc=94.59% (37 类随机水平 2.70%)
+[Epoch 032/039] train_loss=1.4426 train_acc1=57.71% | val_loss=0.4131 val_top1=94.59% val_top5=99.86% macroF1=0.9462 | lr_bb=1.34e-05 lr_head=9.49e-05 | gnorm=2.51 | 8.0s | best=0.9474(ep31) | no_improve=1
+[eval] n=740 loss=0.4021 top1=94.19% top5=99.73% macroF1=94.18% balAcc=94.19% (37 类随机水平 2.70%)
+[Epoch 033/039] train_loss=1.4203 train_acc1=56.39% | val_loss=0.4021 val_top1=94.19% val_top5=99.73% macroF1=0.9418 | lr_bb=1.25e-05 lr_head=7.29e-05 | gnorm=2.56 | 7.9s | best=0.9474(ep31) | no_improve=2
+[eval] n=740 loss=0.4149 top1=94.05% top5=99.73% macroF1=94.07% balAcc=94.05% (37 类随机水平 2.70%)
+[Epoch 034/039] train_loss=1.5534 train_acc1=60.07% | val_loss=0.4149 val_top1=94.05% val_top5=99.73% macroF1=0.9407 | lr_bb=1.18e-05 lr_head=5.39e-05 | gnorm=2.88 | 7.8s | best=0.9474(ep31) | no_improve=3
+[eval] n=740 loss=0.4175 top1=94.59% top5=99.86% macroF1=94.59% balAcc=94.59% (37 类随机水平 2.70%)
+[Epoch 035/039] train_loss=1.4135 train_acc1=64.41% | val_loss=0.4175 val_top1=94.59% val_top5=99.86% macroF1=0.9459 | lr_bb=1.11e-05 lr_head=3.83e-05 | gnorm=2.78 | 8.0s | best=0.9474(ep31) | no_improve=4
+[eval] n=740 loss=0.4540 top1=94.59% top5=99.86% macroF1=94.59% balAcc=94.59% (37 类随机水平 2.70%)
+[Epoch 036/039] train_loss=1.4833 train_acc1=61.70% | val_loss=0.4540 val_top1=94.59% val_top5=99.86% macroF1=0.9459 | lr_bb=1.06e-05 lr_head=2.60e-05 | gnorm=2.65 | 8.0s | best=0.9474(ep31) | no_improve=5
+[eval] n=740 loss=0.4051 top1=94.32% top5=99.73% macroF1=94.32% balAcc=94.32% (37 类随机水平 2.70%)
+[Epoch 037/039] train_loss=1.3815 train_acc1=50.03% | val_loss=0.4051 val_top1=94.32% val_top5=99.73% macroF1=0.9432 | lr_bb=1.03e-05 lr_head=1.71e-05 | gnorm=2.45 | 8.0s | best=0.9474(ep31) | no_improve=6
+[eval] n=740 loss=0.4204 top1=94.73% top5=99.86% macroF1=94.74% balAcc=94.73% (37 类随机水平 2.70%)
+[Epoch 038/039] train_loss=1.4906 train_acc1=54.41% | val_loss=0.4204 val_top1=94.73% val_top5=99.86% macroF1=0.9474 | lr_bb=1.01e-05 lr_head=1.18e-05 | gnorm=2.66 | 8.0s | best=0.9474(ep31) | no_improve=7
+[eval] n=740 loss=0.4535 top1=94.86% top5=99.86% macroF1=94.89% balAcc=94.86% (37 类随机水平 2.70%)
+[Epoch 039/039] train_loss=1.5284 train_acc1=59.65% | val_loss=0.4535 val_top1=94.86% val_top5=99.86% macroF1=0.9489 | lr_bb=1.00e-05 lr_head=1.00e-05 | gnorm=2.66 | 7.9s | best=0.9489(ep39) | no_improve=0
+[test][警告] 这是第 2 次 test 评价；请确认没有用 test 选模型/调参（第 26 页硬性限制）
+[eval] n=3669 loss=0.5431 top1=92.12% top5=99.59% macroF1=92.01% balAcc=92.08% (37 类随机水平 2.70%)
+[done] test Top-1=92.12% Top-5=99.59% Macro-F1=92.01% | 结果写入 outputs\metrics\opt_combo_test.json

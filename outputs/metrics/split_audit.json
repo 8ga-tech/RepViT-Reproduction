@@ -1,0 +1,8 @@
+{
+  "official_ids": 7349,
+  "train_outside_official": 0,
+  "val_outside_official": 0,
+  "test_outside_official": 0,
+  "examples": [],
+  "note": "train \u5168\u90e8\u6765\u81ea\u5b98\u65b9 trainval.txt \u624d\u8bf4\u660e\u5212\u5206\u811a\u672c\u8bfb\u7684\u662f\u6b63\u786e\u7684\u6839\u76ee\u5f55\uff1b\u82e5\u6709\u8d8a\u754c\u9879\uff0c\u901a\u5e38\u662f\u8bef\u8bfb\u4e86 images/ \u4e0b\u7684\u5b64\u513f\u56fe\uff0841 \u5f20\u65e0\u6807\u6ce8\u56fe\uff09\u3002"
+}

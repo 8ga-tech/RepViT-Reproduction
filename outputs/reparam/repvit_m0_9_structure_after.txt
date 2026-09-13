@@ -1,0 +1,276 @@
+# 推理态（融合后）结构
+# 模块总数 = 249
+<root>                                                     RepVit                         0
+  stem                                                       RepVitStem                     0
+    stem.conv1                                                 Conv2d                       672
+    stem.act1                                                  GELU                           0
+    stem.conv2                                                 Conv2d                     10416
+  stages                                                     Sequential                     0
+    stages.0                                                   RepVitStage                    0
+      stages.0.downsample                                        Identity                       0
+      stages.0.blocks                                            Sequential                     0
+        stages.0.blocks.0                                          RepViTBlock                    0
+          stages.0.blocks.0.token_mixer                              Conv2d                       480
+          stages.0.blocks.0.se                                       SEModule                       0
+            stages.0.blocks.0.se.fc1                                   Conv2d                       784
+            stages.0.blocks.0.se.bn                                    Identity                       0
+            stages.0.blocks.0.se.act                                   ReLU                           0
+            stages.0.blocks.0.se.fc2                                   Conv2d                       816
+            stages.0.blocks.0.se.gate                                  Sigmoid                        0
+          stages.0.blocks.0.channel_mixer                            RepVitMlp                      0
+            stages.0.blocks.0.channel_mixer.conv1                      Conv2d                      4704
+            stages.0.blocks.0.channel_mixer.act                        GELU                           0
+            stages.0.blocks.0.channel_mixer.conv2                      Conv2d                      4656
+        stages.0.blocks.1                                          RepViTBlock                    0
+          stages.0.blocks.1.token_mixer                              Conv2d                       480
+          stages.0.blocks.1.se                                       Identity                       0
+          stages.0.blocks.1.channel_mixer                            RepVitMlp                      0
+            stages.0.blocks.1.channel_mixer.conv1                      Conv2d                      4704
+            stages.0.blocks.1.channel_mixer.act                        GELU                           0
+            stages.0.blocks.1.channel_mixer.conv2                      Conv2d                      4656
+    stages.1                                                   RepVitStage                    0
+      stages.1.downsample                                        RepVitDownsample               0
+        stages.1.downsample.pre_block                              RepViTBlock                    0
+          stages.1.downsample.pre_block.token_mixer                  Conv2d                       480
+          stages.1.downsample.pre_block.se                           Identity                       0
+          stages.1.downsample.pre_block.channel_mixer                RepVitMlp                      0
+            stages.1.downsample.pre_block.channel_mixer.conv1          Conv2d                      4704
+            stages.1.downsample.pre_block.channel_mixer.act            GELU                           0
+            stages.1.downsample.pre_block.channel_mixer.conv2          Conv2d                      4656
+        stages.1.downsample.spatial_downsample                     Conv2d                       480
+        stages.1.downsample.channel_downsample                     Conv2d                      4704
+        stages.1.downsample.ffn                                    RepVitMlp                      0
+          stages.1.downsample.ffn.conv1                              Conv2d                     18624
+          stages.1.downsample.ffn.act                                GELU                           0
+          stages.1.downsample.ffn.conv2                              Conv2d                     18528
+      stages.1.blocks                                            Sequential                     0
+        stages.1.blocks.0                                          RepViTBlock                    0
+          stages.1.blocks.0.token_mixer                              Conv2d                       960
+          stages.1.blocks.0.se                                       SEModule                       0
+            stages.1.blocks.0.se.fc1                                   Conv2d                      2328
+            stages.1.blocks.0.se.bn                                    Identity                       0
+            stages.1.blocks.0.se.act                                   ReLU                           0
+            stages.1.blocks.0.se.fc2                                   Conv2d                      2400
+            stages.1.blocks.0.se.gate                                  Sigmoid                        0
+          stages.1.blocks.0.channel_mixer                            RepVitMlp                      0
+            stages.1.blocks.0.channel_mixer.conv1                      Conv2d                     18624
+            stages.1.blocks.0.channel_mixer.act                        GELU                           0
+            stages.1.blocks.0.channel_mixer.conv2                      Conv2d                     18528
+        stages.1.blocks.1                                          RepViTBlock                    0
+          stages.1.blocks.1.token_mixer                              Conv2d                       960
+          stages.1.blocks.1.se                                       Identity                       0
+          stages.1.blocks.1.channel_mixer                            RepVitMlp                      0
+            stages.1.blocks.1.channel_mixer.conv1                      Conv2d                     18624
+            stages.1.blocks.1.channel_mixer.act                        GELU                           0
+            stages.1.blocks.1.channel_mixer.conv2                      Conv2d                     18528
+    stages.2                                                   RepVitStage                    0
+      stages.2.downsample                                        RepVitDownsample               0
+        stages.2.downsample.pre_block                              RepViTBlock                    0
+          stages.2.downsample.pre_block.token_mixer                  Conv2d                       960
+          stages.2.downsample.pre_block.se                           Identity                       0
+          stages.2.downsample.pre_block.channel_mixer                RepVitMlp                      0
+            stages.2.downsample.pre_block.channel_mixer.conv1          Conv2d                     18624
+            stages.2.downsample.pre_block.channel_mixer.act            GELU                           0
+            stages.2.downsample.pre_block.channel_mixer.conv2          Conv2d                     18528
+        stages.2.downsample.spatial_downsample                     Conv2d                       960
+        stages.2.downsample.channel_downsample                     Conv2d                     18624
+        stages.2.downsample.ffn                                    RepVitMlp                      0
+          stages.2.downsample.ffn.conv1                              Conv2d                     74112
+          stages.2.downsample.ffn.act                                GELU                           0
+          stages.2.downsample.ffn.conv2                              Conv2d                     73920
+      stages.2.blocks                                            Sequential                     0
+        stages.2.blocks.0                                          RepViTBlock                    0
+          stages.2.blocks.0.token_mixer                              Conv2d                      1920
+          stages.2.blocks.0.se                                       SEModule                       0
+            stages.2.blocks.0.se.fc1                                   Conv2d                      9264
+            stages.2.blocks.0.se.bn                                    Identity                       0
+            stages.2.blocks.0.se.act                                   ReLU                           0
+            stages.2.blocks.0.se.fc2                                   Conv2d                      9408
+            stages.2.blocks.0.se.gate                                  Sigmoid                        0
+          stages.2.blocks.0.channel_mixer                            RepVitMlp                      0
+            stages.2.blocks.0.channel_mixer.conv1                      Conv2d                     74112
+            stages.2.blocks.0.channel_mixer.act                        GELU                           0
+            stages.2.blocks.0.channel_mixer.conv2                      Conv2d                     73920
+        stages.2.blocks.1                                          RepViTBlock                    0
+          stages.2.blocks.1.token_mixer                              Conv2d                      1920
+          stages.2.blocks.1.se                                       Identity                       0
+          stages.2.blocks.1.channel_mixer                            RepVitMlp                      0
+            stages.2.blocks.1.channel_mixer.conv1                      Conv2d                     74112
+            stages.2.blocks.1.channel_mixer.act                        GELU                           0
+            stages.2.blocks.1.channel_mixer.conv2                      Conv2d                     73920
+        stages.2.blocks.2                                          RepViTBlock                    0
+          stages.2.blocks.2.token_mixer                              Conv2d                      1920
+          stages.2.blocks.2.se                                       SEModule                       0
+            stages.2.blocks.2.se.fc1                                   Conv2d                      9264
+            stages.2.blocks.2.se.bn                                    Identity                       0
+            stages.2.blocks.2.se.act                                   ReLU                           0
+            stages.2.blocks.2.se.fc2                                   Conv2d                      9408
+            stages.2.blocks.2.se.gate                                  Sigmoid                        0
+          stages.2.blocks.2.channel_mixer                            RepVitMlp                      0
+            stages.2.blocks.2.channel_mixer.conv1                      Conv2d                     74112
+            stages.2.blocks.2.channel_mixer.act                        GELU                           0
+            stages.2.blocks.2.channel_mixer.conv2                      Conv2d                     73920
+        stages.2.blocks.3                                          RepViTBlock                    0
+          stages.2.blocks.3.token_mixer                              Conv2d                      1920
+          stages.2.blocks.3.se                                       Identity                       0
+          stages.2.blocks.3.channel_mixer                            RepVitMlp                      0
+            stages.2.blocks.3.channel_mixer.conv1                      Conv2d                     74112
+            stages.2.blocks.3.channel_mixer.act                        GELU                           0
+            stages.2.blocks.3.channel_mixer.conv2                      Conv2d                     73920
+        stages.2.blocks.4                                          RepViTBlock                    0
+          stages.2.blocks.4.token_mixer                              Conv2d                      1920
+          stages.2.blocks.4.se                                       SEModule                       0
+            stages.2.blocks.4.se.fc1                                   Conv2d                      9264
+            stages.2.blocks.4.se.bn                                    Identity                       0
+            stages.2.blocks.4.se.act                                   ReLU                           0
+            stages.2.blocks.4.se.fc2                                   Conv2d                      9408
+            stages.2.blocks.4.se.gate                                  Sigmoid                        0
+          stages.2.blocks.4.channel_mixer                            RepVitMlp                      0
+            stages.2.blocks.4.channel_mixer.conv1                      Conv2d                     74112
+            stages.2.blocks.4.channel_mixer.act                        GELU                           0
+            stages.2.blocks.4.channel_mixer.conv2                      Conv2d                     73920
+        stages.2.blocks.5                                          RepViTBlock                    0
+          stages.2.blocks.5.token_mixer                              Conv2d                      1920
+          stages.2.blocks.5.se                                       Identity                       0
+          stages.2.blocks.5.channel_mixer                            RepVitMlp                      0
+            stages.2.blocks.5.channel_mixer.conv1                      Conv2d                     74112
+            stages.2.blocks.5.channel_mixer.act                        GELU                           0
+            stages.2.blocks.5.channel_mixer.conv2                      Conv2d                     73920
+        stages.2.blocks.6                                          RepViTBlock                    0
+          stages.2.blocks.6.token_mixer                              Conv2d                      1920
+          stages.2.blocks.6.se                                       SEModule                       0
+            stages.2.blocks.6.se.fc1                                   Conv2d                      9264
+            stages.2.blocks.6.se.bn                                    Identity                       0
+            stages.2.blocks.6.se.act                                   ReLU                           0
+            stages.2.blocks.6.se.fc2                                   Conv2d                      9408
+            stages.2.blocks.6.se.gate                                  Sigmoid                        0
+          stages.2.blocks.6.channel_mixer                            RepVitMlp                      0
+            stages.2.blocks.6.channel_mixer.conv1                      Conv2d                     74112
+            stages.2.blocks.6.channel_mixer.act                        GELU                           0
+            stages.2.blocks.6.channel_mixer.conv2                      Conv2d                     73920
+        stages.2.blocks.7                                          RepViTBlock                    0
+          stages.2.blocks.7.token_mixer                              Conv2d                      1920
+          stages.2.blocks.7.se                                       Identity                       0
+          stages.2.blocks.7.channel_mixer                            RepVitMlp                      0
+            stages.2.blocks.7.channel_mixer.conv1                      Conv2d                     74112
+            stages.2.blocks.7.channel_mixer.act                        GELU                           0
+            stages.2.blocks.7.channel_mixer.conv2                      Conv2d                     73920
+        stages.2.blocks.8                                          RepViTBlock                    0
+          stages.2.blocks.8.token_mixer                              Conv2d                      1920
+          stages.2.blocks.8.se                                       SEModule                       0
+            stages.2.blocks.8.se.fc1                                   Conv2d                      9264
+            stages.2.blocks.8.se.bn                                    Identity                       0
+            stages.2.blocks.8.se.act                                   ReLU                           0
+            stages.2.blocks.8.se.fc2                                   Conv2d                      9408
+            stages.2.blocks.8.se.gate                                  Sigmoid                        0
+          stages.2.blocks.8.channel_mixer                            RepVitMlp                      0
+            stages.2.blocks.8.channel_mixer.conv1                      Conv2d                     74112
+            stages.2.blocks.8.channel_mixer.act                        GELU                           0
+            stages.2.blocks.8.channel_mixer.conv2                      Conv2d                     73920
+        stages.2.blocks.9                                          RepViTBlock                    0
+          stages.2.blocks.9.token_mixer                              Conv2d                      1920
+          stages.2.blocks.9.se                                       Identity                       0
+          stages.2.blocks.9.channel_mixer                            RepVitMlp                      0
+            stages.2.blocks.9.channel_mixer.conv1                      Conv2d                     74112
+            stages.2.blocks.9.channel_mixer.act                        GELU                           0
+            stages.2.blocks.9.channel_mixer.conv2                      Conv2d                     73920
+        stages.2.blocks.10                                         RepViTBlock                    0
+          stages.2.blocks.10.token_mixer                             Conv2d                      1920
+          stages.2.blocks.10.se                                      SEModule                       0
+            stages.2.blocks.10.se.fc1                                  Conv2d                      9264
+            stages.2.blocks.10.se.bn                                   Identity                       0
+            stages.2.blocks.10.se.act                                  ReLU                           0
+            stages.2.blocks.10.se.fc2                                  Conv2d                      9408
+            stages.2.blocks.10.se.gate                                 Sigmoid                        0
+          stages.2.blocks.10.channel_mixer                           RepVitMlp                      0
+            stages.2.blocks.10.channel_mixer.conv1                     Conv2d                     74112
+            stages.2.blocks.10.channel_mixer.act                       GELU                           0
+            stages.2.blocks.10.channel_mixer.conv2                     Conv2d                     73920
+        stages.2.blocks.11                                         RepViTBlock                    0
+          stages.2.blocks.11.token_mixer                             Conv2d                      1920
+          stages.2.blocks.11.se                                      Identity                       0
+          stages.2.blocks.11.channel_mixer                           RepVitMlp                      0
+            stages.2.blocks.11.channel_mixer.conv1                     Conv2d                     74112
+            stages.2.blocks.11.channel_mixer.act                       GELU                           0
+            stages.2.blocks.11.channel_mixer.conv2                     Conv2d                     73920
+        stages.2.blocks.12                                         RepViTBlock                    0
+          stages.2.blocks.12.token_mixer                             Conv2d                      1920
+          stages.2.blocks.12.se                                      SEModule                       0
+            stages.2.blocks.12.se.fc1                                  Conv2d                      9264
+            stages.2.blocks.12.se.bn                                   Identity                       0
+            stages.2.blocks.12.se.act                                  ReLU                           0
+            stages.2.blocks.12.se.fc2                                  Conv2d                      9408
+            stages.2.blocks.12.se.gate                                 Sigmoid                        0
+          stages.2.blocks.12.channel_mixer                           RepVitMlp                      0
+            stages.2.blocks.12.channel_mixer.conv1                     Conv2d                     74112
+            stages.2.blocks.12.channel_mixer.act                       GELU                           0
+            stages.2.blocks.12.channel_mixer.conv2                     Conv2d                     73920
+        stages.2.blocks.13                                         RepViTBlock                    0
+          stages.2.blocks.13.token_mixer                             Conv2d                      1920
+          stages.2.blocks.13.se                                      Identity                       0
+          stages.2.blocks.13.channel_mixer                           RepVitMlp                      0
+            stages.2.blocks.13.channel_mixer.conv1                     Conv2d                     74112
+            stages.2.blocks.13.channel_mixer.act                       GELU                           0
+            stages.2.blocks.13.channel_mixer.conv2                     Conv2d                     73920
+    stages.3                                                   RepVitStage                    0
+      stages.3.downsample                                        RepVitDownsample               0
+        stages.3.downsample.pre_block                              RepViTBlock                    0
+          stages.3.downsample.pre_block.token_mixer                  Conv2d                      1920
+          stages.3.downsample.pre_block.se                           Identity                       0
+          stages.3.downsample.pre_block.channel_mixer                RepVitMlp                      0
+            stages.3.downsample.pre_block.channel_mixer.conv1          Conv2d                     74112
+            stages.3.downsample.pre_block.channel_mixer.act            GELU                           0
+            stages.3.downsample.pre_block.channel_mixer.conv2          Conv2d                     73920
+        stages.3.downsample.spatial_downsample                     Conv2d                      1920
+        stages.3.downsample.channel_downsample                     Conv2d                     74112
+        stages.3.downsample.ffn                                    RepVitMlp                      0
+          stages.3.downsample.ffn.conv1                              Conv2d                    295680
+          stages.3.downsample.ffn.act                                GELU                           0
+          stages.3.downsample.ffn.conv2                              Conv2d                    295296
+      stages.3.blocks                                            Sequential                     0
+        stages.3.blocks.0                                          RepViTBlock                    0
+          stages.3.blocks.0.token_mixer                              Conv2d                      3840
+          stages.3.blocks.0.se                                       SEModule                       0
+            stages.3.blocks.0.se.fc1                                   Conv2d                     36960
+            stages.3.blocks.0.se.bn                                    Identity                       0
+            stages.3.blocks.0.se.act                                   ReLU                           0
+            stages.3.blocks.0.se.fc2                                   Conv2d                     37248
+            stages.3.blocks.0.se.gate                                  Sigmoid                        0
+          stages.3.blocks.0.channel_mixer                            RepVitMlp                      0
+            stages.3.blocks.0.channel_mixer.conv1                      Conv2d                    295680
+            stages.3.blocks.0.channel_mixer.act                        GELU                           0
+            stages.3.blocks.0.channel_mixer.conv2                      Conv2d                    295296
+        stages.3.blocks.1                                          RepViTBlock                    0
+          stages.3.blocks.1.token_mixer                              Conv2d                      3840
+          stages.3.blocks.1.se                                       Identity                       0
+          stages.3.blocks.1.channel_mixer                            RepVitMlp                      0
+            stages.3.blocks.1.channel_mixer.conv1                      Conv2d                    295680
+            stages.3.blocks.1.channel_mixer.act                        GELU                           0
+            stages.3.blocks.1.channel_mixer.conv2                      Conv2d                    295296
+  head_drop                                                  Dropout                        0
+  head                                                       Linear                    385000
+
+## 类型直方图
+{
+  "Conv2d": 103,
+  "GELU": 27,
+  "RepVitMlp": 26,
+  "Identity": 24,
+  "RepViTBlock": 23,
+  "ReLU": 10,
+  "SEModule": 10,
+  "Sigmoid": 10,
+  "Sequential": 5,
+  "RepVitStage": 4,
+  "RepVitDownsample": 3,
+  "Dropout": 1,
+  "Linear": 1,
+  "RepVit": 1,
+  "RepVitStem": 1
+}
+
+## 关键计数
+BatchNorm1d/2d = 0
+Conv2d         = 103
+RepVGGDW       = 0
+Linear         = 1

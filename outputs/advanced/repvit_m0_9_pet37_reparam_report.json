@@ -1,0 +1,209 @@
+{
+  "model": "repvit_m0_9_pet37",
+  "train": {
+    "params": 4747818,
+    "bn_modules": 108,
+    "modules": {
+      "RepVit": 1,
+      "RepVitStem": 1,
+      "ConvNorm": 83,
+      "Conv2d": 126,
+      "BatchNorm2d": 106,
+      "GELU": 27,
+      "Sequential": 5,
+      "RepVitStage": 4,
+      "Identity": 24,
+      "RepViTBlock": 23,
+      "RepVggDw": 23,
+      "SEModule": 10,
+      "ReLU": 10,
+      "Sigmoid": 10,
+      "RepVitMlp": 26,
+      "RepVitDownsample": 3,
+      "Dropout": 2,
+      "RepVitClassifier": 1,
+      "NormLinear": 2,
+      "BatchNorm1d": 2,
+      "Linear": 2
+    }
+  },
+  "infer": {
+    "params": 4696301,
+    "bn_modules": 0,
+    "modules": {
+      "RepVit": 1,
+      "RepVitStem": 1,
+      "Conv2d": 103,
+      "GELU": 27,
+      "Sequential": 5,
+      "RepVitStage": 4,
+      "Identity": 24,
+      "RepViTBlock": 23,
+      "SEModule": 10,
+      "ReLU": 10,
+      "Sigmoid": 10,
+      "RepVitMlp": 26,
+      "RepVitDownsample": 3,
+      "Dropout": 1,
+      "Linear": 1
+    }
+  },
+  "numerics": {
+    "max_abs_err": 2.9802322387695312e-06,
+    "mean_abs_err": 1.1162530881847488e-06,
+    "top1_agree": 1.0,
+    "top5_set_agree": 1.0
+  },
+  "latency_ms": {
+    "train": {
+      "mean": 39.250862000044435,
+      "p50": 37.87535001174547,
+      "p95": 47.267015001853,
+      "mx": 48.96379995625466,
+      "std": 4.441585236316001,
+      "n": 50,
+      "percentile_method": "linear"
+    },
+    "infer": {
+      "mean": 28.660191998351365,
+      "p50": 29.46629998041317,
+      "p95": 35.3943700029049,
+      "mx": 43.17890002857894,
+      "std": 4.388208769995723,
+      "n": 50,
+      "percentile_method": "linear"
+    }
+  },
+  "onnx": {
+    "train": {
+      "file": "onnx_before.onnx",
+      "file_MB": 19.028,
+      "ir_version": 7,
+      "opset": [
+        [
+          "ai.onnx",
+          13
+        ]
+      ],
+      "n_nodes": 480,
+      "n_initializers": 350,
+      "n_bn": 24,
+      "n_conv": 126,
+      "n_add": 99,
+      "n_mul": 64,
+      "n_div": 27,
+      "n_erf": 27,
+      "n_reduce_mean": 11,
+      "n_sigmoid": 10,
+      "n_gelu": 0,
+      "initializer_MB": 18.889,
+      "op_histogram": {
+        "Conv": 126,
+        "Add": 99,
+        "Constant": 81,
+        "Mul": 64,
+        "Div": 27,
+        "Erf": 27,
+        "BatchNormalization": 24,
+        "ReduceMean": 11,
+        "Relu": 10,
+        "Sigmoid": 10,
+        "Gemm": 1
+      }
+    },
+    "infer": {
+      "file": "repvit_m0_9_pet37.onnx",
+      "file_MB": 18.893,
+      "ir_version": 7,
+      "opset": [
+        [
+          "ai.onnx",
+          13
+        ]
+      ],
+      "n_nodes": 387,
+      "n_initializers": 208,
+      "n_bn": 0,
+      "n_conv": 103,
+      "n_add": 53,
+      "n_mul": 64,
+      "n_div": 27,
+      "n_erf": 27,
+      "n_reduce_mean": 11,
+      "n_sigmoid": 10,
+      "n_gelu": 0,
+      "initializer_MB": 18.785,
+      "op_histogram": {
+        "Conv": 103,
+        "Constant": 81,
+        "Mul": 64,
+        "Add": 53,
+        "Div": 27,
+        "Erf": 27,
+        "ReduceMean": 11,
+        "Relu": 10,
+        "Sigmoid": 10,
+        "Gemm": 1
+      }
+    }
+  },
+  "residual": {
+    "bn_in_infer": 0,
+    "conv_delta": 23,
+    "add_in_infer": 53,
+    "mul_in_infer": 64,
+    "div_in_infer": 27,
+    "erf_in_infer": 27,
+    "reducem_in_infer": 11,
+    "irreducible_ops": "SE \u7684 ReduceMean + 2\u00d7Conv(1\u00d71) + ReLU + Sigmoid + Mul = 6 \u4e2a\u7b97\u5b50\uff08\u4e2d\u95f4\u9694\u7740\u975e\u7ebf\u6027\uff0c\u65e0\u6cd5\u6298\u8fdb\u4e00\u4e2a\u5377\u79ef\uff1b\u5b9e\u9645\u7b97\u5b50\u6570\u4ee5\u81ea\u5df1\u5bfc\u51fa\u7684 op_histogram \u4e3a\u51c6\uff0cORT \u7684 Extended \u4f18\u5316\u53ef\u80fd\u628a Conv+ReLU \u878d\u6210 FusedConv \u800c\u5c11\u4e8e 6\uff09\u3001channel_mixer \u6b8b\u5dee\u7684 Add\uff08\u4e24\u4fa7\u9694 GELU\uff09\u3001GELU \u5728 opset<20 \u88ab\u62c6\u6210 Div/Erf/Add/Mul",
+    "note": "SE \u5185 norm_layer \u9ed8\u8ba4\u4e3a None\uff0cself.bn \u662f nn.Identity\uff0c\u672c\u6765\u5c31\u6ca1\u6709\u53ef\u878d\u5408\u7684 BN"
+  },
+  "block_fusion_report": {
+    "block_index": 22,
+    "block_type": "RepViTBlock",
+    "stride": null,
+    "branches": [
+      "3x3 depthwise conv + BN",
+      "1x1 depthwise conv (bias=True)",
+      "identity"
+    ],
+    "outer_bn": "BatchNorm2d(ed) \u5438\u6536\u8fdb final_conv",
+    "steps": [
+      "\u2460 \u878d\u5408 3x3 \u5206\u652f\u7684 BN: W' = W\u00b7\u03b3/\u221a(\u03c3\u00b2+\u03b5), b' = \u03b2 \u2212 \u03bc\u00b7\u03b3/\u221a(\u03c3\u00b2+\u03b5)",
+      "\u2461 1x1 \u6838 pad \u6210 3\u00d73\u3001identity pad \u6210\u4e2d\u5fc3\u4e3a 1 \u7684 3\u00d73\uff0c\u4e09\u8005\u9010\u5143\u7d20\u76f8\u52a0",
+      "\u2462 \u878d\u5408\u5916\u5c42 BN: W_f = W_m\u00b7t, b_f = \u03b2 + (b_m \u2212 \u03bc)\u00b7t",
+      "\u4ea7\u7269\uff1a\u5355\u4e2a\u5e26 bias \u7684 3\u00d73 depthwise Conv2d\uff08\u4e0d\u53ef\u518d\u5206\uff09"
+    ],
+    "detail": {
+      "C": 384,
+      "branch_3x3_W_shape": [
+        384,
+        1,
+        3,
+        3
+      ],
+      "branch_1x1_W_shape": [
+        384,
+        1,
+        1,
+        1
+      ],
+      "identity_kernel": "center=1, ring=0 (3x3 depthwise)",
+      "W_final_shape": [
+        384,
+        1,
+        3,
+        3
+      ],
+      "b_final_shape": [
+        384
+      ],
+      "t_range": [
+        0.08363427221775055,
+        41.12293243408203
+      ],
+      "params_before": 5760,
+      "params_after": 3840
+    }
+  }
+}

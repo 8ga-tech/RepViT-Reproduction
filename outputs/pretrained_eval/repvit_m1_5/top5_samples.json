@@ -1,0 +1,202 @@
+{
+  "samples": [
+    {
+      "image_path": "data/imagenet/val/n04357314/ILSVRC2012_val_00000838_32.JPEG",
+      "true_label_idx": 838,
+      "true_label_name": "sunscreen",
+      "top5": [
+        {
+          "idx": 838,
+          "name": "sunscreen",
+          "prob": 0.9995532631874084
+        },
+        {
+          "idx": 419,
+          "name": "Band Aid",
+          "prob": 9.117844456341118e-05
+        },
+        {
+          "idx": 631,
+          "name": "lotion",
+          "prob": 5.932071144343354e-05
+        },
+        {
+          "idx": 445,
+          "name": "bikini",
+          "prob": 5.1917246310040355e-05
+        },
+        {
+          "idx": 775,
+          "name": "sarong",
+          "prob": 2.5490488042123616e-05
+        }
+      ],
+      "correct": true
+    },
+    {
+      "image_path": "data/imagenet/val/n02869837/ILSVRC2012_val_00000452_46.JPEG",
+      "true_label_idx": 452,
+      "true_label_name": "bonnet",
+      "top5": [
+        {
+          "idx": 452,
+          "name": "bonnet",
+          "prob": 0.9994333386421204
+        },
+        {
+          "idx": 658,
+          "name": "mitten",
+          "prob": 0.00014936429215595126
+        },
+        {
+          "idx": 533,
+          "name": "dishrag",
+          "prob": 4.514328975346871e-05
+        },
+        {
+          "idx": 615,
+          "name": "knee pad",
+          "prob": 2.7426625820226036e-05
+        },
+        {
+          "idx": 806,
+          "name": "sock",
+          "prob": 2.0653955289162695e-05
+        }
+      ],
+      "correct": true
+    },
+    {
+      "image_path": "data/imagenet/val/n04264628/ILSVRC2012_val_00000810_49.JPEG",
+      "true_label_idx": 810,
+      "true_label_name": "space bar",
+      "top5": [
+        {
+          "idx": 878,
+          "name": "typewriter keyboard",
+          "prob": 0.9965007305145264
+        },
+        {
+          "idx": 810,
+          "name": "space bar",
+          "prob": 0.0013049746630713344
+        },
+        {
+          "idx": 681,
+          "name": "notebook",
+          "prob": 0.00016417019651271403
+        },
+        {
+          "idx": 401,
+          "name": "accordion",
+          "prob": 4.0349288610741496e-05
+        },
+        {
+          "idx": 687,
+          "name": "organ",
+          "prob": 3.838519478449598e-05
+        }
+      ],
+      "correct": false
+    },
+    {
+      "image_path": "data/imagenet/val/n03759954/ILSVRC2012_val_00000650_07.JPEG",
+      "true_label_idx": 650,
+      "true_label_name": "microphone",
+      "top5": [
+        {
+          "idx": 593,
+          "name": "harmonica",
+          "prob": 0.994443953037262
+        },
+        {
+          "idx": 650,
+          "name": "microphone",
+          "prob": 0.0018325743731111288
+        },
+        {
+          "idx": 691,
+          "name": "oxygen mask",
+          "prob": 0.00044951029121875763
+        },
+        {
+          "idx": 684,
+          "name": "ocarina",
+          "prob": 0.00034347892506048083
+        },
+        {
+          "idx": 764,
+          "name": "rifle",
+          "prob": 0.0002248317759949714
+        }
+      ],
+      "correct": false
+    },
+    {
+      "image_path": "data/imagenet/val/n01491361/ILSVRC2012_val_00000003_13.JPEG",
+      "true_label_idx": 3,
+      "true_label_name": "tiger shark",
+      "top5": [
+        {
+          "idx": 3,
+          "name": "tiger shark",
+          "prob": 0.966432511806488
+        },
+        {
+          "idx": 2,
+          "name": "great white shark",
+          "prob": 0.01653234474360943
+        },
+        {
+          "idx": 4,
+          "name": "hammerhead",
+          "prob": 0.0038271311204880476
+        },
+        {
+          "idx": 983,
+          "name": "scuba diver",
+          "prob": 0.001965038711205125
+        },
+        {
+          "idx": 973,
+          "name": "coral reef",
+          "prob": 0.0006947640795260668
+        }
+      ],
+      "correct": true
+    },
+    {
+      "image_path": "data/imagenet/val/n02089078/ILSVRC2012_val_00000165_44.JPEG",
+      "true_label_idx": 165,
+      "true_label_name": "black-and-tan coonhound",
+      "top5": [
+        {
+          "idx": 165,
+          "name": "black-and-tan coonhound",
+          "prob": 0.9667101502418518
+        },
+        {
+          "idx": 236,
+          "name": "Doberman",
+          "prob": 0.018863346427679062
+        },
+        {
+          "idx": 164,
+          "name": "bluetick",
+          "prob": 0.004928416572511196
+        },
+        {
+          "idx": 166,
+          "name": "Walker hound",
+          "prob": 0.002284047193825245
+        },
+        {
+          "idx": 163,
+          "name": "bloodhound",
+          "prob": 0.0010847459780052304
+        }
+      ],
+      "correct": true
+    }
+  ]
+}

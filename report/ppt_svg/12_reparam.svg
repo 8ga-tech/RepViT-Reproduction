@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" data-pptx-page-role="content">
+  <rect id="bg-canvas" data-pptx-role="background" x="0" y="0" width="1280" height="720" fill="#0B1220"/>
+
+  <g id="page-header" data-pptx-bounds="72 44 1136 100">
+    <text x="72" y="82" font-family="Microsoft YaHei" font-size="34" font-weight="bold" fill="#E6EDF7">重参数化在数值上完全等价，BN 节点归零</text>
+    <text x="72" y="118" font-family="Microsoft YaHei" font-size="16" fill="#93A4C0">融合必须是代数恒等变换；必须在 eval() 之后做，否则 BN 用的是 batch 统计量</text>
+    <line x1="72" y1="136" x2="1208" y2="136" stroke="#1E3050" stroke-width="2"/>
+  </g>
+
+  <g id="formula" data-pptx-bounds="72 168 620 218">
+    <rect x="72" y="168" width="620" height="218" rx="10" fill="#0F1728" stroke="#1E3050" stroke-width="1"/>
+    <text x="98" y="204" font-family="Microsoft YaHei" font-size="18" font-weight="bold" fill="#E6EDF7">融合公式（手工推导并实测验证）</text>
+    <line x1="98" y1="218" x2="666" y2="218" stroke="#1E3050" stroke-width="1"/>
+
+    <g id="f-1">
+      <text x="98" y="252" font-family="Consolas" font-size="15" fill="#35D0F0">BN(y) = γ · (y − μ) / √(σ² + ε) + β</text>
+      <text x="98" y="280" font-family="Consolas" font-size="15" fill="#35D0F0">y     = W * x + b</text>
+    </g>
+    <g id="f-2">
+      <line x1="98" y1="298" x2="666" y2="298" stroke="#1E3050" stroke-width="1"/>
+      <text x="98" y="328" font-family="Consolas" font-size="15" fill="#3FDB9B">W' = W · γ / √(σ² + ε)</text>
+      <text x="98" y="354" font-family="Consolas" font-size="15" fill="#3FDB9B">b' = (b − μ) · γ / √(σ² + ε) + β</text>
+      <text x="98" y="380" font-family="Microsoft YaHei" font-size="14" fill="#93A4C0">1×1 核零填充成 3×3，identity 核中心为 1，三者逐元素相加</text>
+    </g>
+  </g>
+
+  <g id="reparam-numbers" data-pptx-bounds="712 168 496 218">
+    <rect x="712" y="168" width="496" height="218" rx="10" fill="#131C2E" stroke="#1E3050" stroke-width="1"/>
+    <text x="738" y="204" font-family="Microsoft YaHei" font-size="18" font-weight="bold" fill="#E6EDF7">实测数值对照</text>
+    <line x1="738" y1="218" x2="1182" y2="218" stroke="#1E3050" stroke-width="1"/>
+    <text x="738" y="252" font-family="Microsoft YaHei" font-size="15" fill="#93A4C0">max_abs_err</text>
+    <text x="1182" y="252" font-family="Consolas" font-size="16" fill="#3FDB9B" text-anchor="end">7.093e-06</text>
+    <text x="738" y="284" font-family="Microsoft YaHei" font-size="15" fill="#93A4C0">mean_abs_err</text>
+    <text x="1182" y="284" font-family="Consolas" font-size="16" fill="#3FDB9B" text-anchor="end">2.031e-06</text>
+    <text x="738" y="316" font-family="Microsoft YaHei" font-size="15" fill="#93A4C0">Top-1 是否一致</text>
+    <text x="1182" y="316" font-family="Consolas" font-size="16" fill="#3FDB9B" text-anchor="end">True（32/32）</text>
+    <text x="738" y="348" font-family="Microsoft YaHei" font-size="15" fill="#93A4C0">BN 模块数</text>
+    <text x="1182" y="348" font-family="Consolas" font-size="16" fill="#3FDB9B" text-anchor="end">108 → 0</text>
+    <text x="738" y="378" font-family="Microsoft YaHei" font-size="14" fill="#5C7096">判定：max|Δ| &lt; 1e-4 且 Top-1 恒等 → PASS</text>
+  </g>
+
+  <g id="onnx-graph" data-pptx-bounds="72 406 620 130">
+    <rect x="72" y="406" width="620" height="130" rx="10" fill="#0F1728" stroke="#1E3050" stroke-width="1"/>
+    <text x="98" y="440" font-family="Microsoft YaHei" font-size="18" font-weight="bold" fill="#E6EDF7">ONNX 计算图的变化</text>
+    <line x1="98" y1="454" x2="666" y2="454" stroke="#1E3050" stroke-width="1"/>
+    <text x="98" y="486" font-family="Consolas" font-size="14" fill="#93A4C0">训练态图　nodes 480 · BN 24 · Conv 126 · 19.03 MB</text>
+    <text x="98" y="514" font-family="Consolas" font-size="14" fill="#3FDB9B">推理态图　nodes 387 · BN  0 · Conv 103 · 18.89 MB</text>
+  </g>
+
+  <g id="block-fusion" data-pptx-bounds="712 406 496 130">
+    <rect x="712" y="406" width="496" height="130" rx="10" fill="#131C2E" stroke="#1E3050" stroke-width="1"/>
+    <text x="738" y="440" font-family="Microsoft YaHei" font-size="18" font-weight="bold" fill="#E6EDF7">单 Block 融合（独立复刻验证）</text>
+    <line x1="738" y1="454" x2="1182" y2="454" stroke="#1E3050" stroke-width="1"/>
+    <text x="738" y="486" font-family="Consolas" font-size="14" fill="#93A4C0">C=384　3×3 核 [384,1,3,3] + 1×1 核 [384,1,1,1]</text>
+    <text x="738" y="514" font-family="Consolas" font-size="14" fill="#3FDB9B">参数量 5760 → 3840　→ 单个 3×3 depthwise</text>
+  </g>
+
+  <g id="residual-note" data-pptx-bounds="72 556 1136 96">
+    <rect x="72" y="556" width="1136" height="96" rx="10" fill="#131C2E" stroke="#1E3050" stroke-width="1"/>
+    <text x="100" y="586" font-family="Microsoft YaHei" font-size="17" font-weight="bold" fill="#E6EDF7">转换后仍存在的算子不是冗余</text>
+    <line x1="100" y1="598" x2="1180" y2="598" stroke="#1E3050" stroke-width="1"/>
+    <text x="100" y="626" font-family="Microsoft YaHei" font-size="14" fill="#93A4C0">残留的 Add / Mul / Div / Clip / Relu 来自 GELU 激活、残差相加与逐样本归一化；SE 的 ReduceMean + 2×Conv</text>
+    <text x="100" y="646" font-family="Microsoft YaHei" font-size="14" fill="#93A4C0">中间隔着非线性，本就无法折进一个卷积</text>
+  </g>
+
+  <g id="page-footer" data-pptx-bounds="72 662 1136 34">
+    <text x="72" y="684" font-family="Microsoft YaHei" font-size="13" fill="#5C7096">数据来源：outputs/reparam/repvit_m0_9_pet37_reparam_report.json · _onnx_nodes.json · block_22_fusion_report.txt</text>
+    <text x="1208" y="684" font-family="Consolas" font-size="14" fill="#5C7096" text-anchor="end">12</text>
+  </g>
+</svg>

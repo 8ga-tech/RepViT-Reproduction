@@ -1,0 +1,32 @@
+# configs/opt_abl_a.yaml
+_base_: baseline.yaml
+
+experiment_name: opt_abl_a
+
+aug:
+  train:
+    random_resized_crop: {scale: [0.25, 1.0], ratio: [0.75, 1.333]}   # 差异键 1：裁剪更激进
+    color_jitter: {brightness: 0.5, contrast: 0.5, saturation: 0.5, hue: 0.1}  # 差异键 2~4
+    randaugment: {n: 2, m: 9, inc1: false}                            # 差异键 5
+
+_expected_diff_:              # 共 5 个差异键；与 configs/expected_diff.yaml 的 opt_abl_a.expect 逐字一致
+# 说明：baseline 里 aug.train.randaugment 是 null，实验里是 {n,m,inc1} 字典。
+# diff_config.py 按**叶子键**展开，因此 null->dict 会同时产生 4 个差异键：
+#   父键 aug.train.randaugment（值 None -> '<MISSING>'）
+#   三个叶子 n / m / inc1（'<MISSING>' -> 2 / 9 / false）
+# 四者都必须声明，否则会被判为「未声明的变量差异」。
+  - aug.train.random_resized_crop.scale
+  - aug.train.color_jitter.brightness
+  - aug.train.color_jitter.contrast
+  - aug.train.color_jitter.saturation
+  - aug.train.randaugment
+  - aug.train.randaugment.n
+  - aug.train.randaugment.m
+  - aug.train.randaugment.inc1
+# 注意（与 opt_randaug.yaml / opt_combo.yaml 完全同源，不是本文件特有）：
+# tools/diff_config.py 的 flatten() 会递归展开 dict，且 baseline 里 randaugment 是 null、
+# 本文件里是 {n,m,inc1} 字典，因此它在 [DIFF COUNT] 里会被拆成
+# aug.train.randaugment.n / .m / .inc1 三行（randaugment 本身不会作为叶子键出现）。
+# 方案 C 的「5 个差异键」是配置语义口径（增强策略整体只算一个变量），
+# 请以 [DIFF COUNT]=5 作报告引用；如该展开被判定为变量过多，应改 diff_config.py 的
+# flatten 让它在我方声明的父键处停止，而不是在本文件里补 3 个子键。

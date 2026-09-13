@@ -1,0 +1,24 @@
+[metrics] wrote outputs/metrics\imagenet_unpack.json
+{
+  "src_dir": "data/_src/imagenet_val",
+  "out_dir": "data/imagenet/val",
+  "synsets_file": "data/imagenet/meta/imagenet_synsets.txt",
+  "shards": 14,
+  "parquet_total_images": 50000,
+  "classes_written": 1000,
+  "images_written": 50000,
+  "per_class_distribution": {
+    "50": 1000
+  },
+  "limit_per_class": null,
+  "skipped": 0,
+  "verify": {
+    "classes": 1000,
+    "per_class_distribution": {
+      "50": 1000
+    },
+    "total": 50000,
+    "bad_magic": 0
+  },
+  "mode": "unpack"
+}

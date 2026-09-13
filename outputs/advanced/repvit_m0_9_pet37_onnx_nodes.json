@@ -1,0 +1,73 @@
+{
+  "train": {
+    "file": "onnx_before.onnx",
+    "file_MB": 19.028,
+    "ir_version": 7,
+    "opset": [
+      [
+        "ai.onnx",
+        13
+      ]
+    ],
+    "n_nodes": 480,
+    "n_initializers": 350,
+    "n_bn": 24,
+    "n_conv": 126,
+    "n_add": 99,
+    "n_mul": 64,
+    "n_div": 27,
+    "n_erf": 27,
+    "n_reduce_mean": 11,
+    "n_sigmoid": 10,
+    "n_gelu": 0,
+    "initializer_MB": 18.889,
+    "op_histogram": {
+      "Conv": 126,
+      "Add": 99,
+      "Constant": 81,
+      "Mul": 64,
+      "Div": 27,
+      "Erf": 27,
+      "BatchNormalization": 24,
+      "ReduceMean": 11,
+      "Relu": 10,
+      "Sigmoid": 10,
+      "Gemm": 1
+    }
+  },
+  "infer": {
+    "file": "repvit_m0_9_pet37.onnx",
+    "file_MB": 18.893,
+    "ir_version": 7,
+    "opset": [
+      [
+        "ai.onnx",
+        13
+      ]
+    ],
+    "n_nodes": 387,
+    "n_initializers": 208,
+    "n_bn": 0,
+    "n_conv": 103,
+    "n_add": 53,
+    "n_mul": 64,
+    "n_div": 27,
+    "n_erf": 27,
+    "n_reduce_mean": 11,
+    "n_sigmoid": 10,
+    "n_gelu": 0,
+    "initializer_MB": 18.785,
+    "op_histogram": {
+      "Conv": 103,
+      "Constant": 81,
+      "Mul": 64,
+      "Add": 53,
+      "Div": 27,
+      "Erf": 27,
+      "ReduceMean": 11,
+      "Relu": 10,
+      "Sigmoid": 10,
+      "Gemm": 1
+    }
+  }
+}

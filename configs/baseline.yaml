@@ -1,0 +1,126 @@
+# =============================================================================
+# configs/baseline.yaml —— RepViT-M0.9 / Oxford-IIIT Pet 37 类 迁移训练 Baseline
+# 约定：本文件是唯一超参真源，字段名与层级全仓唯一（其它模块只能引用，不得改名、
+#       不得增设第二套）。任何"优化实验"必须复制本文件为 configs/opt_*.yaml 后
+#       只改一个顶层块，禁止在 train.py 里加 if 分支改默认值。
+# 值域注解写在每个字段右侧：默认值 | 取值范围 | 说明
+# =============================================================================
+
+# ---- 实验标识 ---------------------------------------------------------------
+experiment_name: baseline           # str | 安全文件名 | 产物名前缀（旧稿的其它简写一律作废）：outputs/logs/<name>_*、checkpoints/<name>_*.pt
+seed: 42                            # int | 0 ~ 2**31-1 | 需同时固定 random/numpy/torch/cuda/PYTHONHASHSEED
+
+# ---- 模型 -------------------------------------------------------------------
+model:
+  name: repvit_m0_9                 # str  | timm 模型名 | 裸名由 timm registry 解析到 repvit_m0_9.dist_300e_in1k；要用 450e 权重就写全名
+  impl: timm                        # enum | timm / official | 本模块固定 timm；official 另见官方实现说明
+  pretrained: true                  # bool | true/false | true 时经 HF 拉取预训练权重（国内需 HF_ENDPOINT=https://hf-mirror.com）
+  pretrained_ckpt: ""               # str  | 空串 / 本地 .pth 路径 | 空 -> 走 timm/HF 下载；非空 -> 本地权重热启动（按形状过滤，见 6.3）
+  num_classes: 37                   # int  | 必须 == len(class_map) | 37 而非常见的 1000
+  distillation: false               # bool | 必须 false | 关掉 timm 默认的双蒸馏头，否则 eval 会把随机初始化的 head_dist 平均进 logits
+  drop_rate: 0.0                    # float| 0.0 ~ 0.3 | 分类头 dropout，Baseline 关掉
+  legacy: false                     # bool | true/false | timm 旧接口开关，本次固定 false
+# 本文件不得出现 drop_path_rate 键：timm 的 RepVit.__init__ 没有该形参，
+# 透传必抛 TypeError: RepVit.__init__() got an unexpected keyword argument 'drop_path_rate'
+
+# ---- 数据 -------------------------------------------------------------------
+data:
+  root: data/oxford-iiit-pet        # str  | 相对路径 | 目录下含 images/ 与 annotations/
+  images_subdir: images             # str  | 固定 | 平铺 jpg 所在子目录
+  train_list: datasets/lists/pet_train.txt   # str | 相对路径 | 每行 "<image_id>\t<0-based 标签>"，image_id 不含 .jpg
+  val_list:   datasets/lists/pet_val.txt
+  test_list:  datasets/lists/pet_test.txt
+  class_names: labels/pet_classes.txt        # str | 相对路径 | 37 行，行号 = 类别下标 0..36
+  class_map:  labels/pet_class_to_idx.json   # str | 相对路径 | {"abyssinian": 0, ...}，name -> idx
+  input_size: 224                   # int  | 224 / 256 / 320 | 与预训练一致；改它必须同步调 lr
+  batch_size: 64                    # int  | 16 ~ 128 | 训练 micro-batch；2940 张 + drop_last -> 45 step/epoch
+  eval_batch_size: 128              # int  | 64 ~ 256 | 验证/测试不受 BN 限制，可放大
+  num_workers: 4                    # int  | 0 ~ 8 | Windows 上若报 worker 崩溃先降到 0 定位
+  pin_memory: true                  # bool | true/false | CUDA 上开；CPU-only 可关
+  drop_last: true                   # bool | true/false | 训练集开（避免 BN 遇到 size=1 的尾批；步数 = floor(2940/64) = 45）
+  persistent_workers: true          # bool | true/false | num_workers>0 时生效，减少 epoch 间重建开销
+
+# ---- 数据增强 ---------------------------------------------------------------
+aug:
+  train:                            # 训练变换：RandomResizedCrop -> Flip -> Jitter -> ToTensor -> Normalize -> Erasing
+    resize_size: 256                # int  | 236 ~ 320 | random_resized_crop 为 null 时先 Resize 到该短边再裁剪
+    random_resized_crop:            # null 或 {scale, ratio} | 置 null 则退化为 Resize + RandomCrop（消融用）
+      scale: [0.35, 1.00]           # [float,float] | 0.35 ~ 1.0 | 小数据集不要用 ImageNet 的 (0.08,1.0)
+      ratio: [0.75, 1.333]          # [float,float] | 3/4 ~ 4/3 | 与 torchvision 默认一致
+    hflip: 0.5                      # float| 0.0 ~ 0.5 | 宠物品种左右翻转不改变类别，安全
+    color_jitter:                   # null 或 {brightness, contrast, saturation, hue}
+      brightness: 0.4               # float| 0.0 ~ 0.4 | 四项各取其值；Baseline 固定，改它属于优化实验
+      contrast: 0.4
+      saturation: 0.4
+      hue: 0.1
+    randaugment: null               # null 或 {n, m, inc1} | Baseline 关；优化实验 O1 只改这一个键
+    random_erasing:                 # null 或 {prob, mode, count} | 必须放在 Normalize 之后；Baseline 固定
+      prob: 0.25                    # float| 0.0 ~ 0.5
+      mode: pixel                   # enum | const / rand / pixel | pixel = 逐像素标准正态随机填充
+      count: 1                      # int  | 1 | 每张图最多擦除的块数（timm 实现的 min_count=max_count）
+    interpolation: bicubic          # enum | bilinear / bicubic | 与官方 build_transform 的 interpolation=3 对齐
+  val:                              # 验证与测试共用同一套，禁止用训练变换
+    resize_size: 256                # int  | 236 ~ 320 | 236 等价于 timm crop_pct=0.95；256 是本题固定口径
+    crop_size: 224                  # int  | == data.input_size
+    interpolation: bicubic          # enum | bilinear / bicubic
+    center_crop: true               # bool | true/false | 置 false 则只 Resize 不裁剪（消融用）
+  norm:                             # 归一化：与 ImageNet 预训练权重严格一致，禁止用 Pet 自算 mean/std
+    mean: [0.485, 0.456, 0.406]
+    std:  [0.229, 0.224, 0.225]
+
+# ---- 优化器与学习率 ---------------------------------------------------------
+optim:
+  optimizer: adamw                  # enum | adamw / sgd | 小数据集微调默认 AdamW
+  lr: 0.001                         # float| 1e-4 ~ 3e-3 | 这是 "head 的真实 lr"，不做 batch 线性缩放
+  backbone_lr_scale: 0.1            # float| 0.05 ~ 0.3 | backbone lr = lr * scale = 1e-4
+  weight_decay: 0.05                # float| 0.01 ~ 0.1 | 步数越少需越大；Baseline 取 0.05
+  no_decay_on_bn_bias: true         # bool | true/false | 判定 param.ndim<=1 或名字以 .bias 结尾 -> wd=0
+  betas: [0.9, 0.999]               # [float,float] | AdamW 默认
+  eps: 1.0e-8                       # float| 1e-8 | AdamW 默认
+  momentum: 0.9                     # float| 0.9 | 仅在 optimizer=sgd 时生效
+  nesterov: true                    # bool | true/false | 仅在 optimizer=sgd 时生效
+  scheduler: cosine                 # enum | cosine / constant / onecycle | warmup 后接余弦退火
+  warmup_epochs: 3                  # int  | 0 ~ 5 | 约占总 epoch 的 10%；按 epoch 计，按 epoch 调 step
+  warmup_start_factor: 0.01         # float| 0.01 ~ 0.1 | warmup 起点 = lr * factor
+  min_lr: 0.00001                   # float| 0 ~ 1e-5 | 余弦下界，对所有 param group 生效
+  layer_decay: null                 # float|null | null 或 0.75 ~ 0.95 | 置数值则启用 BEiT 式逐层 lr 衰减（进阶）
+
+# ---- 训练过程 ---------------------------------------------------------------
+train:
+  epochs: 40                        # int  | 30 ~ 50 | 题目推荐区间；收敛判据见 6.6
+  label_smoothing: 0.1              # float| 0.0 ~ 0.2 | Baseline 固定 0.1；要对比"无平滑"就把 opt 组的这个键改成 0.0
+  mixup_alpha: 0.0                  # float| 0.0 ~ 1.0 | Baseline 关；>0 且 mixup_prob>0 时启用（见 6.3 的 mix_batch）
+  cutmix_alpha: 0.0                 # float| 0.0 ~ 1.0 | Baseline 关；与 mixup_alpha 互斥（由 mixup_switch_prob 决定）
+  mixup_prob: 0.0                   # float| 0.0 ~ 1.0 | 每个 batch 触发混合的概率；0 = 整支关闭（Baseline）
+  mixup_switch_prob: 0.5            # float| 0.0 ~ 1.0 | 触发时在 mixup / cutmix 之间切换的概率
+  grad_clip: 1.0                    # float| 0.5 ~ 5.0 | 全局 L2 范数裁剪；0 表示不裁
+  amp: true                         # bool | true/false | CUDA 上开；CPU 上自动失效
+  amp_dtype: bfloat16               # enum | float16 / bfloat16 | Ampere 及以后用 bfloat16（无需 GradScaler）；老卡改 float16
+  ema: false                        # bool | 必须 false | 本模块不实现 EMA，置 true 会显式报错而不是被静默忽略
+  deterministic: false              # bool | true/false | true 会开启 cudnn.deterministic 并变慢，需在报告注明
+  freeze_backbone_epochs: 0         # int  | 0 ~ 2 | 0 = 全程全量微调（推荐）；>0 时前 N epoch 只训头，随后解冻
+  limit_batches: 0                  # int  | 0 = 关闭 | >0 时每个 epoch 只跑前 N 个 batch（冒烟测试专用，正式训练必须为 0）
+  log_interval: 20                  # int  | 10 ~ 200 | 每多少 step 写一行 <exp>_steps.jsonl（45 step/epoch 下取 20 保证每轮至少写 2 行）
+  # 【控制变量强制项】早停必须对**所有实验臂**一致，否则「训练预算不等价」会直接毁掉对比的有效性。
+  # 实测教训：早期用 patience=8 跑 opt_mix，它在 epoch 24 就早停（25 epoch），
+  # 而 baseline 跑满 40 epoch；两组预算差 37.5%，Top-1 与 Macro-F1 的差异里
+  # 混入了「训练更久」这一与优化方法无关的因素，控制变量实验不成立。
+  # 本任务统一采用「固定 40 epoch 满预算」协议：patience 设成远大于 epochs 的值，
+  # 早停机制保留在代码里（可被 --set 覆盖）但默认不触发。
+  # 判别方式：tools/same_budget.py 必须报 total_iters_equal=True。
+  early_stop_patience: 999          # int  | >= epochs 即等价于关闭；见上方说明
+  early_stop_min_epochs: 15         # int  | 10 ~ 20 | 早停生效的最小 epoch，防止前期抖动误杀
+
+# ---- 评价与产物 -------------------------------------------------------------
+eval:
+  metric_for_best: val_macro_f1     # enum | 唯一合法值（不得写 val_top1）| best ckpt 只按它选，绝不看 test
+  checkpoint_dir: checkpoints       # str  | 相对路径 | 落盘 <dir>/<experiment_name>_{best,last}.pt
+  log_dir: outputs/logs             # str  | 相对路径 | 逐 epoch 日志与生效配置快照
+  metric_dir: outputs/metrics       # str  | 相对路径 | test 指标 JSON
+
+# ---- 输出 -------------------------------------------------------------------
+output:
+  dir: outputs                      # str  | 相对路径 | 曲线/预测/混淆矩阵等产物的根；日志与指标见 eval.*_dir
+  save_test_predictions: true       # bool | true/false | 落盘 outputs/predictions/<experiment_name>_test_preds.csv（题目"输出部分测试集分类结果"）
+  save_per_class_recall: true       # bool | true/false | 每轮把 per-class recall 数组写进 <exp>_metrics.jsonl
+  console_log: <experiment_name>_console.log   # str | 文件名模板 | 建议配合 `| tee` 同时留终端回显

@@ -1,0 +1,2 @@
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Unexpected keys (head.head_dist.bn.num_batches_tracked, head.head_dist.bn.bias, head.head_dist.bn.running_mean, head.head_dist.bn.running_var, head.head_dist.bn.weight) found while loading pretrained weights. This may be expected if model is being adapted.

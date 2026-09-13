@@ -1,0 +1,109 @@
+experiment_name: opt_abl_a
+seed: 42
+model:
+  name: repvit_m0_9
+  impl: timm
+  pretrained: true
+  pretrained_ckpt: ''
+  num_classes: 37
+  distillation: false
+  drop_rate: 0.0
+  legacy: false
+data:
+  root: data/oxford-iiit-pet
+  images_subdir: images
+  train_list: datasets/lists/pet_train.txt
+  val_list: datasets/lists/pet_val.txt
+  test_list: datasets/lists/pet_test.txt
+  class_names: labels/pet_classes.txt
+  class_map: labels/pet_class_to_idx.json
+  input_size: 224
+  batch_size: 64
+  eval_batch_size: 128
+  num_workers: 4
+  pin_memory: true
+  drop_last: true
+  persistent_workers: true
+aug:
+  train:
+    resize_size: 256
+    random_resized_crop:
+      scale:
+      - 0.25
+      - 1.0
+      ratio:
+      - 0.75
+      - 1.333
+    hflip: 0.5
+    color_jitter:
+      brightness: 0.5
+      contrast: 0.5
+      saturation: 0.5
+      hue: 0.1
+    randaugment:
+      n: 2
+      m: 9
+      inc1: false
+    random_erasing:
+      prob: 0.25
+      mode: pixel
+      count: 1
+    interpolation: bicubic
+  val:
+    resize_size: 256
+    crop_size: 224
+    interpolation: bicubic
+    center_crop: true
+  norm:
+    mean:
+    - 0.485
+    - 0.456
+    - 0.406
+    std:
+    - 0.229
+    - 0.224
+    - 0.225
+optim:
+  optimizer: adamw
+  lr: 0.001
+  backbone_lr_scale: 0.1
+  weight_decay: 0.05
+  no_decay_on_bn_bias: true
+  betas:
+  - 0.9
+  - 0.999
+  eps: 1.0e-08
+  momentum: 0.9
+  nesterov: true
+  scheduler: cosine
+  warmup_epochs: 3
+  warmup_start_factor: 0.01
+  min_lr: 1.0e-05
+  layer_decay: null
+train:
+  epochs: 40
+  label_smoothing: 0.1
+  mixup_alpha: 0.0
+  cutmix_alpha: 0.0
+  mixup_prob: 0.0
+  mixup_switch_prob: 0.5
+  grad_clip: 1.0
+  amp: true
+  amp_dtype: bfloat16
+  ema: false
+  deterministic: false
+  freeze_backbone_epochs: 0
+  limit_batches: 0
+  log_interval: 20
+  early_stop_patience: 999
+  early_stop_min_epochs: 15
+eval:
+  metric_for_best: val_macro_f1
+  checkpoint_dir: checkpoints
+  log_dir: outputs/logs
+  metric_dir: outputs/metrics
+output:
+  dir: outputs
+  save_test_predictions: true
+  save_per_class_recall: true
+  console_log: <experiment_name>_console.log

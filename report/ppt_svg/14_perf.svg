@@ -1,0 +1,109 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" data-pptx-page-role="content">
+  <rect id="bg-canvas" data-pptx-role="background" x="0" y="0" width="1280" height="720" fill="#0B1220"/>
+
+  <g id="page-header" data-pptx-bounds="72 44 1136 100">
+    <text x="72" y="82" font-family="Microsoft YaHei" font-size="34" font-weight="bold" fill="#E6EDF7">延迟不与 MACs 成正比，M1.1 是零增益的被支配点</text>
+    <text x="72" y="118" font-family="Microsoft YaHei" font-size="16" fill="#93A4C0">ORT 1.30.0 CPUExecutionProvider · FP32 · batch=1 · 224×224 · 预热 10 + 正式 50 · threads=4</text>
+    <line x1="72" y1="136" x2="1208" y2="136" stroke="#1E3050" stroke-width="2"/>
+  </g>
+
+  <g id="bench-table" data-pptx-bounds="72 168 720 274">
+    <rect x="72" y="168" width="720" height="274" rx="10" fill="#0F1728" stroke="#1E3050" stroke-width="1"/>
+    <g id="tbl-head">
+      <rect x="72" y="168" width="720" height="46" rx="10" fill="#1B2740"/>
+      <text x="100" y="198" font-family="Microsoft YaHei" font-size="14" font-weight="bold" fill="#93A4C0">模型</text>
+      <text x="340" y="198" font-family="Microsoft YaHei" font-size="14" font-weight="bold" fill="#93A4C0" text-anchor="middle">mean</text>
+      <text x="470" y="198" font-family="Microsoft YaHei" font-size="14" font-weight="bold" fill="#93A4C0" text-anchor="middle">P50</text>
+      <text x="600" y="198" font-family="Microsoft YaHei" font-size="14" font-weight="bold" fill="#93A4C0" text-anchor="middle">P95</text>
+      <text x="740" y="198" font-family="Microsoft YaHei" font-size="14" font-weight="bold" fill="#93A4C0" text-anchor="middle">Top-1</text>
+    </g>
+    <g id="b-1">
+      <text x="100" y="244" font-family="Consolas" font-size="15" fill="#35D0F0">m0_9_in1k</text>
+      <text x="340" y="244" font-family="Consolas" font-size="15" fill="#E6EDF7" text-anchor="middle">7.45</text>
+      <text x="470" y="244" font-family="Consolas" font-size="16" font-weight="bold" fill="#3FDB9B" text-anchor="middle">7.37</text>
+      <text x="600" y="244" font-family="Consolas" font-size="15" fill="#E6EDF7" text-anchor="middle">8.00</text>
+      <text x="740" y="244" font-family="Consolas" font-size="15" fill="#93A4C0" text-anchor="middle">78.20%</text>
+    </g>
+    <g id="b-2">
+      <text x="100" y="278" font-family="Consolas" font-size="15" fill="#35D0F0">m1_0_in1k</text>
+      <text x="340" y="278" font-family="Consolas" font-size="15" fill="#E6EDF7" text-anchor="middle">9.20</text>
+      <text x="470" y="278" font-family="Consolas" font-size="16" font-weight="bold" fill="#3FDB9B" text-anchor="middle">9.15</text>
+      <text x="600" y="278" font-family="Consolas" font-size="15" fill="#E6EDF7" text-anchor="middle">9.76</text>
+      <text x="740" y="278" font-family="Consolas" font-size="15" fill="#93A4C0" text-anchor="middle">79.90%</text>
+    </g>
+    <g id="b-3">
+      <text x="100" y="312" font-family="Consolas" font-size="15" fill="#93A4C0">m1_1_in1k</text>
+      <text x="340" y="312" font-family="Consolas" font-size="15" fill="#93A4C0" text-anchor="middle">10.41</text>
+      <text x="470" y="312" font-family="Consolas" font-size="15" fill="#FFC857" text-anchor="middle">10.23</text>
+      <text x="600" y="312" font-family="Consolas" font-size="15" fill="#93A4C0" text-anchor="middle">11.24</text>
+      <text x="740" y="312" font-family="Consolas" font-size="15" fill="#93A4C0" text-anchor="middle">79.90%</text>
+    </g>
+    <g id="b-4">
+      <text x="100" y="346" font-family="Consolas" font-size="15" fill="#93A4C0">m1_5_in1k</text>
+      <text x="340" y="346" font-family="Consolas" font-size="15" fill="#93A4C0" text-anchor="middle">17.78</text>
+      <text x="470" y="346" font-family="Consolas" font-size="15" fill="#93A4C0" text-anchor="middle">17.65</text>
+      <text x="600" y="346" font-family="Consolas" font-size="15" fill="#93A4C0" text-anchor="middle">18.93</text>
+      <text x="740" y="346" font-family="Consolas" font-size="15" fill="#93A4C0" text-anchor="middle">82.80%</text>
+    </g>
+    <g id="b-5">
+      <text x="100" y="380" font-family="Consolas" font-size="15" fill="#93A4C0">m2_3_in1k</text>
+      <text x="340" y="380" font-family="Consolas" font-size="15" fill="#93A4C0" text-anchor="middle">32.65</text>
+      <text x="470" y="380" font-family="Consolas" font-size="15" fill="#93A4C0" text-anchor="middle">32.69</text>
+      <text x="600" y="380" font-family="Consolas" font-size="15" fill="#93A4C0" text-anchor="middle">33.32</text>
+      <text x="740" y="380" font-family="Consolas" font-size="15" fill="#93A4C0" text-anchor="middle">83.10%</text>
+    </g>
+    <g id="b-6">
+      <text x="100" y="414" font-family="Consolas" font-size="15" fill="#C79BFF">m0_9_pet37</text>
+      <text x="340" y="414" font-family="Consolas" font-size="15" fill="#E6EDF7" text-anchor="middle">7.20</text>
+      <text x="470" y="414" font-family="Consolas" font-size="16" font-weight="bold" fill="#3FDB9B" text-anchor="middle">7.12</text>
+      <text x="600" y="414" font-family="Consolas" font-size="15" fill="#E6EDF7" text-anchor="middle">7.69</text>
+      <text x="740" y="414" font-family="Consolas" font-size="15" fill="#93A4C0" text-anchor="middle">92.34%</text>
+    </g>
+  </g>
+
+  <g id="marginal" data-pptx-bounds="824 168 384 274">
+    <rect x="824" y="168" width="384" height="274" rx="10" fill="#131C2E" stroke="#1E3050" stroke-width="1"/>
+    <text x="850" y="204" font-family="Microsoft YaHei" font-size="18" font-weight="bold" fill="#E6EDF7">边际收益（acc / ms）</text>
+    <line x1="850" y1="218" x2="1182" y2="218" stroke="#1E3050" stroke-width="1"/>
+
+    <g id="m-1">
+      <text x="850" y="252" font-family="Microsoft YaHei" font-size="14" fill="#93A4C0">M0.9 → M1.0</text>
+      <text x="1182" y="252" font-family="Consolas" font-size="16" font-weight="bold" fill="#3FDB9B" text-anchor="end">+0.96</text>
+    </g>
+    <g id="m-2">
+      <text x="850" y="288" font-family="Microsoft YaHei" font-size="14" fill="#93A4C0">M1.0 → M1.1</text>
+      <text x="1182" y="288" font-family="Consolas" font-size="16" font-weight="bold" fill="#FF6B6B" text-anchor="end">0.00</text>
+    </g>
+    <g id="m-3">
+      <text x="850" y="324" font-family="Microsoft YaHei" font-size="14" fill="#93A4C0">M1.1 → M1.5</text>
+      <text x="1182" y="324" font-family="Consolas" font-size="16" font-weight="bold" fill="#FFC857" text-anchor="end">+0.39</text>
+    </g>
+    <g id="m-4">
+      <text x="850" y="360" font-family="Microsoft YaHei" font-size="14" fill="#93A4C0">M1.5 → M2.3</text>
+      <text x="1182" y="360" font-family="Consolas" font-size="16" font-weight="bold" fill="#FF6B6B" text-anchor="end">+0.02</text>
+    </g>
+
+    <line x1="850" y1="382" x2="1182" y2="382" stroke="#1E3050" stroke-width="1"/>
+    <text x="850" y="408" font-family="Microsoft YaHei" font-size="14" fill="#35D0F0">推荐（P50 ≤ 15 ms 预算）</text>
+    <text x="850" y="432" font-family="Consolas" font-size="15" font-weight="bold" fill="#3FDB9B">repvit_m0_9_in1k</text>
+  </g>
+
+  <g id="why-not-linear" data-pptx-bounds="72 458 1136 118">
+    <rect x="72" y="458" width="1136" height="118" rx="10" fill="#0F1728" stroke="#1E3050" stroke-width="1"/>
+    <text x="100" y="492" font-family="Microsoft YaHei" font-size="18" font-weight="bold" fill="#E6EDF7">为什么更大的模型不一定按 MACs 比例变慢</text>
+    <line x1="100" y1="506" x2="1180" y2="506" stroke="#1E3050" stroke-width="1"/>
+    <text x="100" y="536" font-family="Microsoft YaHei" font-size="14" fill="#93A4C0">① 小模型受固定开销支配（算子启动、内存分配、线程同步与计算量同量级）</text>
+    <text x="100" y="560" font-family="Microsoft YaHei" font-size="14" fill="#93A4C0">② depthwise 卷积算术强度低，瓶颈在内存带宽而非算力　③ 分类头维度差异被放大：37 类的 Gemm 比 1000 类小得多</text>
+  </g>
+
+  <g id="perf-disclaimer" data-pptx-bounds="72 592 1136 60">
+    <rect x="72" y="592" width="1136" height="60" rx="10" fill="#1A1408" stroke="#FFC857" stroke-width="1"/>
+    <text x="100" y="620" font-family="Microsoft YaHei" font-size="15" fill="#FFC857">mean 易被慢样本拉高；P50 是典型耗时，最适合横向比较；P95 反映尾延迟（本机 P95/P50 ≈ 1.09，分布很稳）</text>
+    <text x="100" y="642" font-family="Microsoft YaHei" font-size="13" fill="#93A4C0">不同设备 / 后端 / 精度下的延迟不可横向比较；官方 iPhone 12 延迟不得与本机 CPU 结果直接对比</text>
+  </g>
+
+  <g id="page-footer" data-pptx-bounds="72 662 1136 34">
+    <text x="72" y="684" font-family="Microsoft YaHei" font-size="13" fill="#5C7096">数据来源：outputs/benchmarks/summary.csv · outputs/advanced/marginal_returns.csv · model_recommendation.csv</text>
+    <text x="1208" y="684" font-family="Consolas" font-size="14" fill="#5C7096" text-anchor="end">14</text>
+  </g>
+</svg>

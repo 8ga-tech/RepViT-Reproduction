@@ -1,0 +1,106 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" data-pptx-page-role="content">
+  <rect id="bg-canvas" data-pptx-role="background" x="0" y="0" width="1280" height="720" fill="#0B1220"/>
+
+  <g id="page-header" data-pptx-bounds="72 44 1136 100">
+    <text x="72" y="82" font-family="Microsoft YaHei" font-size="34" font-weight="bold" fill="#E6EDF7">6 个 ONNX 模型，PyTorch↔ONNX Top-1 一致率 100%</text>
+    <text x="72" y="118" font-family="Microsoft YaHei" font-size="16" fill="#93A4C0">文件名一律经 deploy/model_registry.py 的 onnx_path(key) 取得，任何地方不硬写</text>
+    <line x1="72" y1="136" x2="1208" y2="136" stroke="#1E3050" stroke-width="2"/>
+  </g>
+
+  <g id="onnx-table" data-pptx-bounds="72 168 800 250">
+    <rect x="72" y="168" width="800" height="250" rx="10" fill="#0F1728" stroke="#1E3050" stroke-width="1"/>
+    <g id="tbl-head">
+      <rect x="72" y="168" width="800" height="46" rx="10" fill="#1B2740"/>
+      <text x="100" y="198" font-family="Microsoft YaHei" font-size="14" font-weight="bold" fill="#93A4C0">registry key</text>
+      <text x="400" y="198" font-family="Microsoft YaHei" font-size="14" font-weight="bold" fill="#93A4C0" text-anchor="middle">大小 (MB)</text>
+      <text x="560" y="198" font-family="Microsoft YaHei" font-size="14" font-weight="bold" fill="#93A4C0" text-anchor="middle">图内节点</text>
+      <text x="730" y="198" font-family="Microsoft YaHei" font-size="14" font-weight="bold" fill="#93A4C0" text-anchor="middle">类别数 / 标签</text>
+    </g>
+    <g id="o-1">
+      <text x="100" y="244" font-family="Consolas" font-size="15" fill="#35D0F0">repvit_m0_9_in1k</text>
+      <text x="400" y="244" font-family="Consolas" font-size="15" fill="#E6EDF7" text-anchor="middle">20.36</text>
+      <text x="560" y="244" font-family="Consolas" font-size="14" fill="#3FDB9B" text-anchor="middle">BN=0 Conv=103</text>
+      <text x="730" y="244" font-family="Consolas" font-size="14" fill="#93A4C0" text-anchor="middle">1000 / imagenet</text>
+    </g>
+    <g id="o-2">
+      <text x="100" y="278" font-family="Consolas" font-size="15" fill="#35D0F0">repvit_m1_0_in1k</text>
+      <text x="400" y="278" font-family="Consolas" font-size="15" fill="#E6EDF7" text-anchor="middle">27.33</text>
+      <text x="560" y="278" font-family="Consolas" font-size="14" fill="#3FDB9B" text-anchor="middle">BN=0 Conv=103</text>
+      <text x="730" y="278" font-family="Consolas" font-size="14" fill="#93A4C0" text-anchor="middle">1000 / imagenet</text>
+    </g>
+    <g id="o-3">
+      <text x="100" y="312" font-family="Consolas" font-size="15" fill="#35D0F0">repvit_m1_1_in1k</text>
+      <text x="400" y="312" font-family="Consolas" font-size="15" fill="#E6EDF7" text-anchor="middle">33.06</text>
+      <text x="560" y="312" font-family="Consolas" font-size="14" fill="#3FDB9B" text-anchor="middle">BN=0 Conv=95</text>
+      <text x="730" y="312" font-family="Consolas" font-size="14" fill="#93A4C0" text-anchor="middle">1000 / imagenet</text>
+    </g>
+    <g id="o-4">
+      <text x="100" y="346" font-family="Consolas" font-size="15" fill="#35D0F0">repvit_m1_5_in1k</text>
+      <text x="400" y="346" font-family="Consolas" font-size="15" fill="#E6EDF7" text-anchor="middle">56.35</text>
+      <text x="560" y="346" font-family="Consolas" font-size="14" fill="#3FDB9B" text-anchor="middle">BN=0 Conv=167</text>
+      <text x="730" y="346" font-family="Consolas" font-size="14" fill="#93A4C0" text-anchor="middle">1000 / imagenet</text>
+    </g>
+    <g id="o-5">
+      <text x="100" y="380" font-family="Consolas" font-size="15" fill="#35D0F0">repvit_m2_3_in1k</text>
+      <text x="400" y="380" font-family="Consolas" font-size="15" fill="#E6EDF7" text-anchor="middle">91.90</text>
+      <text x="560" y="380" font-family="Consolas" font-size="14" fill="#3FDB9B" text-anchor="middle">BN=0 Conv=215</text>
+      <text x="730" y="380" font-family="Consolas" font-size="14" fill="#93A4C0" text-anchor="middle">1000 / imagenet</text>
+    </g>
+    <g id="o-6">
+      <text x="100" y="410" font-family="Consolas" font-size="15" fill="#C79BFF">repvit_m0_9_pet37</text>
+      <text x="400" y="410" font-family="Consolas" font-size="15" fill="#E6EDF7" text-anchor="middle">18.89</text>
+      <text x="560" y="410" font-family="Consolas" font-size="14" fill="#3FDB9B" text-anchor="middle">BN=0 Conv=103</text>
+      <text x="730" y="410" font-family="Consolas" font-size="14" fill="#C79BFF" text-anchor="middle">37 / pet</text>
+    </g>
+  </g>
+
+  <g id="independence" data-pptx-bounds="904 168 304 250">
+    <rect x="904" y="168" width="304" height="250" rx="10" fill="#131C2E" stroke="#1E3050" stroke-width="1"/>
+    <text x="928" y="204" font-family="Microsoft YaHei" font-size="18" font-weight="bold" fill="#E6EDF7">独立实现</text>
+    <line x1="928" y1="218" x2="1184" y2="218" stroke="#1E3050" stroke-width="1"/>
+    <text x="928" y="252" font-family="Microsoft YaHei" font-size="15" fill="#93A4C0">部署侧用 PIL 手写</text>
+    <text x="928" y="276" font-family="Consolas" font-size="14" fill="#35D0F0">resize + crop + normalize</text>
+    <text x="928" y="302" font-family="Microsoft YaHei" font-size="15" fill="#93A4C0">不 import torchvision</text>
+    <line x1="928" y1="322" x2="1184" y2="322" stroke="#1E3050" stroke-width="1"/>
+    <text x="928" y="352" font-family="Microsoft YaHei" font-size="14" fill="#FFC857">为什么必须独立</text>
+    <text x="928" y="378" font-family="Microsoft YaHei" font-size="13" fill="#93A4C0">共用一份 transform 会让一致性<tspan x="928" dy="20">误差恒为 0，反而掩盖预处理</tspan><tspan x="928" dy="20">bug</tspan></text>
+  </g>
+
+  <g id="consistency" data-pptx-bounds="72 434 800 218">
+    <rect x="72" y="434" width="800" height="218" rx="10" fill="#0F1728" stroke="#1E3050" stroke-width="1"/>
+    <text x="100" y="470" font-family="Microsoft YaHei" font-size="18" font-weight="bold" fill="#E6EDF7">PyTorch 与 ONNX 一致性（固定划分列表、真实图片）</text>
+    <line x1="100" y1="484" x2="844" y2="484" stroke="#1E3050" stroke-width="1"/>
+
+    <g id="c-1">
+      <text x="100" y="522" font-family="Microsoft YaHei" font-size="15" fill="#93A4C0">最大 logits 绝对误差</text>
+      <text x="450" y="522" font-family="Consolas" font-size="16" fill="#3FDB9B" text-anchor="end">6.199e-06</text>
+    </g>
+    <g id="c-2">
+      <text x="100" y="554" font-family="Microsoft YaHei" font-size="15" fill="#93A4C0">平均 logits 绝对误差</text>
+      <text x="450" y="554" font-family="Consolas" font-size="16" fill="#3FDB9B" text-anchor="end">1.501e-06</text>
+    </g>
+    <g id="c-3">
+      <text x="100" y="586" font-family="Microsoft YaHei" font-size="15" fill="#93A4C0">Top-1 一致率（推荐 ≥0.99）</text>
+      <text x="450" y="586" font-family="Consolas" font-size="16" font-weight="bold" fill="#3FDB9B" text-anchor="end">100.00%</text>
+    </g>
+    <g id="c-4">
+      <text x="100" y="618" font-family="Microsoft YaHei" font-size="15" fill="#93A4C0">Top-5 集合一致率</text>
+      <text x="450" y="618" font-family="Consolas" font-size="16" fill="#3FDB9B" text-anchor="end">100.00%</text>
+    </g>
+    <text x="500" y="522" font-family="Microsoft YaHei" font-size="14" fill="#93A4C0">3 个模型全部 PASS，没有<tspan x="500" dy="24">出现题目列出的九类典型</tspan><tspan x="500" dy="24">问题（Resize 顺序 / RGB-</tspan><tspan x="500" dy="24">BGR / 插值 / mean-std /</tspan><tspan x="500" dy="24">eval 模式）</tspan></text>
+  </g>
+
+  <g id="label-discipline" data-pptx-bounds="904 434 304 218">
+    <rect x="904" y="434" width="304" height="218" rx="10" fill="#1A1408" stroke="#FFC857" stroke-width="1"/>
+    <text x="928" y="470" font-family="Microsoft YaHei" font-size="17" font-weight="bold" fill="#FFC857">标签绝不混用</text>
+    <line x1="928" y1="484" x2="1184" y2="484" stroke="#3A2E12" stroke-width="1"/>
+    <text x="928" y="516" font-family="Consolas" font-size="14" fill="#93A4C0">1000 类 → imagenet<tspan x="928" dy="26">37 类　 → pet</tspan></text>
+    <line x1="928" y1="562" x2="1184" y2="562" stroke="#3A2E12" stroke-width="1"/>
+    <text x="928" y="592" font-family="Microsoft YaHei" font-size="13" fill="#93A4C0">registry 的 labels_for(key)<tspan x="928" dy="20">按模型强制选择，行数 ≠</tspan><tspan x="928" dy="20">num_classes 立即断言失败</tspan></text>
+  </g>
+
+  <g id="page-footer" data-pptx-bounds="72 662 1136 34">
+    <text x="72" y="684" font-family="Microsoft YaHei" font-size="13" fill="#5C7096">数据来源：outputs/metrics/consistency_*.json · outputs/benchmarks/export_*.json · deploy/model_registry.py</text>
+    <text x="1208" y="684" font-family="Consolas" font-size="14" fill="#5C7096" text-anchor="end">13</text>
+  </g>
+</svg>

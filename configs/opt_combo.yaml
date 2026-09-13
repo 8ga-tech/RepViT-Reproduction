@@ -1,0 +1,42 @@
+# configs/opt_combo.yaml
+_base_: baseline.yaml
+
+experiment_name: opt_combo
+
+aug:
+  train:
+    random_resized_crop: {scale: [0.25, 1.0], ratio: [0.75, 1.333]}
+    color_jitter: {brightness: 0.5, contrast: 0.5, saturation: 0.5, hue: 0.1}
+    randaugment: {n: 2, m: 9, inc1: false}
+
+optim:
+  backbone_lr_scale: 0.05
+
+train:
+  mixup_alpha: 0.2
+  cutmix_alpha: 1.0
+  mixup_prob: 1.0
+
+_expected_diff_:              # 共 12 个差异键 = B(3) + C(5, randaugment 展开为 n/m/inc1 三个叶子键) + D(1) + 3
+# 说明：baseline 里 aug.train.randaugment 是 null，实验里是 {n,m,inc1} 字典。
+# diff_config.py 按**叶子键**展开，因此 null->dict 会同时产生 4 个差异键：
+#   父键 aug.train.randaugment（值 None -> '<MISSING>'）
+#   三个叶子 n / m / inc1（'<MISSING>' -> 2 / 9 / false）
+# 四者都必须声明，否则会被判为「未声明的变量差异」。
+                              # 说明：diff_config.py 按叶子键逐项比对，`randaugment: {n,m,inc1}`
+                              # 在叶子层面就是 3 个键，故此处显式列出，而不是把它当 1 个键（那是漏声明）。
+  - aug.train.random_resized_crop.scale
+  - aug.train.color_jitter.brightness
+  - aug.train.color_jitter.contrast
+  - aug.train.color_jitter.saturation
+  - aug.train.randaugment
+  - aug.train.randaugment.n
+  - aug.train.randaugment.m
+  - aug.train.randaugment.inc1
+  - aug.train.randaugment.n
+  - aug.train.randaugment.m
+  - aug.train.randaugment.inc1
+  - optim.backbone_lr_scale
+  - train.mixup_alpha
+  - train.cutmix_alpha
+  - train.mixup_prob

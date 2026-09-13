@@ -1,0 +1,89 @@
+{
+  "interactions": [
+    {
+      "metric": "top1",
+      "delta_A": 0.0,
+      "delta_B": -0.6760000000000019,
+      "delta_AB": -0.13500000000000512,
+      "interaction": 0.5409999999999968,
+      "predicted_additive": 94.324,
+      "observed_AB": 94.865,
+      "group_names": {
+        "baseline": "baseline",
+        "A": "opt_abl_a",
+        "B": "opt_abl_b",
+        "AB": "opt_abl_ab"
+      },
+      "verdict": "super-additive(\u534f\u540c)"
+    },
+    {
+      "metric": "macro_f1",
+      "delta_A": -3.799999999998249e-05,
+      "delta_B": -0.006960999999999995,
+      "delta_AB": -0.0014119999999999688,
+      "interaction": 0.005587000000000009,
+      "predicted_additive": 0.943246,
+      "observed_AB": 0.948833,
+      "group_names": {
+        "baseline": "baseline",
+        "A": "opt_abl_a",
+        "B": "opt_abl_b",
+        "AB": "opt_abl_ab"
+      },
+      "verdict": "additive(\u53ef\u52a0)"
+    },
+    {
+      "metric": "top5",
+      "delta_A": 0.13500000000000512,
+      "delta_B": -0.40500000000000114,
+      "delta_AB": 0.0,
+      "interaction": 0.269999999999996,
+      "predicted_additive": 99.595,
+      "observed_AB": 99.865,
+      "group_names": {
+        "baseline": "baseline",
+        "A": "opt_abl_a",
+        "B": "opt_abl_b",
+        "AB": "opt_abl_ab"
+      },
+      "verdict": "additive(\u53ef\u52a0)"
+    }
+  ],
+  "noise": {
+    "single_seed_estimated_sigma_top1": 0.8,
+    "rule": "|delta| > 2*sigma \u624d\u5224\u5b9a\u4e3a\u771f\u5b9e\u589e\u76ca\uff1b\u5426\u5219\u53ea\u80fd\u5199\u300e\u5728\u968f\u673a\u6ce2\u52a8\u8303\u56f4\u5185\u300f",
+    "observed_max_spread": 0.6760000000000019,
+    "n_val": 740,
+    "binom_ci_half_width_95": 2.16
+  },
+  "table": [
+    {
+      "experiment_name": "baseline",
+      "top1": 95.0,
+      "top5": 99.865,
+      "macro_f1": 0.950245,
+      "best_epoch": 34
+    },
+    {
+      "experiment_name": "opt_abl_a",
+      "top1": 95.0,
+      "top5": 100.0,
+      "macro_f1": 0.950207,
+      "best_epoch": 31
+    },
+    {
+      "experiment_name": "opt_abl_b",
+      "top1": 94.324,
+      "top5": 99.46,
+      "macro_f1": 0.943284,
+      "best_epoch": 32
+    },
+    {
+      "experiment_name": "opt_abl_ab",
+      "top1": 94.865,
+      "top5": 99.865,
+      "macro_f1": 0.948833,
+      "best_epoch": 31
+    }
+  ]
+}
