@@ -166,7 +166,7 @@ A（RandAugment）抵消了 B（差异化 lr）单独使用时的负作用。
 
 | 子项 | 状态 | 产物 |
 |---|---|---|
-| ① 模型家族速度—精度分析（≥4 型号） | ✅ 完成（5 型号 + 6 个 ONNX 部署） | outputs/advanced/{family_summary,marginal_returns,model_recommendation,pareto_summary} + 3 张帕累托图 |
+| ① 模型家族速度—精度分析（≥4 型号） | ✅ 完成（5 型号 + 6 个 ONNX 部署） | outputs/benchmarks/family_summary.csv（家族原始表）· outputs/advanced/{marginal_returns,model_recommendation,pareto_summary} + 3 张帕累托图 |
 | ② 第二项优化及组合消融 | ✅ 完成（A/B/A+B） | outputs/advanced/ablation_summary.{csv,json}、outputs/metrics/ablation.csv |
 | ③ 深入结构重参数化 | ✅ 完成 | outputs/advanced/repvit_m0_9_pet37_{structure_before,structure_after}.txt、_onnx_nodes.json、block_22_fusion_report.txt |
 | ④ 集显加速部署 | ❌ **本机不具备条件** | 见 outputs/benchmarks/igpu_*.json；本机只枚举出 NVIDIA 独显，无 Intel/AMD 集显，且无 OpenVINO/DirectML provider，bench_igpu 已把回退 CPU 的行标记为 invalid |

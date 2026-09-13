@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-13T17:36:51",
+  "generated_at": "2026-09-14T00:08:37",
   "python": "3.14.5",
   "platform": "Windows-11-10.0.26200-SP0",
   "summary": {
@@ -103,7 +103,7 @@
       "id": "model.size",
       "title": "权重文件大小与参数量吻合",
       "status": "PASS",
-      "detail": "baseline_best.pt = 57.61 MB（模型 ~19MB + AdamW 两动量 ~38MB）",
+      "detail": "baseline_best.pt = 19.39 MB（模型 ~19MB + AdamW 两动量 ~38MB）",
       "fix": ""
     },
     {
@@ -138,7 +138,7 @@
       "id": "onnx.realimg",
       "title": "一致性用真实图片计算",
       "status": "PASS",
-      "detail": "数据来源={'imagenet_val_subset', 'pet_test'}（必须是固定划分列表，不能是 torch.randn）",
+      "detail": "数据来源={'pet_test', 'imagenet_val_subset'}（必须是固定划分列表，不能是 torch.randn）",
       "fix": ""
     },
     {
