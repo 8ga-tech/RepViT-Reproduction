@@ -1,6 +1,6 @@
 {
   "experiment": "same_budget",
-  "timestamp": "2026-09-14T00:07:36+08:00",
+  "timestamp": "2026-09-14T21:21:48+08:00",
   "command": "tools/same_budget.py --a outputs/logs/baseline_metrics.csv --b outputs/logs/opt_combo_metrics.csv",
   "cwd_rel": ".",
   "host": "LXY",

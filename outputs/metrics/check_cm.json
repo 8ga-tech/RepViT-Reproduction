@@ -1,6 +1,6 @@
 {
   "experiment": "check_cm",
-  "timestamp": "2026-09-13T14:41:48+08:00",
+  "timestamp": "2026-09-14T21:13:22+08:00",
   "command": "tools/check_cm.py --file outputs/confusion_matrix/baseline_cm.csv",
   "cwd_rel": ".",
   "host": "LXY",
@@ -42,7 +42,7 @@
       "ratio": 1.0
     }
   },
-  "diag_mean": 0.9219354594594595,
+  "diag_mean": 0.9227489999999999,
   "pass": true,
   "note": "\u96f6\u6837\u672c\u884c\uff08support==0\uff09\u884c\u548c\u6052\u4e3a 0\uff0c\u6309\u5951\u7ea6\u5141\u8bb8\u5e76\u5355\u72ec\u8ba1\u6570\uff0c\u4e0d\u8ba1\u5165\u8fdd\u7ea6\uff1b\u5224\u5b9a\u5bb9\u5dee = max(\u5951\u7ea6 1e-6, 37*0.5*10^-\u6587\u4ef6\u5c0f\u6570\u4f4d)\uff0c\u91cf\u5316\u8bef\u5dee\u4e0d\u7b97\u8fdd\u7ea6"
 }
