@@ -462,10 +462,12 @@ def c_rep():
         return False, f"缺少 {f.relative_to(ROOT)}（跑 tools/reparam_verify.py 生成）"
     d = json.loads(f.read_text(encoding="utf-8"))
     before, after, judge = d.get("before", {}), d.get("after", {}), d.get("judge", {})
-    ok = (bool(judge.get("pass")) and after.get("n_bn") == 0 and before.get("n_bn", 0) > 0)
+    weights = d.get("weights", {})
+    weights_ok = (weights.get("n_missing") == 0 and weights.get("n_unexpected") == 0)
+    ok = (weights_ok and bool(judge.get("pass")) and after.get("n_bn") == 0 and before.get("n_bn", 0) > 0)
     return ok, f"BN {before.get('n_bn')}->{after.get('n_bn')} " \
                f"max|Δlogits|={judge.get('max_abs_err')} Top-1一致={judge.get('top1_agree')} " \
-               f"整体判定={judge.get('pass')}"
+               f"权重完整={weights_ok} 整体判定={ok}"
 
 
 @check("onnx.bn", "ONNX 图中无 BatchNormalization", "导出前必须 fuse / replace_batchnorm")

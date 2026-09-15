@@ -107,6 +107,10 @@ def load_weights(model, weights):
     info["unexpected"] = list(unexpected)[:20]
     info["n_missing"] = len(missing)
     info["n_unexpected"] = len(unexpected)
+    if missing or unexpected:
+        raise RuntimeError(
+            f"权重与结构不匹配：missing={len(missing)}, unexpected={len(unexpected)}。"
+            "请使用匹配的 registry key/实现；禁止把随机或部分加载模型的误差作为权重验证结果。")
     return info
 
 

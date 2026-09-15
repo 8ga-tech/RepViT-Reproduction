@@ -16,10 +16,10 @@ README.md,294,| `mean_abs_err` | **2.030727e-06**（展示为 2.031e-06） |
 README.md,333,# PyTorch vs ONNX 一致性（5 项指标 + 判定）
 README.md,339,resize+crop，不 import torchvision），与训练侧共用同一份 transform 会让一致性
 README.md,342,**实测一致性（同一落盘实验，n=12）**：`max|Δlogits| = 6.198883e-06`（展示为 **6.199e-06**）、`mean|Δlogits| = 1.500690e-06`，
-README.md,343,**Top-1 一致率 100.00%**、Top-5 集合一致率 100.00%。结果来自 `outputs/metrics/consistency_repvit_m0_9_pet37.json`；README 早期的 5.25e-06 属于另一批 n=8 对照，不能与本结果混写。
+README.md,343,**Top-1 一致率 100.00%**、Top-5 集合一致率 100.00%。结果来自 `outputs/metrics/consistency_repvit_m0_9_pet37.json`；早期 README 的 5.25e-06 没有找到配套完整产物，保留为旧引用，不能与本结果混写。
 README.md,347,- **重参数化 logits 误差**：训练态与融合态 PyTorch 模型在同一批 32 张输入上的差异，落盘于 `outputs/reparam/repvit_m0_9_pet37_reparam_report.json`，属于 BN/卷积分支融合验证。
 README.md,348,- **PyTorch↔ONNX logits 误差**：融合后的 PyTorch 与独立预处理的 ONNX Runtime 输出比较，落盘于 `outputs/metrics/consistency_repvit_m0_9_pet37.json`，本次固定 `n=12`。
-README.md,349,- 两者实验对象、输入批次和代码路径不同；答辩中分别报告，避免把 5.25e-06（旧 n=8）与 6.199e-06（当前 n=12）当成同一结果。
+README.md,349,- 两者实验对象、输入批次和代码路径不同；答辩中分别报告，避免把 5.25e-06（旧引用，样本数未核实）与 6.199e-06（当前 n=12）当成同一结果。
 README.md,356,python tools/audit_logits_references.py  # 扫描 README/报告/PPT/PDF/代码中的误差引用
 README.md,387,bash tools/run_all.sh          # 全流程：数据 -> 模型 -> 训练 -> 优化 -> 可视化 -> 重参数化 -> ONNX -> 基准
 README.md,401,| 重参数化 / ONNX 导出 / 基准 | ~5 min |
@@ -720,7 +720,10 @@ outputs/metrics/consistency_repvit_m1_0_in1k.json,11,"""mean_abs_logits"": 2.463
 outputs/metrics/consistency_repvit_m1_0_in1k.json,18,"""max_abs_logits"": 0.001"
 outputs/metrics/probe_route.json,122,"""main_head_logits"": {"
 outputs/metrics/probe_route.json,127,"""distill_avg_logits"": {"
-outputs/metrics/selfcheck_report.json,15,"""detail"": ""BN 107->0 max|Δlogits|=7.092952728271484e-06 Top-1一致=1.0 整体判定=True"","
+outputs/metrics/selfcheck_report.json,97,"""title"": ""MACs 口径一致性"","
+outputs/metrics/selfcheck_report.json,132,"""title"": ""PyTorch vs ONNX 一致率 >= 0.99"","
+outputs/metrics/selfcheck_report.json,139,"""title"": ""一致性用真实图片计算"","
+outputs/metrics/selfcheck_report.json,183,"""detail"": ""BN 107->0 max|Δlogits|=7.092952728271484e-06 Top-1一致=1.0 权重完整=True 整体判定=True"","
 outputs/pretrained_eval/repvit_m0_9/metrics.json,44,"""fuse_max_abs_logits_diff"": 3.072619438171387e-05,"
 outputs/pretrained_eval/repvit_m0_9/top5_samples.json,16,"""prob"": 1.278489889955381e-05"
 outputs/pretrained_eval/repvit_m0_9/top5_samples.json,21,"""prob"": 7.057094535412034e-07"
@@ -819,16 +822,28 @@ report.pdf,page 27,、Macro-F1 = 92.14%，  且模型几乎不混淆猫狗（跨
 report.pdf,page 27,模型几乎不混淆猫狗（跨物种错误仅占 3.17%），全部错误集中在细粒度品种之间。  3.  结构重参数化在数值上完全等价（max|Δ| = 7.09e-06，Top-1 32/32 一致），  并把推理态 ONNX 图的 BatchNormalization 节点从 24 降到 0，Conv 从 126 降到 103。  4.  部署闭环完整：三个 ONNX 模型的 PyTorch-ONNX Top-1 一致率达
 report.pdf,page 27,hNormalization 节点从 24 降到 0，Conv 从 126 降到 103。  4.  部署闭环完整：三个 ONNX 模型的 PyTorch-ONNX Top-1 一致率达 100%，  在 ONNX Runtime CPU 上 P50 延迟 12.5 ~ 17.2 ms。  5.  跨集合泛化能力经检验：在 8 张 ImageNet 实拍图上品种判断 8/8 全对，  说明模型没有过拟合到 Pet 的拍摄
 report.pdf,page 30,*.png  混淆矩阵  outputs/confusion_matrix/*  Grad-CAM  outputs/gradcam/*  重参数化  outputs/reparam/*  ONNX  onnx/<registry_key>.onnx  性能测试  outputs/benchmarks/*.json、summary.csv、outputs/metrics/bench.jsonl  结构图 
-report/PPT_CONTENT.md,27,**ImageNet 子集 Top-1 78.20% · Pet-37 test Top-1 92.26% · 重参数化 max|Δ|=6.5e-06 · ONNX CPU P50 12.5~17.2ms**
-report/PPT_CONTENT.md,41,| ⑤ 结构重参数化 | ✅ max\|Δ\|=7.092953e-06（展示 7.093e-06），Top-1 32/32 一致 | `outputs/reparam/` |
-report/PPT_CONTENT.md,193,## P12 结构重参数化
-report/PPT_CONTENT.md,203,| max_abs_err | **7.092953e-06** | 旧官方 C=1000 记录未匹配权重，不作为当前结论 |
-report/PPT_CONTENT.md,223,（共用一份 transform 会让一致性误差恒为 0，反而掩盖 bug）
-report/PPT_CONTENT.md,224,- **PyTorch vs ONNX 一致性**（固定划分列表、真实图片）：
-report/PPT_CONTENT.md,226,固定 `datasets/lists/pet_test.txt` 前 12 张图片（`n=12`）；README 早期的 5.25e-06 是另一批 n=8 对照。
-report/PPT_CONTENT.md,230,| max\|Δlogits\| | **6.198883e-06**（展示 6.199e-06） |
-report/PPT_CONTENT.md,231,| mean\|Δlogits\| | **1.500690e-06** |
-report/PPT_CONTENT.md,261,（max|Δlogits| = 0），省去手写转换器
+report/PPT_CONTENT.md,31,7.1e-06
+report/PPT_CONTENT.md,33,重参数化 max|Δlogits|
+report/PPT_CONTENT.md,37,PyTorch↔ONNX Top-1 一致
+report/PPT_CONTENT.md,47,运行 → 迁移 → 优化 → 可视化 → 重参数化 → 部署，每个数字都可在仓库中溯源
+report/PPT_CONTENT.md,91,结构重参数化
+report/PPT_CONTENT.md,95,max|Δ| 7.1e-06 · Top-1 32/32
+report/PPT_CONTENT.md,693,重参数化：合并分支后，误差仍在设定阈值内
+report/PPT_CONTENT.md,705,最大 |Δlogits| / 7.093e-06
+report/PPT_CONTENT.md,707,平均 |Δlogits| / 2.031e-06
+report/PPT_CONTENT.md,724,max_abs_err=7.092952728271484e-06；mean_abs_err=2.030726818702533e-06。32 个输入是 torch.randn，不是真实测试图片。
+report/PPT_CONTENT.md,726,历史官方 C=1000 报告存在权重键不匹配，不纳入结论；见 report/LOGITS_AUDIT.md。
+report/PPT_CONTENT.md,734,PyTorch ↔ ONNX：固定 n=12，比较同一输入张量
+report/PPT_CONTENT.md,742,模型 / 输入列表 / n / 最大 |Δlogits| / 平均 |Δlogits| / Top-1 / Top-5
+report/PPT_CONTENT.md,744,M0.9 Pet-37 / pet_test / 12 / 6.199e-06 / 1.501e-06 / 100% / 100%
+report/PPT_CONTENT.md,746,M0.9 / ImageNet 子集 / 12 / 1.717e-05 / 2.360e-06 / 100% / 100%
+report/PPT_CONTENT.md,748,M1.0 / ImageNet 子集 / 12 / 1.812e-05 / 2.464e-06 / 100% / 100%
+report/PPT_CONTENT.md,752,3  旧的 5.25e-06 缺少对应完整记录，当前统一引用上表落盘值。
+report/PPT_CONTENT.md,755,完整命令、固定列表与输出路径已写入本页备注和 report/LOGITS_AUDIT.md。
+report/PPT_CONTENT.md,763,max=6.198883056640625e-06；mean=1.5006899711048998e-06；Top-1/Top-5 集合均 1.0。
+report/PPT_CONTENT.md,764,5.25e-06 是未找到对应完整产物的旧引用；旧命令写 limit=8 不能证明该值来自 n=8。当前权重跑 n=8 也不能复现旧值。
+report/PPT_CONTENT.md,811,实测证明两条路线权重逐位等价（max|Δlogits| = 0），省去手写键转换器
+report/PPT_CONTENT.md,831,③ 重参数化 32 个随机输入通过；ONNX 固定 n=12 样本一致
 report/REPORT.docx,word/document.xml,"v:2307.09283, CVPR 2024），基于官方开源项目完成 RepViT 模型的运行评价、 迁移训练、模型优化、结果可视化、结构重参数化和 ONNX 部署。 论文特别强调： RepViT 虽然名称中含有 ""ViT""，但其本质是一个吸收轻量 ViT 设计经验的 纯卷积神经网络 ，不含自注意力模块。这一点是全部结构分析的出发点。 1.2 复现范围（明确做了什么、没做什么） 范围 内容 做 官方 I"
 report/REPORT.docx,word/document.xml,xford-IIIT Pet 37 类上的迁移训练；4 组控制变量优化实验与 3 组组合消融；曲线/混淆矩阵/Grad-CAM 可视化；结构重参数化数值验证；3 个 ONNX 模型的多模型 CPU 部署与性能测试 不做 不在完整 ImageNet-1K 上从头训练；不追求复现论文的 300/450 epochs 精度；不做第八章拓展任务（INT8 量化、知识蒸馏、剪枝、多随机种子、边缘设备部署、核心模块独
 report/REPORT.docx,word/document.xml,"形态 骨干（不含任何分类头） 4,717,792 融合后单头（C=1000 / C=37） 5,067,056 / 4,696,301 结构重参数化之后 MACs 亦有 thop 与 fvcore 两种口径：thop =  847,050,816 （0.847 GMACs）， fvcore =  832,165,824 （同口径， 不是 2 倍 ）。 二、RepViT 论文核心思路 2.1 为什么叫「从 "
@@ -900,11 +915,11 @@ report/答辩PPT_RepViT.pdf,page 1,Reproduction 78.20% ImageNet 子集Top-1 92.3
 report/答辩PPT_RepViT.pdf,page 1,ion 78.20% ImageNet 子集Top-1 92.34% Pet-37 test Top-1 7.1e-06 重参数化max|Δlogits| 100% PyTorch ONNX Top-1 一致 
 report/答辩PPT_RepViT.pdf,page 1,ageNet 子集Top-1 92.34% Pet-37 test Top-1 7.1e-06 重参数化max|Δlogits| 100% PyTorch ONNX Top-1 一致 
 report/答辩PPT_RepViT.pdf,page 2,六个考核环节全部交付，37 条验收项自检0 失败 运行→ 迁移→ 优化→ 可视化→ 重参数化→ 部署，每个数字都可在仓库中溯源 01 官方模型评价 5 个型号· 1000 张子集 M0.9 Top-1 78.20% outputs/pretrained_eval/ 02 M0.9 迁移训练 Pet 37 类· 40 epoch test Top-1 
-report/答辩PPT_RepViT.pdf,page 2,aml 04 可视化与可解释性 五曲线· 混淆矩阵· Grad-CAM 跨物种错误仅3.56% outputs/gradcam/ 05 结构重参数化 BN 108 → 0 · Conv 126 → 103 max|Δ| 7.1e-06 · Top-1 32/32 outputs/reparam/ 06 ONNX 多模型部署 6 个ONNX · ORT CPU P50 7.1 ~ 32.7 ms onnx/
-report/答辩PPT_RepViT.pdf,page 2,误仅3.56% outputs/gradcam/ 05 结构重参数化 BN 108 → 0 · Conv 126 → 103 max|Δ| 7.1e-06 · Top-1 32/32 outputs/reparam/ 06 ONNX 多模型部署 6 个ONNX · ORT CPU P50 7.1 ~ 32.7 ms onnx/*.onnx 范围声明：不做第八章拓展任务（INT8 量化/ 知识蒸馏/ 剪枝/ 多随
+report/答辩PPT_RepViT.pdf,page 2,aml 04 可视化与可解释性 五曲线· 混淆矩阵· Grad-CAM 跨物种错误仅3.56% outputs/gradcam/ 05 结构重参数化 BN 107 → 0 · Conv 126 → 103 max|Δ| 7.1e-06 · Top-1 32/32 outputs/reparam/ 06 ONNX 多模型部署 6 个ONNX · ORT CPU P50 7.1 ~ 32.7 ms onnx/
+report/答辩PPT_RepViT.pdf,page 2,误仅3.56% outputs/gradcam/ 05 结构重参数化 BN 107 → 0 · Conv 126 → 103 max|Δ| 7.1e-06 · Top-1 32/32 outputs/reparam/ 06 ONNX 多模型部署 6 个ONNX · ORT CPU P50 7.1 ~ 32.7 ms onnx/*.onnx 范围声明：不做第八章拓展任务（INT8 量化/ 知识蒸馏/ 剪枝/ 多随
 report/答辩PPT_RepViT.pdf,page 12,重参数化在数值上完全等价，BN 节点归零 融合必须是代数恒等变换；必须在eval() 之后做，否则BN 用的是batch 统计量 融合公式（手工推导并实测验证） BN(y) = γ · (y − μ) / √(σ² + ε) + β y = W * x + b W' 
-report/答辩PPT_RepViT.pdf,page 12, √(σ² + ε) + β 1×1 核零填充成3×3，identity 核中心为1，三者逐元素相加 实测数值对照 max_abs_err 7.093e-06 mean_abs_err 2.031e-06 Top-1 是否一致 True（32/32） BN 模块数 108 → 0 判定：max|Δ| < 1e-4 且Top-1 恒等→ PASS ONNX 计算图的变化 训练态图 nodes 480 · BN 24 
-report/答辩PPT_RepViT.pdf,page 12,成3×3，identity 核中心为1，三者逐元素相加 实测数值对照 max_abs_err 7.093e-06 mean_abs_err 2.031e-06 Top-1 是否一致 True（32/32） BN 模块数 108 → 0 判定：max|Δ| < 1e-4 且Top-1 恒等→ PASS ONNX 计算图的变化 训练态图 nodes 480 · BN 24 · Conv 126 · 19.03 MB 推
+report/答辩PPT_RepViT.pdf,page 12, √(σ² + ε) + β 1×1 核零填充成3×3，identity 核中心为1，三者逐元素相加 实测数值对照 max_abs_err 7.093e-06 mean_abs_err 2.031e-06 Top-1 是否一致 True（32/32） BN 模块数 107 → 0 判定：max|Δ| < 1e-4 且Top-1 恒等→ PASS ONNX 计算图的变化 训练态图 nodes 480 · BN 24 
+report/答辩PPT_RepViT.pdf,page 12,成3×3，identity 核中心为1，三者逐元素相加 实测数值对照 max_abs_err 7.093e-06 mean_abs_err 2.031e-06 Top-1 是否一致 True（32/32） BN 模块数 107 → 0 判定：max|Δ| < 1e-4 且Top-1 恒等→ PASS ONNX 计算图的变化 训练态图 nodes 480 · BN 24 · Conv 126 · 19.03 MB 推
 report/答辩PPT_RepViT.pdf,page 13,6 个ONNX 模型，PyTorch ONNX Top-1 一致率100% 文件名一律经deploy/model_registry.py 的onnx_path(key) 取得，任何地方不硬写 registry key 大小(MB) 图内节点 类别数/ 标签 repvit_m0_9_in1k 20.36 B
 report/答辩PPT_RepViT.pdf,page 13,resize + crop + normalize 不import torchvision 为什么必须独立 共用一份transform 会让一致性 误差恒为0，反而掩盖预处理 bug PyTorch 与ONNX 一致性（固定划分列表、真实图片） 最大logits 绝对误差 6.199e-06 平均logits 绝对误差 1.501e-06 Top-1 一致率（推荐≥0.99） 100.00% Top-5
 report/答辩PPT_RepViT.pdf,page 13,ize 不import torchvision 为什么必须独立 共用一份transform 会让一致性 误差恒为0，反而掩盖预处理 bug PyTorch 与ONNX 一致性（固定划分列表、真实图片） 最大logits 绝对误差 6.199e-06 平均logits 绝对误差 1.501e-06 Top-1 一致率（推荐≥0.99） 100.00% Top-5 集合一致率 100.00% 3 个模型全部PASS，没有 出现
@@ -925,26 +940,35 @@ report/答辩PPT_RepViT.pptx,ppt/slides/slide1.xml,eproduction 78.20% ImageNet �
 report/答辩PPT_RepViT.pptx,ppt/slides/slide1.xml,n 78.20% ImageNet 子集 Top-1 92.34% Pet-37 test Top-1 7.1e-06 重参数化 max|Δlogits| 100% PyTorch↔ONNX Top-1 一致
 report/答辩PPT_RepViT.pptx,ppt/slides/slide1.xml,eNet 子集 Top-1 92.34% Pet-37 test Top-1 7.1e-06 重参数化 max|Δlogits| 100% PyTorch↔ONNX Top-1 一致
 report/答辩PPT_RepViT.pptx,ppt/slides/slide2.xml,六个考核环节全部交付，37 条验收项自检 0 失败 运行 → 迁移 → 优化 → 可视化 → 重参数化 → 部署，每个数字都可在仓库中溯源 01 官方模型评价 5 个型号 · 1000 张子集 M0.9 Top-1 78.20% outputs/pretrained_eval/ 02 M0.9 迁移训练 Pet 37 类 · 40 epoch test Top
-report/答辩PPT_RepViT.pptx,ppt/slides/slide2.xml, 04 可视化与可解释性 五曲线 · 混淆矩阵 · Grad-CAM 跨物种错误仅 3.56% outputs/gradcam/ 05 结构重参数化 BN 108 → 0 · Conv 126 → 103 max|Δ| 7.1e-06 · Top-1 32/32 outputs/reparam/ 06 ONNX 多模型部署 6 个 ONNX · ORT CPU P50 7.1 ~ 32.7 ms onnx
-report/答辩PPT_RepViT.pptx,ppt/slides/slide2.xml,仅 3.56% outputs/gradcam/ 05 结构重参数化 BN 108 → 0 · Conv 126 → 103 max|Δ| 7.1e-06 · Top-1 32/32 outputs/reparam/ 06 ONNX 多模型部署 6 个 ONNX · ORT CPU P50 7.1 ~ 32.7 ms onnx/*.onnx 范围声明：不做第八章拓展任务（INT8 量化 / 知识蒸馏 / 剪枝 
-report/答辩PPT_RepViT.pptx,ppt/slides/slide12.xml,重参数化在数值上完全等价，BN 节点归零 融合必须是代数恒等变换；必须在 eval() 之后做，否则 BN 用的是 batch 统计量 融合公式（手工推导并实测验证） BN(y) = γ · (y − μ) / √(σ² + ε) + β y = W * x + b 
-report/答辩PPT_RepViT.pptx,ppt/slides/slide12.xml,(σ² + ε) + β 1×1 核零填充成 3×3，identity 核中心为 1，三者逐元素相加 实测数值对照 max_abs_err 7.093e-06 mean_abs_err 2.031e-06 Top-1 是否一致 True（32/32） BN 模块数 108 → 0 判定：max|Δ| < 1e-4 且 Top-1 恒等 → PASS ONNX 计算图的变化 训练态图　nodes 480 · BN 2
-report/答辩PPT_RepViT.pptx,ppt/slides/slide12.xml,3×3，identity 核中心为 1，三者逐元素相加 实测数值对照 max_abs_err 7.093e-06 mean_abs_err 2.031e-06 Top-1 是否一致 True（32/32） BN 模块数 108 → 0 判定：max|Δ| < 1e-4 且 Top-1 恒等 → PASS ONNX 计算图的变化 训练态图　nodes 480 · BN 24 · Conv 126 · 19.03 MB
-report/答辩PPT_RepViT.pptx,ppt/slides/slide13.xml,6 个 ONNX 模型，PyTorch↔ONNX Top-1 一致率 100% 文件名一律经 deploy/model_registry.py 的 onnx_path(key) 取得，任何地方不硬写 registry key 大小 (MB) 图内节点 类别数 / 标签 repvit_m0_9_in1k 20
-report/答辩PPT_RepViT.pptx,ppt/slides/slide13.xml,size + crop + normalize 不 import torchvision 为什么必须独立 共用一份 transform 会让一致性 误差恒为 0，反而掩盖预处理 bug PyTorch 与 ONNX 一致性（固定划分列表、真实图片） 最大 logits 绝对误差 6.199e-06 平均 logits 绝对误差 1.501e-06 Top-1 一致率（推荐 ≥0.99） 100.00% 
-report/答辩PPT_RepViT.pptx,ppt/slides/slide13.xml, 不 import torchvision 为什么必须独立 共用一份 transform 会让一致性 误差恒为 0，反而掩盖预处理 bug PyTorch 与 ONNX 一致性（固定划分列表、真实图片） 最大 logits 绝对误差 6.199e-06 平均 logits 绝对误差 1.501e-06 Top-1 一致率（推荐 ≥0.99） 100.00% Top-5 集合一致率 100.00% 3 个模型全部 PASS，没
-report/答辩PPT_RepViT.pptx,ppt/slides/slide13.xml,vision 为什么必须独立 共用一份 transform 会让一致性 误差恒为 0，反而掩盖预处理 bug PyTorch 与 ONNX 一致性（固定划分列表、真实图片） 最大 logits 绝对误差 6.199e-06 平均 logits 绝对误差 1.501e-06 Top-1 一致率（推荐 ≥0.99） 100.00% Top-5 集合一致率 100.00% 3 个模型全部 PASS，没有 出现
-report/答辩PPT_RepViT.pptx,ppt/slides/slide13.xml,transform 会让一致性 误差恒为 0，反而掩盖预处理 bug PyTorch 与 ONNX 一致性（固定划分列表、真实图片） 最大 logits 绝对误差 6.199e-06 平均 logits 绝对误差 1.501e-06 Top-1 一致率（推荐 ≥0.99） 100.00% Top-5 集合一致率 100.00% 3 个模型全部 PASS，没有 出现题目列出的九类典型 问题（Resize 顺序 
-report/答辩PPT_RepViT.pptx,ppt/slides/slide13.xml,一致性 误差恒为 0，反而掩盖预处理 bug PyTorch 与 ONNX 一致性（固定划分列表、真实图片） 最大 logits 绝对误差 6.199e-06 平均 logits 绝对误差 1.501e-06 Top-1 一致率（推荐 ≥0.99） 100.00% Top-5 集合一致率 100.00% 3 个模型全部 PASS，没有 出现题目列出的九类典型 问题（Resize 顺序 / RGB- BGR / 插值
-report/答辩PPT_RepViT.pptx,ppt/slides/slide13.xml,掩盖预处理 bug PyTorch 与 ONNX 一致性（固定划分列表、真实图片） 最大 logits 绝对误差 6.199e-06 平均 logits 绝对误差 1.501e-06 Top-1 一致率（推荐 ≥0.99） 100.00% Top-5 集合一致率 100.00% 3 个模型全部 PASS，没有 出现题目列出的九类典型 问题（Resize 顺序 / RGB- BGR / 插值 / mean-st
-report/答辩PPT_RepViT.pptx,ppt/slides/slide13.xml,Torch 与 ONNX 一致性（固定划分列表、真实图片） 最大 logits 绝对误差 6.199e-06 平均 logits 绝对误差 1.501e-06 Top-1 一致率（推荐 ≥0.99） 100.00% Top-5 集合一致率 100.00% 3 个模型全部 PASS，没有 出现题目列出的九类典型 问题（Resize 顺序 / RGB- BGR / 插值 / mean-std / eval 模式） 标签
+report/答辩PPT_RepViT.pptx,ppt/slides/slide2.xml,04 可视化与可解释性 五条曲线 · 混淆矩阵 · Grad-CAM 跨物种错误仅 3.56% outputs/gradcam/ 05 结构重参数化 BN 107 → 0 · Conv 126 → 103 max|Δ| 7.1e-06 · Top-1 32/32 outputs/reparam/ 06 ONNX 多模型部署 6 个 ONNX · ORT CPU P50 7.1 ~ 32.7 ms onnx
+report/答辩PPT_RepViT.pptx,ppt/slides/slide2.xml,仅 3.56% outputs/gradcam/ 05 结构重参数化 BN 107 → 0 · Conv 126 → 103 max|Δ| 7.1e-06 · Top-1 32/32 outputs/reparam/ 06 ONNX 多模型部署 6 个 ONNX · ORT CPU P50 7.1 ~ 32.7 ms onnx/*.onnx 范围声明：不做第八章拓展任务（INT8 量化 / 知识蒸馏 / 剪枝 
+report/答辩PPT_RepViT.pptx,ppt/slides/slide12.xml,重参数化：合并分支后，误差仍在设定阈值内 Pet-37 / baseline_best.pt · CPU FP32 · eval → 深拷贝 → fuse · 固定随机输入 n=32，batch=8，224×224，seed=20240912 来源：outputs/r
+report/答辩PPT_RepViT.pptx,ppt/slides/slide12.xml,_report.json；与第 13 页真实图片 ONNX 实验分开 12 PyTorch 模块数量 数值验证（随机输入） 结果 最大 |Δlogits| 7.093e-06 平均 |Δlogits| 2.031e-06 Top-1 一致 32 / 32 Top-5 最小交集 5 / 5 阈值 / 判定 max < 1e-4 / PASS 先把 BN 的固定统计量折进卷积，再把 1×1、3×3 与 ident
+report/答辩PPT_RepViT.pptx,ppt/slides/slide12.xml,json；与第 13 页真实图片 ONNX 实验分开 12 PyTorch 模块数量 数值验证（随机输入） 结果 最大 |Δlogits| 7.093e-06 平均 |Δlogits| 2.031e-06 Top-1 一致 32 / 32 Top-5 最小交集 5 / 5 阈值 / 判定 max < 1e-4 / PASS 先把 BN 的固定统计量折进卷积，再把 1×1、3×3 与 identity 分支的核相加。
+report/答辩PPT_RepViT.pptx,ppt/slides/slide12.xml,片 ONNX 实验分开 12 PyTorch 模块数量 数值验证（随机输入） 结果 最大 |Δlogits| 7.093e-06 平均 |Δlogits| 2.031e-06 Top-1 一致 32 / 32 Top-5 最小交集 5 / 5 阈值 / 判定 max < 1e-4 / PASS 先把 BN 的固定统计量折进卷积，再把 1×1、3×3 与 identity 分支的核相加。 代数上等价；FP32 
+report/答辩PPT_RepViT.pptx,ppt/slides/slide12.xml,验分开 12 PyTorch 模块数量 数值验证（随机输入） 结果 最大 |Δlogits| 7.093e-06 平均 |Δlogits| 2.031e-06 Top-1 一致 32 / 32 Top-5 最小交集 5 / 5 阈值 / 判定 max < 1e-4 / PASS 先把 BN 的固定统计量折进卷积，再把 1×1、3×3 与 identity 分支的核相加。 代数上等价；FP32 运算顺序改变会产生舍入
+report/答辩PPT_RepViT.pptx,ppt/notesSlides/notesSlide4.xml, --skip-onnx --out-dir outputs/verification/reparam_pet37 max_abs_err=7.092952728271484e-06；mean_abs_err=2.030726818702533e-06。32 个输入是 torch.randn，不是真实测试图片。 权重 missing=0 / unexpected=0。BN 模块 107→0；ONNX 图的 BN 节点 24→0 是另一种统
+report/答辩PPT_RepViT.pptx,ppt/notesSlides/notesSlide4.xml,fication/reparam_pet37 max_abs_err=7.092952728271484e-06；mean_abs_err=2.030726818702533e-06。32 个输入是 torch.randn，不是真实测试图片。 权重 missing=0 / unexpected=0。BN 模块 107→0；ONNX 图的 BN 节点 24→0 是另一种统计，不可混用。 历史官方 C=1000 报告存在权重键不匹配，不纳入结
+report/答辩PPT_RepViT.pptx,ppt/notesSlides/notesSlide4.xml,ONNX 图的 BN 节点 24→0 是另一种统计，不可混用。 历史官方 C=1000 报告存在权重键不匹配，不纳入结论；见 report/LOGITS_AUDIT.md。
+report/答辩PPT_RepViT.pptx,ppt/slides/slide13.xml,PyTorch ↔ ONNX：固定 n=12，比较同一输入张量 融合后的 PyTorch vs ORT CPUExecutionProvider · FP32 · batch=1 · 224×224 · 每个模型各 12 张 来源：outputs/metrics/consistency_
+report/答辩PPT_RepViT.pptx,ppt/slides/slide13.xml,"0_9_pet37,repvit_m0_9_in1k,repvit_m1_0_in1k}.json 13 模型 / 输入列表 n 最大 |Δlogits| 平均 |Δlogits| Top-1 / Top-5 M0.9 Pet-37 / pet_test 12 6.199e-06 1.501e-06 100% / 100% M0.9 / ImageNet 子集 12 1.717e-05 2.360e-06 1"
+report/答辩PPT_RepViT.pptx,ppt/slides/slide13.xml,"vit_m0_9_in1k,repvit_m1_0_in1k}.json 13 模型 / 输入列表 n 最大 |Δlogits| 平均 |Δlogits| Top-1 / Top-5 M0.9 Pet-37 / pet_test 12 6.199e-06 1.501e-06 100% / 100% M0.9 / ImageNet 子集 12 1.717e-05 2.360e-06 100% / 100% M1"
+report/答辩PPT_RepViT.pptx,ppt/slides/slide13.xml,表 n 最大 |Δlogits| 平均 |Δlogits| Top-1 / Top-5 M0.9 Pet-37 / pet_test 12 6.199e-06 1.501e-06 100% / 100% M0.9 / ImageNet 子集 12 1.717e-05 2.360e-06 100% / 100% M1.0 / ImageNet 子集 12 1.812e-05 2.464e-06 100% / 100%
+report/答辩PPT_RepViT.pptx,ppt/slides/slide13.xml,ogits| 平均 |Δlogits| Top-1 / Top-5 M0.9 Pet-37 / pet_test 12 6.199e-06 1.501e-06 100% / 100% M0.9 / ImageNet 子集 12 1.717e-05 2.360e-06 100% / 100% M1.0 / ImageNet 子集 12 1.812e-05 2.464e-06 100% / 100% 1  部署预处理由
+report/答辩PPT_RepViT.pptx,ppt/slides/slide13.xml,7 / pet_test 12 6.199e-06 1.501e-06 100% / 100% M0.9 / ImageNet 子集 12 1.717e-05 2.360e-06 100% / 100% M1.0 / ImageNet 子集 12 1.812e-05 2.464e-06 100% / 100% 1  部署预处理由 PIL 实现；本次对比把同一张量送入两个推理后端。 2  结论仅覆盖这 12 张图片，
+report/答辩PPT_RepViT.pptx,ppt/slides/slide13.xml,st 12 6.199e-06 1.501e-06 100% / 100% M0.9 / ImageNet 子集 12 1.717e-05 2.360e-06 100% / 100% M1.0 / ImageNet 子集 12 1.812e-05 2.464e-06 100% / 100% 1  部署预处理由 PIL 实现；本次对比把同一张量送入两个推理后端。 2  结论仅覆盖这 12 张图片，不能写成完整测试集或
+report/答辩PPT_RepViT.pptx,ppt/slides/slide13.xml, ImageNet 子集 12 1.717e-05 2.360e-06 100% / 100% M1.0 / ImageNet 子集 12 1.812e-05 2.464e-06 100% / 100% 1  部署预处理由 PIL 实现；本次对比把同一张量送入两个推理后端。 2  结论仅覆盖这 12 张图片，不能写成完整测试集或全部六模型一致。 3  旧的 5.25e-06 缺少对应完整记录，当前统一引用上表落盘值
+report/答辩PPT_RepViT.pptx,ppt/slides/slide13.xml,子集 12 1.717e-05 2.360e-06 100% / 100% M1.0 / ImageNet 子集 12 1.812e-05 2.464e-06 100% / 100% 1  部署预处理由 PIL 实现；本次对比把同一张量送入两个推理后端。 2  结论仅覆盖这 12 张图片，不能写成完整测试集或全部六模型一致。 3  旧的 5.25e-06 缺少对应完整记录，当前统一引用上表落盘值。 复跑：pytho
+report/答辩PPT_RepViT.pptx,ppt/slides/slide13.xml,由 PIL 实现；本次对比把同一张量送入两个推理后端。 2  结论仅覆盖这 12 张图片，不能写成完整测试集或全部六模型一致。 3  旧的 5.25e-06 缺少对应完整记录，当前统一引用上表落盘值。 复跑：python deploy/compare_torch_onnx.py --model repvit_m0_9_pet37 --limit 12 完整命令、固定列表与输出路径已写入本页备注和 report/L
+report/答辩PPT_RepViT.pptx,ppt/slides/slide13.xml,py --model repvit_m0_9_pet37 --limit 12 完整命令、固定列表与输出路径已写入本页备注和 report/LOGITS_AUDIT.md。
+report/答辩PPT_RepViT.pptx,ppt/notesSlides/notesSlide5.xml,m0_9_pet37_n12.json Pet-37 顺序取固定列表前 12 张，每张预处理一次，同一 numpy 张量送入两端。 max=6.198883056640625e-06；mean=1.5006899711048998e-06；Top-1/Top-5 集合均 1.0。 5.25e-06 是未找到对应完整产物的旧引用；旧命令写 limit=8 不能证明该值来自 n=8。当前权重跑 n=8 也不能复现旧值。 不是全测试集一致率，不
+report/答辩PPT_RepViT.pptx,ppt/notesSlides/notesSlide5.xml,顺序取固定列表前 12 张，每张预处理一次，同一 numpy 张量送入两端。 max=6.198883056640625e-06；mean=1.5006899711048998e-06；Top-1/Top-5 集合均 1.0。 5.25e-06 是未找到对应完整产物的旧引用；旧命令写 limit=8 不能证明该值来自 n=8。当前权重跑 n=8 也不能复现旧值。 不是全测试集一致率，不验证两套预处理独立实现等价，也不能排除所有部署错误。
+report/答辩PPT_RepViT.pptx,ppt/notesSlides/notesSlide5.xml,.198883056640625e-06；mean=1.5006899711048998e-06；Top-1/Top-5 集合均 1.0。 5.25e-06 是未找到对应完整产物的旧引用；旧命令写 limit=8 不能证明该值来自 n=8。当前权重跑 n=8 也不能复现旧值。 不是全测试集一致率，不验证两套预处理独立实现等价，也不能排除所有部署错误。
 report/答辩PPT_RepViT.pptx,ppt/slides/slide15.xml, 三个最有代表性的问题 01 官方 .pth 与 timm 键名交集为 0（713 vs 389） 实测证明两条路线权重逐位等价（max|Δlogits| = 0），省去手写键转换器 02 data/provided/ 在 29 页试题 PDF 中从未定义 改判为结构性偏差，改用官方归档 + 自建子集，并在 README 与报告中显式声明 03 早停导致训练预算不等价（opt_mix 25 epoch vs 
-report/答辩PPT_RepViT.pptx,ppt/slides/slide15.xml,积，M0.9 实测 78.20%，贴近官方 78.7% ② Pet-37 test Top-1 92.34%，跨物种错误仅 3.56% ③ 重参数化数值等价、BN 归零；ONNX 一致率 100% ④ 四项优化均未超出噪声：这本身是有价值的负面结论 后续计划 INT8 量化 / 知识蒸馏（M2.3 → M0.9） 集显后端（本机无集显，需换设备） 置信度校准（实测温度 T = 0.615） 七类鲁棒性扰动
-report/答辩PPT_RepViT.pptx,ppt/slides/slide16.xml,combo；同一划分、seed=42、40 epoch；曲线文件：outputs/curves/opt_compare.png 误差分两类 重参数化：融合前后 PyTorch，32 张，max|Δ|=7.093e-06。 PyTorch↔ONNX：训练侧与部署侧代码分开；比较同一输入，n=12，max|Δ|=6.198883e-06（展示 6.199e-06）。
-report/答辩PPT_RepViT.pptx,ppt/slides/slide16.xml,文件：outputs/curves/opt_compare.png 误差分两类 重参数化：融合前后 PyTorch，32 张，max|Δ|=7.093e-06。 PyTorch↔ONNX：训练侧与部署侧代码分开；比较同一输入，n=12，max|Δ|=6.198883e-06（展示 6.199e-06）。
-report/答辩PPT_RepViT.pptx,ppt/slides/slide16.xml,curves/opt_compare.png 误差分两类 重参数化：融合前后 PyTorch，32 张，max|Δ|=7.093e-06。 PyTorch↔ONNX：训练侧与部署侧代码分开；比较同一输入，n=12，max|Δ|=6.198883e-06（展示 6.199e-06）。
-report/答辩PPT_RepViT.pptx,ppt/slides/slide16.xml,ch，32 张，max|Δ|=7.093e-06。 PyTorch↔ONNX：训练侧与部署侧代码分开；比较同一输入，n=12，max|Δ|=6.198883e-06（展示 6.199e-06）。
-report/答辩PPT_RepViT.pptx,ppt/slides/slide16.xml,.093e-06。 PyTorch↔ONNX：训练侧与部署侧代码分开；比较同一输入，n=12，max|Δ|=6.198883e-06（展示 6.199e-06）。
+report/答辩PPT_RepViT.pptx,ppt/slides/slide15.xml,积，M0.9 实测 78.20%，贴近官方 78.7% ② Pet-37 test Top-1 92.34%，跨物种错误仅 3.56% ③ 重参数化 32 个随机输入通过；ONNX 固定 n=12 样本一致 ④ 四项优化未显示稳定提升；需要多种子实验进一步判断 后续计划 INT8 量化 / 知识蒸馏（M2.3 → M0.9） 集显后端（本机无集显，需换设备） 置信度校准（实测温度 T = 0.615） 七
+tools/audit_logits_references.py,1,"""""""Inventory logits/consistency references, including Office/PDF deliverables."""""""
+tools/audit_logits_references.py,10,"PATTERN = re.compile(r""logits|重参数化|一致性|(?:[1-9]\.\d+e-0[4-8])|PyTorch.{0,8}ONNX"", re.I)"
+tools/audit_logits_references.py,40,out = ROOT / 'outputs/verification/logits_reference_inventory.csv'
 tools/count_flops.py,15,"得到的不是推理态数值；而且 timm 的 RepVit 在训练态 forward 返回的是 (logits, logits_dist)"
 tools/count_params.py,10,eval 时会把 head 与 head_dist 的 logits 取平均 —— 这是「预训练权重发布时的形态」。
 tools/count_params.py,12,仍未做重参数化 —— 这是「刚 load 完权重、还没 fuse」的形态。
@@ -1013,12 +1037,12 @@ tools/reparam_verify.py,2,"""""""tools/reparam_verify.py —— RepViT 结构重
 tools/reparam_verify.py,6,<model>_onnx_nodes.json / logits_diff.json / onnx_before.onnx / onnx_after.onnx
 tools/reparam_verify.py,28,MAX_ABS_ERR_THRESHOLD = 1e-4     # logits 最大绝对误差
 tools/reparam_verify.py,35,"p = argparse.ArgumentParser(description=""RepViT 结构重参数化验证"")"
-tools/reparam_verify.py,242,"""logits_abs_max"": float(y_before.abs().max().item()),"
-tools/reparam_verify.py,267,"kwargs = dict(input_names=[""input""], output_names=[""logits""], opset_version=opset,"
-tools/reparam_verify.py,269,"dynamic_axes={""input"": {0: ""batch""}, ""logits"": {0: ""batch""}})"
-tools/reparam_verify.py,369,# --- 融合前 logits ---
-tools/reparam_verify.py,385,"(out_dir / ""logits_diff.json"").write_text("
-tools/reparam_verify.py,442,"print(f""[logits] max_abs_err={diff['max_abs_err']:.3e} mean_abs_err={diff['mean_abs_err']:.3e} """
+tools/reparam_verify.py,246,"""logits_abs_max"": float(y_before.abs().max().item()),"
+tools/reparam_verify.py,271,"kwargs = dict(input_names=[""input""], output_names=[""logits""], opset_version=opset,"
+tools/reparam_verify.py,273,"dynamic_axes={""input"": {0: ""batch""}, ""logits"": {0: ""batch""}})"
+tools/reparam_verify.py,373,# --- 融合前 logits ---
+tools/reparam_verify.py,389,"(out_dir / ""logits_diff.json"").write_text("
+tools/reparam_verify.py,446,"print(f""[logits] max_abs_err={diff['max_abs_err']:.3e} mean_abs_err={diff['mean_abs_err']:.3e} """
 tools/report_spec.py,58,"(""12"", ""结构重参数化"", [""outputs/reparam/repvit_m0_9_reparam_report.json"","
 tools/report_spec.py,82,"(""11"", ""结构重参数化"", [""figures/reparam_graph_nodes.png""]),"
 tools/report_spec.py,124,"""figures/reparam_graph_nodes.png"": (""重参数化前后 ONNX 算子数对比（BN/Conv/Add）"","
@@ -1028,11 +1052,11 @@ tools/run_all.sh,77,"echo ""== 7/9 结构重参数化验证（必须先于 ONNX 
 tools/run_all.sh,83,"echo ""== 8/9 ONNX 导出 + 一致性 =="""
 tools/selfcheck.py,189,"@check(""macs"", ""MACs 口径一致性"", ""fvcore 一次乘加算 1 flop，不等于 2xMACs"")"
 tools/selfcheck.py,456,# ---------------------------------------------------------------- H 重参数化
-tools/selfcheck.py,467,"f""max|Δlogits|={judge.get('max_abs_err')} Top-1一致={judge.get('top1_agree')} "" \"
-tools/selfcheck.py,488,# ---------------------------------------------------------------- I ONNX 一致性 / 性能
-tools/selfcheck.py,489,"@check(""onnx.consistency"", ""PyTorch vs ONNX 一致率 >= 0.99"", ""按题目 9 项清单逐项排查"")"
-tools/selfcheck.py,503,"@check(""onnx.realimg"", ""一致性用真实图片计算"", ""随机张量的对比说服力不足"")"
-tools/selfcheck.py,621,"(""结构重参数化"", [""结构重参数化"", ""重参数化"", ""reparam""]),"
+tools/selfcheck.py,469,"f""max|Δlogits|={judge.get('max_abs_err')} Top-1一致={judge.get('top1_agree')} "" \"
+tools/selfcheck.py,490,# ---------------------------------------------------------------- I ONNX 一致性 / 性能
+tools/selfcheck.py,491,"@check(""onnx.consistency"", ""PyTorch vs ONNX 一致率 >= 0.99"", ""按题目 9 项清单逐项排查"")"
+tools/selfcheck.py,505,"@check(""onnx.realimg"", ""一致性用真实图片计算"", ""随机张量的对比说服力不足"")"
+tools/selfcheck.py,623,"(""结构重参数化"", [""结构重参数化"", ""重参数化"", ""reparam""]),"
 tools/smoke_phase0.py,130,"kwargs = dict(input_names=[""input""], output_names=[""logits""], opset_version=opset)"
 tools/smoke_phase0.py,144,"""""""只测吞吐：合成张量 + AdamW + 前反向。不做任何精度结论（规格书禁止 randn 用于一致性测试）。"""""""
 tools/train.py,438,"def topk_correct(logits: torch.Tensor, target: torch.Tensor, topk=(1, 5)) -> list[int]:"

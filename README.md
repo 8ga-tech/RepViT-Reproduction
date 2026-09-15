@@ -340,13 +340,13 @@ resize+crop，不 import torchvision），与训练侧共用同一份 transform 
 对比恒等于 0 而掩盖预处理 bug，因此两者必须互相独立。
 
 **实测一致性（同一落盘实验，n=12）**：`max|Δlogits| = 6.198883e-06`（展示为 **6.199e-06**）、`mean|Δlogits| = 1.500690e-06`，
-**Top-1 一致率 100.00%**、Top-5 集合一致率 100.00%。结果来自 `outputs/metrics/consistency_repvit_m0_9_pet37.json`；README 早期的 5.25e-06 属于另一批 n=8 对照，不能与本结果混写。
+**Top-1 一致率 100.00%**、Top-5 集合一致率 100.00%。结果来自 `outputs/metrics/consistency_repvit_m0_9_pet37.json`；早期 README 的 5.25e-06 没有找到配套完整产物，保留为旧引用，不能与本结果混写。
 
 ## 11.1 误差口径说明
 
 - **重参数化 logits 误差**：训练态与融合态 PyTorch 模型在同一批 32 张输入上的差异，落盘于 `outputs/reparam/repvit_m0_9_pet37_reparam_report.json`，属于 BN/卷积分支融合验证。
 - **PyTorch↔ONNX logits 误差**：融合后的 PyTorch 与独立预处理的 ONNX Runtime 输出比较，落盘于 `outputs/metrics/consistency_repvit_m0_9_pet37.json`，本次固定 `n=12`。
-- 两者实验对象、输入批次和代码路径不同；答辩中分别报告，避免把 5.25e-06（旧 n=8）与 6.199e-06（当前 n=12）当成同一结果。
+- 两者实验对象、输入批次和代码路径不同；答辩中分别报告，避免把 5.25e-06（旧引用，样本数未核实）与 6.199e-06（当前 n=12）当成同一结果。
 
 复跑命令：
 
