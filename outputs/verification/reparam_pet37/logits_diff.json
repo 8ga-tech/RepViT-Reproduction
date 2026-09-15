@@ -1,0 +1,33 @@
+{
+  "diff": {
+    "num_samples": 32,
+    "max_abs_err": 7.092952728271484e-06,
+    "mean_abs_err": 2.030726818702533e-06,
+    "max_rel_err": 0.009947390295565128,
+    "rel_err_definition": "|before-after| / (|before| + 1e-6)，仅报告不作门限",
+    "logits_abs_max": 1.399425983428955,
+    "top1_same_count": 32,
+    "top1_same_rate": 1.0,
+    "top5_overlap_histogram": {
+      "0": 0,
+      "1": 0,
+      "2": 0,
+      "3": 0,
+      "4": 0,
+      "5": 32
+    },
+    "top5_min_overlap": 5,
+    "top5_full_overlap_rate": 1.0,
+    "thresholds": {
+      "max_abs_err": 0.0001,
+      "top1_same_rate": 1.0,
+      "top5_min_overlap": 5
+    }
+  },
+  "judge": {
+    "numeric_pass": true,
+    "top1_pass": true,
+    "top5_pass": true,
+    "pass": true
+  }
+}

@@ -456,7 +456,8 @@ def c_cam_layer():
 # ---------------------------------------------------------------- H 重参数化
 @check("rep.verify", "融合前后数值等价且 BN 归零", "先 eval() 再融合，顺序不可反")
 def c_rep():
-    f = ROOT / "outputs/reparam/repvit_m0_9_reparam_report.json"
+    # 交付口径是 Pet-37 迁移模型；不要按 glob 误读官方 C=1000 的历史对照。
+    f = ROOT / "outputs/reparam/repvit_m0_9_pet37_reparam_report.json"
     if not f.exists():
         return False, f"缺少 {f.relative_to(ROOT)}（跑 tools/reparam_verify.py 生成）"
     d = json.loads(f.read_text(encoding="utf-8"))

@@ -290,10 +290,10 @@ python tools/reparam_verify.py --model repvit_m0_9 \
 
 | 指标 | 值 |
 |---|---|
-| `max_abs_err` | **6.53e-06** |
-| `mean_abs_err` | 1.67e-06 |
+| `max_abs_err` | **7.092953e-06**（展示为 7.093e-06） |
+| `mean_abs_err` | **2.030727e-06**（展示为 2.031e-06） |
 | `top1_identical` | **True**（32/32） |
-| BN 模块数 | 108 → **0** |
+| BN 模块数 | **107 → 0**（`outputs/reparam` 落盘值） |
 | 参数量 | 4,732,805 → 4,696,301（净减 36,504） |
 | ONNX 图 | BatchNormalization **0**、Conv **103**（未融合 126，少 23） |
 
@@ -331,7 +331,7 @@ python deploy/model_registry.py
 python deploy/infer_onnx.py --model repvit_m0_9_pet37 --image external/beagle__*.JPEG
 
 # PyTorch vs ONNX 一致性（5 项指标 + 判定）
-python deploy/compare_torch_onnx.py --model repvit_m0_9_pet37 --limit 8 \
+python deploy/compare_torch_onnx.py --model repvit_m0_9_pet37 --limit 12 \
     --out outputs/metrics/consistency_repvit_m0_9_pet37.json
 ```
 
@@ -339,8 +339,22 @@ python deploy/compare_torch_onnx.py --model repvit_m0_9_pet37 --limit 8 \
 resize+crop，不 import torchvision），与训练侧共用同一份 transform 会让一致性
 对比恒等于 0 而掩盖预处理 bug，因此两者必须互相独立。
 
-**实测一致性**：`max|Δlogits| = 5.25e-06`、`mean|Δlogits| = 1.41e-06`、
-**Top-1 一致率 100.00%**、Top-5 集合一致率 100.00%。
+**实测一致性（同一落盘实验，n=12）**：`max|Δlogits| = 6.198883e-06`（展示为 **6.199e-06**）、`mean|Δlogits| = 1.500690e-06`，
+**Top-1 一致率 100.00%**、Top-5 集合一致率 100.00%。结果来自 `outputs/metrics/consistency_repvit_m0_9_pet37.json`；README 早期的 5.25e-06 属于另一批 n=8 对照，不能与本结果混写。
+
+## 11.1 误差口径说明
+
+- **重参数化 logits 误差**：训练态与融合态 PyTorch 模型在同一批 32 张输入上的差异，落盘于 `outputs/reparam/repvit_m0_9_pet37_reparam_report.json`，属于 BN/卷积分支融合验证。
+- **PyTorch↔ONNX logits 误差**：融合后的 PyTorch 与独立预处理的 ONNX Runtime 输出比较，落盘于 `outputs/metrics/consistency_repvit_m0_9_pet37.json`，本次固定 `n=12`。
+- 两者实验对象、输入批次和代码路径不同；答辩中分别报告，避免把 5.25e-06（旧 n=8）与 6.199e-06（当前 n=12）当成同一结果。
+
+复跑命令：
+
+```bash
+python tools/reparam_verify.py --model repvit_m0_9_pet37 --weights checkpoints/baseline_best.pt --out-dir outputs/reparam
+python deploy/compare_torch_onnx.py --model repvit_m0_9_pet37 --limit 12 --out outputs/metrics/consistency_repvit_m0_9_pet37.json
+python tools/audit_logits_references.py  # 扫描 README/报告/PPT/PDF/代码中的误差引用
+```
 
 ## 12. 如何完成性能测试
 

@@ -38,7 +38,7 @@
 | ② M0.9 迁移训练 | ✅ 40 epoch 满预算 | `checkpoints/baseline_best.pt` |
 | ③ 控制变量优化 | ✅ 4 方案 + 3 组组合消融 | `configs/opt_*.yaml` |
 | ④ 可视化与可解释性 | ✅ 五曲线/混淆矩阵/Grad-CAM/外部图 | `outputs/{curves,confusion_matrix,gradcam,predictions}/` |
-| ⑤ 结构重参数化 | ✅ max\|Δ\|=6.53e-06，Top-1 32/32 一致 | `outputs/reparam/` |
+| ⑤ 结构重参数化 | ✅ max\|Δ\|=7.092953e-06（展示 7.093e-06），Top-1 32/32 一致 | `outputs/reparam/` |
 | ⑥ ONNX 多模型部署 | ✅ 3 个 ONNX，一致率 100% | `onnx/*.onnx`、`outputs/benchmarks/` |
 
 > 注：**不做**第八章拓展任务（INT8/蒸馏/剪枝/多随机种子/边缘部署/独立实现核心模块）。
@@ -200,9 +200,9 @@ RTX 4060 Laptop；vendored 官方实现 + `replace_batchnorm` 融合态。
 
 | 指标 | Pet-37 | M0.9 官方 C=1000 |
 |---|---|---|
-| max_abs_err | **6.527e-06** | 2.265e-06 |
-| Top-1 一致 | **True（32/32）** | True（32/32） |
-| BN 模块数 | **108 → 0** | 108 → 0 |
+| max_abs_err | **7.092953e-06** | 旧官方 C=1000 记录未匹配权重，不作为当前结论 |
+| Top-1 一致 | **True（32/32）** | N/A（权重键不匹配） |
+| BN 模块数 | **107 → 0** | N/A |
 | 参数量（单头口径） | 4,732,805 → 4,696,301（净减 36,504） | 净减 36,504 |
 | ONNX 节点 | BN **0**、Conv **103**（未融合 126，少 23） | 同 |
 
@@ -223,10 +223,12 @@ RTX 4060 Laptop；vendored 官方实现 + `replace_batchnorm` 融合态。
   （共用一份 transform 会让一致性误差恒为 0，反而掩盖 bug）
 - **PyTorch vs ONNX 一致性**（固定划分列表、真实图片）：
 
+  固定 `datasets/lists/pet_test.txt` 前 12 张图片（`n=12`）；README 早期的 5.25e-06 是另一批 n=8 对照。
+
 | 指标 | repvit_m0_9_pet37 |
 |---|---|
-| max\|Δlogits\| | **5.245e-06** |
-| mean\|Δlogits\| | 1.414e-06 |
+| max\|Δlogits\| | **6.198883e-06**（展示 6.199e-06） |
+| mean\|Δlogits\| | **1.500690e-06** |
 | **Top-1 一致率** | **100.00%** |
 | Top-5 集合一致率 | 100.00% |
 

@@ -55,7 +55,7 @@
 | bench_m0_9_in1k | mean=7.45 p50=7.37 p95=8.00 ms | ORT CPU EP / FP32 / bs=1 / 224 / warmup10+50 / threads=4 | outputs/benchmarks/repvit_m0_9_in1k_benchmark.json | `python deploy/benchmark.py --model ... --warmup 10 --runs 50 --threads 4` |
 | bench_m1_0_in1k | mean=9.20 p50=9.15 p95=9.76 ms | 同上 | 同上 | 同上 |
 | bench_m0_9_pet37 | mean=7.20 p50=7.12 p95=7.69 ms | 同上 | 同上 | 同上 |
-| consistency_pet37 | max|Δ|=6.199e-06, Top-1 一致率=1.000 | PyTorch vs ONNX，固定划分列表 | outputs/metrics/consistency_repvit_m0_9_pet37.json | `python deploy/compare_torch_onnx.py --model repvit_m0_9_pet37 --limit 12 --out ...` |
+| consistency_pet37 | n=12; max|Δ|=6.198883e-06（展示 6.199e-06）, mean|Δ|=1.500690e-06, Top-1 一致率=1.000 | PyTorch vs ONNX，固定划分列表 | outputs/metrics/consistency_repvit_m0_9_pet37.json | `python deploy/compare_torch_onnx.py --model repvit_m0_9_pet37 --limit 12 --out ...` |
 | cross_species_error_ratio | 0.0356（10/281） | test 集错误里真正跨物种（猫↔狗）的占比 | outputs/confusion_matrix/baseline_cat_dog_block.json | `python tools/visualize.py --pred-csv outputs/predictions/baseline_test_preds.csv ...` |
 | external_top5_correct | 8/8 | 跨集合（ImageNet 实拍）图片的品种判断 | outputs/benchmarks/external_top5_repvit_m0_9_pet37.csv | `python tools/predict_external.py --model repvit_m0_9_pet37 --dir external --num 8` |
 
