@@ -98,7 +98,45 @@
 
 ## 6. 推送与远端核实结果
 
-（本节在推送完成后由紧随其后的追加提交回填。）
+### 6.1 第一次推送（提交 C2 = `9e295fb`）
+
+- 命令：`git push --porcelain origin master:main`
+- porcelain 输出（原文）：
+
+  ```text
+  	refs/heads/master:refs/heads/main	ac08e2b..9e295fb
+  Done
+  ```
+
+- 首列为空、**没有** `+` 或 `!` 标志 → 服务端按 fast-forward 更新，不是强制推送
+- 推送前远端 `main` = `ac08e2bfd89001b0800d9338f380a64215b5c763`（`git ls-remote origin refs/heads/main`）
+- 推送后远端 `main` = `9e295fb5381f5867887d793ab8e0ecee00fb1def`（`git ls-remote`，独立于本地跟踪 ref）
+- 本机 `master` = `9e295fb5381f5867887d793ab8e0ecee00fb1def` → **两侧相同**
+
+### 6.2 推送后复核（远端侧独立取证）
+
+| 检查 | 命令 | 结果 |
+|---|---|---|
+| 远端跟踪 ref | `git fetch origin` → `git rev-parse origin/main` | `9e295fb…`，与 `master` 相同 |
+| 远端提交对象 | `gh api repos/8ga-tech/RepViT-Reproduction/commits/main` | `sha = 9e295fb…`；`parent = ebafdb8`；标题「合并后补回远端「许可与致谢」表述并新增同步记录」 |
+| 远端分支头 | `gh api repos/8ga-tech/RepViT-Reproduction/branches/main` | `commit.sha = 9e295fb…`；`protected = false` |
+| 远端默认分支 | `gh api repos/8ga-tech/RepViT-Reproduction` | `main` |
+| 远端认可 `ac08e2b` 是祖先 | `gh api repos/8ga-tech/RepViT-Reproduction/compare/ac08e2b...9e295fb` | `status = ahead`；`behind_by = 0`；`merge_base_commit = ac08e2b…` |
+| 远端文件清单 | `gh api 'repos/8ga-tech/RepViT-Reproduction/git/trees/main?recursive=1'` | 7 个新增文件与本文件全部在远端 |
+| 远端 README 正文 | `curl https://raw.githubusercontent.com/8ga-tech/RepViT-Reproduction/main/README.md` | 含「华中科技大学one团队2026秋季招新考核」；不含「求职考核」 |
+| 临时文件未入库 | 同上 tree 清单 | 无 `tmp_verify*` / `__pycache__` / `_tmp_dump` / `_ppt_dump_before` |
+
+### 6.3 第二次推送（本文件所在提交）
+
+上面 6.1 / 6.2 的实测结果随本文件落盘为一个追加提交，随后以**同样的 fast-forward 方式**
+再次执行 `git push origin master:main`。因此**当前远端 `main` 的 HEAD 就是本文件所在提交
+的 SHA**（比 `9e295fb` 再前进一个提交），复核命令：
+
+```powershell
+git -C <仓库根目录> fetch origin
+git -C <仓库根目录> rev-parse origin/main master
+& 'C:\Program Files\GitHub CLI\gh.exe' api repos/8ga-tech/RepViT-Reproduction/commits/main --jq .sha
+```
 
 ---
 
