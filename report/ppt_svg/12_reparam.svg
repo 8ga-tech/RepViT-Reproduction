@@ -2,8 +2,8 @@
   <rect id="bg-canvas" data-pptx-role="background" x="0" y="0" width="1280" height="720" fill="#0B1220"/>
 
   <g id="page-header" data-pptx-bounds="72 44 1136 100">
-    <text x="72" y="82" font-family="Microsoft YaHei" font-size="34" font-weight="bold" fill="#E6EDF7">重参数化在数值上完全等价，BN 节点归零</text>
-    <text x="72" y="118" font-family="Microsoft YaHei" font-size="16" fill="#93A4C0">融合必须是代数恒等变换；必须在 eval() 之后做，否则 BN 用的是 batch 统计量</text>
+    <text x="72" y="82" font-family="Microsoft YaHei" font-size="34" font-weight="bold" fill="#E6EDF7">重参数化：合并分支是代数等价的替换，实测误差小于阈值</text>
+    <text x="72" y="118" font-family="Microsoft YaHei" font-size="16" fill="#93A4C0">融合必须在 eval() 之后做，否则 BN 用的是 batch 统计量；下面的数值只覆盖已测输入与设定阈值，不是位级完全相等</text>
     <line x1="72" y1="136" x2="1208" y2="136" stroke="#1E3050" stroke-width="2"/>
   </g>
 
@@ -35,8 +35,8 @@
     <text x="738" y="316" font-family="Microsoft YaHei" font-size="15" fill="#93A4C0">Top-1 是否一致</text>
     <text x="1182" y="316" font-family="Consolas" font-size="16" fill="#3FDB9B" text-anchor="end">True（32/32）</text>
     <text x="738" y="348" font-family="Microsoft YaHei" font-size="15" fill="#93A4C0">BN 模块数</text>
-    <text x="1182" y="348" font-family="Consolas" font-size="16" fill="#3FDB9B" text-anchor="end">108 → 0</text>
-    <text x="738" y="378" font-family="Microsoft YaHei" font-size="14" fill="#5C7096">判定：max|Δ| &lt; 1e-4 且 Top-1 恒等 → PASS</text>
+    <text x="1182" y="348" font-family="Consolas" font-size="16" fill="#3FDB9B" text-anchor="end">107 → 0</text>
+    <text x="738" y="378" font-family="Microsoft YaHei" font-size="14" fill="#5C7096">判定：max|Δ| &lt; 1e-4 且 32/32 一致 → PASS（只覆盖已测输入，不是位级相等）</text>
   </g>
 
   <g id="onnx-graph" data-pptx-bounds="72 406 620 130">

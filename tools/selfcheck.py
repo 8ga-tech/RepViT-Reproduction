@@ -21,6 +21,20 @@ ROOT = Path(__file__).resolve().parents[1]
 RESULTS: list[dict] = []
 
 
+def _rel(p) -> str:
+    """把路径显示成相对仓库根的 POSIX 形式；**仓库外的路径原样显示**。
+
+    仓库内路径的输出与 `Path(p).relative_to(ROOT).as_posix()` 逐字相同；
+    仓库外路径（例如 `--json %TEMP%\\x.json`）以前会让 relative_to 抛 ValueError、
+    把整轮自检拖崩（即使所有检查都 PASS 也会以退出码 1 结束），这里退化为原样显示。
+    """
+    p = Path(p)
+    try:
+        return p.relative_to(ROOT).as_posix()
+    except ValueError:
+        return p.as_posix()
+
+
 def record(cid: str, title: str, ok: bool, detail: str, fix: str = "") -> bool:
     RESULTS.append({"id": cid, "title": title,
                     "status": "PASS" if ok else "FAIL",
@@ -46,7 +60,7 @@ def check(cid: str, title: str, fix: str = ""):
 def _read_list(path: Path) -> list[str]:
     """划分文件一行一个图片名；用 rsplit(None,1) 兼容空格/tab 两种分隔与含空格路径。"""
     if not path.exists():
-        raise FileNotFoundError(f"缺少 {path.relative_to(ROOT)}")
+        raise FileNotFoundError(f"缺少 {_rel(path)}")
     out = []
     for line in path.read_text(encoding="utf-8").splitlines():
         line = line.strip()
@@ -683,7 +697,7 @@ def main() -> int:
         "summary": {"total": len(RESULTS), "pass": n_pass, "fail": len(RESULTS) - n_pass},
         "checks": RESULTS,
     }, ensure_ascii=False, indent=2), encoding="utf-8")
-    print(f"报告已写入 {out.relative_to(ROOT).as_posix()}")
+    print(f"报告已写入 {_rel(out)}")
 
     failed = len(RESULTS) - n_pass
     return 1 if (failed and a.strict) else 0

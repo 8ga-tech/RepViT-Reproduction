@@ -9,9 +9,22 @@ RepViT（*Revisiting Mobile CNN From ViT Perspective*, CVPR 2024, [arXiv:2307.09
 
 > **一句话结论**：RepViT-M0.9 是一个**纯卷积**网络（无自注意力）。它在 ImageNet-1K
 > 指定子集上 Top-1 = **78.20%**（官方权重实测，官方公布 78.7%）；迁移到 Pet 37 类后
-> test Top-1 = **92.34%**、Macro-F1 = **92.22%**；结构重参数化前后 logits
-> `max|Δ| = 7.09e-06`；六个 ONNX 模型在 ONNX Runtime CPU 上批量 1 / FP32 /
-> 224×224 的推理延迟为 **7.1 ~ 32.7 ms**，PyTorch↔ONNX Top-1 一致率 **100%**。
+> test Top-1 = **92.34%**、Macro-F1 = **92.22%**。
+>
+> **两项 logits 误差实验分开报告**（实验对象、输入批次与代码路径都不同，不能并列成
+> 一句结论，也不能互相替代）：
+>
+> - **结构重参数化**（Pet-37 baseline，32 个固定随机输入，seed=20240912）：融合前后
+>   PyTorch logits `max|Δ| = 7.093e-06`、`mean|Δ| = 2.031e-06`，Top-1 32/32 一致，
+>   BN 模块 107 → 0；落盘 `outputs/reparam/repvit_m0_9_pet37_reparam_report.json`。
+> - **PyTorch↔ONNX 一致性**（Pet-37，`datasets/lists/pet_test.txt` 按顺序前 12 张真实图片，
+>   n=12）：`max|Δlogits| = 6.199e-06`、`mean|Δlogits| = 1.501e-06`，Top-1 与 Top-5
+>   集合一致率均 100%；落盘 `outputs/metrics/consistency_repvit_m0_9_pet37.json`。
+>
+> 六个 ONNX 模型在 ONNX Runtime CPU 上批量 1 / FP32 / 224×224 的 P50 延迟为
+> **7.1 ~ 32.7 ms**。其中**只有 Pet-37 / ImageNet M0.9 / ImageNet M1.0 三个型号**
+> 各自做过 n=12 的一致性验证（见第 11 节与 `report/LOGITS_AUDIT.md`），**其余型号只有
+> 导出与性能结果，不做同口径一致性声明**。
 
 ---
 
@@ -271,15 +284,18 @@ python tools/plot_predictions.py --images "external/*.JPEG" \
   --num 5 --cols 5 --out outputs/predictions/external_top5_pet37_grid5.png
 ```
 
-**关键结论**：test 集 284 个错误里只有 **9 个（3.17%）是跨物种**（猫↔狗），
-其余 275 个都是**同物种内的品种混淆**——说明模型没有把猫认成狗，只是在细粒度品种上分不清。
+**关键结论**：test 集 281 个错误里只有 **10 个（3.56%）是跨物种**（猫↔狗），
+其余 271 个都是**同物种内的品种混淆**——说明模型没有把猫认成狗，只是在细粒度品种上分不清。
+（落盘：`outputs/confusion_matrix/baseline_cat_dog_block.json` → `n_error = 281`、
+`n_cross_species_error = 10`、`n_within_species_error = 271`、`cross_species_error_ratio = 0.03558718861209965`。）
 
 ## 9. 如何执行结构重参数化
 
 ```bash
-# 验证自行训练的 Pet 37 类模型
+# 验证自行训练的 Pet 37 类模型（32 个固定随机输入，seed=20240912，batch=8）
 python tools/reparam_verify.py --model repvit_m0_9_pet37 \
-    --weights checkpoints/baseline_best.pt --out-dir outputs/reparam
+    --weights checkpoints/baseline_best.pt --num-samples 32 --batch-size 8 \
+    --seed 20240912 --out-dir outputs/reparam
 
 # 官方 ImageNet 模型
 python tools/reparam_verify.py --model repvit_m0_9 \
@@ -331,29 +347,50 @@ python deploy/model_registry.py
 python deploy/infer_onnx.py --model repvit_m0_9_pet37 --image external/beagle__*.JPEG
 
 # PyTorch vs ONNX 一致性（5 项指标 + 判定）
-python deploy/compare_torch_onnx.py --model repvit_m0_9_pet37 --limit 12 \
-    --out outputs/metrics/consistency_repvit_m0_9_pet37.json
+# 复核请写进 outputs/verification/，避免覆盖已提交的正式产物
+python deploy/compare_torch_onnx.py --model repvit_m0_9_pet37 \
+    --images datasets/lists/pet_test.txt --limit 12 \
+    --out outputs/verification/consistency_repvit_m0_9_pet37_n12.json
 ```
 
 `deploy/infer_onnx.py` 的预处理 / softmax / Top-K **全部独立实现**（PIL 手写
 resize+crop，不 import torchvision），与训练侧共用同一份 transform 会让一致性
 对比恒等于 0 而掩盖预处理 bug，因此两者必须互相独立。
 
-**实测一致性（同一落盘实验，n=12）**：`max|Δlogits| = 6.198883e-06`（展示为 **6.199e-06**）、`mean|Δlogits| = 1.500690e-06`，
-**Top-1 一致率 100.00%**、Top-5 集合一致率 100.00%。结果来自 `outputs/metrics/consistency_repvit_m0_9_pet37.json`；早期 README 的 5.25e-06 没有找到配套完整产物，保留为旧引用，不能与本结果混写。
+**实测一致性（同一落盘实验，n=12）**：Pet-37 baseline 与
+`onnx/repvit_m0_9_pet37.onnx`，按 `datasets/lists/pet_test.txt` 顺序取前 12 张
+**真实图片**，每张独立预处理一次后把同一张量送入两端，CPU FP32、batch=1、224×224。
+`max|Δlogits| = 6.198883056640625e-06`（展示 **6.199e-06**）、
+`mean|Δlogits| = 1.5006899711048998e-06`（展示 **1.501e-06**），
+**Top-1 一致率 100.00%**、Top-5 集合一致率 100.00%，落盘
+`outputs/metrics/consistency_repvit_m0_9_pet37.json`（复跑副本
+`outputs/verification/consistency_repvit_m0_9_pet37_n12.json`）。
+
+**关于 5.25e-06 旧引用**：README 早期出现的 `5.25e-06` / `1.41e-06`（以及旧 `PPT_CONTENT.md` 的 `5.245e-06` / `1.414e-06`）在仓库的任何提交里都没有配套产物：旧 README 的复跑命令写的是 `--limit 8`，但同一提交（`81693dd`）里落盘的 JSON 已经是 `n=12` 的 `6.199e-06`，因此**既不能证明它来自 n=8，也不能当作 n=12 的结果**；用当前权重跑 `--limit 8` 得到 `max=6.198883056640625e-06`、`mean=1.4658262017519519e-06`，同样无法复现旧值。旧值只作为修订记录保留，不再作为实验结论。
 
 ## 11.1 误差口径说明
 
-- **重参数化 logits 误差**：训练态与融合态 PyTorch 模型在同一批 32 张输入上的差异，落盘于 `outputs/reparam/repvit_m0_9_pet37_reparam_report.json`，属于 BN/卷积分支融合验证。
-- **PyTorch↔ONNX logits 误差**：融合后的 PyTorch 与独立预处理的 ONNX Runtime 输出比较，落盘于 `outputs/metrics/consistency_repvit_m0_9_pet37.json`，本次固定 `n=12`。
-- 两者实验对象、输入批次和代码路径不同；答辩中分别报告，避免把 5.25e-06（旧引用，样本数未核实）与 6.199e-06（当前 n=12）当成同一结果。
+- **重参数化 logits 误差**：Pet-37 baseline，timm 单头、`distillation=False`，32 个**固定随机输入**（`torch.randn`，seed=20240912）、batch=8、224×224、CPU FP32；`eval()` 后深拷贝再 `fuse()`，比较融合前后的 PyTorch logits。`max|Δ| = 7.092952728271484e-06`（展示 **7.093e-06**）、`mean|Δ| = 2.030726818702533e-06`（展示 **2.031e-06**）、Top-1 32/32 一致、BN 模块 107 → 0，落盘于 `outputs/reparam/repvit_m0_9_pet37_reparam_report.json`。
+- **PyTorch↔ONNX logits 误差**：Pet-37 baseline 融合态与 `onnx/repvit_m0_9_pet37.onnx`，`datasets/lists/pet_test.txt` 前 12 张真实图片（n=12），每张独立预处理一次后同一张量送入两端，CPU FP32、batch=1、224×224。`max|Δlogits| = 6.198883056640625e-06`（展示 **6.199e-06**）、`mean|Δlogits| = 1.5006899711048998e-06`（展示 **1.501e-06**）、Top-1 与 Top-5 集合一致率均 100%，落盘于 `outputs/metrics/consistency_repvit_m0_9_pet37.json`。
+- 两者实验对象（融合前后 PyTorch ↔ PyTorch 与 ONNX）、输入批次（32 个随机张量 ↔ 12 张真实图片）和代码路径都不同，必须分开报告，数值不可互相替代。旧引用 `5.25e-06` / `1.41e-06` 的处置见上一条。
+- 三个型号各有一份同口径（n=12 真实图片）的落盘产物：`outputs/metrics/consistency_repvit_m0_9_pet37.json`（6.199e-06 / 1.501e-06）、`outputs/metrics/consistency_repvit_m0_9_in1k.json`（1.717e-05 / 2.360e-06）、`outputs/metrics/consistency_repvit_m1_0_in1k.json`（1.812e-05 / 2.464e-06）；其余型号不参与该口径。
 
-复跑命令：
+复跑命令（写入 `outputs/verification/`，不覆盖正式产物）：
 
 ```bash
-python tools/reparam_verify.py --model repvit_m0_9_pet37 --weights checkpoints/baseline_best.pt --out-dir outputs/reparam
-python deploy/compare_torch_onnx.py --model repvit_m0_9_pet37 --limit 12 --out outputs/metrics/consistency_repvit_m0_9_pet37.json
-python tools/audit_logits_references.py  # 扫描 README/报告/PPT/PDF/代码中的误差引用
+# 结构重参数化（B4）：32 个固定随机输入 seed=20240912，batch=8
+python tools/reparam_verify.py --model repvit_m0_9_pet37 \
+    --weights checkpoints/baseline_best.pt --num-samples 32 --batch-size 8 \
+    --seed 20240912 --skip-onnx --out-dir outputs/verification/reparam_pet37
+
+# PyTorch↔ONNX（B1）：pet_test.txt 按顺序前 12 张真实图片
+python deploy/compare_torch_onnx.py --model repvit_m0_9_pet37 \
+    --images datasets/lists/pet_test.txt --limit 12 \
+    --out outputs/verification/consistency_repvit_m0_9_pet37_n12.json
+
+# 按 experiment bucket 检索全仓误差引用（不要用 grep 数字：outputs/logs 里的
+# 学习率与误差值同形，会误命中）
+python tools/audit_logits_references.py
 ```
 
 ## 12. 如何完成性能测试
@@ -374,19 +411,41 @@ CPU = 13th Gen Intel Core i7-13650HX，OS = Windows 11 10.0.26200）：
 
 | 模型 | mean (ms) | P50 (ms) | P95 (ms) | 文件大小 |
 |---|---|---|---|---|
-| `repvit_m0_9_in1k` | 12.74 | 13.60 | 16.66 | 20.36 MB |
-| `repvit_m1_0_in1k` | 17.49 | 17.18 | 20.82 | 27.33 MB |
-| `repvit_m0_9_pet37` | 12.74 | 12.48 | 16.00 | 18.89 MB |
+| `repvit_m0_9_in1k` | 7.45 | 7.37 | 8.00 | 20.36 MB |
+| `repvit_m1_0_in1k` | 9.20 | 9.15 | 9.76 | 27.33 MB |
+| `repvit_m0_9_pet37` | 7.20 | 7.12 | 7.69 | 18.89 MB |
 
-> M0.9 与 M1.0 参数量相差 37%，但延迟只差约 37%——**延迟并不与 MACs 严格成正比**：
+> 上表取自**逐型号落盘**的 `outputs/benchmarks/repvit_*_benchmark.json` 与
+> `outputs/benchmarks/summary.csv`（同一批 6 型号基准，另见报告第 14.2 节）。
+> `outputs/metrics/bench.jsonl` 里还留有**更早一次**同协议 3 型号基准
+> （P50 13.60 / 17.18 / 12.48 ms，对应 mean 12.74 / 17.49 / 12.74 ms）；
+> 两次运行的差异未逐项定位，**引用时必须写明是哪一次，不要把两批数字混用**
+> （`tools/selfcheck.py` 的 `bench.meta` 只校验协议字段，不区分批次）。
+>
+> M0.9 与 M1.0 的参数量相差 33.0%、MACs 相差 35.2%（`outputs/benchmarks/family_summary.csv`），
+> 但 P50 延迟只增加 24.2%（7.37 → 9.15 ms）——**延迟并不与参数量/MACs 严格成正比**：
 > 小模型受内存带宽与算子启动开销支配，depthwise 卷积的算术强度低，GPU/CPU 都吃不满。
 
 ## 13. 一键复现与耗时
 
 ```bash
 bash tools/run_all.sh          # 全流程：数据 -> 模型 -> 训练 -> 优化 -> 可视化 -> 重参数化 -> ONNX -> 基准
-python tools/selfcheck.py      # 全局自检（DoD 逐条）
+
+# 全局自检（DoD 逐条，34 项）；报告落盘 outputs/metrics/selfcheck_report.json
+python tools/selfcheck.py
+
+# 跑单项/子集时：必须把 --json 指到临时路径 —— 任何不带 --json 的调用都会写权威路径，
+# 包括 --only 与 --stage 这类子集调用，子集结果会把全量报告冲成几项
+python tools/selfcheck.py --only rep.verify --json %TEMP%\selfcheck_single.json
+python tools/selfcheck.py --stage skeleton --json %TEMP%\selfcheck_stage.json
 ```
+
+> **看汇总行，不要只看退出码**：`FAIL > 0` 时退出码**仍是 0**（只有加 `--strict` 才用退出码表达失败）。
+> 判读方式：控制台最后一行「合计 N 项：PASS x / FAIL y」，或报告 JSON 的 `summary` 字段。
+>
+> **报告被误覆盖时怎么恢复**：用 `python tools/selfcheck.py --json outputs/metrics/selfcheck_report.json`
+> 显式重跑恢复，**不要用 `git checkout --`** —— HEAD 里存的可能不是全量版
+> （09-16 期间它就是早上那份 3 项旧版，checkout 会把全量报告直接打回去）。
 
 **硬件要求与预计耗时**（本机实测：RTX 4060 Laptop 8GB + i7-13650HX + 15.8 GB RAM）：
 

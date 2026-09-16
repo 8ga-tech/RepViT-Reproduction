@@ -2,8 +2,8 @@
   <rect id="bg-canvas" data-pptx-role="background" x="0" y="0" width="1280" height="720" fill="#0B1220"/>
 
   <g id="page-header" data-pptx-bounds="72 44 1136 100">
-    <text x="72" y="82" font-family="Microsoft YaHei" font-size="34" font-weight="bold" fill="#E6EDF7">6 个 ONNX 模型，PyTorch↔ONNX Top-1 一致率 100%</text>
-    <text x="72" y="118" font-family="Microsoft YaHei" font-size="16" fill="#93A4C0">文件名一律经 deploy/model_registry.py 的 onnx_path(key) 取得，任何地方不硬写</text>
+    <text x="72" y="82" font-family="Microsoft YaHei" font-size="34" font-weight="bold" fill="#E6EDF7">6 个 ONNX 模型；一致性只测了 3 个型号各 12 张</text>
+    <text x="72" y="118" font-family="Microsoft YaHei" font-size="16" fill="#93A4C0">文件名一律经 deploy/model_registry.py 的 onnx_path(key) 取得，任何地方不硬写；其余型号只有导出检查与性能结果</text>
     <line x1="72" y1="136" x2="1208" y2="136" stroke="#1E3050" stroke-width="2"/>
   </g>
 
@@ -63,7 +63,7 @@
     <text x="928" y="302" font-family="Microsoft YaHei" font-size="15" fill="#93A4C0">不 import torchvision</text>
     <line x1="928" y1="322" x2="1184" y2="322" stroke="#1E3050" stroke-width="1"/>
     <text x="928" y="352" font-family="Microsoft YaHei" font-size="14" fill="#FFC857">为什么必须独立</text>
-    <text x="928" y="378" font-family="Microsoft YaHei" font-size="13" fill="#93A4C0">共用一份 transform 会让一致性<tspan x="928" dy="20">误差恒为 0，反而掩盖预处理</tspan><tspan x="928" dy="20">bug</tspan></text>
+    <text x="928" y="378" font-family="Microsoft YaHei" font-size="13" fill="#93A4C0">共用一份 transform，两<tspan x="928" dy="20">端口径完全一样，误差会一直</tspan><tspan x="928" dy="20">是 0，反而看不出预处理写错</tspan></text>
   </g>
 
   <g id="consistency" data-pptx-bounds="72 434 800 218">
@@ -87,7 +87,7 @@
       <text x="100" y="618" font-family="Microsoft YaHei" font-size="15" fill="#93A4C0">Top-5 集合一致率</text>
       <text x="450" y="618" font-family="Consolas" font-size="16" fill="#3FDB9B" text-anchor="end">100.00%</text>
     </g>
-    <text x="500" y="522" font-family="Microsoft YaHei" font-size="14" fill="#93A4C0">3 个模型全部 PASS，没有<tspan x="500" dy="24">出现题目列出的九类典型</tspan><tspan x="500" dy="24">问题（Resize 顺序 / RGB-</tspan><tspan x="500" dy="24">BGR / 插值 / mean-std /</tspan><tspan x="500" dy="24">eval 模式）</tspan></text>
+    <text x="500" y="522" font-family="Microsoft YaHei" font-size="14" fill="#93A4C0">3 个模型各 12 张全部 PASS；<tspan x="500" dy="24">这 12 张图上未观察到九类</tspan><tspan x="500" dy="24">典型问题的表现，不等于已</tspan><tspan x="500" dy="24">排除九类问题</tspan><tspan x="500" dy="24">（只覆盖已测输入）</tspan></text>
   </g>
 
   <g id="label-discipline" data-pptx-bounds="904 434 304 218">

@@ -12,7 +12,7 @@
     <text x="98" y="202" font-family="Microsoft YaHei" font-size="18" font-weight="bold" fill="#35D0F0">B 混合增强</text>
     <text x="556" y="202" font-family="Consolas" font-size="14" fill="#5C7096" text-anchor="end">3 个差异键</text>
     <text x="98" y="234" font-family="Microsoft YaHei" font-size="15" fill="#93A4C0">Mixup α=0.2 + CutMix α=1.0，每个 batch 都做</text>
-    <text x="98" y="262" font-family="Microsoft YaHei" font-size="15" fill="#93A4C0">假设：软标签平滑决策面，等价于训练集扩容</text>
+    <text x="98" y="262" font-family="Microsoft YaHei" font-size="15" fill="#93A4C0">假设：混合两张图片与标签，尝试减少对训练样本的记忆</text>
     <text x="98" y="288" font-family="Microsoft YaHei" font-size="14" fill="#FFC857">代价：需要更多 epoch 才能收敛</text>
   </g>
 
@@ -21,7 +21,7 @@
     <text x="672" y="202" font-family="Microsoft YaHei" font-size="18" font-weight="bold" fill="#35D0F0">C 加强数据增强</text>
     <text x="1182" y="202" font-family="Consolas" font-size="14" fill="#5C7096" text-anchor="end">8 个差异键</text>
     <text x="672" y="234" font-family="Microsoft YaHei" font-size="15" fill="#93A4C0">RandAugment(n=2, m=9) + RRC scale 下限 0.35→0.25</text>
-    <text x="672" y="262" font-family="Microsoft YaHei" font-size="15" fill="#93A4C0">假设：覆盖旋转 / 剪切 / 色调变换，压缩纹理记忆</text>
+    <text x="672" y="262" font-family="Microsoft YaHei" font-size="15" fill="#93A4C0">假设：覆盖旋转 / 剪切 / 色调变换，减少对局部纹理的依赖</text>
     <text x="672" y="288" font-family="Microsoft YaHei" font-size="14" fill="#FFC857">风险：2940 张下容易过增强</text>
   </g>
 
@@ -30,7 +30,7 @@
     <text x="98" y="348" font-family="Microsoft YaHei" font-size="18" font-weight="bold" fill="#35D0F0">D 差异化学习率</text>
     <text x="556" y="348" font-family="Consolas" font-size="14" fill="#5C7096" text-anchor="end">1 个差异键</text>
     <text x="98" y="380" font-family="Microsoft YaHei" font-size="15" fill="#93A4C0">主干倍率 0.1 → 0.05（有效 lr 1e-4 → 5e-5）</text>
-    <text x="98" y="408" font-family="Microsoft YaHei" font-size="15" fill="#93A4C0">假设：新头快速收敛，主干锚定在预训练解附近</text>
+    <text x="98" y="408" font-family="Microsoft YaHei" font-size="15" fill="#93A4C0">假设：新头快速收敛，让主干更新幅度更小</text>
     <text x="98" y="434" font-family="Microsoft YaHei" font-size="14" fill="#FFC857">代价：训练曲线整体右移</text>
   </g>
 

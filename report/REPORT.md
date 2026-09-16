@@ -639,8 +639,8 @@ staffordshire_bull_terrier）中，热力图**同时点亮了两类共有的特�
 | great_pyrenees | Great Pyrenees ✓ | 86.95% |
 | pomeranian | Pomeranian ✓ | 36.91% |
 
-**8/8 全部判断正确**，说明模型学到的判别特征**没有过拟合到数据集特有的
-拍摄风格**（背景、构图、光照），具备跨集合的泛化能力。
+**8/8 判对只是小样本观察，不能证明跨域泛化或没有过拟合**；
+本节的观察只覆盖这 8 张已测跨集合图片，不构成对全部外部图片的性能声明。
 
 > **来源声明**：`external/` 下的图片来自 ImageNet-1K 验证集中与 Pet 同品种的样本
 > （跨集合真实照片）。执行时 `commons.wikimedia.org` 与 `upload.wikimedia.org`
@@ -703,8 +703,8 @@ b_fused = b_3x3' + b_1x1' + b_identity
 ### 12.3 为什么转换前后结果应基本一致
 
 因为上述变换是**代数恒等**的：融合前是「两个卷积 + 两个 BN + 一个 Add」，
-融合后是「一个卷积」，在实数域上对任意输入产生**完全相同的输出**。
-实测差异只来自浮点舍入。
+融合后是「一个卷积」，在实数域上对同一输入产生**相同的输出**——这是代数推导，
+**不是位级实测结论**；浮点实现下的实际差异见 12.4 的实测值。
 
 **为什么必须在 `eval()` 模式下验证**：训练态下 BN 使用**当前 batch** 的均值/方差，
 而融合时吸收的是 `running_mean` / `running_var`（训练期间累积的滑动统计量）。
@@ -713,8 +713,11 @@ b_fused = b_3x3' + b_1x1' + b_identity
 ### 12.4 实测数值对照
 
 ```bash
+# 口径：Pet-37 baseline（timm 单头，distillation=False），32 个固定随机输入
+# （torch.randn，seed=20240912），batch=8，224×224，CPU FP32，eval 后深拷贝再 fuse
 python tools/reparam_verify.py --model repvit_m0_9_pet37 \
-    --weights checkpoints/baseline_best.pt --out-dir outputs/reparam
+    --weights checkpoints/baseline_best.pt \
+    --num-samples 32 --batch-size 8 --seed 20240912 --out-dir outputs/reparam
 ```
 
 | 指标 | Pet-37 模型 | M0.9 官方 C=1000 |
@@ -727,8 +730,13 @@ python tools/reparam_verify.py --model repvit_m0_9_pet37 \
 | 参数量 | 4,732,805 → 4,696,301（净减 **36,504**） | N/A |
 | ONNX 节点 | BatchNormalization **0**、Conv **103**（未融合 126，少 23） | N/A |
 
-> 这里是重参数化实验：同一批 32 张输入，比较训练态与融合态 PyTorch logits。
-> 它与下一节的 PyTorch↔ONNX 一致性实验不是同一批输入，也不是同一条代码路径。
+> 这里是**重参数化实验**：Pet-37 baseline 的 32 个固定随机输入（`torch.randn`，
+> 不是真实测试图片），比较训练态与融合态 PyTorch logits。落盘产物是
+> `outputs/reparam/repvit_m0_9_pet37_reparam_report.json`。
+> 它与下一节的 PyTorch↔ONNX 一致性实验不是同一批输入，也不是同一条代码路径，
+> **两处数值不可并列成一句结论，也不能互相替代**。
+> 复跑（写入验证目录，不覆盖正式产物）：
+> `python tools/reparam_verify.py --model repvit_m0_9_pet37 --weights checkpoints/baseline_best.pt --num-samples 32 --batch-size 8 --seed 20240912 --skip-onnx --out-dir outputs/verification/reparam_pet37`
 
 > **重参数化是否减少理论参数量**：会，但减少的是**推理态**的参数量。
 > M0.9 从「未融合双头 C=1000」的 5,489,328 降到「融合后单头 C=1000」的 5,067,056，
@@ -793,20 +801,40 @@ python tools/reparam_verify.py --model repvit_m0_9_pet37 \
 
 ### 13.3 PyTorch 与 ONNX 一致性
 
-固定 `datasets/lists/pet_test.txt` 的前 12 张真实图片（`n=12`）。README 早期出现的
-`5.25e-06` 属于旧的 n=8 对照记录，不能与本次落盘结果合并引用。
+**口径**：Pet-37 baseline（融合态）与 `onnx/repvit_m0_9_pet37.onnx`；按
+`datasets/lists/pet_test.txt` 的顺序取前 12 张**真实图片**（`n=12`），每张图片独立
+预处理一次后把**同一张量**送入两端（隔离预处理变量，只测模型/后端差异）；CPU FP32、
+batch=1、224×224。落盘产物 `outputs/metrics/consistency_repvit_m0_9_pet37.json`，
+复跑副本 `outputs/verification/consistency_repvit_m0_9_pet37_n12.json`。
+
+**关于 5.25e-06 旧引用**：README 早期出现的 `5.25e-06` / `1.41e-06`（以及旧 `PPT_CONTENT.md` 的 `5.245e-06` / `1.414e-06`）在仓库的任何提交里都没有配套产物：旧 README 的复跑命令写的是 `--limit 8`，但同一提交（`81693dd`）里落盘的 JSON 已经是 `n=12` 的 `6.199e-06`，因此**既不能证明它来自 n=8，也不能当作 n=12 的结果**；用当前权重跑 `--limit 8` 得到 `max=6.198883056640625e-06`、`mean=1.4658262017519519e-06`，同样无法复现旧值。旧值只作为修订记录保留，不再作为实验结论。
 
 | 指标 | `repvit_m0_9_pet37` |
 |---|---|
-| 最大 logits 绝对误差 | **6.199e-06** |
-| 平均 logits 绝对误差 | 1.501e-06 |
+| 最大 logits 绝对误差 | **6.199e-06**（落盘 `6.198883056640625e-06`） |
+| 平均 logits 绝对误差 | 1.501e-06（落盘 `1.5006899711048998e-06`） |
 | Top-1 类别是否一致 | **是（100.00%）** |
 | Top-5 集合是否基本一致 | **是（100.00%）** |
 | 固定测试集 Top-1 一致率 | **1.000（≥ 0.99 ✓）** |
+| 最大误差判定阈值 | 1e-3（`6.199e-06 < 1e-3` ✓） |
 
-> 一致率为 100%，说明**没有**出现题目列出的九类典型问题
-> （Resize/CenterCrop 顺序、RGB/BGR 通道、插值方式、mean/std、Softmax 维度、
-> eval 模式、BN 状态、导出方式、数值精度）。
+复跑命令（写入验证目录，不覆盖正式产物）：
+
+```bash
+python deploy/compare_torch_onnx.py --model repvit_m0_9_pet37 \
+    --images datasets/lists/pet_test.txt --limit 12 \
+    --out outputs/verification/consistency_repvit_m0_9_pet37_n12.json
+```
+
+> **这 12 张图**上 Top-1 与 Top-5 集合均一致，**未观察到**题目列出的九类典型问题的
+> 表现（Resize/CenterCrop 顺序、RGB/BGR 通道、插值方式、mean/std、Softmax 维度、
+> eval 模式、BN 状态、导出方式、数值精度）；该结论只覆盖已测输入，
+> **不等于「已排除九类问题」**。
+>
+> **范围限定**：仓库里同口径（n=12 真实图片）的落盘产物只有三份——
+> Pet-37 `6.199e-06`、ImageNet M0.9 `1.717e-05`、ImageNet M1.0 `1.812e-05`
+> （见 `report/LOGITS_AUDIT.md`）。其余型号只有导出与性能结果，
+> **不做同口径一致性声明，也不能写成「六个 ONNX 模型一致率 100%」**。
 
 ### 13.4 结构重参数化在部署侧的体现
 
@@ -958,14 +986,22 @@ ImageNet 验证子集用官方 val 集做分层抽样（每类 1 张，种子固
 
 1. **RepViT 确实是纯卷积网络**，且在移动端尺寸下兼顾了精度与延迟：
    M0.9 在 1000 张自建 ImageNet 子集上 Top-1 = **78.20%**，与官方公布的 78.7% 仅差 0.5 个点。
-2. **迁移到 Pet 37 类效果良好**：test Top-1 = **92.26%**、Macro-F1 = **92.14%**，
-   且模型几乎不混淆猫狗（跨物种错误仅占 **3.17%**），全部错误集中在细粒度品种之间。
-3. **结构重参数化在数值上完全等价**（`max|Δ| = 7.09e-06`，Top-1 32/32 一致），
-   并把推理态 ONNX 图的 BatchNormalization 节点从 24 降到 **0**，Conv 从 126 降到 **103**。
-4. **部署闭环完整**：三个 ONNX 模型的 PyTorch-ONNX Top-1 一致率达 **100%**，
-   在 ONNX Runtime CPU 上 P50 延迟 **12.5 ~ 17.2 ms**。
-5. **跨集合泛化能力经检验**：在 8 张 ImageNet 实拍图上品种判断 **8/8 全对**，
-   说明模型没有过拟合到 Pet 的拍摄风格。
+2. **迁移到 Pet 37 类效果良好**：test Top-1 = **92.34%**、Macro-F1 = **92.22%**
+   （唯一落盘 `outputs/metrics/baseline_test.json`：`top1 = 0.9234123739438539`、
+   `macro_f1 = 0.9221970249315374`、`num_samples = 3669`、`eval_count = 1`），
+   且模型几乎不混淆猫狗（跨物种错误仅占 **3.56%**，10 / 281），全部错误集中在细粒度品种之间。
+3. **结构重参数化：分支合并是代数等价的替换，实测误差小于阈值**——
+   Pet-37 baseline 的 32 个固定随机输入（`torch.randn`，seed=20240912）上
+   `max|Δlogits| = 7.093e-06`（阈值 1e-4）、Top-1 **32/32** 一致，
+   推理态 ONNX 图的 BatchNormalization 节点从 24 降到 **0**，Conv 从 126 降到 **103**。
+   该结论只覆盖已测输入与设定阈值，**不是位级完全相等**。
+4. **部署闭环完整**：Pet-37 / ImageNet M0.9 / ImageNet M1.0 三个交付 ONNX 模型各
+   n=12 的 PyTorch-ONNX Top-1 与 Top-5 集合一致率均为 **100%**（落盘
+   `outputs/metrics/consistency_*.json`）；其余型号只有导出与性能结果，不做同口径
+   一致性声明。三个交付模型在 ONNX Runtime CPU 上的 P50 延迟为 **7.1 ~ 9.2 ms**
+   （家族六个型号的 P50 范围是 **7.1 ~ 32.7 ms**，见 14.2 节）。
+5. **跨集合泛化：8/8 判对只是小样本观察，不能证明跨域泛化或没有过拟合**
+   （口径：8 张 ImageNet 跨集合实拍图，逐张登记来源与许可）。
 6. **四项优化方法均未带来超出噪声的增益**（test Top-1 全部落在 91.93~92.53 的
    0.6 个点窄带内，小于二项分布 95% 置信区间半宽 ±0.9 个点）。
    组合消融显示 A 与 B 存在**超加性交互**（+0.54）：A 抵消了 B 单独使用时的负作用。
@@ -973,9 +1009,29 @@ ImageNet 验证子集用官方 val 集做分层抽样（每类 1 张，种子固
 ### 16.2 工程与实验的可复现性
 
 - 全部数字都可在 `outputs/` 中溯源（每个 JSON 带 `command` / `timestamp` / `platform` 元字段）；
-- 37 条 DoD 验收项由 `tools/selfcheck.py` 逐条自检；
-- 无任何写死的个人绝对路径（`selfcheck --stage skeleton` 的 `paths` 检查：**0 处**）；
+- 34 条 DoD 验收项由 `tools/selfcheck.py` 逐条自检（实测 34 个 `@check`，
+  报告见 `outputs/metrics/selfcheck_report.json`：`summary = {total: 34, pass: 34, fail: 0}`）；
+- 无任何写死的个人绝对路径（`selfcheck --stage skeleton` 的 `paths` 检查：**0 处**）：
+  三个一致性 JSON 的 `onnx_path` / `images` 元信息字段已规范为仓库相对路径，
+  写盘代码见 `deploy/compare_torch_onnx.py` 的 `repo_rel()`；
 - 控制变量由 `tools/diff_config.py` 强制校验，预算等价由 `tools/same_budget.py` 校验。
+
+两项 logits 误差实验的复跑命令（写入 `outputs/verification/`，不覆盖正式产物）：
+
+```bash
+# 重参数化（12.4 节）：Pet-37 baseline，32 个固定随机输入 seed=20240912
+python tools/reparam_verify.py --model repvit_m0_9_pet37 \
+    --weights checkpoints/baseline_best.pt --num-samples 32 --batch-size 8 \
+    --seed 20240912 --skip-onnx --out-dir outputs/verification/reparam_pet37
+
+# PyTorch↔ONNX（13.3 节）：pet_test.txt 按顺序前 12 张真实图片
+python deploy/compare_torch_onnx.py --model repvit_m0_9_pet37 \
+    --images datasets/lists/pet_test.txt --limit 12 \
+    --out outputs/verification/consistency_repvit_m0_9_pet37_n12.json
+
+# 按 experiment bucket 检索全仓误差引用（不要用 grep 数字，见 report/LOGITS_AUDIT.md）
+python tools/audit_logits_references.py
+```
 
 ### 16.3 后续计划
 

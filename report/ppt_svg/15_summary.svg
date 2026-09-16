@@ -8,7 +8,7 @@
 
   <g id="page-header" data-pptx-bounds="72 44 1136 100">
     <text x="72" y="82" font-family="Microsoft YaHei" font-size="34" font-weight="bold" fill="#E6EDF7">复现链路完整、数字可溯源、控制变量有工程化校验</text>
-    <text x="72" y="118" font-family="Microsoft YaHei" font-size="16" fill="#93A4C0">37 条验收项自检 0 失败；代码零写死绝对路径；每个数字都能回到 outputs/ 里的文件</text>
+    <text x="72" y="118" font-family="Microsoft YaHei" font-size="16" fill="#93A4C0">34 条验收项自检 0 失败；代码零写死绝对路径；关键数字与实验口径见 outputs/ 和审计说明</text>
     <line x1="72" y1="136" x2="1208" y2="136" stroke="#1E3050" stroke-width="2"/>
   </g>
 
@@ -20,7 +20,7 @@
     <g id="pb-1">
       <text x="100" y="252" font-family="Consolas" font-size="15" font-weight="bold" fill="#35D0F0">01</text>
       <text x="150" y="252" font-family="Microsoft YaHei" font-size="15" fill="#E6EDF7">官方 .pth 与 timm 键名交集为 0（713 vs 389）</text>
-      <text x="150" y="278" font-family="Microsoft YaHei" font-size="14" fill="#3FDB9B">实测证明两条路线权重逐位等价（max|Δlogits| = 0），省去手写键转换器</text>
+      <text x="150" y="278" font-family="Microsoft YaHei" font-size="14" fill="#3FDB9B">实测两条路线权重逐位相同（同进程同权重对比，max|Δlogits| = 0），省去手写键转换器</text>
     </g>
     <g id="pb-2">
       <text x="100" y="312" font-family="Consolas" font-size="15" font-weight="bold" fill="#35D0F0">02</text>
@@ -42,8 +42,8 @@
     <line x1="100" y1="538" x2="744" y2="538" stroke="#1E3050" stroke-width="1"/>
     <text x="100" y="570" font-family="Microsoft YaHei" font-size="15" fill="#93A4C0">① RepViT 确为纯卷积，M0.9 实测 78.20%，贴近官方 78.7%</text>
     <text x="100" y="596" font-family="Microsoft YaHei" font-size="15" fill="#93A4C0">② Pet-37 test Top-1 92.34%，跨物种错误仅 3.56%</text>
-    <text x="100" y="622" font-family="Microsoft YaHei" font-size="15" fill="#93A4C0">③ 重参数化数值等价、BN 归零；ONNX 一致率 100%</text>
-    <text x="100" y="648" font-family="Microsoft YaHei" font-size="15" fill="#FFC857">④ 四项优化均未超出噪声：这本身是有价值的负面结论</text>
+    <text x="100" y="622" font-family="Microsoft YaHei" font-size="15" fill="#93A4C0">③ 重参数化 32 个随机输入通过（max 7.093e-06）；ONNX 一致性测了 3 个型号各 12 张</text>
+    <text x="100" y="648" font-family="Microsoft YaHei" font-size="15" fill="#FFC857">④ 四项优化未显示稳定提升；需要多种子实验进一步判断</text>
   </g>
 
   <g id="next" data-pptx-bounds="804 488 404 172">

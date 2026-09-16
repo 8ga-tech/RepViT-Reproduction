@@ -2,7 +2,7 @@
   <rect id="bg-canvas" data-pptx-role="background" x="0" y="0" width="1280" height="720" fill="#0B1220"/>
 
   <g id="page-header" data-pptx-bounds="72 44 1136 100">
-    <text x="72" y="82" font-family="Microsoft YaHei" font-size="34" font-weight="bold" fill="#E6EDF7">官方权重实测复现到 0.5 个点以内</text>
+    <text x="72" y="82" font-family="Microsoft YaHei" font-size="34" font-weight="bold" fill="#E6EDF7">官方权重在自建子集上的实际表现</text>
     <text x="72" y="118" font-family="Microsoft YaHei" font-size="16" fill="#93A4C0">1000 张自建分层子集（每类 1 张，种子 20260912）· 224×224 · batch 64 · FP32 · RTX 4060 Laptop</text>
     <line x1="72" y1="136" x2="1208" y2="136" stroke="#1E3050" stroke-width="2"/>
   </g>
@@ -81,7 +81,7 @@
   </g>
 
   <g id="page-footer" data-pptx-bounds="72 664 1136 32">
-    <text x="72" y="684" font-family="Microsoft YaHei" font-size="13" fill="#5C7096">数据来源：outputs/pretrained_eval/&lt;model&gt;/metrics.json · summary.csv</text>
+    <text x="72" y="684" font-family="Microsoft YaHei" font-size="13" fill="#5C7096">数据来源：outputs/pretrained_eval/&lt;model&gt;/metrics.json · outputs/benchmarks/family_summary.csv（M1.1+ 的 MACs）· summary.csv</text>
     <text x="1208" y="684" font-family="Consolas" font-size="14" fill="#5C7096" text-anchor="end">05</text>
   </g>
 </svg>

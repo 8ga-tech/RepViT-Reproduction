@@ -75,7 +75,7 @@
       <text x="1080" y="494" font-family="Consolas" font-size="15" fill="#E6EDF7">pomeranian</text>
       <text x="1080" y="518" font-family="Consolas" font-size="16" font-weight="bold" fill="#3FDB9B">36.91%</text>
     </g>
-    <text x="100" y="552" font-family="Microsoft YaHei" font-size="14" fill="#FFC857">8/8 全部判断正确 —— 模型没有过拟合到 Pet 的拍摄风格</text>
+    <text x="100" y="552" font-family="Microsoft YaHei" font-size="14" fill="#FFC857">8/8 判对只是小样本观察，不能证明没有过拟合到 Pet 的拍摄风格</text>
   </g>
 
   <g id="dist-shift" data-pptx-bounds="72 586 1136 64">

@@ -1,0 +1,33 @@
+{
+  "generated_at": "2026-09-16T18:23:28",
+  "python": "3.14.5",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "summary": {
+    "total": 3,
+    "pass": 3,
+    "fail": 0
+  },
+  "checks": [
+    {
+      "id": "onnx.consistency",
+      "title": "PyTorch vs ONNX 一致率 >= 0.99",
+      "status": "PASS",
+      "detail": "['repvit_m0_9_in1k:1.0', 'repvit_m0_9_pet37:1.0', 'repvit_m1_0_in1k:1.0'] 全部 >=0.99，共 3 个模型",
+      "fix": ""
+    },
+    {
+      "id": "onnx.realimg",
+      "title": "一致性用真实图片计算",
+      "status": "PASS",
+      "detail": "数据来源={'pet_test', 'imagenet_val_subset'}（必须是固定划分列表，不能是 torch.randn）",
+      "fix": ""
+    },
+    {
+      "id": "rep.verify",
+      "title": "融合前后数值等价且 BN 归零",
+      "status": "PASS",
+      "detail": "BN 107->0 max|Δlogits|=7.092952728271484e-06 Top-1一致=1.0 权重完整=True 整体判定=True",
+      "fix": ""
+    }
+  ]
+}

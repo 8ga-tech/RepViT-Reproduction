@@ -1,8 +1,8 @@
 # PROGRESS — RepViT 复现任务
 
 - repo_root: .                              # 只写相对路径
-- last_update: 2026-09-13T17:40:00+08:00
-- current_module: M13 完成（已推送到 GitHub）
+- last_update: 2026-09-16（logits 误差口径统一与路径字段规范化）
+- current_module: M13 完成（已推送到 GitHub）；09-16 返修：口径统一 / 路径规范化 / 答辩材料同步
 - overall: 13/13 done, 0 blocked
 - env: python=3.14.5, torch=2.14.0+cu126, timm=1.0.29, onnxruntime=1.30.0, device=cuda(RTX 4060 Laptop 8GB)
 
@@ -22,7 +22,7 @@
 | M10 | ONNX 导出与基准 | done | 09-13 14:15 | 09-13 14:50 | onnx/*.onnx, outputs/benchmarks/ | PASS |
 | M11 | 进阶任务 | done | 09-13 16:45 | 09-13 17:05 | outputs/advanced/（家族/消融/深度重参数化/鲁棒性/可解释性） | PASS |
 | M12 | 报告与 PPT 素材 | done | 09-13 17:10 | 09-13 17:36 | outputs/report_assets/, report.pdf, 答辩PPT_RepViT.pptx/.pdf | PASS |
-| M13 | 全局验收 | done | 09-13 17:36 | 09-13 18:05 | outputs/metrics/selfcheck_report.json | **34/34 PASS** |
+| M13 | 全局验收 | done | 09-13 17:36 | 09-13 18:05 | outputs/metrics/selfcheck_report.json | **34/34 PASS**（09-16 重跑复核，见 §M13） |
 
 ## 关键数字（每个数字必须给出文件与命令）
 
@@ -46,8 +46,8 @@
 | baseline_test_macro_f1 | 0.922181 | 同上 | 同上 | 同上 |
 | pet_split_lines | 2940 / 740 / 3669 | per-class val = 20 | datasets/lists/pet_{train,val,test}.txt | `python datasets/make_pet_split.py --root data/oxford-iiit-pet --out-dir datasets/lists --val-per-class 20 --seed 42` |
 | leakage | 0 / 0 / 0 | train∩val / train∩test / val∩test | outputs/metrics/leakage_check.json | `python datasets/audit_leakage.py` |
-| reparam_max_abs_err_pet37 | 7.093e-06 | 融合前后 logits 最大绝对误差 | outputs/reparam/repvit_m0_9_pet37_reparam_report.json | `python tools/reparam_verify.py --model repvit_m0_9_pet37 --weights checkpoints/baseline_best.pt --out-dir outputs/reparam` |
-| reparam_top1_identical | True | 32/32 样本 Top-1 一致 | 同上 | 同上 |
+| reparam_max_abs_err_pet37 | 7.093e-06（落盘 7.092952728271484e-06） | 融合前后 PyTorch logits 最大绝对误差；32 个固定随机输入 seed=20240912、batch=8、CPU FP32 | outputs/reparam/repvit_m0_9_pet37_reparam_report.json | `python tools/reparam_verify.py --model repvit_m0_9_pet37 --weights checkpoints/baseline_best.pt --num-samples 32 --batch-size 8 --seed 20240912 --out-dir outputs/reparam` |
+| reparam_mean_abs_err_pet37 | 2.031e-06（落盘 2.030726818702533e-06） | 同上；Top-1 32/32 一致 | 同上 | 同上 |
 | reparam_onnx_nodes | BN=0, Conv=103 | 推理态 ONNX 节点（未融合 126 → 103） | outputs/reparam/repvit_m0_9_pet37_onnx_nodes.json | 同上 |
 | onnx_size_m0_9_in1k | 20.36 MB | os.path.getsize()/1e6 | outputs/benchmarks/summary.csv | `python deploy/export_onnx.py --model repvit_m0_9_in1k` |
 | onnx_size_m1_0_in1k | 27.33 MB | 同上 | 同上 | 同上 |
@@ -55,7 +55,9 @@
 | bench_m0_9_in1k | mean=7.45 p50=7.37 p95=8.00 ms | ORT CPU EP / FP32 / bs=1 / 224 / warmup10+50 / threads=4 | outputs/benchmarks/repvit_m0_9_in1k_benchmark.json | `python deploy/benchmark.py --model ... --warmup 10 --runs 50 --threads 4` |
 | bench_m1_0_in1k | mean=9.20 p50=9.15 p95=9.76 ms | 同上 | 同上 | 同上 |
 | bench_m0_9_pet37 | mean=7.20 p50=7.12 p95=7.69 ms | 同上 | 同上 | 同上 |
-| consistency_pet37 | n=12; max|Δ|=6.198883e-06（展示 6.199e-06）, mean|Δ|=1.500690e-06, Top-1 一致率=1.000 | PyTorch vs ONNX，固定划分列表 | outputs/metrics/consistency_repvit_m0_9_pet37.json | `python deploy/compare_torch_onnx.py --model repvit_m0_9_pet37 --limit 12 --out ...` |
+| consistency_pet37 | n=12 真实图片; max|Δ|=6.198883056640625e-06（展示 6.199e-06）, mean|Δ|=1.5006899711048998e-06（展示 1.501e-06）, Top-1 与 Top-5 集合一致率均 1.000 | PyTorch↔ONNX，Pet-37，pet_test.txt 按顺序前 12 张；每张独立预处理一次后同一张量送两端，CPU FP32 / batch=1 / 224×224（**与重参数化实验分开，不可并列**） | outputs/metrics/consistency_repvit_m0_9_pet37.json | `python deploy/compare_torch_onnx.py --model repvit_m0_9_pet37 --images datasets/lists/pet_test.txt --limit 12 --out outputs/verification/consistency_repvit_m0_9_pet37_n12.json` |
+| consistency_m0_9_in1k | n=12 真实图片; max|Δ|=1.71661376953125e-05（展示 1.717e-05）, mean|Δ|=2.360081756099438e-06（展示 2.360e-06） | PyTorch↔ONNX，官方 M0.9，imagenet_val_subset.txt 前 12 张 | outputs/metrics/consistency_repvit_m0_9_in1k.json | `python deploy/compare_torch_onnx.py --model repvit_m0_9_in1k --images datasets/lists/imagenet_val_subset.txt --limit 12 --out outputs/verification/consistency_repvit_m0_9_in1k_n12.json` |
+| consistency_m1_0_in1k | n=12 真实图片; max|Δ|=1.811981201171875e-05（展示 1.812e-05）, mean|Δ|=2.4635197632960626e-06（展示 2.464e-06） | PyTorch↔ONNX，官方 M1.0，同子集 | outputs/metrics/consistency_repvit_m1_0_in1k.json | `python deploy/compare_torch_onnx.py --model repvit_m1_0_in1k --images datasets/lists/imagenet_val_subset.txt --limit 12 --out outputs/verification/consistency_repvit_m1_0_in1k_n12.json` |
 | cross_species_error_ratio | 0.0356（10/281） | test 集错误里真正跨物种（猫↔狗）的占比 | outputs/confusion_matrix/baseline_cat_dog_block.json | `python tools/visualize.py --pred-csv outputs/predictions/baseline_test_preds.csv ...` |
 | external_top5_correct | 8/8 | 跨集合（ImageNet 实拍）图片的品种判断 | outputs/benchmarks/external_top5_repvit_m0_9_pet37.csv | `python tools/predict_external.py --model repvit_m0_9_pet37 --dir external --num 8` |
 
@@ -117,6 +119,31 @@
 - **09-13 外部图片（`external/`）的来源**：见上文「阻塞与待确认」第 4 条。
 - **09-13 交付形态**（人类决策）：报告 PDF + 答辩 PPT 源文件 + PPT 的 PDF 版**全部产出**；
   PPT 采用**深色科技风**；**实测发现的代码缺陷只在报告附录呈现**，PPT 不展开。
+- **09-16【logits 误差口径统一】** 全仓扫描后把误差引用归入 10 个实验桶
+  （清单 `outputs/verification/logits_reference_inventory.csv`，发现记录
+  `report/LOGITS_AUDIT_FINDINGS.md`，答辩口径 `report/LOGITS_AUDIT.md`）：
+  - **PyTorch↔ONNX（B1）**：Pet-37，`datasets/lists/pet_test.txt` 前 12 张真实图片，
+    每张独立预处理一次后同一张量送两端，CPU FP32 / batch=1 / 224×224 →
+    `outputs/metrics/consistency_repvit_m0_9_pet37.json`，max **6.199e-06** / mean **1.501e-06**。
+  - **结构重参数化（B4）**：Pet-37 baseline，32 个固定随机输入 seed=20240912 / batch=8 →
+    `outputs/reparam/repvit_m0_9_pet37_reparam_report.json`，max **7.093e-06** / mean **2.031e-06**。
+  - 两者是不同实验（PyTorch↔PyTorch 随机张量 vs PyTorch↔ONNX 真实图片），
+    文档中**分开表述、各自只引用一个落盘产物**，不再出现「六模型一致率 100%」这类外推。
+  - 旧值 **5.25e-06 / 1.41e-06** 定案：仓库 14 个提交的 `outputs/` 树里**从未**有过配套产物，
+    初始提交 `81693dd` 的 README 写该值、而同一提交的落盘 JSON 已是 n=12 的 `6.199e-06`；
+    旧命令虽写 `limit=8`，但**不能证明数值来自 n=8**，用当前权重跑 `--limit 8` 得
+    `max=6.198883056640625e-06` 也复现不了。README / REPORT.md 第 13.3 节 / LOGITS_AUDIT.md
+    已统一为同一段措辞，旧值只作修订记录。
+- **09-16【路径字段规范化】** 试题 p14 要求不得写死个人绝对路径：
+  `deploy/compare_torch_onnx.py` 新增 `repo_rel()`，`onnx_path` / `images` 落盘改为仓库相对
+  POSIX 路径；三个一致性 JSON 用**逐行字符串替换**只改第 4、8 行（`git diff --numstat` 各 `2 2`），
+  数值与判定字段逐字节未动。`outputs/` 下其它约 50 个带绝对路径的产物**本次未处理**，
+  跨机复现请按 `deploy/model_registry.py` 的 `onnx_path(key)` 重新生成。
+- **09-16【基准延迟口径】** `outputs/metrics/bench.jsonl` 里有两批同协议基准：较早的 3 型号
+  （P50 13.60 / 17.18 / 12.48 ms）与较晚的 6 型号（`outputs/benchmarks/*_benchmark.json` +
+  `summary.csv`，P50 7.37 / 9.15 / 7.12 ms）。文档统一引用**落盘产物对应的那批**
+  （报告 14.2 节口径），README 第 12 节已同步，并在注释里保留较早一批的值与提醒；
+  引用时须写明批次，不要混用。
 
 ## 实测发现并修复的代码缺陷（详见 PROVENANCE.md 第四节与各文件注释）
 
@@ -192,8 +219,30 @@ A（RandAugment）抵消了 B（差异化 lr）单独使用时的负作用。
 
 ## M13 全局验收与推送
 
-- `python tools/selfcheck.py` → **34/34 PASS，0 FAIL**
-- DoD 37 条逐条自检通过；工具零硬编码绝对路径（`paths` 检查 0 处命中）
+- `python tools/selfcheck.py`（**全量**，34 项）→ **34/34 PASS，0 FAIL**（09-13 首测）
+- **09-16 重跑复核（实测数字）**：
+  `python tools/selfcheck.py --json %TEMP%\t15_full.json` → 汇总行 **「合计 34 项：PASS 34 / FAIL 0」**，
+  唯一失败项 `paths`（09-16 早上曾在 `tools/audit_logits_references.py:430` 命中 1 处冗余字面量）已修复为 **0 处**；
+  核对无 FAIL 后才把同一命令的 `--json` 指向权威路径落盘，`outputs/metrics/selfcheck_report.json`
+  现为 **34 项**（summary = {total: 34, pass: 34, fail: 0}）。
+- **文档/落盘不一致的成因与处置**：该 JSON 在 09-16 早上被一次带 `--only` 的运行**覆盖成 3 项**
+  （summary = {total: 3, pass: 3, fail: 0}），而 PROGRESS 仍写 34/34。本次重跑全量后已恢复一致；
+  过程中又把报告先输出到仓库外临时路径核对，确认 `fail = 0` 才落盘，避免拿失败报告覆盖权威产物。
+- **防呆（重要）**：**任何不带 `--json` 的自检调用都会把报告写进权威路径**
+  `outputs/metrics/selfcheck_report.json` —— 包括 `--only <检查名>` 与 `--stage <阶段>` 这类子集调用
+  （它们只写所选子集，会把全量报告冲成几项）。跑子集时**必须**显式指定 `--json`，例如
+  `python tools/selfcheck.py --only rep.verify --json %TEMP%\selfcheck_single.json`、
+  `python tools/selfcheck.py --stage skeleton --json %TEMP%\selfcheck_stage.json`；
+  只有确实想刷新权威全量报告时才用默认路径。
+- **报告被误覆盖时的恢复姿势**：用
+  `python tools/selfcheck.py --json outputs/metrics/selfcheck_report.json` 显式重跑恢复，
+  **不要依赖 `git checkout --`** —— HEAD 里存的不一定是全量版
+  （09-16 期间它就是早上那份 3 项旧版，checkout 会把全量报告直接打回去）。
+- **退出码语义**：`FAIL > 0` 时退出码**仍是 0**（只有加 `--strict` 才用退出码表达失败）；
+  判断是否通过请看汇总行「PASS x / FAIL y」或报告里的 `summary`，不要只看 exit code。
+- DoD **34** 条逐条自检通过（实测 `tools/selfcheck.py` 共 34 个 `@check`，
+  与 `outputs/metrics/selfcheck_report.json` 的 `summary = {total: 34, pass: 34, fail: 0}` 一致）；
+  工具零硬编码绝对路径（`paths` 检查 0 处命中）
 - 已推送到公开仓库：**https://github.com/8ga-tech/RepViT-Reproduction**
   （447 个文件、187.8 MB；2 个 checkpoint + 4 个 ONNX 已入库）
 

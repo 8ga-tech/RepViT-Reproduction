@@ -37,12 +37,12 @@
       <text x="360" y="642" font-family="Microsoft YaHei" font-size="15" fill="#93A4C0">Pet-37 test Top-1</text>
     </g>
     <g id="metric-3">
-      <text x="624" y="608" font-family="Consolas" font-size="38" font-weight="bold" fill="#FFC857">7.1e-06</text>
-      <text x="624" y="642" font-family="Microsoft YaHei" font-size="15" fill="#93A4C0">重参数化 max|Δlogits|</text>
+      <text x="624" y="608" font-family="Consolas" font-size="38" font-weight="bold" fill="#FFC857">7.093e-06</text>
+      <text x="624" y="642" font-family="Microsoft YaHei" font-size="15" fill="#93A4C0">结构重参数化（32 随机输入）max|Δ|</text>
     </g>
     <g id="metric-4">
       <text x="888" y="608" font-family="Consolas" font-size="38" font-weight="bold" fill="#C79BFF">100%</text>
-      <text x="888" y="642" font-family="Microsoft YaHei" font-size="15" fill="#93A4C0">PyTorch↔ONNX Top-1 一致</text>
+      <text x="888" y="642" font-family="Microsoft YaHei" font-size="15" fill="#93A4C0">ONNX Top-1 一致（3 型号各 12 张）</text>
     </g>
   </g>
 </svg>

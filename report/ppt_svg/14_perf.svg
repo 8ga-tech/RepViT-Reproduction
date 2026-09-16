@@ -68,7 +68,7 @@
 
     <g id="m-1">
       <text x="850" y="252" font-family="Microsoft YaHei" font-size="14" fill="#93A4C0">M0.9 → M1.0</text>
-      <text x="1182" y="252" font-family="Consolas" font-size="16" font-weight="bold" fill="#3FDB9B" text-anchor="end">+0.96</text>
+      <text x="1182" y="252" font-family="Consolas" font-size="16" font-weight="bold" fill="#3FDB9B" text-anchor="end">+1.01</text>
     </g>
     <g id="m-2">
       <text x="850" y="288" font-family="Microsoft YaHei" font-size="14" fill="#93A4C0">M1.0 → M1.1</text>

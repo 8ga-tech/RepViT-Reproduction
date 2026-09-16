@@ -1,11 +1,11 @@
 {
   "model": "repvit_m0_9_pet37",
   "arch": "repvit_m0_9_pet37",
-  "onnx_path": "C:\\Users\\14675\\Desktop\\one\u56e2\u961f\u79cb\u62dbai\u7b97\u6cd5\\RepViT-Reproduction\\onnx\\repvit_m0_9_pet37.onnx",
+  "onnx_path": "onnx/repvit_m0_9_pet37.onnx",
   "num_classes": 37,
   "label_file": "labels/pet_classes.txt",
   "source": "pet_test",
-  "images": "datasets\\lists\\pet_test.txt",
+  "images": "datasets/lists/pet_test.txt",
   "n": 12,
   "max_abs_logits": 6.198883056640625e-06,
   "mean_abs_logits": 1.5006899711048998e-06,

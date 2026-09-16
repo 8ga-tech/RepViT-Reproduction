@@ -8,6 +8,21 @@ sys.path.insert(0, str(ROOT))
 from deploy.model_registry import get, build_pt, onnx_path   # noqa
 from deploy.infer_onnx import preprocess, build_session   # noqa
 
+
+def repo_rel(p) -> str:
+    """把路径写成「相对仓库根的 POSIX 路径」，只用于落盘元信息字段。
+
+    试题第 14 页要求不得写死个人电脑绝对路径。本函数只影响 JSON 里的
+    ``onnx_path`` / ``images`` 两个**非数值**字段；模型加载与数据读取仍用原路径。
+    仓库外的路径（例如写到 %TEMP% 的临时复跑副本）无法相对化，原样返回 POSIX 形式，
+    以免丢失信息。
+    """
+    q = Path(p).resolve()
+    try:
+        return q.relative_to(ROOT).as_posix()
+    except ValueError:
+        return q.as_posix()
+
 def fuse_pt(reg):
     """必须与导出 ONNX 时的状态一致：build_pt() 重建未融合态，这里再做一次融合。"""
     m = build_pt(reg["name"])
@@ -92,9 +107,12 @@ def main() -> None:
     #   top1_agreement -> DoD #31 的验收命令读这个键；两个都写，避免口径分歧
     _label_file = "labels/pet_classes.txt" if reg["num_classes"] == 37 else "labels/imagenet_classes.txt"
     _source = "pet_test" if reg["num_classes"] == 37 else "imagenet_val_subset"
-    rep = dict(model=a.model, arch=reg["name"], onnx_path=onnx_path(a.model),
+    # 落盘元信息里的两个路径字段一律写成仓库相对路径（见 repo_rel 的注释）：
+    #   onnx_path -> onnx/<registry_key>.onnx（由 deploy/model_registry.py 给出）
+    #   images    -> datasets/lists/<list>.txt（由 --images 给出，缺省时取固定划分列表）
+    rep = dict(model=a.model, arch=reg["name"], onnx_path=repo_rel(onnx_path(a.model)),
                num_classes=reg["num_classes"], label_file=_label_file, source=_source,
-               images=str(list_file), n=len(paths),
+               images=repo_rel(list_file), n=len(paths),
                max_abs_logits=dmax, mean_abs_logits=dsum / max(len(paths), 1),
                top1_agree_rate=n1 / len(paths),
                top5_set_agree_rate=n5 / len(paths),

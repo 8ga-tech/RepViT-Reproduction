@@ -29,7 +29,7 @@
 
   <g id="checklist" data-pptx-bounds="804 168 404 218">
     <rect x="804" y="168" width="404" height="218" rx="10" fill="#131C2E" stroke="#1E3050" stroke-width="1"/>
-    <text x="830" y="204" font-family="Microsoft YaHei" font-size="18" font-weight="bold" fill="#E6EDF7">合规性自证</text>
+    <text x="830" y="204" font-family="Microsoft YaHei" font-size="18" font-weight="bold" fill="#E6EDF7">训练检查</text>
     <line x1="830" y1="218" x2="1182" y2="218" stroke="#1E3050" stroke-width="1"/>
     <text x="830" y="254" font-family="Microsoft YaHei" font-size="15" fill="#3FDB9B">✓ 骨干确实被训练</text>
     <text x="1182" y="254" font-family="Consolas" font-size="14" fill="#93A4C0" text-anchor="end">706 张量</text>

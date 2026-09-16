@@ -57,6 +57,8 @@ onnx/repvit_m2_3_in1k.onnx
 _dl/
 *.tmp
 *.part
+# ---- 验证复跑的临时目录（含 input_ref.pt，可由 seed 再生；只留 outputs/verification/*.json 正式证据）----
+outputs/verification/tmp_*/
 
 # ---- Python ----
 __pycache__/
