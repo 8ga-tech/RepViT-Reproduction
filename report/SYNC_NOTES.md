@@ -183,11 +183,43 @@ git -C <仓库根目录> rev-parse origin/main master
 
 ### 7.5 本轮提交哈希、推送与远端核实
 
-（本节由紧随其后的追加提交回填：本轮产物提交的 SHA、推送前后远端 `main` 的 ref、
-`git ls-remote` / GitHub API 的远端侧复核，以及远端 `report.pdf` 的字节数核对。）
-
 - 说明：上一轮已把 `origin/main` 变成 `master` 的祖先，因此本轮**是普通 fast-forward，
   不需要再合并无关联历史**，也不需要任何强制推送。
+- **C4（本轮产物提交）= `85217e48eb6e9eb74facf1cd77da114a495e2e81`**
+  「docs(report): 报告压缩到 30 页以内 + 补写收敛速度分析 + 审计清单再刷新」，
+  8 files changed，1001 insertions(+)，1019 deletions(-)。
+  入库后逐路径 `git show HEAD:<path>` 复核实际内容非空：`report/REPORT.md` 52,943 B / 849 行、
+  `report.pdf` 1,202,648 B、`report/REPORT.docx` 70,162 B、`PROGRESS.md` 25,493 B / 275 行、
+  `report/` 下验证记录 69,191 B / 815 行、引用清单 CSV 4,125 行、
+  `report/` 下审计报告 37,684 B / 339 行、本文件 10,756 B / 199 行 —— **没有 0 行文件**。
+  另外把 `report.pdf` 直接从 git 对象导出后用 PyMuPDF 复核：**26 页**，
+  证明提交内的 PDF 就是压缩版（而不是工作区没入库的新版）。
+- **推送**：`git push --porcelain origin master:main`
+  - porcelain 原文：`refs/heads/master:refs/heads/main	51de74b..85217e4` + `Done`，exit 0
+  - 首列为空、**没有** `+` 或 `!` 标志 → **fast-forward，非强制推送**
+  - 推送前远端 `main` = `51de74b29432ffeb53bc02c0c092214a86308e90`
+  - 推送后远端 `main` = `85217e48eb6e9eb74facf1cd77da114a495e2e81`
+- **远端侧独立核实**：
+
+  | 检查 | 命令 | 结果 |
+  |---|---|---|
+  | 远端跟踪 ref | `git fetch origin` → `git rev-parse origin/main` | `85217e4…`，与 `master` 相同 |
+  | 远端 ref | `git ls-remote origin refs/heads/main` | `85217e48eb6e9eb74facf1cd77da114a495e2e81` |
+  | 远端提交对象 | `gh api repos/8ga-tech/RepViT-Reproduction/commits/main` | `sha = 85217e4…`；`parent = 51de74b…` |
+  | 远端分支头 | `gh api repos/8ga-tech/RepViT-Reproduction/branches/main` | `commit.sha = 85217e4…` |
+  | 本轮为纯快进 | `gh api repos/8ga-tech/RepViT-Reproduction/compare/51de74b...85217e4` | `status = ahead`；`ahead_by = 1`；`behind_by = 0`；`merge_base_commit = 51de74b…` |
+  | 远端 `report.pdf` 字节 | `git ls-tree -l origin/main report.pdf` 与远端 raw 地址的 `curl -I` | 均为 **1,202,648**，与本地相同（两侧同一 blob `18328f84…`） |
+
+- **C5（本文件所在提交）**：上面 7.1–7.5 的实测结果随本文件落盘为追加提交，随后以**同样的
+  fast-forward 方式**再次执行 `git push origin master:main`。因此**当前远端 `main` 的 HEAD
+  就是 C5 的 SHA**（比 `85217e4` 再前进一个提交），复核命令：
+
+```powershell
+git -C <仓库根目录> fetch origin
+git -C <仓库根目录> rev-parse origin/main master
+git ls-remote origin refs/heads/main
+& 'C:\Program Files\GitHub CLI\gh.exe' api repos/8ga-tech/RepViT-Reproduction/commits/main --jq .sha
+```
 
 ---
 
