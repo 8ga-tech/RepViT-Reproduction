@@ -497,6 +497,6 @@ python tools/selfcheck.py --stage skeleton --json %TEMP%\selfcheck_stage.json
 
 ## 许可与致谢
 
-本项目为求职考核的复现任务。RepViT 论文与官方代码版权归原作者所有（Apache-2.0）；
+本项目为华中科技大学one团队2026秋季招新考核的复现任务。RepViT 论文与官方代码版权归原作者所有（Apache-2.0）；
 Oxford-IIIT Pet 数据集来自 University of Oxford（CC BY-SA 4.0）；
 ImageNet 数据仅用于非商业研究用途。
