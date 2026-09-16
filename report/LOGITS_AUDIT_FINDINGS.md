@@ -1,7 +1,7 @@
 # logits 误差引用审计发现（LOGITS_AUDIT_FINDINGS）
 
 - 审计日期：2026-09-16（工作区 HEAD `2d65e63`）
-- 扫描清单：`outputs/verification/logits_reference_inventory.csv`（4093 条引用 / 153 个文件；由 `python tools/audit_logits_references.py` 可重复生成，两次运行 SHA256 完全一致）
+- 扫描清单：`outputs/verification/logits_reference_inventory.csv`（4124 条引用 / 153 个文件；由 `python tools/audit_logits_references.py` 可重复生成，两次运行 SHA256 完全一致）
 - 本文用途：**t2（README / REPORT / LOGITS_AUDIT 文档统一）与 t3（PPT 改写）的措辞依据。**
   第 1 节可以照着抄数值与口径；第 3 节是逐条修改单（文件 + 行号/页码/幻灯片 + 建议改法）。
 - 边界：本次只做扫描、分级与发现记录。**没有改动任何 `outputs/` 实验产物的数值，没有改 README/REPORT/PPT 正文，没有 commit/push。**
@@ -15,8 +15,8 @@
 3. **口径矛盾（缺陷 D1）已定案：** `report/REPORT.md:796-797` 的"5.25e-06 属于旧的 n=8 对照记录"**没有证据支持**，应按 `report/LOGITS_AUDIT.md:15` 的说法收敛。三条相互独立的证据见 D1。
 4. **8 个孤值**（5.25e-06 / 1.41e-06、5.245e-06 / 1.414e-06、6.53e-06、6.527e-06、2.265e-06、4.108e-07）在仓库的 **14 个提交里的 `outputs/` 树中一次都没有出现过**；初始交付提交 `81693dd` 就已经同时存在"散文字面值"和"n=12 的落盘 JSON"。任何一个都不应再作为实验结论引用。
 5. **绝对路径（缺陷 D2）**：`outputs/metrics/consistency_*.json` 的 `onnx_path` / `images` 是采集机绝对路径，来源是 `deploy/compare_torch_onnx.py:95-97`。**源码本身没有写死绝对路径**（符合试题第 14 页），问题在落盘内容；同目录 `outputs/verification/` 副本只把 `images` 相对化了，`onnx_path` 仍是绝对路径 —— 任务描述里"副本用相对路径"只对一半成立。
-6. **混写与外推（缺陷 D3–D5）**：封面/状态页把"重参数化 32 输入误差"和"ONNX 一致率 100%"并列（`答辩PPT_RepViT.pptx` slide 1/2、`README.md:13`）；`六个 ONNX 模型一致率 100%`（`ppt_svg/13_onnx.svg:5`、slide 2）与"没有出现九类典型问题"（`REPORT.md:807`、`report.pdf` 第 23 页、`REPORT.docx` para 913）超出证据；"结构重参数化在数值上完全等价"（`ppt_svg/12_reparam.svg:5`、`REPORT.md:963`、`report.pdf` 第 27 页、`REPORT.docx` para 1053）同样是超证据断言。
-7. **导出物不同步（缺陷 D6）**：`report.pdf` 第 21 页的 12.4 表还是**初始版**（写着 `M0.9 官方 C=1000` 的 2.265e-06 / 4.108e-07、BN `108 → 0`），而 `report/REPORT.md:720-728` 已经改成"—（旧报告权重键不匹配，不作结论）"和 `107 → 0`。文档改完必须重新导出 PDF/DOCX。
+6. **混写与外推（缺陷 D3–D5）**：封面/状态页把"重参数化 32 输入误差"和"ONNX 一致率 100%"并列（`答辩PPT_RepViT.pptx` slide 1/2、`README.md:13`）；`六个 ONNX 模型一致率 100%`（`ppt_svg/13_onnx.svg:5`、slide 2）与"没有出现九类典型问题"（`REPORT.md:807`、`report.pdf` 第 23 页、`REPORT.docx` para 913）超出证据；"结构重参数化在数值上完全等价"（`ppt_svg/12_reparam.svg:5`、`REPORT.md:963`、`report.pdf` 第 27 页、`REPORT.docx` para 1053）同样是超证据断言。（括号里的行号/页码是**审计当时**（压缩前 37 页版）的定位；t17 重导、t22 压缩后的现状见 §D4 / §D5 末尾的「现状」条。）
+7. **导出物不同步（缺陷 D6）**：`report.pdf` 第 21 页（审计当时）的 12.4 表还是**初始版**（写着 `M0.9 官方 C=1000` 的 2.265e-06 / 4.108e-07、BN `108 → 0`），而 `report/REPORT.md:720-728` 已经改成"—（旧报告权重键不匹配，不作结论）"和 `107 → 0`。文档改完必须重新导出 PDF/DOCX。**该缺陷现已修复**：现行 `report.pdf`（26 页）的 12.4 表位于**第 17 页**，C=1000 列已是"—（旧报告权重键不匹配，不作结论）"、BN `107 → 0`；`2.265`、`4.108` 与 `108 → 0` 在压缩后的 REPORT.md 与现行 PDF 中均 0 命中（详见 §D6 的「现状」）。
 8. 已有 3 处**可以照抄的好样板**：`report/LOGITS_AUDIT.md:7-8`（两个主桶各带产物路径与判定阈值）、`答辩PPT_RepViT.pptx` slide 12/13（同页写明输入类型、n、阈值、复跑命令，并显式声明"与第 13 页真实图片实验分开"）、slide 13 备注（"结论仅覆盖这 12 张图片，不能写成完整测试集或全部六模型一致"）。**建议把 slide 13 备注的限定语前移到封面与状态页。**
 
 ---
@@ -85,7 +85,7 @@
 | `.pdf` | `page N` | PyMuPDF 逐页提取文本 |
 | 不扫 | — | 二进制 `.pt/.onnx/.npy/图片`、以及清单自身 |
 
-结论：**4093 条引用 / 153 个文件**；`kind` 分布 = `noise_float` 2568、`statement` 948、`error_value` 577；`flag` 命中 562 条（`MIXED` 358 / 纯 145、`ORPHAN` 260 / 纯 70、`OVERCLAIM` 142 / 纯 44、`SELF_TOOL` 85 / 纯 67、`ABS_PATH` 4；同一行可带多个标记，故计数相加大于 562）。
+结论：**4124 条引用 / 153 个文件**；`kind` 分布 = `noise_float` 2568、`statement` 942、`error_value` 614；`flag` 命中 560 条（`MIXED` 351 / 纯 137、`ORPHAN` 278 / 纯 72、`OVERCLAIM` 137 / 纯 45、`SELF_TOOL` 85 / 纯 67、`ABS_PATH` 4；同一行可带多个标记，故计数相加大于 560）。
 
 ### 2.2 分级规则（为什么可以放心按桶引用）
 
@@ -105,7 +105,7 @@ python tools/audit_logits_references.py --table  # 额外打印第 1 节的 Mark
 python tools/audit_logits_references.py --stdout # 只统计不写文件
 ```
 
-连续两次运行的 CSV SHA256 一致（`00750179…4E59`，见第 6 节复核记录），无时间戳、无随机性。
+连续两次运行的 CSV SHA256 一致（`2074F146…E33B`，见第 6 节复核记录），无时间戳、无随机性。
 
 ### 2.4 本次独立复跑（三条证据，写在 `%TEMP%`，未动仓库产物）
 
@@ -192,8 +192,9 @@ python tools/audit_logits_references.py --stdout # 只统计不写文件
 - `report/ppt_svg/13_onnx.svg:5`：`6 个 ONNX 模型，PyTorch↔ONNX Top-1 一致率 100%`
 - `report/ppt_svg/15_summary.svg:45`：`③ 重参数化数值等价、BN 归零；ONNX 一致率 100%`
 - `report/答辩PPT_RepViT.pptx` slide 2（`6 个 ONNX`）、`report/答辩PPT_RepViT.pdf` 第 2 页
-- `report/REPORT.md:807`、`report/REPORT.docx`（`word/document.xml para 913`）、`report.pdf` 第 23 页：
+- `report/REPORT.md:807`、`report/REPORT.docx`（`word/document.xml para 913`）、`report.pdf` 第 23 页（审计当时页码）：
   `一致率为 100%，说明没有出现题目列出的九类典型问题（Resize/CenterCrop 顺序、RGB/BGR 通道、插值方式、mean/std、Softmax 维度、eval 模式、BN 状态、导出方式、数值精度）。`
+- **现状（2026-09-16 复核，PyMuPDF 实测现行 26 页 PDF）**：上面那句在压缩后的 `report/REPORT.md`（849 行）与现行 PDF 中都已 **0 命中**（t22 已按本节建议改写）；现行 PDF 里「九类」只剩**第 20 页**两处（「未观察到题目列出的九类典型问题的表现」与「不等于『已排除九类问题』」），均为修正后的限定式措辞。上面写的「第 23 页」是审计当时（压缩前 37 页版）的定位；对被压缩掉的行号（原 `:807`）同样只作历史记录。
 
 **事实**：仓库里同口径的一致性 JSON 只有 3 份（B1/B2/B3），都是 n=12；另外 3 个型号只有导出检查与性能结果，**不能**代替一致性验证（`report/LOGITS_AUDIT.md:18` 已经写对了）。"九类问题"只能说明"本次 12 张图上没出现 Top-1/Top-5 不一致"，不构成对九类问题的排除证明。
 
@@ -206,9 +207,10 @@ python tools/audit_logits_references.py --stdout # 只统计不写文件
 ### D5【超证据断言：结构重参数化"完全等价"】
 
 - `report/ppt_svg/12_reparam.svg:5`：`重参数化在数值上完全等价，BN 节点归零`
-- `report/REPORT.md:963`、`report/REPORT.docx`（`word/document.xml para 1053`）、`report.pdf` 第 27 页：
+- `report/REPORT.md:963`、`report/REPORT.docx`（`word/document.xml para 1053`）、`report.pdf` 第 27 页（审计当时页码）：
   `结构重参数化在数值上完全等价（max|Δ| = 7.09e-06，Top-1 32/32 一致）`
 - 另外 `tools/update_defense.py:136-137` 已经把这两个短语列入替换表（`"重参数化在数值上完全等价" → "重参数化误差小于阈值"`），但**只有 PPTX 被替换过**，SVG / REPORT.md / DOCX / PDF 仍是旧词。
+- **现状（2026-09-16 复核，PyMuPDF 实测现行 26 页 PDF）**：「完全等价」在压缩后的 `report/REPORT.md`（839 行）与现行 PDF 中都已 **0 命中**（t22 已改写为阈值口径）；旧措辞目前只剩 `report/ppt_svg/12_reparam.svg:5` 一处，属 `LOGITS_AUDIT.md:47` 已声明的历史素材。上面写的「第 27 页 / 原 `:963`」是审计当时的定位。
 
 **建议改法**：把"完全等价"全部改成"代数上等价，实测误差小于阈值"：
 `分支合并是代数等价的替换；实测 32 个固定随机输入 max|Δlogits| = 7.093e-06（< 1e-4 阈值），Top-1 32/32 一致。该结论只覆盖已测输入与设定阈值，不是位级完全相等。`
@@ -216,13 +218,15 @@ python tools/audit_logits_references.py --stdout # 只统计不写文件
 
 ### D6【导出物不同步：`report.pdf` 仍是初始版表格】
 
-- 位置：`report.pdf` 第 21 页（12.4 实测数值对照表）
+- 位置（审计当时）：`report.pdf` 第 21 页（12.4 实测数值对照表）；**该页内容现已修正**，现状见本节末尾的「现状」条
   现值：`max_abs_err 7.093e-06 | 2.265e-06`、`mean_abs_err 2.031e-06 | 4.108e-07`、`BN 模块数 108 → 0 | 108 → 0`
 - 对照：`report/REPORT.md:720-728` 现值：`| 7.092953e-06（展示 7.093e-06） | —（旧报告权重键不匹配，不作结论） |`、`| BN 模块数 | 107 → 0 | N/A |`
 - 证据：`git show 81693dd:report/REPORT.md` 的 12.4 表正是 `2.265e-06 / 4.108e-07 / BN 108 → 0`。也就是说 `report.pdf` 是**初始交付版 REPORT.md 的导出**，此后 REPORT.md 已修，PDF 未重导出。
 - `report/REPORT.docx` 情况好一些（`word/document.xml para 812-813` 已是 `max_abs_err / 7.093e-06`），但仍带 `para 913`（九类）与 `para 1053`（完全等价），需与 REPORT.md 一起改后重导出。
 
 **建议改法**：t2 完成 REPORT.md 修改后，**必须重新导出 `report.pdf` 与 `report/REPORT.docx`**，并核对第 21/23/27 页与 REPORT.md 的 12.4 / 13.3 / 16 节逐字一致。否则"REPORT.md 已改、PDF 未改"会重新制造同类缺陷。
+
+**现状（2026-09-16 复核，PyMuPDF 实测）**：该建议已落实 —— `report.pdf` 于 t17 重导、t22 随报告压缩再导一次（t26 补写 §10.1 后又重导一次），现行 **26 页**；12.4 表在**第 17 页**（C=1000 列已是「—（旧报告权重键不匹配，不作结论）」、BN `107 → 0`，与 `report/REPORT.md:531-551` 一致，其后的并列口径备注续到第 18 页），13.3 节的**标题在第 19 页、内容续到第 20 页**（`report/REPORT.md:599` 起；`13.3` 字样另在第 23 页的复跑命令注释里出现一次），十六、总结在**第 22 页**（`report/REPORT.md:725` 起）。上面「第 21/23/27 页」是审计当时（压缩前 37 页版）的页码；`word/document.xml para 913 / 1053` 同理，DOCX 重导后段号已变，按节标题检索即可。
 
 ### D7【孤值与历史值】逐个处置
 
@@ -255,8 +259,8 @@ python tools/audit_logits_references.py --stdout # 只统计不写文件
 | **5.245e-06 / 1.414e-06** | `report/LOGITS_AUDIT.md:15`；历史：`81693dd:report/PPT_CONTENT.md:228-229` | **无** | 否 | 同上；注意它与 README 的 5.25/1.41 **写法就不一致**，进一步说明是手抄值 |
 | **6.53e-06** | `report/LOGITS_AUDIT.md:16`；历史：`81693dd:README.md:293`、`81693dd:report/PPT_CONTENT.md:41` | **无**（当时的落盘值就是 B4 的 7.092952728271484e-06） | 否 | 统一引用 **B4 = 7.093e-06** |
 | **6.527e-06** | `report/LOGITS_AUDIT.md:16`；历史：`81693dd:report/PPT_CONTENT.md:203` | **无** | 否 | 同上；与 6.53e-06 是同一个旧值的两种写法 |
-| **2.265e-06** | `report.pdf` 第 21 页（**仍在印**）；`report/LOGITS_AUDIT.md:29` | **无** | 否 | 与 4.108e-07 一起从报表删除（D6：重导出 PDF）；最接近的 B7 产物是 4.991888999938965e-07 / 5.673758352031655e-08，**数值对不上**，不能顶替 |
-| **4.108e-07** | `report.pdf` 第 21 页（**仍在印**） | **无** | 否 | 同上 |
+| **2.265e-06** | **历史**：审计当时 `report.pdf` 第 21 页仍在印；**现已不再印**（t17 重导后 C=1000 列改为「—」）—— 现行 12.4 表在 `report.pdf` 第 17 页、`report/REPORT.md:531-545`，两个值均 0 命中；`report/LOGITS_AUDIT.md:29` | **无** | 否 | 与 4.108e-07 一起从报表删除（D6 已修复）；最接近的 B7 产物是 4.991888999938965e-07 / 5.673758352031655e-08，**数值对不上**，不能顶替 |
+| **4.108e-07** | **历史**：审计当时 `report.pdf` 第 21 页仍在印；**现已不再印**（同上） | **无** | 否 | 同上 |
 | **4.991888999938965e-07**（mean 5.673758352031655e-08） | `outputs/reparam/repvit_m0_9_reparam_report.json:209,237,241`；`report/LOGITS_AUDIT.md:29` | **有**：`outputs/reparam/repvit_m0_9_reparam_report.json` | 前提无效，不作为结论 | 保留为历史记录；若正文提及，必须同时写"官方 C=1000 checkpoint 装入 timm 结构，`n_missing=605`、`n_unexpected=713`，是无效权重验证" |
 | **2.9802322387695312e-06** | `outputs/advanced/repvit_m0_9_pet37_reparam_report.json:52`；`report/LOGITS_AUDIT.md:28` | **有**：`outputs/advanced/repvit_m0_9_pet37_reparam_report.json` | 前提无效（seed=0、2 个随机输入、BN 108 ≠ 107） | 保留为历史记录；**不得**用来替换 B4 的 7.093e-06 |
 
@@ -268,7 +272,7 @@ python tools/audit_logits_references.py --stdout # 只统计不写文件
 
 | 源文件 | 受影响的导出/副本 | 处置 |
 |---|---|---|
-| `report/REPORT.md`（9/13 两节 + 16 节小结） | `report.pdf`（**第 21/23/27 页当前是旧版**）、`report/REPORT.docx`（para 913 / 1053 待改） | 改完 REPORT.md 后重新导出两者，并核对三处页码/段落 |
+| `report/REPORT.md`（9/13 两节 + 16 节小结） | `report.pdf`（审计当时第 21/23/27 页是旧版；**已于 t17 重导、t22 压缩，现行 26 页**，12.4 表 → 第 17 页、13.3 → 第 19–20 页、十六 → 第 22 页）、`report/REPORT.docx`（重导后段号已变，按节标题检索） | 改完 REPORT.md 后重新导出两者，并核对三处页码/段落 |
 | `report/PPT_CONTENT.md`（:31,:95,:752,:764） | `report/答辩PPT_RepViT.pptx` 与 `report/答辩PPT_RepViT.pdf` | PPT_CONTENT 是文字源；PPTX 改完必须重新导出 PDF（当前 PDF 与 PPTX 一致，已核对 15 页/15 页） |
 | `report/ppt_svg/*.svg`（`12_reparam.svg:5`、`13_onnx.svg:5`、`15_summary.svg:45`、`01_cover.svg:40`、`02_status.svg:56`） | 旧一代演示源 | `LOGITS_AUDIT.md:47` 已把它们定位为"历史素材，不作为答辩口径"；建议在文件头注释一句"已废弃，请以下一代 PPTX 为准"，或把其中的超证据措辞一并改掉，避免再次被复制进 PPTX |
 | `outputs/PPT_OUTLINE.md` / `outputs/REPORT.md` | 早期副本 | 只含口径陈述，不含错误数值；确认无需再引用即可 |
@@ -324,12 +328,12 @@ python -c "import csv;rows=list(csv.DictReader(open('outputs/verification/logits
 
 | 桶 | error_value 行数 | 主要引用方（本次实测，括号内为该文件的 error_value 行数） |
 |---|---|---|
-| B1 | 120 | `LOGITS_AUDIT_FINDINGS.md`(23)、`VERIFICATION_LOGITS_PPT.md`(16)、`README.md`(14)、`report.pdf`(9)、`PROGRESS.md`(8)、`LOGITS_AUDIT.md`(8)、`REPORT.docx`(8) |
-| B2 | 35 | `LOGITS_AUDIT_FINDINGS.md`(8)、`PROGRESS.md`(4)、`LOGITS_AUDIT.md`(4)、`consistency_repvit_m0_9_in1k.json`(2)、`verification/consistency_repvit_m0_9_in1k_n12.json`(2)、`PPT_CONTENT.md`(2) |
-| B3 | 40 | `LOGITS_AUDIT_FINDINGS.md`(10)、`LOGITS_AUDIT.md`(6)、`PROGRESS.md`(4)、`audit_logits_references.py`(3)、`consistency_repvit_m1_0_in1k.json`(2)、`verification/consistency_repvit_m1_0_in1k_n12.json`(2) |
-| B4 | 176 | `LOGITS_AUDIT_FINDINGS.md`(32)、`VERIFICATION_LOGITS_PPT.md`(31)、`update_defense.py`(14)、`PPT_CONTENT.md`(11)、`答辩PPT_RepViT.pptx`(11)、`README.md`(10)、`LOGITS_AUDIT.md`(9) |
+| B1 | 133 | `LOGITS_AUDIT_FINDINGS.md`(23)、`VERIFICATION_LOGITS_PPT.md`(30)、`README.md`(14)、`report.pdf`(8)、`PROGRESS.md`(8)、`LOGITS_AUDIT.md`(8)、`REPORT.docx`(8) |
+| B2 | 37 | `LOGITS_AUDIT_FINDINGS.md`(8)、`PROGRESS.md`(4)、`LOGITS_AUDIT.md`(4)、`consistency_repvit_m0_9_in1k.json`(2)、`verification/consistency_repvit_m0_9_in1k_n12.json`(2)、`PPT_CONTENT.md`(2) |
+| B3 | 42 | `LOGITS_AUDIT_FINDINGS.md`(10)、`LOGITS_AUDIT.md`(6)、`PROGRESS.md`(4)、`audit_logits_references.py`(3)、`consistency_repvit_m1_0_in1k.json`(2)、`verification/consistency_repvit_m1_0_in1k_n12.json`(2) |
+| B4 | 188 | `LOGITS_AUDIT_FINDINGS.md`(32)、`VERIFICATION_LOGITS_PPT.md`(43)、`update_defense.py`(14)、`PPT_CONTENT.md`(11)、`答辩PPT_RepViT.pptx`(11)、`README.md`(10)、`LOGITS_AUDIT.md`(9) |
 | B5 | 27 | `LOGITS_AUDIT.md`(6)、`LOGITS_AUDIT_FINDINGS.md`(6)、`eval_family_5models.log`(5)、`audit_logits_references.py`(5)、`pretrained_eval/*/metrics.json`(各 1) |
 | B7 | 16 | `repvit_m0_9_reparam_report.json`(6)、`LOGITS_AUDIT_FINDINGS.md`(6)、`advanced/repvit_m0_9_pet37_reparam_report.json`(2)、`LOGITS_AUDIT.md`(1) |
-| B8 | 163 | 主要是"旧值说明"位置：`LOGITS_AUDIT_FINDINGS.md`(72)、`VERIFICATION_LOGITS_PPT.md`(25)、`audit_logits_references.py`(17)、`LOGITS_AUDIT.md`(8)、`README.md`(7)、`report.pdf`(5) |
+| B8 | 171 | 主要是"旧值说明"位置：`LOGITS_AUDIT_FINDINGS.md`(72)、`VERIFICATION_LOGITS_PPT.md`(33)、`audit_logits_references.py`(17)、`LOGITS_AUDIT.md`(8)、`README.md`(7)、`report.pdf`(5) |
 
 （`report/答辩PPT_RepViT.pdf` 与 `report/答辩PPT_RepViT.pptx` 的页/片号一一对应，PDF 为 PPTX 的当前导出。B6 导出探针、B9 路线探针、B10 早期冒烟三个桶本次没有 `error_value` 行，只有口径陈述，故未列入上表。）

@@ -203,7 +203,7 @@ A（RandAugment）抵消了 B（差异化 lr）单独使用时的负作用。
 
 | 文件 | 说明 |
 |---|---|
-| `report.pdf` | 32 页（正文 + 附录 A~E），由 report/REPORT.md → docx → PDF |
+| `report.pdf` | **26 页**（正文 + 附录 A~E；压缩前 37 页），由 report/REPORT.md → docx → PDF |
 | `report/REPORT.md` · `.docx` | 报告源文件 |
 | `report/答辩PPT_RepViT.pptx` | 15 页答辩 PPT 源文件（深色科技风，原生可编辑 DrawingML） |
 | `report/答辩PPT_RepViT.pdf` | PPT 的 PDF 版 |

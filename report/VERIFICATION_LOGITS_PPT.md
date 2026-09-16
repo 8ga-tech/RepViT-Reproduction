@@ -607,3 +607,209 @@ python tools/reparam_verify.py --model repvit_m0_9_pet37 --weights checkpoints/b
 ```
 
 > 第 2 轮同样只写了 `report/VERIFICATION_LOGITS_PPT.md`（追加本节）与 `outputs/verification/tmp_verify_r2/`；两次自检都带 `--json %TEMP%`，**未再触碰** `outputs/metrics/selfcheck_report.json`（mtime 仍 18:56:21）。未执行任何 `git commit` / `git push`。
+
+---
+
+# 第 3 轮：报告压缩至 ≤30 页后的完整性验收
+
+- 任务：t23（attempt_id `ff1908ce-6a9e-4c42-9bde-e8e2fe272a67`）
+- 验证时点：**2026-09-16 19:36 – 19:44**（前置 t22 已完成：`REPORT.md` 1159→839 行、`report.pdf` 37→26 页、DOCX/PDF 已重导）
+- 被验证修订：`report/REPORT.md`（51,762 B，19:34:04）｜`report/REPORT.docx`（69,549 B，19:34:26）｜`report.pdf`（1,204,340 B，19:34:45，**26 页**）｜`PROGRESS.md`（25,493 B，19:35:16）
+
+## R3-0. 结论（verdict = pass）
+
+**10 条验收项全部 passed。** 页数 26 ≤ 30；十六个主章节 + 附录 A–E 一个不少；受保护数字逐个在位且与落盘一致；两类实验仍分开；5.25e-06 口径仍是收敛后的唯一表述；试题第 11 页 10 项「必须分析」与第 7/18–19 页技术论述均有落点；两份导出物已按新 `REPORT.md` 重导；自检仍 34/34 且三个 consistency JSON 未退化。
+登记 2 条**不阻塞**观察（R3-a 一条措辞建议、R3-b 一处排版折行），均不构成失败。
+
+## R3-1. 【passed】页数 ≤30 且无排版事故
+
+```powershell
+python -c "import fitz; d=fitz.open('report.pdf'); print(d.page_count)"
+```
+
+```
+PAGE COUNT = 26   (requirement <= 30)
+```
+
+逐页扫描（26 页全过）结果：
+
+- **无空页/稀疏页**：每页字符数 731 ~ 1,576；只有 **p1 = 49 字符**，经查是封面页（`RepViT 轻量图像分类模型复现、优化与多模型部署 / 2026 秋招 · one 团队 AI 算法组`），属正常封面，不是事故页。
+- **无重复页**：按「去空白后前 400 字符」做键，`duplicate page prefixes: none`。
+- **无表格被截断**：全文 `single-pipe long lines: 0`；无任何页面以裸分隔行（`---|---`）开头或结尾。
+- **无代码块跨页断裂事故**：相邻页不存在共享的 >60 字符长行；代码块共 6 条，PDF 内 `python tools|deploy` 命令 6 处，无孤立残行。
+- **无缺字**：全文无 `□` / `�` 等缺字标记。
+- **页脚完整**：除封面外**每页**都有「第 N 页 共 26 页」（`pages without 第N页 footer: [1]`，仅封面）。
+
+## R3-2. 【passed】十六个主章节齐全（含附录 A–E）
+
+`REPORT.md` 的 21 个 H2 与 PDF 章节起始页逐一对应，**无重复标题、无缺失**：
+
+| 章节 | REPORT.md | PDF 起始页 | 章节 | REPORT.md | PDF 起始页 |
+|---|---|---|---|---|---|
+| 一、任务背景与复现范围 | 有 | **p2** | 九、定量结果 | 有 | **p12** |
+| 二、RepViT 论文核心思路 | 有 | **p3** | 十、曲线与混淆矩阵分析 | 有 | **p13** |
+| 三、RepViT-M0.9 结构 | 有 | **p5** | 十一、Grad-CAM 与失败案例 | 有 | **p15** |
+| 四、官方预训练模型评价 | 有 | **p5** | 十二、结构重参数化 | 有 | **p16** |
+| 五、多型号规模和性能比较 | 有 | **p7** | 十三、ONNX 多模型部署 | 有 | **p18** |
+| 六、数据集与数据划分 | 有 | **p8** | 十四、性能测试 | 有 | **p20** |
+| 七、Baseline 迁移训练 | 有 | **p9** | 十五、遇到的问题和解决方法 | 有 | **p21** |
+| 八、优化方法与实验假设 | 有 | **p11** | 十六、总结与后续计划 | 有 | **p22** |
+
+附录：**附录 A → p23**（实测发现并修复的代码缺陷）、**附录 B / C / D → p25**（产物索引 / 鲁棒性测试 / 深入可解释性）、**附录 E → p26**（集显部署）。`missing = []`。
+
+## R3-3. 【passed】受保护数字逐个在位且未变（MD 行号 / PDF 页号）
+
+落盘对照值：B1 = `outputs/metrics/consistency_repvit_m0_9_pet37.json`；B4 = `outputs/reparam/repvit_m0_9_pet37_reparam_report.json`；指标 = `outputs/metrics/baseline_test.json`；跨物种 = `outputs/confusion_matrix/baseline_cat_dog_block.json`；延迟 = `outputs/benchmarks/summary.csv`。
+
+| 受保护数字 | REPORT.md 行 | report.pdf 页 | 落盘依据 |
+|---|---|---|---|
+| B1 `6.199e-06` | 599、603、605、618 | p19、p20 | `max_abs_logits = 6.198883056640625e-06` |
+| B1 `1.501e-06` | 603 | **p19（折行，见 R3-b）** | `mean_abs_logits = 1.5006899711048998e-06` |
+| B1 全精度 `6.198883056640625e-06` / `1.5006899711048998e-06` | 599、603 | p19 | 同上（逐位相同） |
+| B1 Top-1 / Top-5 集合 `100.00%` | 604 | p19 | `top1_agree_rate / top5_set_agree_rate = 1.0` |
+| B4 `7.093e-06` / `7.092953e-06` | 534、728 | p17、p22 | `max_abs_err = 7.092952728271484e-06` |
+| B4 `2.031e-06` / `2.030727e-06` | 535 | p17 | `mean_abs_err = 2.030726818702533e-06` |
+| B4 `32/32` | 536、728 | p17、p22 | `top1_same_count = 32` |
+| B4 `107 → 0` | 537 | p17 | `modules.before.n_bn = 107` → `after = 0` |
+| `92.34%` / `92.22%` | 723 | p22 | `top1 = 0.9234123739438539` / `macro_f1 = 0.9221970249315374` |
+| `0.9234123739438539` / `0.9221970249315374` | 724、725 | p22 | 同上 |
+| 跨物种 `281` / `10 / 281` / `3.56%` / `271` | 418、420、726 | p14、p22 | `n_error=281`、`n_cross_species_error=10`、`n_within_species_error=271`、`cross_species_error_ratio=0.03558718861209965` |
+| `34 条 DoD` | 743 | p23 | `tools/selfcheck.py` 34 个 `@check` + `selfcheck_report.json` `{total:34,pass:34,fail:0}` |
+| `78.20%` | 193、721 | p8、p22 | `outputs/pretrained_eval/repvit_m0_9/metrics.json` `top1 = 78.2` |
+| `3669` 张 | 221、233、276、350、725 | p8、p9、p10、p13、p22 | `baseline_test.json` `num_samples = 3669` |
+| ONNX `20.36` / `27.33` / `18.89` MB | 183/575/646、184/576/647、577/651 | p7、p18、p20 | `summary.csv` + `onnx/*.onnx` 实盘字节数（20.36 / 27.33 / 18.89 MB 全部吻合） |
+| P50 `7.37` / `9.15` / `7.12` | 183/192/646/660/662、184/194/647/660、651/662 | p7、p8、p20、p21 | `summary.csv` `p50_ms = 7.373 / 9.147 / 7.122` |
+| P95 `8.00` | 183、646 | p7、p20 | `summary.csv` `p95_ms = 8.002` |
+
+**旧值已全部清除**（MD 与 PDF 同时 0 命中）：`284 个错误`、`275 个`、`3.17%`、`92.14`、`37 条 DoD`、`完全等价`、`8/8 全对`、`8/8 全部判断正确`、`2.265e-06`、`4.108e-07`、`108 → 0`、`BN 108`、`7.1e-06`、`6.53e-06`、`6.527e-06`。
+仍命中的两项均为**应有的收敛表述**：`九类` 在 MD:615/617、PDF p19/p20 —— 上下文是「**未观察到**题目列出的九类典型问题的表现…**不等于「已排除九类问题」**」；`5.245e-06` / `1.414e-06` 在 MD:599、PDF p19 —— 是 D1 段落里对被废弃旧值的引用。
+
+## R3-4. 【passed】两类实验仍分开表述
+
+重跑第 1 轮的并列检测脚本（对全部 Markdown/SVG/工具载体做「B4 字面量与 ONNX 一致率语言同句」检测）：
+
+```
+TOTAL juxtaposition hits = 0
+```
+
+`REPORT.md:540-545` 的 12.4 备注（PDF p17）逐字保留：**「不是真实测试图片」**、「它与下一节的 PyTorch↔ONNX 一致性实验**不是同一批输入、也不是同一条代码路径**，**两处数值不可并列成一句结论，也不能互相替代**」。
+
+## R3-5. 【passed】5.25e-06 口径仍是唯一收敛表述且未超证据
+
+三份文档的同段落**行哈希完全相同**（`sha256 = 7f6bcccfb52b7a3a…`，第 1、2 轮同值，压缩未破坏）：
+
+```
+README.md                : marker=1  sha256=7f6bcccfb52b7a3a
+report/LOGITS_AUDIT.md   : marker=1  sha256=7f6bcccfb52b7a3a
+report/REPORT.md         : marker=1  sha256=7f6bcccfb52b7a3a
+```
+
+PDF p19 保留完整 hedge：`不能证明它来自 n=8` = True、`不能当作 n=12 的结果` = True。三份文档中「属于旧的 n=8 / 来自 n=8」式**断言 0 处**（`bad-assert lines = 0`）；PDF 全文无任何 n=8 断言。
+
+## R3-6. 【passed，含一条措辞建议】试题第 11 页 10 项「必须分析」
+
+| # | 必须分析 | 落点（压缩后 REPORT.md） | 结论 |
+|---|---|---|---|
+| 1 | 模型是否正常收敛 | §10.1 L387-388「val Top-1 在 epoch 5 前快速上升、epoch 15 后进入平台期，最后 8 轮极差 < 0.5 个百分点 → 已收敛」（PDF p13） | 明确落点 |
+| 2 | 是否存在明显过拟合或欠拟合 | §10.1 L389-391「val_loss 全程单调下降，未见过拟合」；§8.1 L307 过拟合风险（2940 张 vs 4.73M 参数）（PDF p11/p13） | 明确落点 |
+| 3 | 学习率变化与指标变化的关系 | §10.1 L392-393「warmup 前 3 epoch 上升最快；cosine 中段 epoch 10~30 是精度主要增长区间；末段 lr→1e-5 时趋于平台」（PDF p13） | 明确落点 |
+| 4 | 优化方法对收敛速度的影响 | §8.2「四个方案的实验假设」预期列（B「需要更多 epoch 收敛」/ D「新头快速收敛…前期 val 曲线更稳」/ A「正则叠加会延长收敛」，PDF p11）+ §10.1 把 Baseline 与优化模型画在**同一坐标系**（PDF p13） | **落点偏弱，见 R3-a** |
+| 5 | 哪些品种之间容易混淆 | §10.3 独立小节「哪些品种容易混淆」（L400，PDF p14） | 明确落点 |
+| 6 | 错误来自外观/姿态/遮挡/背景 | §10.5 独立小节 L424-427（② 姿态/视角极端…）（PDF p14） | 明确落点 |
+| 7 | Grad-CAM 是否关注到合理区域 | §11.3 独立小节 L452-455（含高置信度错误案例）（PDF p15） | 明确落点 |
+| 8 | 模型是否出现依赖背景的现象 | §11.4 独立小节 L459 + 附录 C L816 回引（PDF p15/p25） | 明确落点 |
+| 9 | 实际图片与数据集图片的分布差异 | §11.5 独立小节 L464-466（统计量表）（PDF p15） | 明确落点 |
+| 10 | 置信度高是否一定代表预测可靠 | §11.6 独立小节 L481（PDF p15） | 明确落点 |
+
+## R3-7. 【passed】技术论述未被过度简化
+
+试题第 7 页 14 个模型理解问题 —— **14/14 有落点**，集中在 §2.1/2.2/2.3/2.4 与 §3：
+
+- 2.1「为什么叫从 ViT 视角重新审视 Mobile CNN」（含 MobileNetV3 出发点，兼答第 3 问）；
+- 2.2「为什么仍是纯 CNN」（ONNX 图内无 MatMul / 注意力 Softmax 的实证）；
+- 2.3 八行设计表逐条覆盖 **Token/Channel Mixer 分离**、**RepVGGDW**、**降低扩张比例 + 增加宽度**、**Early Convolution Stem**、**更深的下采样层**、**SE 非每块都放**、**简单分类头**、**depthwise/pointwise 分工**；
+- 2.4 五个型号差别（`[2, 2, 14, 2]`，共 20 Block）；§3 L106 另答「第三阶段为什么要放更多 Block」。
+
+试题第 7 页的结构图 9 要素 —— §3 的现测结构块（PDF p6）逐项齐全：输入 `224×224×3`、Stem（conv1/conv2 stride=2）、四个主要阶段、分辨率 224→112→56→28→14→7、通道 3→24→48→96→192→384、RepViT Block 构成、GAP、分类头 `RepVitClassifier → NormLinear`、最终输出 **37 维**。
+
+试题第 19 页重参数化 8 问 —— 8/8 有落点（§12.1–§12.6）：训练态两条分支（L493-494）、3×3/1×1/Identity 融合与零填充（L509-511）、**BN 吸收公式** `W' = W·γ/√(σ²+ε)`、`b' = (b−μ)·γ/√(σ²+ε)+β`（L504-505）、为什么应基本一致（L515「代数恒等」）、**为什么必须 `eval()` 后融合**（L519-520 running_mean/running_var 论证）、BN 统计量错误的影响、是否减少理论参数量（L544「减少的是**推理态**参数量：5,489,328 → 5,067,056」）、对 ONNX 算子图的影响（§12.5 BN 24→0、Conv 126→103）。
+（压缩前 `HEAD:report/REPORT.md` 亦为同一覆盖集，逐条比对未发现被删的论述。）
+
+## R3-8. 【passed】导出同步 + PROGRESS 页数一致
+
+```
+2026-09-16 19:34:04      51762  report/REPORT.md
+2026-09-16 19:34:26      69549  report/REPORT.docx
+2026-09-16 19:34:45    1204340  report.pdf          (26 页)
+```
+
+mtime 严格递增（MD → DOCX → PDF）✓。内容抽样双重确认（PDF 与 DOCX 同测，压缩后才有的措辞必须在其中）：附录 A 三列表头「缺陷/影响/处置」、§10.1 三问「是否收敛 / 是否过拟合 / 学习率与指标的关系」、`34条DoD`、`3.56%`、V4 否定式句、`7.092953e-06`、`6.199e-06` —— **7 组 × 2 载体全部 OK**；PDF 另含 `共26页` 页脚。
+
+`PROGRESS.md:206` 记录：`| report.pdf | **26 页**（正文 + 附录 A~E；压缩前 37 页），由 report/REPORT.md → docx → PDF |` —— 与 PyMuPDF 实测 **26** 一致。
+
+## R3-9. 【passed】溯源未被砍断（抽 12 个数字，全部命中落盘）
+
+| 数字 | 落盘产物 | 实测字段 |
+|---|---|---|
+| `6.199e-06` / `1.501e-06` | `outputs/metrics/consistency_repvit_m0_9_pet37.json` | `max=6.198883056640625e-06`、`mean=1.5006899711048998e-06` |
+| `7.093e-06` / `2.031e-06` / `32-32` / `BN 107→0` | `outputs/reparam/repvit_m0_9_pet37_reparam_report.json` | `max=7.092952728271484e-06`、`mean=2.030726818702533e-06`、`top1_same_count=32`、`n_bn 107→0` |
+| `92.34%` / `92.22%` / `3669` | `outputs/metrics/baseline_test.json` | `top1=0.9234123739438539`、`macro_f1=0.9221970249315374`、`num_samples=3669` |
+| `3.56%` / `10` / `281` / `271` | `outputs/confusion_matrix/baseline_cat_dog_block.json` | `n_error=281`、`n_cross=10`、`n_within=271`、`ratio=0.03558718861209965` |
+| `78.20%` | `outputs/pretrained_eval/repvit_m0_9/metrics.json` | `top1=78.2` |
+| `34 条 DoD` | `tools/selfcheck.py` + `outputs/metrics/selfcheck_report.json` | `@check=34`、`summary={total:34,pass:34,fail:0}` |
+| P50 `7.37` / P95 `8.00` / `20.36 MB` | `outputs/benchmarks/summary.csv` + `onnx/repvit_m0_9_in1k.onnx` | `p50=7.373`、`p95=8.002`、实盘 20.36 MB |
+| P50 `9.15` / `27.33 MB` | `summary.csv` + `onnx/repvit_m1_0_in1k.onnx` | `p50=9.147`、实盘 27.33 MB |
+| P50 `7.12` / `18.89 MB` | `summary.csv` + `onnx/repvit_m0_9_pet37.onnx` | `p50=7.122`、实盘 18.89 MB |
+
+## R3-10. 【passed】第 1、2 轮已通过项回归
+
+```powershell
+python tools/selfcheck.py --json "$env:TEMP\t23_full.json"     # 必须带 --json，本轮未再触碰入库报告
+```
+
+```
+合计 34 项：PASS 34 / FAIL 0
+file bytes: 8549   generated_at: 2026-09-16T19:38:03
+summary: {'total': 34, 'pass': 34, 'fail': 0}   checks: 34   non-PASS: []
+```
+
+入库报告完好：`outputs/metrics/selfcheck_report.json` mtime 仍为 **18:56:21 / 8,549 B**（本轮自检写 `%TEMP%`，未造成第 1、2 轮那类覆盖事故）。
+
+三个 consistency JSON：本轮改动已由提交 `4b5cda2`（2026-09-16 19:14:19）入库，**工作区与 HEAD 完全一致**（`git status --porcelain -- outputs/metrics/` 为空）。该提交对三份文件均只改 **1 个 hunk / 2 行**（`numstat = 2 2`），改动键 `['images', 'onnx_path']`（与 `4b5cda2^` 逐字段比较同样只有这两个键），数值未动：
+
+```
+repvit_m0_9_pet37 : n=12 max=6.198883056640625e-06 mean=1.5006899711048998e-06 top1=1.0 top5set=1.0 PASS
+repvit_m0_9_in1k  : n=12 max=1.71661376953125e-05  mean=2.360081756099438e-06  top1=1.0 top5set=1.0 PASS
+repvit_m1_0_in1k  : n=12 max=1.811981201171875e-05  mean=2.4635197632960626e-06  top1=1.0 top5set=1.0 PASS
+```
+
+同时复核（第 1 轮项）：
+- `REPORT.md:743-745` 仍写「**34 条 DoD**…`summary = {total: 34, pass: 34, fail: 0}`」与「无任何写死的个人绝对路径（`paths` 检查 **0 处**）」——与本次实测自检一致（V1/V2 未回退）。
+- 跨物种 `3.56% / 10 / 281 / 271`（V6 未回退）；`92.34% / 92.22%`（V3 未回退）；§16.1 第 5 条仍是 V4 的否定式句（未回退）。
+
+## R3-11. 第 3 轮遗留（均为 info 级，不阻塞放行）
+
+| ID | 严重度 | 内容 | 建议 |
+|---|---|---|---|
+| R3-a | info | 试题第 11 页第 4 项「优化方法对收敛速度的影响」在报告中只有**预期级**落点（§8.2 假设表的三条「收敛」预期 + §10.1 同坐标曲线），没有「实测：某方案比 baseline 晚/早多少 epoch 进入平台期」这样一句观测结论。**经 `git show HEAD:report/REPORT.md` 比对，压缩前也只有同样覆盖**（`收敛` 命中同为 4 处、§10.1 三条 bullet 同文），故这是**既有**弱点，不是 t22 砍掉的。 | 可选：在 §10.1 补一句观测（可用 `outputs/logs/{baseline,opt_combo}_metrics.csv` 的 val Top-1 平台期，或 `outputs/metrics/ablation.csv` 的 `best_epoch`：baseline 34 / A 31 / B 32 / A+B 31），再重导一次 PDF/DOCX。 |
+| R3-b | info | `report.pdf` p19 的 12.4 表内 `1.501e-06` 被 Word 折行成 `1.501e-` + `06`（原始文本抽取因此搜不到整串；值本身完整、未变）。这是单元格窄导致的常规折行，不是数据错误。 | 可选：让该单元格不折行（缩短相邻文字或改用不换行写法），使数字整串显示。 |
+
+## R3-附：第 3 轮实际执行的命令
+
+```powershell
+python -c "import fitz; d=fitz.open('report.pdf'); print(d.page_count)"          # 26
+python $env:TEMP\t9verify\r3_page.py      # 逐页排版扫描 + 章节起始页 + 附录 + PROGRESS:206
+python $env:TEMP\t9verify\r3_nums.py      # 受保护数字 MD 行号 / PDF 页号 + 旧值清扫
+python $env:TEMP\t9verify\r3_cover.py     # 试题 p11 十项 / p7 十四问 / p19 重参数化 落点扫描
+python $env:TEMP\t9verify\r3_trace.py     # 导出同步（mtime+内容）+ 12 个数字溯源 + 已入库 JSON diff
+python $env:TEMP\t9verify\chk_juxta.py    # 回归：并列结论句 0 命中
+
+# 自检（必须带 --json 指到 TEMP，避免覆盖入库报告）
+python tools/selfcheck.py --json "$env:TEMP\t23_full.json"
+
+# 三个 consistency JSON 的入库态核对
+git log --format="%h %ad %s" --date=iso -1 -- outputs/metrics/consistency_repvit_m0_9_pet37.json
+git diff-tree --no-commit-id --numstat -r 4b5cda2 -- outputs/metrics/consistency_repvit_m0_9_pet37.json
+```
+
+> 第 3 轮只写了 `report/VERIFICATION_LOGITS_PPT.md`（追加本节）；未新建任何临时目录，未修改任何被验证产物，未执行 `git commit` / `git push`。

@@ -8,13 +8,13 @@
 > **写作约束（有意为之，勿随手改）**
 >
 > 为保持 `outputs/verification/` 下引用清单的统计固定点不变（当前为
-> **4093 条引用 / 153 个文件**），并让 `report/` 下审计报告已登记的条数、
+> **4124 条引用 / 153 个文件**），并让 `report/` 下审计报告已登记的条数、
 > 文件数与校验值继续成立，**本文件刻意不写入会被审计脚本命中的关键词与
 > 数值字面量**。因此下文只登记 Git 层面的事实（分支、提交、哈希、命令、结果），
 > 不复述任何实验数值。
 >
 > 修改本文件后，请重跑 `tools/` 下审计脚本的 `--stdout` 模式，
-> 确认输出仍是 `4093 references in 153 files`。
+> 确认输出仍是 `4124 references in 153 files`。
 
 ## 1. 同步前状态
 
@@ -129,14 +129,65 @@
 ### 6.3 第二次推送（本文件所在提交）
 
 上面 6.1 / 6.2 的实测结果随本文件落盘为一个追加提交，随后以**同样的 fast-forward 方式**
-再次执行 `git push origin master:main`。因此**当前远端 `main` 的 HEAD 就是本文件所在提交
-的 SHA**（比 `9e295fb` 再前进一个提交），复核命令：
+再次执行 `git push origin master:main`。因此**当时远端 `main` 的 HEAD 就是本文件所在提交
+的 SHA**（比 `9e295fb` 再前进一个提交，即 `51de74b`；该轮之后远端 `main` 又随第二轮同步
+继续前进，见第 7 节），复核命令：
 
 ```powershell
 git -C <仓库根目录> fetch origin
 git -C <仓库根目录> rev-parse origin/main master
 & 'C:\Program Files\GitHub CLI\gh.exe' api repos/8ga-tech/RepViT-Reproduction/commits/main --jq .sha
 ```
+
+## 7. 第二轮同步（t25）：报告压缩到 30 页以内
+
+### 7.1 本轮背景与分工
+
+用户要求把项目报告压到 **≤30 页**。相关工作及其归属：
+
+| 任务 | 内容 |
+|---|---|
+| t22 | 压缩 `report/REPORT.md`（简化措辞、附录 A 压成表、精简文件引用与代码块），重导 `report.pdf` 与 `report/REPORT.docx` |
+| t23 | 第 3 轮独立验证：页数、章节完整性、受保护数字与旧值清除，verdict = pass |
+| t24 | 按压缩后的语料重算引用清单，并修正文档里的页数引用 |
+| t26 | 在 §10.1 补写「优化方法对收敛速度的影响」观测（含与预期不符的诚实结论），重导 PDF / DOCX |
+| t27 | 推送前最终刷新：清单与文档登记值收敛到最终不动点 |
+| t25（本任务） | 只负责提交与推送，**不改任何产物内容**（唯一改动就是本文件） |
+
+### 7.2 本轮实测结果
+
+| 项 | 实测值 | 取法 |
+|---|---|---|
+| `report.pdf` 页数 | **26**（≤30 通过；压缩前 37） | PyMuPDF `page_count` |
+| `report.pdf` 字节 | **1,202,648** | 文件系统 |
+| `report/REPORT.md` | 52,943 B | 文件系统 |
+| `report/REPORT.docx` | 70,162 B | 文件系统 |
+| 重导链 mtime 序 | `REPORT.md` < `REPORT.docx` < `report.pdf`（1789559217 / 1789559226 / 1789559245，严格递增） | 文件系统 |
+| 抽样核对 | 「优化方法对收敛速度的影响」「进入平台」「0.946166」三项在 MD、PDF（第 14 页）、DOCX **三处同时命中** | 三份产物各自解析后作字符串匹配 |
+| 引用清单 | **4124 条引用 / 153 个文件**；4,125 行；1,090,932 B；SHA256 `2074F1464E33FEB67D91370745F404D630D128CC88F6E0423E72889AD3A1E33B` | 审计脚本 `--stdout` + 文件哈希 |
+
+清单的条数与文件数同 `report/` 下审计报告的登记值（4124 / 153）实测相符；
+本文件更新后重跑审计脚本，输出未变。
+
+### 7.3 本轮入库文件（8 个）
+
+`report/REPORT.md`、`report.pdf`、`report/REPORT.docx`、`PROGRESS.md`（页数引用更正为实测值）、
+`report/` 下的验证记录（追加第 3 轮验收小节）、
+`outputs/verification/` 下的引用清单 CSV、`report/` 下的审计报告、`report/SYNC_NOTES.md`（本文件）。
+
+### 7.4 本轮提交
+
+- 命令：`git add -A` → `git commit`（**未用 `git commit -a`**）
+- 入库后逐个 `git show HEAD:<path>` 复核实际内容非空（不只看状态码）
+- 结果见 7.5
+
+### 7.5 本轮提交哈希、推送与远端核实
+
+（本节由紧随其后的追加提交回填：本轮产物提交的 SHA、推送前后远端 `main` 的 ref、
+`git ls-remote` / GitHub API 的远端侧复核，以及远端 `report.pdf` 的字节数核对。）
+
+- 说明：上一轮已把 `origin/main` 变成 `master` 的祖先，因此本轮**是普通 fast-forward，
+  不需要再合并无关联历史**，也不需要任何强制推送。
 
 ---
 
