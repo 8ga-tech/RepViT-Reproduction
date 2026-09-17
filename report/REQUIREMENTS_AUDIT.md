@@ -419,8 +419,8 @@ PDF 原文（第 3~4 页）§1.3 共 4 组内容：选择型号 4 条、子集�
 | **T-10** 曲线和可视化结果 | `outputs/curves/`(4)、`outputs/predictions/`(23 PNG + CSV)、`outputs/gradcam/`(15)、`outputs/confusion_matrix/`(8)、`outputs/advanced/interp/`(8) | 满足 | — |
 | **T-11** 性能测试原始记录 | `outputs/metrics/bench.jsonl`（每行一次基准，含 `raw_ms` 50 个原始值）+ `outputs/benchmarks/*_benchmark.json`（逐型号）+ `outputs/benchmarks/summary.csv` | 满足 | `outputs/metrics/bench.jsonl` 存**两批**基准（早批与晚批），README §12 已警告引用时必须写明批次 |
 | **T-12** 项目报告 PDF | `report.pdf`（实测 **1,278,056 B**、26 页，根目录；`report/REPORT.md` 为源文，`report/REPORT.docx` 为导出） | 满足 | 页数超出「建议 12～20 页」，见 §9 体验项 X-1 |
-| **T-13** 答辩 PPT 源文件 | `report/答辩PPT_RepViT.pptx`（实测 **8,119,619 B**、15 页）+ `report/ppt_svg/*.svg`（15 份源） | 满足 | — |
-| **T-14** 答辩 PPT 的 PDF 版本 | `report/答辩PPT_RepViT.pdf`（实测 **1,118,386 B**、15 页） | 满足 | — |
+| **T-13** 答辩 PPT 源文件 | `report/答辩PPT_RepViT.pptx`（**15 页**）。**体积不固化**（t41 实测：两次重生成 8,119,653 → 8,119,664 B，zip 内含 `docProps/core.xml` 时间戳，字节不可复现）—— 实测 `python -c "import os;print(os.path.getsize('report/答辩PPT_RepViT.pptx'))"`+ `report/ppt_svg/*.svg`（15 份源） | 满足 | — |
+| **T-14** 答辩 PPT 的 PDF 版本 | `report/答辩PPT_RepViT.pdf`（**15 页**）。**体积不固化**（同一轮导出稳定、但随 PPTX 每次重生成而变）—— 实测 `python -c "import os;print(os.path.getsize('report/答辩PPT_RepViT.pdf'))"` | 满足 | — |
 | **T-15**（可选）备用演示视频 | 未提供 | 满足 | 题目原文标注为「**可选**的备用演示视频」，缺省不构成缺口；`report/REPORT.md` 与 PPT 均未声称提供视频 |
 
 **（d）候选人需要明确标记（5 类）**

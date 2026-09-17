@@ -25,6 +25,7 @@ PDF 由 ``python tools/export_defense_pdf.py`` 用 PowerPoint COM 重新导出�
 """
 import csv
 import json
+import math
 import re
 from pathlib import Path
 
@@ -158,7 +159,37 @@ def picture(s, path, x, y, w, h):
                          width=Inches(ww), height=Inches(hh))
 
 
-def chart(s, title, labels, series, x, y, w, h, kind=XL_CHART_TYPE.LINE, lo=None, hi=None, fmt="0.0"):
+def _nice_bounds(lo, hi, ticks=5):
+    """把 [lo,hi] 向外扩到「整刻度」边界（1/2/2.5/5/10 × 10^k），使刻度标签好看且仍包住数据。"""
+    span = (hi - lo) or 1.0
+    raw = span / ticks
+    mag = 10 ** math.floor(math.log10(abs(raw) or 1.0))
+    step = next(m * mag for m in (1, 2, 2.5, 5, 10) if m * mag >= raw - 1e-12)
+    return math.floor(lo / step) * step, math.ceil(hi / step) * step
+
+
+def axis_bounds(*series, floor=None, cap=None, pad=0.08):
+    """轴范围一律由**落盘数据现算**（含边距），不得写死。
+
+    floor / cap 只表达语义边界（例如计数/百分比的下界 0、百分比的上界 100），
+    且**任何情况下都不得夹住数据**：hi ≥ max(data)、lo ≤ min(data)。
+
+    背景（t41）：本函数出现之前，第 14 页右图把 Y 轴写死成 77~84 —— 那是旧自建子集的
+    Top-1（78.2~83.1）范围；口径切到 ImageNetV2 后实际值变成 68.7~73.6，全部落在轴外，
+    于是图面空白。凡「该现读的值被写死」都会以同类方式复发，故轴范围统一在这里算。
+    """
+    vals = [float(v) for s in series for v in s if v is not None]
+    if not vals:
+        return floor, cap
+    vmin, vmax = min(vals), max(vals)
+    span = (vmax - vmin) or max(abs(vmax) * 0.1, 1e-9)
+    lo = vmin - span * pad if floor is None else min(float(floor), vmin)
+    hi = vmax + span * pad if cap is None else min(float(cap), vmax + span * pad)
+    lo, hi = _nice_bounds(lo, max(hi, vmax))
+    return lo, max(hi, vmax)          # 取整只会向外扩，数据永远在轴内
+
+
+def chart(s, title, labels, series, x, y, w, h, kind=XL_CHART_TYPE.LINE, floor=None, cap=None, fmt="0.0"):
     text(s, title, x, y, w, .3, 15, CYAN, True)
     bg = s.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(x), Inches(y + .34), Inches(w), Inches(h - .34))
     bg.fill.solid(); bg.fill.fore_color.rgb = RGBColor.from_string("FFFFFF")
@@ -179,10 +210,9 @@ def chart(s, title, labels, series, x, y, w, h, kind=XL_CHART_TYPE.LINE, lo=None
     ch.value_axis.tick_labels.number_format = fmt
     ch.value_axis.tick_labels.font.size = Pt(10)
     ch.category_axis.tick_labels.font.size = Pt(9)
-    if lo is not None:
-        ch.value_axis.minimum_scale = lo
-    if hi is not None:
-        ch.value_axis.maximum_scale = hi
+    lo, hi = axis_bounds(*[v for _, v in series], floor=floor, cap=cap)   # 现读：轴必须包住数据
+    ch.value_axis.minimum_scale = lo
+    ch.value_axis.maximum_scale = hi
     if len(labels) > 10:
         skip = OxmlElement("c:tickLblSkip")
         skip.set("val", "10")
@@ -576,15 +606,15 @@ def build_curves_slide(s, n_eval_base, n_eval_opt):
         "测试集 3669 张，评价次数 Baseline=1、组合=2（落盘 eval_count）。\n"
         "曲线直接来自 CSV；epoch 从 0 开始。Mixup/CutMix、Label Smoothing 影响 train loss，不直接把训练损失高低当作泛化优劣。\n"
         "单种子、同一测试集上的小差异不能证明统计显著或稳定提升。")
-    keys = [("train_loss", "训练损失", 1, 4, "0.0"), ("val_loss", "验证损失", 1, 4, "0.0"),
+    keys = [("train_loss", "训练损失", 1, None, "0.0"), ("val_loss", "验证损失", 1, None, "0.0"),
             ("val_top1", "验证 Top-1 (%)", 100, 100, "0"), ("val_macro_f1", "验证 Macro-F1 (%)", 100, 100, "0"),
-            ("lr", "学习率", 1, .0011, "0.0000")]
-    for i, (key, title, mul, hi, fmt) in enumerate(keys):
+            ("lr", "学习率", 1, None, "0.0000")]
+    for i, (key, title, mul, cap, fmt) in enumerate(keys):
         x, y = .6 + (i % 3) * 4.16, 1.72 + (i // 3) * 2.43
         chart(s, title, [str(r["epoch"]) for r in baseline],
               [("Baseline", [float(r[key]) * mul for r in baseline]),
                ("opt_combo", [float(r[key]) * mul for r in opt])],
-              x, y, 3.98, 2.2, lo=0, hi=hi, fmt=fmt)
+              x, y, 3.98, 2.2, floor=0, cap=cap, fmt=fmt)
     bt, ot = data("outputs/metrics/baseline_test.json"), data("outputs/metrics/opt_combo_test.json")
     text(s, "测试集结果（3669 张）", 8.93, 4.15, 3.8, .35, 16, CYAN, True)
     table(s, [["指标", "Baseline", "组合"], ["Top-1", f"{bt['top1']*100:.2f}%", f"{ot['top1']*100:.2f}%"],
@@ -661,7 +691,7 @@ def build_reparam_slide(s):
     chart(s, "PyTorch 模块数量", ["BatchNorm", "Conv2d"],
           [("融合前", [rep["before"]["n_bn"], rep["before"]["n_conv2d"]]),
            ("融合后", [rep["after"]["n_bn"], rep["after"]["n_conv2d"]])],
-          .65, 1.8, 6, 3.55, XL_CHART_TYPE.COLUMN_CLUSTERED, lo=0, hi=140, fmt="0")
+          .65, 1.8, 6, 3.55, XL_CHART_TYPE.COLUMN_CLUSTERED, floor=0, fmt="0")
     table(s, [["数值验证（32 个固定随机输入）", "结果"],
               ["最大 |Δlogits|", f"{rep['diff']['max_abs_err']:.3e}"],
               ["平均 |Δlogits|", f"{rep['diff']['mean_abs_err']:.3e}"],
@@ -767,18 +797,21 @@ def build_bench_slide(s):
         f"预热 {b0['warmup']} + 正式 {b0['runs']} 次 · threads {b0['threads_intra']}",
         14, "来源：outputs/benchmarks/summary.csv（含 cpu_model / os / ort_version / warmup / runs / threads 全字段）；"
             "outputs/pretrained_eval/<model>/metrics.json",
-        "python deploy/benchmark.py --model repvit_m0_9_in1k --model repvit_m1_0_in1k --model repvit_m0_9_pet37 --warmup 10 --runs 50 --threads 4 --out-dir outputs/verification/benchmarks\n"
+        "python deploy/benchmark.py " + " ".join(f"--model {r['model']}" for r in br)
+        + f" --warmup {b0['warmup']} --runs {b0['runs']} --threads {b0['threads_intra']}"
+          " --out-dir outputs/verification/benchmarks\n"
         f"元信息：6 个 ONNX 模型（{ ' / '.join(labels) }）；输入 1×3×224×224；batch 1；硬件 {b0['cpu_model']} / {b0['os']}；"
         f"后端 ONNX Runtime {b0['ort_version']} {provider}；精度 {b0['precision']}；"
         f"每个模型预热 {b0['warmup']} 次 + 正式 {b0['runs']} 次（threads={b0['threads_intra']}）。\n"
-        "左图含六个部署模型，只比速度；右图只放同一 ImageNet 子集的五个型号（准确率来自 PyTorch，延迟来自 ONNX Runtime CPU）。\n"
+        "左图含六个部署模型，只比速度；右图只放 ImageNetV2 固定子集的五个官方型号"
+        "（准确率来自 PyTorch，延迟来自 ONNX Runtime CPU）。\n"
         f"P50 区间（同一台机器 / ORT CPU）：官方 ImageNet-1K 型号 {min(p50_in1k):.2f}（M0.9）"
         f" ~ {max(p50_in1k):.2f}（M2.3）ms；把自训练 Pet-37 也算进来时最小 {min(p50s):.2f} ms。\n"
         "官方 iPhone 延迟与本机 CPU 延迟不可直接比较。性能数据是历史落盘值，现场新测会有波动。")
     chart(s, "六个 ONNX 模型的推理耗时 (ms)", labels,
           [("P50", [float(r["p50_ms"]) for r in br]), ("P95", [float(r["p95_ms"]) for r in br])],
-          .65, 1.85, 6.05, 3.95, XL_CHART_TYPE.COLUMN_CLUSTERED, lo=0, hi=36, fmt="0")
-    text(s, "同一 ImageNet 子集（1000 张）：速度与准确率", 7.05, 1.85, 5.6, .3, 16, CYAN, True)
+          .65, 1.85, 6.05, 3.95, XL_CHART_TYPE.COLUMN_CLUSTERED, floor=0, fmt="0")
+    text(s, "ImageNetV2 固定子集（1000 张）：速度与准确率", 7.05, 1.85, 5.6, .3, 16, CYAN, True)
     xy = XyChartData()
     for r in imnet:
         se = xy.add_series(model_label(r["model"]))
@@ -794,8 +827,14 @@ def build_bench_slide(s):
     ch.category_axis.axis_title.text_frame.text = "P50 (ms)"
     ch.value_axis.has_title = True
     ch.value_axis.axis_title.text_frame.text = "Top-1 (%)"
-    ch.value_axis.minimum_scale = 77
-    ch.value_axis.maximum_scale = 84
+    # 两个轴都从落盘数据现算（含边距）。t41 事故：Y 轴曾写死 77~84（旧自建子集口径），
+    # 切到 ImageNetV2 后 5 个点全在轴外 → 图面空白。
+    x_lo, x_hi = axis_bounds([float(r["p50_ms"]) for r in imnet])
+    y_lo, y_hi = axis_bounds([acc[r["model"]][0] for r in imnet])
+    ch.category_axis.minimum_scale = x_lo
+    ch.category_axis.maximum_scale = x_hi
+    ch.value_axis.minimum_scale = y_lo
+    ch.value_axis.maximum_scale = y_hi
     for se in ch.series:
         se.marker.style = XL_MARKER_STYLE.CIRCLE
         se.marker.size = 10
@@ -809,10 +848,11 @@ def build_bench_slide(s):
     lead = (f"本子集上 {model_label(pair[0]['model'])} 与 {model_label(pair[1]['model'])} 的 Top-1 相同"
             f"（{acc[pair[0]['model']][0]:.1f}%），{model_label(pair[0]['model'])} 更快"
             f"（P50 {float(pair[0]['p50_ms']):.1f} ms vs {float(pair[1]['p50_ms']):.1f} ms）。"
-            if pair else "右图只放同一子集的五个型号，看的是「多花多少毫秒换多少点准确率」。")
+            if pair else "右图只放 ImageNetV2 固定子集的五个官方型号，看的是「多花多少毫秒换多少点准确率」。")
     a0 = acc[imnet[0]["model"]]
     text(s, f"{lead}更大模型的额外耗时，需要结合使用场景判断。\n"
-            f"右图元信息：准确率来自 PyTorch 2.14.0+cu126（{a0[1]:.0f} batch / {a0[2]} / {a0[3]}）在同一 1000 张子集上的评价；"
+            f"右图元信息：准确率来自 PyTorch 2.14.0+cu126（{a0[1]:.0f} batch / {a0[2]} / {a0[3]}）"
+            f"在 ImageNetV2 固定子集（同一 1000 张）上的评价；"
             f"延迟来自本机 ONNX Runtime CPU（batch 1）。两者口径不同，只做参考。",
          .65, 5.85, 12, 1.05, 13)
 

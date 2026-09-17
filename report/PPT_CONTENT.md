@@ -732,18 +732,18 @@ max=6.198883056640625e-06；mean=1.5006899711048998e-06；Top-1/Top-5 集合均 
 
 六个 ONNX 模型的推理耗时 (ms)
 
-同一 ImageNet 子集（1000 张）：速度与准确率
+ImageNetV2 固定子集（1000 张）：速度与准确率
 
-右图只放同一子集的五个型号，看的是「多花多少毫秒换多少点准确率」。更大模型的额外耗时，需要结合使用场景判断。
-右图元信息：准确率来自 PyTorch 2.14.0+cu126（64 batch / cuda / fp32）在同一 1000 张子集上的评价；延迟来自本机 ONNX Runtime CPU（batch 1）。两者口径不同，只做参考。
+右图只放 ImageNetV2 固定子集的五个官方型号，看的是「多花多少毫秒换多少点准确率」。更大模型的额外耗时，需要结合使用场景判断。
+右图元信息：准确率来自 PyTorch 2.14.0+cu126（64 batch / cuda / fp32）在 ImageNetV2 固定子集（同一 1000 张）上的评价；延迟来自本机 ONNX Runtime CPU（batch 1）。两者口径不同，只做参考。
 
 
 
 备注与验证命令：
 
-python deploy/benchmark.py --model repvit_m0_9_in1k --model repvit_m1_0_in1k --model repvit_m0_9_pet37 --warmup 10 --runs 50 --threads 4 --out-dir outputs/verification/benchmarks
+python deploy/benchmark.py --model repvit_m0_9_in1k --model repvit_m0_9_pet37 --model repvit_m1_0_in1k --model repvit_m1_1_in1k --model repvit_m1_5_in1k --model repvit_m2_3_in1k --warmup 10 --runs 50 --threads 4 --out-dir outputs/verification/benchmarks
 元信息：6 个 ONNX 模型（M0.9 / M0.9-Pet37 / M1.0 / M1.1 / M1.5 / M2.3）；输入 1×3×224×224；batch 1；硬件 13th Gen Intel(R) Core(TM) i7-13650HX / Windows-11-10.0.26200-SP0；后端 ONNX Runtime 1.30.0 CPUExecutionProvider；精度 FP32；每个模型预热 10 次 + 正式 50 次（threads=4）。
-左图含六个部署模型，只比速度；右图只放同一 ImageNet 子集的五个型号（准确率来自 PyTorch，延迟来自 ONNX Runtime CPU）。
+左图含六个部署模型，只比速度；右图只放 ImageNetV2 固定子集的五个官方型号（准确率来自 PyTorch，延迟来自 ONNX Runtime CPU）。
 P50 区间（同一台机器 / ORT CPU）：官方 ImageNet-1K 型号 7.68（M0.9） ~ 34.41（M2.3）ms；把自训练 Pet-37 也算进来时最小 7.55 ms。
 官方 iPhone 延迟与本机 CPU 延迟不可直接比较。性能数据是历史落盘值，现场新测会有波动。
 

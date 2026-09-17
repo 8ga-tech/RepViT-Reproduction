@@ -15,7 +15,9 @@ import json
 import platform
 import re
 import sys
+import zipfile
 from pathlib import Path
+from xml.etree import ElementTree as ET
 
 ROOT = Path(__file__).resolve().parents[1]
 RESULTS: list[dict] = []
@@ -484,7 +486,70 @@ def c_opt_budget():
 
 
 # ---------------------------------------------------------------- G 可视化
-@check("viz", "八类可视化产物齐全", "缺哪类补哪类（8 分项）")
+CHART_NS = "{http://schemas.openxmlformats.org/drawingml/2006/chart}"
+
+
+def _chart_cache_values(root, tag: str) -> list[float]:
+    """取 <c:{tag}><c:numCache> 里的数值（只认缓存值，排除系列名 tx/v）。"""
+    out: list[float] = []
+    for holder in root.iter(CHART_NS + tag):
+        for cache in holder.iter(CHART_NS + "numCache"):
+            for v in cache.iter(CHART_NS + "v"):
+                try:
+                    out.append(float(v.text))
+                except (TypeError, ValueError):
+                    pass
+    return out
+
+
+def chart_axis_findings(pptx: Path | None = None) -> tuple[list[str], int]:
+    """★ t41 并入：PPTX 里每个图表的**数据必须落在其数值轴范围内**。
+
+    背景：第 14 页右图曾把 Y 轴写死 77~84（旧自建子集口径），口径切到 ImageNetV2 后
+    5 个点（68.7~73.6）全部落在轴外 → 图面空白，而此前所有判据只看「存在性与文字」，
+    没有一条查「数据是否落在轴内」。本函数把该判据机器化：
+      · 每个显式设置了 min/max 的数值轴，其对应的系列值必须落在 [min,max] 内；
+      · 轴跨度不得把数据跨度稀释到 < 15%（避免点小到看不见）。
+    散点图两个轴都是 valAx，按（X, Y）顺序分别对应 xVal / yVal 缓存。
+    """
+    path = Path(pptx) if pptx else ROOT / "report" / "答辩PPT_RepViT.pptx"
+    if not path.exists():
+        return [f"PPTX 不存在：{path}"], 0
+    findings: list[str] = []
+    with zipfile.ZipFile(path) as z:
+        names = sorted([n for n in z.namelist() if re.match(r"ppt/charts/chart\d+\.xml$", n)],
+                       key=lambda s: int(re.findall(r"\d+", s)[0]))
+        for name in names:
+            root = ET.fromstring(z.read(name))
+            vals = _chart_cache_values(root, "val")
+            xs = _chart_cache_values(root, "xVal")
+            ys = _chart_cache_values(root, "yVal")
+            axes = []
+            for ax in root.iter(CHART_NS + "valAx"):
+                sc = ax.find(CHART_NS + "scaling")
+                mn = sc.find(CHART_NS + "min") if sc is not None else None
+                mx = sc.find(CHART_NS + "max") if sc is not None else None
+                if mn is None and mx is None:
+                    continue
+                axes.append((float(mn.get("val")) if mn is not None else None,
+                             float(mx.get("val")) if mx is not None else None))
+            for i, (mn, mx) in enumerate(axes):
+                if len(axes) > 1:                       # 散点：轴序 = X, Y
+                    data = xs if i == 0 else ys
+                else:                                   # 单值轴：柱/折线用 val，散点退化为 yVal
+                    data = vals or ys
+                if not data:
+                    continue
+                dmin, dmax = min(data), max(data)
+                if (mn is not None and dmin < mn - 1e-9) or (mx is not None and dmax > mx + 1e-9):
+                    findings.append(f"{name}: 数据 {dmin:.4g}~{dmax:.4g} 超出轴 {mn}~{mx}（会被裁成空白图）")
+                elif mn is not None and mx is not None and (mx - mn) > 0 and \
+                        (dmax - dmin) < 0.15 * (mx - mn) and dmax > 0:
+                    findings.append(f"{name}: 轴跨度过宽（数据仅占 {(dmax - dmin) / (mx - mn) * 100:.0f}%，点会小到看不清）")
+        return findings, len(names)
+
+
+@check("viz", "八类可视化产物齐全 + 图表数据落在轴范围内", "缺哪类补哪类（8 分项）；空白图 = 轴范围没包住数据")
 def c_viz():
     g = {
         "curves": list((ROOT / "outputs/curves").glob("*_curves.png")),
@@ -503,9 +568,14 @@ def c_viz():
     if len(g["preds"]) < 8: miss.append(f"预测图仅 {len(g['preds'])} 张(<8)")
     if len(g["compare"]) < 1: miss.append(f"同图对比仅 {len(g['compare'])} 张(<1)")
     if len(g["gradcam"]) < 4: miss.append(f"Grad-CAM 仅 {len(g['gradcam'])} 张(<4)")
+    try:
+        axis_bad, n_charts = chart_axis_findings()
+    except Exception as e:                       # noqa: BLE001
+        axis_bad, n_charts = [f"图表轴范围扫描异常 {type(e).__name__}: {e}"], 0
+    miss.extend(axis_bad)
     return (not miss), f"缺失={miss}" if miss else \
         f"curves={len(g['curves'])} cm={len(g['cm'])} preds={len(g['preds'])} " \
-        f"compare={len(g['compare'])} cam={len(g['gradcam'])}"
+        f"compare={len(g['compare'])} cam={len(g['gradcam'])}；图表轴范围 OK（{n_charts} 图）"
 
 
 @check("viz.cm", "混淆矩阵为行归一化", "图注必须写 normalize='true'")
