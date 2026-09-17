@@ -184,7 +184,7 @@ ONNX Runtime CPUExecutionProvider、`threads=4`、batch=1、FP32、预热 10 + �
 > **推荐与帕累托**：P50 ≤ 15 ms 预算内 `repvit_m0_9_in1k` 综合得分最高（**0.9792**，P50 7.68 ms、
 > Top-1 68.70 %），预算内精度最优为 `repvit_m1_1_in1k`（70.80 %，P50 10.93 ms，得分 0.9123），
 > `repvit_m1_0_in1k` 得分 0.9081（`outputs/advanced/model_recommendation.csv`、`pareto_summary.json`）。
-> **P50 区间口径**：6 个 benchmark 模型为 **7.55 ~ 34.41 ms**，其中「官方 ImageNet-1K 型号」
+> **P50 区间口径**：6 个 benchmark 模型为 **7.55 ~ 34.41 ms**，其中「官方预训练型号」
 > 子集为 7.68 ~ 34.41 ms（自训练 Pet-37 为 7.55 ms）。**注意不要混用**：
 > `outputs/benchmarks/family_summary.csv` 的 `params_M`（M0.9 = 5.4893）是未融合口径、延迟是
 > PyTorch CPU 计时；其 `top1/top5` 列与 `outputs/pretrained_eval/*/metrics.json` **已逐项一致**

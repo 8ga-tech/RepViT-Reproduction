@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import argparse
 import hashlib
+import io
 import json
 import platform
 import re
@@ -487,6 +488,197 @@ def c_opt_budget():
 
 # ---------------------------------------------------------------- G 可视化
 CHART_NS = "{http://schemas.openxmlformats.org/drawingml/2006/chart}"
+PML_NS = "{http://schemas.openxmlformats.org/presentationml/2006/main}"
+DML_NS = "{http://schemas.openxmlformats.org/drawingml/2006/main}"
+REL_NS = "{http://schemas.openxmlformats.org/officeDocument/2006/relationships}"
+
+# ---- t47/t49 并入：把「图元看不见」的全部形态机器化 ----
+# 背景：t41 只覆盖「显式设了 min/max 且数据超界」这一种；t44 用负向探针实证另三种形态
+# 仍能穿过既有判据（无显式轴边界的图、缓存为空的图、纯白图片）；t37 又实证 t47 的①只出 NOTE、
+# 汇总行仍打印「OK」→ 回归会被一句话掩盖。本段把过滤集合补全：
+#   ① 未显式设 min/max 的数值轴 → **FAIL**（t49 起）：写入侧 `axis_bounds()` 已硬保证每张图都有
+#      显式边界，故「无显式边界」= 该图**绕过了写入侧**，而轴边界未显式正是 P14 整张空白的那条通路；
+#      汇总行同时打印「N 条数值轴全部显式设边界」，使覆盖度不再可被静默掩盖；
+#   ② 图表必须有非空序列数据（numCache / numLit）→ 空则 FAIL（PowerPoint 会画成空白图）；
+#   ③ `p:pic` → slide.rels → `ppt/media/*`：存在、非零尺寸、非纯色/空白 → FAIL（全 15 页扫描）；
+#   ④ PPTX↔PDF 同源：页数相等 + 每页关键文本可在对应 PDF 页检索到 → FAIL。
+#
+# 图片「空白」阈值依据：纯白/纯色图 → 灰度标准差 ≈ 0、灰阶数 = 1。**实测**本仓库 11 张
+# `ppt/media/*.png` 为 std ∈ [35.1, 85.0]、灰阶 ∈ [245, 256]，故阈值留 ≥10 倍余量。
+IMG_MIN_STD = 3.0                # 纯色图 std ≈ 0（实测本仓最小 35.1 → 余量 11×）
+IMG_MIN_GRAY_LEVELS = 4          # 纯色图灰阶 = 1（实测本仓最小 245 → 余量 61×）
+IMG_MIN_BYTES = 512              # 占位/空白图元体积极小（实测本仓最小 64,589 B → 余量 126×）
+PDF_RUN_COVERAGE = 0.80          # 逐页：≥80% 文本 run 必须能在对应 PDF 页检索到
+PDF_RUN_MINLEN = 6
+_NORM_DROP = "，。、；：,.;:!！?？()（）[]【】“”\"'’‘·—–-…/\\|<>《》"
+
+
+class ChartScan(tuple):
+    """`chart_axis_findings()` 的返回值：(轴类 FAIL 列表, 图表数) —— 仍是 2 元组，旧调用不受影响；
+    另带 `notes`（不可机检项的说明）、`cache_fails`（空缓存）与 t49 的轴边界计数
+    （`n_axis_explicit` / `n_axis_implicit` / `charts_no_axis`，供汇总行打印覆盖度）。"""
+
+    def __new__(cls, axis_fails: list[str], n_charts: int,
+                notes: list[str] | None = None, cache_fails: list[str] | None = None,
+                n_axis_explicit: int = 0, n_axis_implicit: int = 0, charts_no_axis: int = 0):
+        self = super().__new__(cls, (axis_fails, n_charts))
+        self.axis_fails = axis_fails
+        self.notes = notes or []
+        self.cache_fails = cache_fails or []
+        self.n_axis_explicit = n_axis_explicit
+        self.n_axis_implicit = n_axis_implicit
+        self.charts_no_axis = charts_no_axis
+        return self
+
+
+def _norm_for_match(s: str) -> str:
+    """归一化（NFKC + 去空白与标点 + 小写）：PDF 抽取会在中英文之间插空格，必须去空白比对。"""
+    import unicodedata
+    s = unicodedata.normalize("NFKC", s)
+    s = "".join(ch for ch in s if ch not in _NORM_DROP)
+    return re.sub(r"\s+", "", s).lower()
+
+
+def _slide_runs(root) -> list[str]:
+    """PPTX 一页里的文本 run（按段落合并 `a:t`）。"""
+    out: list[str] = []
+    for para in root.iter(DML_NS + "p"):
+        txt = "".join(t.text or "" for t in para.iter(DML_NS + "t")).strip()
+        if txt:
+            out.append(txt)
+    return out
+
+
+def _image_stats(data: bytes) -> dict:
+    """光栅图的体检数字：空白（纯色/零尺寸/过小）+ 尺寸 + 灰度标准差 + 灰阶数。"""
+    st = {"blank": False, "why": "", "w": 0, "h": 0, "std": None, "levels": None}
+    if len(data) < IMG_MIN_BYTES:
+        st.update(blank=True, why=f"仅 {len(data)} B")
+        return st
+    from PIL import Image, ImageStat
+    im = Image.open(io.BytesIO(data))
+    st["w"], st["h"] = im.size
+    if st["w"] <= 0 or st["h"] <= 0:
+        st.update(blank=True, why=f"像素尺寸 {st['w']}x{st['h']}")
+        return st
+    g = im.convert("L")
+    st["std"] = round(float(ImageStat.Stat(g).stddev[0]), 1)
+    st["levels"] = sum(1 for n in g.histogram() if n)
+    lo, hi = g.extrema if hasattr(g, "extrema") else g.getextrema()
+    st["why"] = f"{st['w']}x{st['h']} std={st['std']} 灰阶={st['levels']}"
+    if st["std"] < IMG_MIN_STD or st["levels"] <= IMG_MIN_GRAY_LEVELS or lo == hi:
+        st["blank"] = True
+        st["why"] += "（纯色/空白）"
+    return st
+
+
+def _image_scan(pptx: Path) -> dict:
+    """③ `p:pic` → slide.rels → `ppt/media/*`（**全 15 页**扫描，不只图表页）。
+
+    FAIL：图片 part 缺失 / 0 字节 / 纯色空白。提示：外链图（包里查不到字节）、孤儿 media。
+    """
+    rep: dict = {"fails": [], "notes": [], "n_pics": 0, "n_media": 0, "min_std": None, "min_levels": None}
+    with zipfile.ZipFile(pptx) as z:
+        names = set(z.namelist())
+        slides = sorted([n for n in names if re.match(r"ppt/slides/slide\d+\.xml$", n)],
+                        key=lambda s: int(re.findall(r"\d+", s)[0]))
+        media = sorted([n for n in names if n.startswith("ppt/media/")])
+        rep["n_media"] = len(media)
+        refd: set[str] = set()
+        for slide in slides:
+            rels_path = f"ppt/slides/_rels/{Path(slide).name}.rels"
+            rels: dict[str, str] = {}
+            if rels_path in names:
+                for rel in ET.fromstring(z.read(rels_path)):
+                    rels[rel.get("Id")] = rel.get("Target")
+            root = ET.fromstring(z.read(slide))
+            for pic in root.iter(PML_NS + "pic"):
+                blip = pic.find(f".//{DML_NS}blip")
+                rid = blip.get(REL_NS + "embed") if blip is not None else None
+                link = blip.get(REL_NS + "link") if blip is not None else None
+                rep["n_pics"] += 1
+                if rid:
+                    target = rels.get(rid)
+                    if not target:
+                        rep["fails"].append(f"{Path(slide).name}: 图片关系无法解析（rId={rid}）→ 该页留空框")
+                        continue
+                    part = target[3:] if target.startswith("../") else target
+                    part = part if part.startswith("ppt/") else f"ppt/media/{Path(part).name}"
+                    refd.add(part)
+                    if part not in names:
+                        rep["fails"].append(f"{Path(slide).name}: 引用的图片 part 缺失（{part}）→ 该页留空框")
+                elif link:
+                    rep["notes"].append(f"{Path(slide).name}: 外链图片 rId={link}（包里无字节，无法机检内容）")
+                else:
+                    rep["fails"].append(f"{Path(slide).name}: p:pic 无 r:embed/r:link → 该页留空框")
+        for part in media:
+            data = z.read(part)
+            if not data:
+                rep["fails"].append(f"{part}: 0 字节（图片空白）")
+                continue
+            if not part.lower().endswith((".png", ".jpg", ".jpeg", ".bmp", ".gif", ".tif", ".tiff", ".webp")):
+                rep["notes"].append(f"{part}: 非光栅图（{Path(part).suffix}），只查存在性与字节数")
+                continue
+            try:
+                st = _image_stats(data)
+            except Exception as e:                       # noqa: BLE001
+                rep["fails"].append(f"{part}: 图片解码失败 {type(e).__name__}: {e}（PPT 里会是空白）")
+                continue
+            if st["blank"]:
+                rep["fails"].append(f"{part}: 图片为空白/纯色（{st['why']}）")
+                continue
+            rep["min_std"] = st["std"] if rep["min_std"] is None else min(rep["min_std"], st["std"])
+            rep["min_levels"] = st["levels"] if rep["min_levels"] is None else min(rep["min_levels"], st["levels"])
+        orphan = sorted(set(media) - refd)
+        if orphan:
+            rep["notes"].append(f"孤儿图片 part {len(orphan)} 个（未被任何页引用）：{[Path(o).name for o in orphan[:3]]}")
+    return rep
+
+
+def _pdf_sync_scan(pptx: Path, pdf: Path | None = None) -> dict:
+    """④ PPTX↔PDF 同源（答辩现场看的是 PDF）：页数相等 + 每页关键文本可在对应 PDF 页检索到。"""
+    pdf_path = Path(pdf) if pdf else ROOT / "report" / "答辩PPT_RepViT.pdf"
+    rep: dict = {"fails": [], "notes": [], "n_slides": 0, "n_pages": 0, "pages_ok": 0}
+    if not pdf_path.exists():
+        rep["fails"].append(f"PDF 不存在：{pdf_path}（答辩现场看的是 PDF，必须与 PPTX 同源）")
+        return rep
+    try:
+        import fitz
+    except ImportError as e:                             # noqa: BLE001
+        rep["fails"].append(f"缺 pymupdf（requirements.lock.txt 已冻结），无法机检 PPTX↔PDF 同源：{e}")
+        return rep
+    doc = fitz.open(pdf_path)
+    rep["n_pages"] = doc.page_count
+    with zipfile.ZipFile(pptx) as z:
+        slides = sorted([n for n in z.namelist() if re.match(r"ppt/slides/slide\d+\.xml$", n)],
+                        key=lambda s: int(re.findall(r"\d+", s)[0]))
+        rep["n_slides"] = len(slides)
+        if len(slides) != doc.page_count:
+            rep["fails"].append(f"页数不一致：PPTX {len(slides)} 页 ≠ PDF {doc.page_count} 页（PDF 可能是旧的）")
+        for i, slide in enumerate(slides):
+            if i >= doc.page_count:
+                break
+            page_norm = _norm_for_match(doc[i].get_text())
+            runs = [_norm_for_match(r) for r in _slide_runs(ET.fromstring(z.read(slide)))]
+            runs = [r for r in runs if len(r) >= PDF_RUN_MINLEN]
+            if not runs:
+                continue
+            key = max(runs, key=len)
+            hit = [r for r in runs if r in page_norm]
+            cov = len(hit) / len(runs)
+            if key not in page_norm or cov < PDF_RUN_COVERAGE:
+                miss = [r for r in runs if r not in page_norm]
+                rep["fails"].append(
+                    f"第 {i + 1} 页与 PDF 不同源：关键文本命中 {len(hit)}/{len(runs)}"
+                    f"（{cov * 100:.0f}% < {PDF_RUN_COVERAGE * 100:.0f}%），缺失示例 {[m[:36] for m in miss[:2]]}")
+                continue
+            rep["pages_ok"] += 1
+    mt_pptx, mt_pdf = pptx.stat().st_mtime, pdf_path.stat().st_mtime
+    if mt_pptx > mt_pdf + 1:
+        rep["notes"].append(
+            f"PPTX 比 PDF 新 {int(mt_pptx - mt_pdf)} 秒（导出可能滞后，建议重跑 tools/export_defense_pdf.py）")
+    return rep
+
 
 
 def _chart_cache_values(root, tag: str) -> list[float]:
@@ -511,11 +703,22 @@ def chart_axis_findings(pptx: Path | None = None) -> tuple[list[str], int]:
       · 每个显式设置了 min/max 的数值轴，其对应的系列值必须落在 [min,max] 内；
       · 轴跨度不得把数据跨度稀释到 < 15%（避免点小到看不见）。
     散点图两个轴都是 valAx，按（X, Y）顺序分别对应 xVal / yVal 缓存。
+
+    t47 起返回 `ChartScan`（**仍是 2 元组**，旧调用 `bad, n = chart_axis_findings()` 不受影响），
+    额外携带：`notes`（不可机检项的说明）、`cache_fails`（缓存/字面量数据为空 —— PowerPoint 会画成
+    空白图，判 FAIL）与轴边界计数（供 `viz` 汇总行打印覆盖度）。
+
+    t49：**未显式设 min/max 的数值轴由「提示项」升级为 FAIL** —— 写入侧 `axis_bounds()` 保证每张图
+    都有显式边界，因此缺边界即「该图绕过了写入侧」；只出 NOTE 时汇总行仍打印「OK（N 图）」，
+    回归会被一句话掩盖（t37 实证）。同时汇总行显式打印「N 条数值轴全部显式设边界」。
     """
     path = Path(pptx) if pptx else ROOT / "report" / "答辩PPT_RepViT.pptx"
     if not path.exists():
-        return [f"PPTX 不存在：{path}"], 0
+        return ChartScan([f"PPTX 不存在：{path}"], 0)
     findings: list[str] = []
+    notes: list[str] = []                     # t49：只放「不可机检」的说明（本身不判 FAIL）
+    cache_fails: list[str] = []               # t47②：空缓存 = 白图 → FAIL
+    n_explicit = n_implicit = charts_no_axis = 0
     with zipfile.ZipFile(path) as z:
         names = sorted([n for n in z.namelist() if re.match(r"ppt/charts/chart\d+\.xml$", n)],
                        key=lambda s: int(re.findall(r"\d+", s)[0]))
@@ -524,15 +727,49 @@ def chart_axis_findings(pptx: Path | None = None) -> tuple[list[str], int]:
             vals = _chart_cache_values(root, "val")
             xs = _chart_cache_values(root, "xVal")
             ys = _chart_cache_values(root, "yVal")
+            # ② 空缓存（t47）：逐系列统计 numCache/numLit 点数；全空 → PowerPoint 会画成空白图
+            series = list(root.iter(CHART_NS + "ser"))
+            pts = []
+            for ser in series:
+                n_pt = 0
+                for tag in ("val", "xVal", "yVal"):
+                    for holder in ser.iter(CHART_NS + tag):
+                        for cache in list(holder.iter(CHART_NS + "numCache")) + \
+                                list(holder.iter(CHART_NS + "numLit")):
+                            n_pt += len(list(cache.iter(CHART_NS + "v")))
+                pts.append(n_pt)
+            if not series:
+                cache_fails.append(f"{name}: 无任何系列（图表会渲染成空白）")
+            elif sum(pts) == 0:
+                cache_fails.append(f"{name}: 全部 {len(series)} 个系列的缓存/字面量数据均为空（会渲染成空白图）")
+            else:
+                empty_ser = [i for i, c in enumerate(pts) if c == 0]
+                if empty_ser:
+                    cache_fails.append(f"{name}: 第 {empty_ser} 个系列无数据点（该系列画不出来）")
+            # ① 轴边界（t47 起不静默跳过；**t49 起缺显式边界 = FAIL**）
             axes = []
+            n_ax = 0
+            n_impl = 0
             for ax in root.iter(CHART_NS + "valAx"):
+                n_ax += 1
                 sc = ax.find(CHART_NS + "scaling")
                 mn = sc.find(CHART_NS + "min") if sc is not None else None
                 mx = sc.find(CHART_NS + "max") if sc is not None else None
                 if mn is None and mx is None:
+                    n_impl += 1
                     continue
                 axes.append((float(mn.get("val")) if mn is not None else None,
                              float(mx.get("val")) if mx is not None else None))
+            n_explicit += len(axes)
+            n_implicit += n_impl
+            if n_ax == 0:
+                charts_no_axis += 1
+                notes.append(f"{name}: 无数值轴（不可机检裁切；写入侧只产出折线/柱状/散点，均有数值轴）")
+            elif n_impl:
+                findings.append(
+                    f"{name}: {n_impl}/{n_ax} 个数值轴未显式设 min/max —— 写入侧 axis_bounds() 硬保证每张图都有"
+                    f"显式边界，缺边界说明该图**绕过了写入侧**，且轴边界未显式正是 P14 整张空白的那条通路")
+                notes.append(f"{name}: {n_impl}/{n_ax} 个数值轴不可机检（依赖自动缩放）")
             for i, (mn, mx) in enumerate(axes):
                 if len(axes) > 1:                       # 散点：轴序 = X, Y
                     data = xs if i == 0 else ys
@@ -546,10 +783,12 @@ def chart_axis_findings(pptx: Path | None = None) -> tuple[list[str], int]:
                 elif mn is not None and mx is not None and (mx - mn) > 0 and \
                         (dmax - dmin) < 0.15 * (mx - mn) and dmax > 0:
                     findings.append(f"{name}: 轴跨度过宽（数据仅占 {(dmax - dmin) / (mx - mn) * 100:.0f}%，点会小到看不清）")
-        return findings, len(names)
+        return ChartScan(findings, len(names), notes, cache_fails,
+                         n_explicit, n_implicit, charts_no_axis)
 
 
-@check("viz", "八类可视化产物齐全 + 图表数据落在轴范围内", "缺哪类补哪类（8 分项）；空白图 = 轴范围没包住数据")
+@check("viz", "八类可视化产物齐全 + 图表数据落在轴范围内 + 图元非空白 + PPTX↔PDF 同源",
+       "缺哪类补哪类（8 分项）；空白图 = 轴范围没包住数据 / 轴边界未显式（绕过写入侧）/ 缓存为空 / 图片纯色 / PDF 是旧的")
 def c_viz():
     g = {
         "curves": list((ROOT / "outputs/curves").glob("*_curves.png")),
@@ -568,14 +807,47 @@ def c_viz():
     if len(g["preds"]) < 8: miss.append(f"预测图仅 {len(g['preds'])} 张(<8)")
     if len(g["compare"]) < 1: miss.append(f"同图对比仅 {len(g['compare'])} 张(<1)")
     if len(g["gradcam"]) < 4: miss.append(f"Grad-CAM 仅 {len(g['gradcam'])} 张(<4)")
+    notes: list[str] = []
+    ax_txt = "图表轴范围扫描失败"
     try:
-        axis_bad, n_charts = chart_axis_findings()
+        scan = chart_axis_findings()
+        n_charts = scan[1]
+        miss.extend(scan[0])                         # 轴类 FAIL（数据超界 / 轴跨度过宽 / **未显式设边界**）
+        miss.extend(scan.cache_fails)                # t47② 空缓存
+        notes.extend(scan.notes)                     # 不可机检项说明
+        if scan.charts_no_axis:
+            # t49：有图无法机检时，汇总行**不得**再是全好的措辞
+            ax_txt = (f"图表轴范围部分不可机检（{n_charts} 图：{n_charts - scan.charts_no_axis} 图可机检、"
+                      f"{scan.charts_no_axis} 图无数值轴）")
+        else:
+            ax_txt = (f"图表轴范围 OK（{n_charts} 图 / {scan.n_axis_explicit} 条数值轴全部显式设边界）")
     except Exception as e:                       # noqa: BLE001
-        axis_bad, n_charts = [f"图表轴范围扫描异常 {type(e).__name__}: {e}"], 0
-    miss.extend(axis_bad)
-    return (not miss), f"缺失={miss}" if miss else \
-        f"curves={len(g['curves'])} cm={len(g['cm'])} preds={len(g['preds'])} " \
-        f"compare={len(g['compare'])} cam={len(g['gradcam'])}；图表轴范围 OK（{n_charts} 图）"
+        n_charts = 0
+        miss.append(f"图表轴范围扫描异常 {type(e).__name__}: {e}")
+    # t47③ 图片类图元（p:pic → slide.rels → ppt/media/*，全 15 页）与 t47④ PPTX↔PDF 同源
+    img_txt = pdf_txt = ""
+    try:
+        img = _image_scan(ROOT / "report" / "答辩PPT_RepViT.pptx")
+        miss.extend(img["fails"])
+        notes.extend(img["notes"])
+        img_txt = (f"图片 {img['n_pics']} 张/{img['n_media']} media"
+                   f"（min std={img['min_std']}、min 灰阶={img['min_levels']}）")
+    except Exception as e:                       # noqa: BLE001
+        miss.append(f"图片扫描异常 {type(e).__name__}: {e}")
+    try:
+        ps = _pdf_sync_scan(ROOT / "report" / "答辩PPT_RepViT.pptx")
+        miss.extend(ps["fails"])
+        notes.extend(ps["notes"])
+        pdf_txt = (f"PPTX↔PDF {ps['n_slides']}={ps['n_pages']} 页"
+                   f"、逐页关键文本命中 {ps['pages_ok']}/{ps['n_slides']}")
+    except Exception as e:                       # noqa: BLE001
+        miss.append(f"PPTX↔PDF 同源扫描异常 {type(e).__name__}: {e}")
+    note_txt = ("；提示：" + "；".join(notes)) if notes else ""
+    if miss:
+        return False, f"缺失={miss}{note_txt}"
+    return True, (f"curves={len(g['curves'])} cm={len(g['cm'])} preds={len(g['preds'])} "
+                  f"compare={len(g['compare'])} cam={len(g['gradcam'])}"
+                  f"；{ax_txt} + 空缓存 0；{img_txt}；{pdf_txt}{note_txt}")
 
 
 @check("viz.cm", "混淆矩阵为行归一化", "图注必须写 normalize='true'")
@@ -812,13 +1084,143 @@ SUBMIT = [
 ]
 
 
-@check("submit", "提交物清单齐全", "报告或答辩缺失 → 本次考核不通过")
+# ---- t49（F-15）：把「从未被任何闸门覆盖」的 **in-repo** 载体纳入存在性 + 关键文本断言 ----
+# t40 实测：`report/REPORT.docx`、`report/SPEC13_FREEZE.json`、`report/ppt_svg/*.svg`（15 份）、
+# `docs/workflow_zh.{html,svg}` 在此前 6 个闸门脚本里**一次都没出现过** —— 它们同样是交付物，
+# 改坏了没有任何断言会报。
+# 不纳入（**仓外载体**）：工作区根目录的 `06_答辩Q&A_精简版.docx` —— 门禁一律以仓库根 `ROOT` 解析
+# 路径，仓外文件既不在 `git ls-files` 也不在任何交付根内，硬塞会变成「看仓库外路径」的假依赖，
+# 且 CI/他人复现时必然 FAIL。故明确记录：该载体不可由仓库门禁覆盖，只能靠人工/外审核对。
+REPORT_DOCX = "report/REPORT.docx"
+SPEC13_FREEZE = "report/SPEC13_FREEZE.json"
+PPT_SVG_NAMES = ["01_cover.svg", "02_status.svg", "03_arch.svg", "04_notvit.svg", "05_pretrained.svg",
+                 "06_data.svg", "07_baseline.svg", "08_optimize.svg", "09_results.svg",
+                 "10_confusion.svg", "11_gradcam.svg", "12_reparam.svg", "13_onnx.svg",
+                 "14_perf.svg", "15_summary.svg"]
+PPT_SVG_NODES = ("ImageNetV2固定子集", "重参数化", "ONNX", "Grad-CAM", "混淆矩阵")
+WORKFLOW_FILES = ("docs/workflow_zh.html", "docs/workflow_zh.svg")
+WORKFLOW_NODES = ("run_all", "selfcheck", "重参数化", "Grad-CAM")
+
+
+def _carrier_text(path: Path) -> str:
+    """载体的「去标签 + 去空白」纯文本：docx 取 `word/*.xml`，svg/html 直接去标签。"""
+    if path.suffix.lower() == ".docx":
+        with zipfile.ZipFile(path) as z:
+            raw = "".join(z.read(n).decode("utf-8", "replace")
+                          for n in z.namelist()
+                          if n.startswith("word/") and n.endswith(".xml"))
+    else:
+        raw = path.read_text(encoding="utf-8", errors="replace")
+    return re.sub(r"\s+", "", re.sub(r"<[^>]+>", "", raw))
+
+
+def carrier_content_findings() -> tuple[list[str], str]:
+    """F-15：此前无闸门覆盖的 in-repo 载体的**存在性 + 关键文本**（每条都做过负向验证）。"""
+    fails: list[str] = []
+    docx_meta = "REPORT.docx 缺失"
+    # 1) report/REPORT.docx：冻结口径措辞与数值必须在；被禁措辞必须不在
+    docx = ROOT / REPORT_DOCX
+    if not docx.exists():
+        fails.append(f"{REPORT_DOCX} 缺失（报告 docx 是提交物）")
+    else:
+        try:
+            t = _carrier_text(docx)
+            docx_meta = f"REPORT.docx {len(t)} 字"
+            if "官方预训练型号" not in t:
+                fails.append(f"{REPORT_DOCX}: 缺措辞「官方预训练型号」（F-11 口径）")
+            if "ImageNetV2" not in t:
+                fails.append(f"{REPORT_DOCX}: 缺唯一口径名「ImageNetV2」")
+            if "官方ImageNet-1K型号" in t:
+                fails.append(f"{REPORT_DOCX}: 含被禁措辞「官方 ImageNet-1K 型号」（暗示与 1K 公布值可比）")
+            m = ROOT / "outputs/pretrained_eval/repvit_m0_9/metrics.json"
+            if m.exists():
+                top1 = float(json.loads(m.read_text(encoding="utf-8"))["top1"])
+                if not any(c in t for c in (f"{top1:.2f}", f"{top1:.1f}", str(top1))):
+                    fails.append(f"{REPORT_DOCX}: 缺冻结口径数值（M0.9 在 ImageNetV2 固定子集 top1 = {top1}）")
+        except Exception as e:                       # noqa: BLE001
+            fails.append(f"{REPORT_DOCX}: 读取/核对失败 {type(e).__name__}: {e}")
+    # 2) report/ppt_svg/*.svg：15 份设计源 + 关键节点名（联合文本）
+    svg_dir = ROOT / "report/ppt_svg"
+    have = sorted(p.name for p in svg_dir.glob("*.svg"))
+    miss_svg = sorted(set(PPT_SVG_NAMES) - set(have))
+    if miss_svg:
+        fails.append(f"report/ppt_svg 缺 {len(miss_svg)} 份设计源：{miss_svg}")
+    texts: dict[str, str] = {}
+    for n in have:
+        try:
+            texts[n] = _carrier_text(svg_dir / n)
+        except Exception as e:                       # noqa: BLE001
+            fails.append(f"report/ppt_svg/{n}: 读取失败 {type(e).__name__}")
+    thin = sorted(n for n, s in texts.items() if len(s) < 100)
+    if thin:
+        fails.append(f"report/ppt_svg 文本过少（<100 字，疑似截断/空白）：{thin}")
+    union = "".join(texts.values())
+    lack_svg = [k for k in PPT_SVG_NODES if k not in union]
+    if lack_svg:
+        fails.append(f"report/ppt_svg 联合文本缺关键节点：{lack_svg}")
+    # 3) docs/workflow_zh.{html,svg}：工作流程图关键节点名（逐文件）
+    for rel in WORKFLOW_FILES:
+        p = ROOT / rel
+        if not p.exists():
+            fails.append(f"{rel} 缺失")
+            continue
+        try:
+            t = _carrier_text(p)
+        except Exception as e:                       # noqa: BLE001
+            fails.append(f"{rel}: 读取失败 {type(e).__name__}")
+            continue
+        lack = [k for k in WORKFLOW_NODES if k not in t]
+        if lack:
+            fails.append(f"{rel}: 缺工作流关键节点 {lack}")
+    # 4) report/SPEC13_FREEZE.json：冻结基线声明的子集事实必须与实文件三方一致
+    fz_path = ROOT / SPEC13_FREEZE
+    if not fz_path.exists():
+        fails.append(f"{SPEC13_FREEZE} 缺失（§1.3 冻结基线）")
+    else:
+        try:
+            fz = json.loads(fz_path.read_text(encoding="utf-8"))
+            dec = fz.get("decision", {})
+            if dec.get("status") != "ACTIVE_IMAGENETV2_MF_1000_ONLY":
+                fails.append(f"{SPEC13_FREEZE}: decision.status 不是唯一口径 ACTIVE_IMAGENETV2_MF_1000_ONLY")
+            if dec.get("single_caliber") is not True:
+                fails.append(f"{SPEC13_FREEZE}: decision.single_caliber 不是 True")
+            sub = fz.get("subset", {})
+            f = ROOT / str(sub.get("file", ""))
+            if not f.exists():
+                fails.append(f"{SPEC13_FREEZE}: 声明的子集文件不存在（{sub.get('file')}）")
+            else:
+                raw = f.read_bytes()
+                if hashlib.sha256(raw).hexdigest() != sub.get("sha256"):
+                    fails.append(f"{SPEC13_FREEZE}: subset.sha256 与实文件不一致（子集被改动）")
+                if len(raw) != sub.get("bytes"):
+                    fails.append(f"{SPEC13_FREEZE}: subset.bytes {sub.get('bytes')} ≠ 实测 {len(raw)}")
+                lines = len(raw.decode("utf-8", "replace").splitlines())
+                if lines != sub.get("lines"):
+                    fails.append(f"{SPEC13_FREEZE}: subset.lines {sub.get('lines')} ≠ 实测 {lines}")
+        except Exception as e:                       # noqa: BLE001
+            fails.append(f"{SPEC13_FREEZE}: 解析/核对失败 {type(e).__name__}: {e}")
+    extra = sorted(set(have) - set(PPT_SVG_NAMES))
+    detail = (f"{docx_meta}；ppt_svg {len(have)} 份（关键节点 {'全' if not lack_svg else '缺'}）；"
+              f"workflow {len(WORKFLOW_FILES)} 件；SPEC13 子集 sha256/字节/行数与实文件一致"
+              + (f"；多余 SVG {extra}" if extra else ""))
+    return fails, detail
+
+
+@check("submit", "提交物清单齐全 + 关键内容（报告 docx / PPT 设计源 / 工作流程图 / §1.3 冻结基线）",
+       "报告或答辩缺失 → 本次考核不通过；载体存在但关键内容缺失同样 FAIL")
 def c_submit():
     miss = [r for r in SUBMIT if not (ROOT / r).exists()]
     onnx_n = len(list((ROOT / "onnx").glob("*.onnx")))
     if onnx_n < 3:
         miss.append(f"ONNX 仅 {onnx_n} 个(<3)")
-    return (not miss), ("齐全" if not miss else f"缺失={miss}")
+    try:
+        c_fails, c_detail = carrier_content_findings()
+    except Exception as e:                           # noqa: BLE001
+        c_fails, c_detail = [f"载体内容核对异常 {type(e).__name__}: {e}"], ""
+    miss.extend(c_fails)
+    if miss:
+        return False, f"缺失={miss}"
+    return True, f"齐全（{len(SUBMIT)} 项 + ONNX {onnx_n} 个）；{c_detail}"
 
 
 

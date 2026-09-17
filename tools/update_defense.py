@@ -805,7 +805,7 @@ def build_bench_slide(s):
         f"每个模型预热 {b0['warmup']} 次 + 正式 {b0['runs']} 次（threads={b0['threads_intra']}）。\n"
         "左图含六个部署模型，只比速度；右图只放 ImageNetV2 固定子集的五个官方型号"
         "（准确率来自 PyTorch，延迟来自 ONNX Runtime CPU）。\n"
-        f"P50 区间（同一台机器 / ORT CPU）：官方 ImageNet-1K 型号 {min(p50_in1k):.2f}（M0.9）"
+        f"P50 区间（同一台机器 / ORT CPU）：官方预训练型号 {min(p50_in1k):.2f}（M0.9）"
         f" ~ {max(p50_in1k):.2f}（M2.3）ms；把自训练 Pet-37 也算进来时最小 {min(p50s):.2f} ms。\n"
         "官方 iPhone 延迟与本机 CPU 延迟不可直接比较。性能数据是历史落盘值，现场新测会有波动。")
     chart(s, "六个 ONNX 模型的推理耗时 (ms)", labels,
@@ -1099,7 +1099,10 @@ def _update_status_page(s) -> int:
     n_abl = len([c for c in cfgs if "abl" in c])
     n_scheme = len(cfgs) - n_abl
     p50s = [float(r["p50_ms"]) for r in rows_b if r.get("p50_ms")]
-    # 卡 06 的 P50 区间按「**官方 ImageNet-1K 型号**」取（M0.9 → M2.3），与发布口径一致；
+    # 卡 06 的 P50 区间按「**官方预训练型号**」取（M0.9 → M2.3），与发布口径一致；
+    # 措辞纪律：这里是 ORT CPU 延迟（P50/P95 ms），**不是** ImageNet-1K 精度结果 ——
+    # 「ImageNet-1K 型号」在本仓专指「有 1K 公布值可对照」，写成它等于暗示可比，政策明令禁止。
+    # 数据集限定语只出现在「ImageNetV2 固定子集」处，本句不得再挂 1K 字样。
     # 自训练 Pet-37（7.555 ms）比 M0.9 略快，单独在页面备注里说明，避免区间语义含糊。
     p50_in1k = [float(r["p50_ms"]) for r in rows_b
                 if r.get("p50_ms") and str(r["model"]).endswith("_in1k")]

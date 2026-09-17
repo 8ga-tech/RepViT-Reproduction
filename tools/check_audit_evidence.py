@@ -74,9 +74,13 @@ EXTERNAL_MARKERS = ("上游", "仓库外", "非本仓库", "外部仓库")
 ABSENCE_MARKERS = ("不存在", "未落盘", "无实跑", "缺失", "无该产物", "Test-Path` = False",
                    "不参与", "已删除", "不可用", "被 `.gitignore` 排除")
 PATH_EXT = (".md", ".json", ".jsonl", ".csv", ".txt", ".py", ".sh", ".svg", ".yaml", ".yml",
-            ".png", ".jpg", ".docx", ".pdf", ".pptx", ".html", ".log", ".pt", ".onnx")
+            ".png", ".jpg", ".jpeg", ".docx", ".pdf", ".pptx", ".html", ".log", ".pt", ".onnx", ".xml")
+# 扩展名白名单的**单一来源**（t38 F-2）：正文路径引用与「修复方案列」路径引用共用同一份，
+# 避免两处白名单再漂移 —— 此前 PLAN_PATH_RE 漏了 `.svg/.pdf/.docx/.pptx/.log`，
+# 于是 4 处指向**不存在 SVG** 的「可直接执行」指令逃过了自动闸。
+EXT_ALT = "|".join(e.lstrip(".") for e in PATH_EXT)
 PATH_RE = re.compile(
-    r"`([A-Za-z0-9_./\-\u4e00-\u9fff*<>…]+?\.(?:" + "|".join(e.lstrip(".") for e in PATH_EXT) + r"))"
+    r"`([A-Za-z0-9_./\-\u4e00-\u9fff*<>…]+?\.(?i:" + EXT_ALT + r"))"
     r"(?::([0-9\-–,，\s]+))?`")
 SECTION_RE = re.compile(r"§\s?([0-9]+(?:\.[0-9]+)*|[一二三四五六七八九十]+)")
 HEADING_RE = re.compile(r"^(#{1,4})\s+([0-9]+(?:\.[0-9]+)*|[一二三四五六七八九十]+)(?:[.、)）]|\s|$)")
@@ -419,11 +423,12 @@ def scan(audit_path: pathlib.Path | None = None, repo: pathlib.Path | None = Non
             continue
         c = [x.strip() for x in ln.strip().strip("|").split("|")]
         if len(c) >= 5 and re.match(r"^\*{0,2}[A-Z]{1,2}-\d+", c[0].strip("*")):
-            plan_cells.append((i, c[3], c[0]))                    # §9 行：矛盾/修复方案列
+            plan_cells.append((i, c[3], c[0]))                      # §9 行：最小修复方案列
+            plan_cells.append((i, c[4], c[0] + " 需改动路径列"))      # §9 行：需改动路径列（t38 起同扫）
         if len(c) >= 4 and ("修复见" in c[-2] or "修复见" in c[-1]):
             plan_cells.append((i, c[-2] if "修复见" in c[-2] else c[-1], c[0]))
 
-    PLAN_PATH_RE = re.compile(r"`([A-Za-z0-9_./\-\u4e00-\u9fff*<>…]+?\.(?:py|sh|txt|json|jsonl|csv|md|onnx|pt|png|yaml|yml))`")
+    PLAN_PATH_RE = re.compile(r"`([A-Za-z0-9_./\-\u4e00-\u9fff*<>…]+?\.(?i:" + EXT_ALT + r"))`")
     PLAN_CMD_RE = re.compile(r"`((?:python|python3|sh|bash|powershell)\s+[^`]+)`")
     INPUT_FLAG_RE = re.compile(r"--(images|weights|data|cfg|source|data-list)\s+([^\s`]+)")
     for lineno, cell, key in plan_cells:

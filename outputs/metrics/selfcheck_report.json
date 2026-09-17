@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-17T00:28:52",
+  "generated_at": "2026-09-17T19:20:15",
   "python": "3.14.5",
   "platform": "Windows-11-10.0.26200-SP0",
   "summary": {
@@ -166,7 +166,7 @@
       "id": "paths",
       "title": "无写死绝对路径",
       "status": "PASS",
-      "detail": "0 处",
+      "detail": "0 处；证据指针 OK（行 328 / 路径 568 / § 235 / 可重算断言 134）",
       "fix": ""
     },
     {
@@ -199,9 +199,9 @@
     },
     {
       "id": "submit",
-      "title": "提交物清单齐全",
+      "title": "提交物清单齐全 + 关键内容（报告 docx / PPT 设计源 / 工作流程图 / §1.3 冻结基线）",
       "status": "PASS",
-      "detail": "齐全",
+      "detail": "齐全（16 项 + ONNX 6 个）；REPORT.docx 28907 字；ppt_svg 15 份（关键节点 全）；workflow 2 件；SPEC13 子集 sha256/字节/行数与实文件一致",
       "fix": ""
     },
     {
@@ -241,9 +241,9 @@
     },
     {
       "id": "viz",
-      "title": "八类可视化产物齐全",
+      "title": "八类可视化产物齐全 + 图表数据落在轴范围内 + 图元非空白 + PPTX↔PDF 同源",
       "status": "PASS",
-      "detail": "curves=2 cm=2 preds=23 compare=3 cam=15",
+      "detail": "curves=2 cm=2 preds=23 compare=3 cam=15；图表轴范围 OK（8 图 / 9 条数值轴全部显式设边界） + 空缓存 0；图片 11 张/11 media（min std=35.1、min 灰阶=245）；PPTX↔PDF 15=15 页、逐页关键文本命中 15/15",
       "fix": ""
     }
   ]
