@@ -88,7 +88,8 @@ Top-1 / Top-5 与 outputs/metrics 的正式产物逐字段一致。
 若要重新导出重参数化对照图，去掉 --skip-onnx。官方ImageNet模型使用登记键 repvit_m0_9_in1k，使实现与权重匹配；不要将官方键名直接装入timm结构。
 PPT 侧的文案改写走 `tools/update_defense.py`（只改 `report/答辩PPT_RepViT.pptx`，属于 PPT 任务，不在本口径统一流程内）。
 
-扫描清单：outputs/verification/logits_reference_inventory.csv（**2026-09-17 t35 暂存态登记：4790 条引用 / 178 个文件**；上一轮 t32 为 4788 / 178、t28 为 4788 / 178、t23 为 4778 / 177、t21 为 4776 / 177、t20 为 4731 / 176，更早的历史值为 4124 / 153），覆盖Git跟踪的文本、代码、JSON、日志、SVG，以及PPTX/DOCX/PDF正文与PPT备注；核对请按该表的 `bucket` 列查。原始实验产物不做数字替换；旧SVG演示源保留为历史素材，不作为答辩口径。
+扫描清单：outputs/verification/logits_reference_inventory.csv（**2026-09-17 t42 暂存态登记：4791 条引用 / 179 个文件**；上一轮 t35 为 4790 / 178、t32 为 4788 / 178、t28 为 4788 / 178、t23 为 4778 / 177、t21 为 4776 / 177、t20 为 4731 / 176，更早的历史值为 4124 / 153），覆盖Git跟踪的文本、代码、JSON、日志、SVG，以及PPTX/DOCX/PDF正文与PPT备注；核对请按该表的 `bucket` 列查。原始实验产物不做数字替换；旧SVG演示源保留为历史素材，不作为答辩口径。
+（t42 增量 +1 / +1：唯一新增条目与新增文件都来自 `report/SYNC_NOTES.md`（此前 0 条；首次命中是 §14.2 自指声明自身那一行，句子里写到审计脚本的可执行路径 —— 这正是 §14.2 预告的「回填行」，本轮并入新值）。另有 4 个文件共 **119 行**被扫内容变化而计数不变：`tools/update_defense.py` 106、`tools/selfcheck.py` 11、`report/PPT_CONTENT.md` 1、`report/答辩PPT_RepViT.pptx` 1（t41 的轴范围改现读 / 措辞 / 页脚命令）。字节 1,246,586 → **1,246,850**、SHA256 `E1F708BF…1B3B` → **`1BE7460A…D271`**。）
 （t35 增量 +2 / +0：全部来自 t34 在审计文档里新增的一行（L722）—— 该行含两处被扫词（同一关键词的大小写各一处），故条目 156 → 158、按桶归 B1；`tools/check_audit_evidence.py` 新增两条断言不产生新条目。字节 1,245,757 → **1,246,586**、SHA256 `3E46CD7B…189D` → **`E1F708BF…1B3B`**。）
 （t32 增量 +0 / +0：条数与文件数都与 t28 相同，但清单正文与校验值已变——t30 改写的审计文档里 1 条 `statement` 行的归属由 B2 改为 B3，另有多处文本换位，故字节 1,245,560 → **1,245,757**、SHA256 `6509CC6E…68B2` → **`3E46CD7B…189D`**。）
 （t28 增量 +10 / +1：全部来自 t27 新增的证据指针校验器 `tools/check_audit_evidence.py`（10 条均为 `statement`，按桶归 B11）；t25/t27 另外改到的 `report/REQUIREMENTS_AUDIT.md`、`report/SPEC13_SWITCH_RUNBOOK.md`、`report/ppt_svg/README.md`、`tools/selfcheck.py` 四份文件条目数均不变。逐来源台账见同目录的审计发现文档 §2.8。）
