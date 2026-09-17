@@ -22,9 +22,9 @@ RepViT 轻量图像分类模型
 RepViT: Revisiting Mobile CNN From ViT Perspective · CVPR 2024 · arXiv:2307.09283
 github.com/8ga-tech/RepViT-Reproduction
 
-78.20%
+68.70%
 
-ImageNet 子集 Top-1
+ImageNetV2 固定子集 Top-1
 
 92.34%
 
@@ -36,16 +36,17 @@ Pet-37 test Top-1
 
 100%
 
-ONNX Top-1 一致（3 型号各 12 张）
+ONNX 一致（入库 5 型号各 12 张）
 
-口径分开：结构重参数化 = 32 个固定随机输入（max|Δ| 7.093e-06，Top-1 32/32）；ONNX 一致性 = Pet-37 / M0.9 / M1.0 三个型号各 12 张真实图片（第 13 页，3 份 n=12 落盘），只覆盖这 12 张，不代表全部六个 ONNX 型号。旧的 5.25e-06 未找到配套产物。
+口径分开：结构重参数化 = 32 个固定随机输入（max|Δ| 7.093e-06，Top-1 32/32）；ONNX 一致性 = 入库的 5 个型号（M0.9-Pet37 / M0.9 / M1.0 / M1.1 / M1.5）各 12 张真实图片（第 13 页，5 份 n=12 落盘），只覆盖这些图片，不代表全部六个 ONNX 型号（M2.3 未入库）。旧的 5.25e-06 未找到配套产物。
 
 
 
 备注与验证命令：
 
-封面数字的口径：78.20% = 自建 1000 张 ImageNet 子集（PyTorch / CUDA / batch 64）；92.34% = Pet-37 test 3669 张（只评价 1 次）；7.093e-06 = 结构重参数化 B4（32 个固定随机输入，outputs/reparam/repvit_m0_9_pet37_reparam_report.json）；100% = PyTorch↔ONNX B1（Pet-37 前 12 张真实图片）。重参数化误差与 ONNX 一致率是两批实验，不并成一句结论。
+封面数字的口径：68.70% = ImageNetV2 matched-frequency 固定子集 1000 张（PyTorch 2.14.0+cu126 / CUDA / batch 64；与 ImageNet-1K 公布值不可比）；92.34% = Pet-37 test 3669 张（Baseline 的 test 只评价 1 次，eval_count=1）；7.093e-06 = 结构重参数化 B4（32 个固定随机输入，outputs/reparam/repvit_m0_9_pet37_reparam_report.json）；100% = PyTorch↔ONNX B1（Pet-37 前 12 张真实图片）。重参数化误差与 ONNX 一致率是两批实验，不并成一句结论。
 逐条依据与桶分级见 report/LOGITS_AUDIT_FINDINGS.md 第 1 节。
+口径纪律：ImageNetV2 是 Recht et al. 2019 独立重采样的测试集，其准确率与论文/官方公布的 ImageNet-1K 数值不可直接比较（低 10~15 个点是基准性质）。
 
 
 
@@ -61,9 +62,9 @@ ONNX Top-1 一致（3 型号各 12 张）
 
 官方模型评价
 
-5 个型号 · 1000 张子集
+5 个型号 · ImageNetV2 1000 张
 
-M0.9 Top-1 78.20%
+M0.9 Top-1 68.70%
 
 outputs/pretrained_eval/
 
@@ -113,7 +114,7 @@ ONNX 多模型部署
 
 6 个 ONNX · ORT CPU
 
-P50 7.1 ~ 32.7 ms
+P50 7.68 ~ 34.41 ms
 
 onnx/*.onnx
 
@@ -121,7 +122,7 @@ onnx/*.onnx
 
 02
 
-口径与边界：PyTorch 与 ONNX 的 Top-1 一致率只测了 Pet-37 / ImageNet-M0.9 / ImageNet-M1.0 三个型号各 12 张（均为 100%）；其余型号只有导出检查与性能结果，不做同口径一致性声明。重参数化 7.093e-06 来自 32 个固定随机输入，与上面这批 ONNX 实验不是同一批。
+口径与边界：PyTorch 与 ONNX 的 Top-1 一致率只测了入库的 5 个型号（M0.9-Pet37 / M0.9 / M1.0 / M1.1 / M1.5）各 12 张（均为 100%）；其余型号（M2.3 未入库）只有导出检查与性能结果，不做同口径一致性声明。重参数化 7.093e-06 来自 32 个固定随机输入，与上面这批 ONNX 实验不是同一批。
 
 
 
@@ -129,7 +130,8 @@ onnx/*.onnx
 
 六个环节卡片对应试题基础任务 1–6 的交付物；卡片里每行末尾是落盘路径。
 口径边界（试题第 16–17 页要求区分：论文 / 官方仓库 / 官方权重实跑 / 自训 Baseline / 优化模型 / PyTorch / ONNX）：卡片 01 是官方权重实跑，02/03/05 是自训结果，05 是 PyTorch 侧重参数化，06 是 ONNX 部署与性能。
-ONNX 一致性只有 3 个型号各 n=12 的落盘 JSON，其余型号不做一致性声明（不含 5.25e-06 旧引用，该值无配套产物）。
+ONNX 一致性只有入库的 5 个型号（M0.9-Pet37 / M0.9 / M1.0 / M1.1 / M1.5）各 12 张的落盘 JSON，其余型号不做一致性声明（不含 5.25e-06 旧引用，该值无配套产物）。
+test 评价次数：Baseline 的 test 只评价 1 次；4 个优化臂跨重跑累计为 2 次，模型选择始终只用验证集 val_macro_f1，两次结果均落盘可查。
 
 
 
@@ -203,97 +205,49 @@ M0.9 实测：20 个 Block，按 Stage 分布 [2, 2, 14, 2]
 
 
 
-官方权重在自建子集上的实际表现
+官方权重在 ImageNetV2 固定子集上的实际表现
 
-1000 张自建分层子集（每类 1 张，种子 20260912）· 224×224 · batch 64 · FP32 · RTX 4060 Laptop
+5 个官方型号 · ImageNetV2 matched-frequency 固定子集 1000 张（1000 类各 1 张，确定性选取）· 224×224 · batch 64 · FP32 · NVIDIA GeForce RTX 4060 Laptop GPU
 
-型号
+数据来源：outputs/pretrained_eval/<model>/metrics.json（Top-1/Top-5/参数量/MACs/文件大小）· 清单 datasets/lists/imagenetv2_mf_1000.txt（SHA-256 见 report/IMAGENETV2_PROVENANCE.md）
 
-参数量 (M)
+04
 
-MACs (G)
+型号 / 参数量 (M) / MACs (G) / 文件大小 (MB) / Top-1 / Top-5
 
-本机 Top-1
+M0.9 / 5.067 / 0.847 / 21.38 / 68.70% / 85.70%
 
-官方公布
+M1.0 / 6.810 / 1.143 / 28.30 / 69.20% / 86.40%
 
-RepViT-M0.9
+M1.1 / 8.244 / 1.377 / 34.02 / 70.80% / 87.20%
 
-5.489
+M1.5 / 14.050 / 2.340 / 56.62 / 71.40% / 89.00%
 
-0.847
-
-78.20%
-
-78.7%
-
-RepViT-M1.0
-
-7.303
-
-1.143
-
-79.90%
-
-80.0%
-
-RepViT-M1.1
-
-8.803
-
-1.358
-
-79.90%
-
-80.7%
-
-RepViT-M1.5
-
-14.644
-
-2.308
-
-82.80%
-
-82.3%
-
-RepViT-M2.3
-
-23.689
-
-4.574
-
-83.10%
-
-83.3%
+M2.3 / 22.927 / 4.626 / 91.42 / 73.60% / 89.90%
 
 预处理口径必须标
 
-crop_pct = 0.875
-
-Resize(256) + CenterCrop(224)
-
-crop_pct = 0.95
-
-Resize(235) + CenterCrop(224)
-
-M0.9：78.20 / 78.60
-
-M1.0：79.90 / 80.00
-
-两套口径差 0.1~0.4 个点
+crop_pct = 0.875 → Resize(256) + CenterCrop(224)
+crop_pct = 0.95 → Resize(235) + CenterCrop(224)
+M0.9：68.70 / 68.30
+M1.0：69.20 / 69.40
+两套口径差 0.2~1.9 个点
 
 必须声明的口径边界
 
-本结果为「该自建验证子集上的实际运行结果」，不代表论文完整 ImageNet-1K 验证集结果。
+· ImageNetV2 是独立重采样的测试集，不代表论文完整 ImageNet-1K 验证集结果；本页 Top-1/Top-5 与论文/官方的 ImageNet-1K 公布值不可直接比较。
+· 清单固定可复现：1000 类各 1 张、按类目录内文件名 sorted() 取第一个、无随机种子（datasets/lists/imagenetv2_mf_1000.txt）。
+· 参数量取「融合后单头」口径；MACs 取 thop「未融合」口径（不乘 2）；官方 iPhone 12 延迟（0.9 / 1.0 ms）与本机结果不可横向比较，延迟口径见第 14 页。
 
-子集为每类 1 张的分层抽样（1000 张），非考核方下发的指定子集；清单与哈希见 datasets/lists/imagenet_val_subset.txt
+元信息补全：推理后端 PyTorch 2.14.0+cu126（CUDA，逐型号评价）；测试次数：主口径 crop_pct=0.875 每型号评价次数 1 次（1000 张），另有 crop_pct=0.95 口径对照 1 次（仅额外推断，两套口径结果不可比）。
 
-官方 iPhone 12 延迟（0.9 / 1.0 ms）与本机 CPU 结果不可横向比较
 
-数据来源：outputs/pretrained_eval/<model>/metrics.json · outputs/benchmarks/family_summary.csv（M1.1+ 的 MACs）· summary.csv
 
-04
+备注与验证命令：
+
+复跑：python tools/run_all_pretrained.py --cfg configs/pretrained_eval.yaml --model repvit_m0_9 repvit_m1_0 repvit_m1_1 repvit_m1_5 repvit_m2_3
+元信息：模型 5 个官方型号；输入 224×224；batch 64；硬件 NVIDIA GeForce RTX 4060 Laptop GPU；后端 PyTorch 2.14.0+cu126（CUDA）；精度 FP32；每型号评价次数 1 次（1000 张）。
+口径纪律：ImageNetV2 是 Recht et al. 2019 独立重采样的测试集，其准确率与 ImageNet-1K 的公布值不可直接比较（预期低 10~15 个点是基准性质，不是模型退化）；因此本页只报本机实测，不做跨数据集并列或差值。
 
 
 
@@ -327,7 +281,7 @@ pet_test.txt
 
 3669 行 · 每类 88~100
 
-test 只评价一次
+Baseline 的 test 只评价 1 次
 
 eval_count = 1
 
@@ -417,7 +371,7 @@ Macro-F1
 
 699 个
 
-✓ test 只评价一次
+✓ Baseline 的 test 只评价 1 次
 
 eval_count=1
 
@@ -725,9 +679,9 @@ max_abs_err=7.092952728271484e-06；mean_abs_err=2.030726818702533e-06。32 个�
 
 PyTorch ↔ ONNX：固定 n=12，比较同一输入张量
 
-原模型 vs 融合后 ONNX · ORT 1.30.0 CPUExecutionProvider · FP32 · batch 1 · 1×3×224×224 · i7-13650HX / Windows 11 · 每个型号各 12 张真实图片 · 每张只跑一次
+原模型 vs 融合后 ONNX · ORT 1.30.0 CPUExecutionProvider · FP32 · batch 1 · 1×3×224×224 · i7-13650HX / Windows 11 · 入库的 5 个型号各 12 张真实图片 · 每张只跑一次
 
-来源：outputs/metrics/consistency_{repvit_m0_9_pet37,repvit_m0_9_in1k,repvit_m1_0_in1k}.json
+来源：outputs/metrics/consistency_{repvit_m0_9_pet37,repvit_m0_9_in1k,repvit_m1_0_in1k,repvit_m1_1_in1k,repvit_m1_5_in1k}.json（入库 5 个型号各 n=12）
 
 13
 
@@ -735,13 +689,17 @@ PyTorch ↔ ONNX：固定 n=12，比较同一输入张量
 
 M0.9 Pet-37 / pet_test / 12 / 6.199e-06 / 1.501e-06 / 100% / 100%
 
-M0.9 / ImageNet 子集 / 12 / 1.717e-05 / 2.360e-06 / 100% / 100%
+M0.9 / ImageNetV2 子集 / 12 / 1.383e-05 / 2.334e-06 / 100% / 100%
 
-M1.0 / ImageNet 子集 / 12 / 1.812e-05 / 2.464e-06 / 100% / 100%
+M1.0 / ImageNetV2 子集 / 12 / 1.335e-05 / 2.215e-06 / 100% / 100%
+
+M1.1 / ImageNetV2 子集 / 12 / 1.860e-05 / 2.219e-06 / 100% / 100%
+
+M1.5 / ImageNetV2 子集 / 12 / 1.144e-05 / 1.876e-06 / 100% / 100%
 
 1  重参数化 7.093e-06（32 个随机输入）是第 12 页的另一批实验，不与本页并成一句结论。
 2  部署预处理由 PIL 独立实现；本次对比把同一张量送入两个推理后端，因此这里不比预处理实现。
-3  结论仅覆盖这 12 张图片：不能说成完整测试集，也不能说成全部六个模型一致。
+3  结论仅覆盖每型号这 12 张图片：不能说成完整测试集，也不能说成全部六个模型一致。
 4  旧的 5.25e-06 缺少对应完整记录，当前统一引用上表落盘值（4 位有效数字）。
 
 复跑：python deploy/compare_torch_onnx.py --model repvit_m0_9_pet37 --limit 12
@@ -752,11 +710,11 @@ M1.0 / ImageNet 子集 / 12 / 1.812e-05 / 2.464e-06 / 100% / 100%
 备注与验证命令：
 
 python deploy/compare_torch_onnx.py --model repvit_m0_9_pet37 --images datasets/lists/pet_test.txt --limit 12 --out outputs/verification/consistency_repvit_m0_9_pet37_n12.json
-元信息：输入 1×3×224×224；batch 1；硬件 i7-13650HX / Windows 11；后端 ONNX Runtime 1.30.0 CPUExecutionProvider；精度 FP32；每个型号各 12 张真实图片、每张只跑一次。
-Pet-37 顺序取固定列表前 12 张，每张预处理一次，同一 numpy 张量送入两端。
-max=6.198883056640625e-06；mean=1.5006899711048998e-06；Top-1/Top-5 集合均 1.0。
+元信息：输入 1×3×224×224；batch 1；硬件 i7-13650HX / Windows 11；后端 ONNX Runtime 1.30.0 CPUExecutionProvider；精度 FP32；入库的 5 个型号各 12 张真实图片、每张只跑一次。
+Pet-37 与 ImageNet 型号各自按固定列表顺序取前 12 张（图片列表从落盘 JSON 的 images 字段现读：imagenetv2_mf_1000.txt / pet_test.txt）；每张预处理一次，同一 numpy 张量送入两端。
+max=6.198883056640625e-06；mean=1.5006899711048998e-06；Top-1/Top-5 集合均 1.0（Pet-37）。
 5.25e-06 是未找到对应完整产物的旧引用；旧命令写 limit=8 不能证明该值来自 n=8。当前权重跑 n=8 也不能复现旧值。
-不是全测试集一致率，不验证两套预处理独立实现等价，也不能排除所有部署错误；只有 3 个型号各 12 张，不代表全部六个 ONNX 型号。
+不是全测试集一致率，不验证两套预处理独立实现等价，也不能排除所有部署错误；只有入库的 5 个型号各 12 张，不代表全部六个 ONNX 型号（M2.3 因体积未入库，只做导出检查与性能结果）。
 
 
 
@@ -766,7 +724,7 @@ max=6.198883056640625e-06；mean=1.5006899711048998e-06；Top-1/Top-5 集合均 
 
 部署怎么选：先看同一机器上的延迟和准确率
 
-型号：M0.9 / M1.0 / M1.1 / M1.5 / M2.3 / M0.9-Pet37 · 输入 1×3×224×224 · batch 1 · i7-13650HX · ORT 1.30.0 CPUExecutionProvider · FP32 · 预热 10 + 正式 50 次 · threads 4
+型号：M0.9 / M0.9-Pet37 / M1.0 / M1.1 / M1.5 / M2.3 · 输入 1×3×224×224 · batch 1 · i7-13650HX · ORT 1.30.0 CPUExecutionProvider · FP32 · 预热 10 + 正式 50 次 · threads 4
 
 来源：outputs/benchmarks/summary.csv（含 cpu_model / os / ort_version / warmup / runs / threads 全字段）；outputs/pretrained_eval/<model>/metrics.json
 
@@ -776,7 +734,7 @@ max=6.198883056640625e-06；mean=1.5006899711048998e-06；Top-1/Top-5 集合均 
 
 同一 ImageNet 子集（1000 张）：速度与准确率
 
-本子集上 M1.0 与 M1.1 的 Top-1 相同（79.9%），M1.0 更快（P50 9.1 ms vs 10.2 ms）。更大模型的额外耗时，需要结合使用场景判断。
+右图只放同一子集的五个型号，看的是「多花多少毫秒换多少点准确率」。更大模型的额外耗时，需要结合使用场景判断。
 右图元信息：准确率来自 PyTorch 2.14.0+cu126（64 batch / cuda / fp32）在同一 1000 张子集上的评价；延迟来自本机 ONNX Runtime CPU（batch 1）。两者口径不同，只做参考。
 
 
@@ -784,8 +742,9 @@ max=6.198883056640625e-06；mean=1.5006899711048998e-06；Top-1/Top-5 集合均 
 备注与验证命令：
 
 python deploy/benchmark.py --model repvit_m0_9_in1k --model repvit_m1_0_in1k --model repvit_m0_9_pet37 --warmup 10 --runs 50 --threads 4 --out-dir outputs/verification/benchmarks
-元信息：6 个 ONNX 模型（M0.9 / M1.0 / M1.1 / M1.5 / M2.3 / M0.9-Pet37）；输入 1×3×224×224；batch 1；硬件 13th Gen Intel(R) Core(TM) i7-13650HX / Windows-11-10.0.26200-SP0；后端 ONNX Runtime 1.30.0 CPUExecutionProvider；精度 FP32；每个模型预热 10 次 + 正式 50 次（threads=4）。
+元信息：6 个 ONNX 模型（M0.9 / M0.9-Pet37 / M1.0 / M1.1 / M1.5 / M2.3）；输入 1×3×224×224；batch 1；硬件 13th Gen Intel(R) Core(TM) i7-13650HX / Windows-11-10.0.26200-SP0；后端 ONNX Runtime 1.30.0 CPUExecutionProvider；精度 FP32；每个模型预热 10 次 + 正式 50 次（threads=4）。
 左图含六个部署模型，只比速度；右图只放同一 ImageNet 子集的五个型号（准确率来自 PyTorch，延迟来自 ONNX Runtime CPU）。
+P50 区间（同一台机器 / ORT CPU）：官方 ImageNet-1K 型号 7.68（M0.9） ~ 34.41（M2.3）ms；把自训练 Pet-37 也算进来时最小 7.55 ms。
 官方 iPhone 延迟与本机 CPU 延迟不可直接比较。性能数据是历史落盘值，现场新测会有波动。
 
 
@@ -810,7 +769,7 @@ python deploy/benchmark.py --model repvit_m0_9_in1k --model repvit_m1_0_in1k --m
 
 data/provided/ 在 29 页试题 PDF 中从未定义
 
-改判为结构性偏差，改用官方归档 + 自建子集，并在 README 与报告中显式声明
+改判为结构性偏差：改用官方归档构建的 ImageNetV2 固定子集与 Oxford-IIIT Pet，并在 README 与报告中显式声明
 
 03
 
@@ -820,13 +779,13 @@ data/provided/ 在 29 页试题 PDF 中从未定义
 
 结论
 
-① RepViT 确为纯卷积，M0.9 实测 78.20%，贴近官方 78.7%
+① RepViT 确为纯卷积；M0.9 在 ImageNetV2 固定子集上实测 68.70%（与 ImageNet-1K 公布值不可比）
 
-② Pet-37 test Top-1 92.34%，跨物种错误仅 3.56%
+② Pet-37 test Top-1 92.34%（跨物种错误仅 3.56%）；四项优化未显示稳定提升，需多种子实验
 
-③ 重参数化 32 个随机输入通过；ONNX 固定 n=12 样本一致
+③ 重参数化（32 个固定随机输入）max|Δ| = 7.093e-06，Top-1 32/32 一致（与下面 ONNX 实验分列）
 
-④ 四项优化未显示稳定提升；需要多种子实验进一步判断
+④ ONNX 一致性（Pet-37，n=12 真实图片）max|Δ| = 6.199e-06，Top-1/Top-5 集合一致率 100%
 
 后续计划
 

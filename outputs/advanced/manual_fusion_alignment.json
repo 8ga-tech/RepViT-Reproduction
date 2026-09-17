@@ -1,0 +1,646 @@
+{
+  "experiment": "manual_fusion_alignment",
+  "purpose": "\u62d3\u5c55 4\uff1a\u624b\u5199 Conv+BN / RepVGGDW \u4e09\u5206\u652f\u878d\u5408\u4e0e timm \u53c2\u8003\u5b9e\u73b0\u5728\u540c\u4e00\u8f93\u5165\u4e0a\u7684\u6570\u503c\u5bf9\u9f50",
+  "model": "repvit_m0_9_pet37",
+  "weights": "checkpoints/baseline_best.pt",
+  "trained_state": "eval() \u672a\u878d\u5408\u6001",
+  "seed": 20240912,
+  "batch": 2,
+  "input_hw": [
+    28,
+    28
+  ],
+  "n_blocks": 20,
+  "timm_version": "1.0.29",
+  "torch_version": "2.14.0+cu126",
+  "worst": {
+    "max_abs_weight_diff": 0.0,
+    "max_abs_bias_diff": 5.960464477539062e-07,
+    "max_abs_out_diff": 1.9073486328125e-06
+  },
+  "pass_threshold": 1e-05,
+  "passed": true,
+  "caliber": "\u672c\u6587\u4ef6\u6bd4\u8f83\u7684\u662f\u300c\u624b\u5199\u878d\u5408\u7b97\u6cd5 \u2194 timm \u878d\u5408\u7b97\u6cd5\u300d\u7684\u5377\u79ef\u6838\u4e0e\u8f93\u51fa\u5f20\u91cf\u5dee\uff1b\u4e0d\u662f logits \u8bef\u5dee\u3002\u7ed3\u6784\u91cd\u53c2\u6570\u5316 B4\uff0832 \u4e2a\u56fa\u5b9a\u968f\u673a\u8f93\u5165\uff0cmax|\u0394logits| = 7.093e-06\uff09\u4e0e PyTorch\u2194ONNX B1\uff08n=12 \u771f\u5b9e\u56fe\u7247\uff0cmax|\u0394logits| = 6.199e-06\uff09\u662f\u53e6\u5916\u4e24\u6279\u5b9e\u9a8c\uff0c\u4e09\u8005\u5728\u4efb\u4f55\u5730\u65b9\u90fd\u4e0d\u5f97\u5e76\u6210\u4e00\u53e5\u7ed3\u8bba\u3002",
+  "blocks": [
+    {
+      "stage": 0,
+      "block": 0,
+      "channels": 48,
+      "input_shape": [
+        2,
+        48,
+        28,
+        28
+      ],
+      "manual_out_shape": [
+        2,
+        48,
+        28,
+        28
+      ],
+      "reference_out_shape": [
+        2,
+        48,
+        28,
+        28
+      ],
+      "max_abs_weight_diff": 0.0,
+      "max_abs_bias_diff": 3.948807716369629e-07,
+      "max_abs_out_diff": 1.9073486328125e-06,
+      "mean_abs_out_diff": 1.6899425858696304e-08,
+      "manual_params_after": 480,
+      "manual_params_before": 720,
+      "reference_backend": "timm.models.repvit.RepVggDw.fuse()",
+      "manual_backend": "tools.reparam_deep.fuse_repvggdw_manual()"
+    },
+    {
+      "stage": 0,
+      "block": 1,
+      "channels": 48,
+      "input_shape": [
+        2,
+        48,
+        28,
+        28
+      ],
+      "manual_out_shape": [
+        2,
+        48,
+        28,
+        28
+      ],
+      "reference_out_shape": [
+        2,
+        48,
+        28,
+        28
+      ],
+      "max_abs_weight_diff": 0.0,
+      "max_abs_bias_diff": 2.384185791015625e-07,
+      "max_abs_out_diff": 4.76837158203125e-07,
+      "mean_abs_out_diff": 3.561447670108464e-08,
+      "manual_params_after": 480,
+      "manual_params_before": 720,
+      "reference_backend": "timm.models.repvit.RepVggDw.fuse()",
+      "manual_backend": "tools.reparam_deep.fuse_repvggdw_manual()"
+    },
+    {
+      "stage": 1,
+      "block": 0,
+      "channels": 96,
+      "input_shape": [
+        2,
+        96,
+        28,
+        28
+      ],
+      "manual_out_shape": [
+        2,
+        96,
+        28,
+        28
+      ],
+      "reference_out_shape": [
+        2,
+        96,
+        28,
+        28
+      ],
+      "max_abs_weight_diff": 0.0,
+      "max_abs_bias_diff": 4.76837158203125e-07,
+      "max_abs_out_diff": 9.5367431640625e-07,
+      "mean_abs_out_diff": 1.864211718327624e-08,
+      "manual_params_after": 960,
+      "manual_params_before": 1440,
+      "reference_backend": "timm.models.repvit.RepVggDw.fuse()",
+      "manual_backend": "tools.reparam_deep.fuse_repvggdw_manual()"
+    },
+    {
+      "stage": 1,
+      "block": 1,
+      "channels": 96,
+      "input_shape": [
+        2,
+        96,
+        28,
+        28
+      ],
+      "manual_out_shape": [
+        2,
+        96,
+        28,
+        28
+      ],
+      "reference_out_shape": [
+        2,
+        96,
+        28,
+        28
+      ],
+      "max_abs_weight_diff": 0.0,
+      "max_abs_bias_diff": 4.76837158203125e-07,
+      "max_abs_out_diff": 4.76837158203125e-07,
+      "mean_abs_out_diff": 1.9512558679934955e-08,
+      "manual_params_after": 960,
+      "manual_params_before": 1440,
+      "reference_backend": "timm.models.repvit.RepVggDw.fuse()",
+      "manual_backend": "tools.reparam_deep.fuse_repvggdw_manual()"
+    },
+    {
+      "stage": 2,
+      "block": 0,
+      "channels": 192,
+      "input_shape": [
+        2,
+        192,
+        28,
+        28
+      ],
+      "manual_out_shape": [
+        2,
+        192,
+        28,
+        28
+      ],
+      "reference_out_shape": [
+        2,
+        192,
+        28,
+        28
+      ],
+      "max_abs_weight_diff": 0.0,
+      "max_abs_bias_diff": 4.76837158203125e-07,
+      "max_abs_out_diff": 9.5367431640625e-07,
+      "mean_abs_out_diff": 3.147958693716646e-08,
+      "manual_params_after": 1920,
+      "manual_params_before": 2880,
+      "reference_backend": "timm.models.repvit.RepVggDw.fuse()",
+      "manual_backend": "tools.reparam_deep.fuse_repvggdw_manual()"
+    },
+    {
+      "stage": 2,
+      "block": 1,
+      "channels": 192,
+      "input_shape": [
+        2,
+        192,
+        28,
+        28
+      ],
+      "manual_out_shape": [
+        2,
+        192,
+        28,
+        28
+      ],
+      "reference_out_shape": [
+        2,
+        192,
+        28,
+        28
+      ],
+      "max_abs_weight_diff": 0.0,
+      "max_abs_bias_diff": 4.76837158203125e-07,
+      "max_abs_out_diff": 1.9073486328125e-06,
+      "mean_abs_out_diff": 2.9656556321810967e-08,
+      "manual_params_after": 1920,
+      "manual_params_before": 2880,
+      "reference_backend": "timm.models.repvit.RepVggDw.fuse()",
+      "manual_backend": "tools.reparam_deep.fuse_repvggdw_manual()"
+    },
+    {
+      "stage": 2,
+      "block": 2,
+      "channels": 192,
+      "input_shape": [
+        2,
+        192,
+        28,
+        28
+      ],
+      "manual_out_shape": [
+        2,
+        192,
+        28,
+        28
+      ],
+      "reference_out_shape": [
+        2,
+        192,
+        28,
+        28
+      ],
+      "max_abs_weight_diff": 0.0,
+      "max_abs_bias_diff": 4.76837158203125e-07,
+      "max_abs_out_diff": 4.76837158203125e-07,
+      "mean_abs_out_diff": 1.7927623829905315e-08,
+      "manual_params_after": 1920,
+      "manual_params_before": 2880,
+      "reference_backend": "timm.models.repvit.RepVggDw.fuse()",
+      "manual_backend": "tools.reparam_deep.fuse_repvggdw_manual()"
+    },
+    {
+      "stage": 2,
+      "block": 3,
+      "channels": 192,
+      "input_shape": [
+        2,
+        192,
+        28,
+        28
+      ],
+      "manual_out_shape": [
+        2,
+        192,
+        28,
+        28
+      ],
+      "reference_out_shape": [
+        2,
+        192,
+        28,
+        28
+      ],
+      "max_abs_weight_diff": 0.0,
+      "max_abs_bias_diff": 4.76837158203125e-07,
+      "max_abs_out_diff": 9.5367431640625e-07,
+      "mean_abs_out_diff": 2.6497064098407463e-08,
+      "manual_params_after": 1920,
+      "manual_params_before": 2880,
+      "reference_backend": "timm.models.repvit.RepVggDw.fuse()",
+      "manual_backend": "tools.reparam_deep.fuse_repvggdw_manual()"
+    },
+    {
+      "stage": 2,
+      "block": 4,
+      "channels": 192,
+      "input_shape": [
+        2,
+        192,
+        28,
+        28
+      ],
+      "manual_out_shape": [
+        2,
+        192,
+        28,
+        28
+      ],
+      "reference_out_shape": [
+        2,
+        192,
+        28,
+        28
+      ],
+      "max_abs_weight_diff": 0.0,
+      "max_abs_bias_diff": 2.384185791015625e-07,
+      "max_abs_out_diff": 4.76837158203125e-07,
+      "mean_abs_out_diff": 1.8005037460966378e-08,
+      "manual_params_after": 1920,
+      "manual_params_before": 2880,
+      "reference_backend": "timm.models.repvit.RepVggDw.fuse()",
+      "manual_backend": "tools.reparam_deep.fuse_repvggdw_manual()"
+    },
+    {
+      "stage": 2,
+      "block": 5,
+      "channels": 192,
+      "input_shape": [
+        2,
+        192,
+        28,
+        28
+      ],
+      "manual_out_shape": [
+        2,
+        192,
+        28,
+        28
+      ],
+      "reference_out_shape": [
+        2,
+        192,
+        28,
+        28
+      ],
+      "max_abs_weight_diff": 0.0,
+      "max_abs_bias_diff": 2.384185791015625e-07,
+      "max_abs_out_diff": 9.5367431640625e-07,
+      "mean_abs_out_diff": 2.60202792645714e-08,
+      "manual_params_after": 1920,
+      "manual_params_before": 2880,
+      "reference_backend": "timm.models.repvit.RepVggDw.fuse()",
+      "manual_backend": "tools.reparam_deep.fuse_repvggdw_manual()"
+    },
+    {
+      "stage": 2,
+      "block": 6,
+      "channels": 192,
+      "input_shape": [
+        2,
+        192,
+        28,
+        28
+      ],
+      "manual_out_shape": [
+        2,
+        192,
+        28,
+        28
+      ],
+      "reference_out_shape": [
+        2,
+        192,
+        28,
+        28
+      ],
+      "max_abs_weight_diff": 0.0,
+      "max_abs_bias_diff": 4.76837158203125e-07,
+      "max_abs_out_diff": 9.5367431640625e-07,
+      "mean_abs_out_diff": 2.1586826548514182e-08,
+      "manual_params_after": 1920,
+      "manual_params_before": 2880,
+      "reference_backend": "timm.models.repvit.RepVggDw.fuse()",
+      "manual_backend": "tools.reparam_deep.fuse_repvggdw_manual()"
+    },
+    {
+      "stage": 2,
+      "block": 7,
+      "channels": 192,
+      "input_shape": [
+        2,
+        192,
+        28,
+        28
+      ],
+      "manual_out_shape": [
+        2,
+        192,
+        28,
+        28
+      ],
+      "reference_out_shape": [
+        2,
+        192,
+        28,
+        28
+      ],
+      "max_abs_weight_diff": 0.0,
+      "max_abs_bias_diff": 4.76837158203125e-07,
+      "max_abs_out_diff": 9.5367431640625e-07,
+      "mean_abs_out_diff": 2.692840617157799e-08,
+      "manual_params_after": 1920,
+      "manual_params_before": 2880,
+      "reference_backend": "timm.models.repvit.RepVggDw.fuse()",
+      "manual_backend": "tools.reparam_deep.fuse_repvggdw_manual()"
+    },
+    {
+      "stage": 2,
+      "block": 8,
+      "channels": 192,
+      "input_shape": [
+        2,
+        192,
+        28,
+        28
+      ],
+      "manual_out_shape": [
+        2,
+        192,
+        28,
+        28
+      ],
+      "reference_out_shape": [
+        2,
+        192,
+        28,
+        28
+      ],
+      "max_abs_weight_diff": 0.0,
+      "max_abs_bias_diff": 5.960464477539062e-07,
+      "max_abs_out_diff": 7.152557373046875e-07,
+      "mean_abs_out_diff": 2.1806403793789286e-08,
+      "manual_params_after": 1920,
+      "manual_params_before": 2880,
+      "reference_backend": "timm.models.repvit.RepVggDw.fuse()",
+      "manual_backend": "tools.reparam_deep.fuse_repvggdw_manual()"
+    },
+    {
+      "stage": 2,
+      "block": 9,
+      "channels": 192,
+      "input_shape": [
+        2,
+        192,
+        28,
+        28
+      ],
+      "manual_out_shape": [
+        2,
+        192,
+        28,
+        28
+      ],
+      "reference_out_shape": [
+        2,
+        192,
+        28,
+        28
+      ],
+      "max_abs_weight_diff": 0.0,
+      "max_abs_bias_diff": 4.76837158203125e-07,
+      "max_abs_out_diff": 1.9073486328125e-06,
+      "mean_abs_out_diff": 2.8802249474324526e-08,
+      "manual_params_after": 1920,
+      "manual_params_before": 2880,
+      "reference_backend": "timm.models.repvit.RepVggDw.fuse()",
+      "manual_backend": "tools.reparam_deep.fuse_repvggdw_manual()"
+    },
+    {
+      "stage": 2,
+      "block": 10,
+      "channels": 192,
+      "input_shape": [
+        2,
+        192,
+        28,
+        28
+      ],
+      "manual_out_shape": [
+        2,
+        192,
+        28,
+        28
+      ],
+      "reference_out_shape": [
+        2,
+        192,
+        28,
+        28
+      ],
+      "max_abs_weight_diff": 0.0,
+      "max_abs_bias_diff": 4.76837158203125e-07,
+      "max_abs_out_diff": 4.76837158203125e-07,
+      "mean_abs_out_diff": 1.541467220533832e-08,
+      "manual_params_after": 1920,
+      "manual_params_before": 2880,
+      "reference_backend": "timm.models.repvit.RepVggDw.fuse()",
+      "manual_backend": "tools.reparam_deep.fuse_repvggdw_manual()"
+    },
+    {
+      "stage": 2,
+      "block": 11,
+      "channels": 192,
+      "input_shape": [
+        2,
+        192,
+        28,
+        28
+      ],
+      "manual_out_shape": [
+        2,
+        192,
+        28,
+        28
+      ],
+      "reference_out_shape": [
+        2,
+        192,
+        28,
+        28
+      ],
+      "max_abs_weight_diff": 0.0,
+      "max_abs_bias_diff": 4.76837158203125e-07,
+      "max_abs_out_diff": 9.5367431640625e-07,
+      "mean_abs_out_diff": 1.8174661775560708e-08,
+      "manual_params_after": 1920,
+      "manual_params_before": 2880,
+      "reference_backend": "timm.models.repvit.RepVggDw.fuse()",
+      "manual_backend": "tools.reparam_deep.fuse_repvggdw_manual()"
+    },
+    {
+      "stage": 2,
+      "block": 12,
+      "channels": 192,
+      "input_shape": [
+        2,
+        192,
+        28,
+        28
+      ],
+      "manual_out_shape": [
+        2,
+        192,
+        28,
+        28
+      ],
+      "reference_out_shape": [
+        2,
+        192,
+        28,
+        28
+      ],
+      "max_abs_weight_diff": 0.0,
+      "max_abs_bias_diff": 4.76837158203125e-07,
+      "max_abs_out_diff": 4.76837158203125e-07,
+      "mean_abs_out_diff": 2.0668595723805083e-08,
+      "manual_params_after": 1920,
+      "manual_params_before": 2880,
+      "reference_backend": "timm.models.repvit.RepVggDw.fuse()",
+      "manual_backend": "tools.reparam_deep.fuse_repvggdw_manual()"
+    },
+    {
+      "stage": 2,
+      "block": 13,
+      "channels": 192,
+      "input_shape": [
+        2,
+        192,
+        28,
+        28
+      ],
+      "manual_out_shape": [
+        2,
+        192,
+        28,
+        28
+      ],
+      "reference_out_shape": [
+        2,
+        192,
+        28,
+        28
+      ],
+      "max_abs_weight_diff": 0.0,
+      "max_abs_bias_diff": 4.76837158203125e-07,
+      "max_abs_out_diff": 9.5367431640625e-07,
+      "mean_abs_out_diff": 2.6990448986907722e-08,
+      "manual_params_after": 1920,
+      "manual_params_before": 2880,
+      "reference_backend": "timm.models.repvit.RepVggDw.fuse()",
+      "manual_backend": "tools.reparam_deep.fuse_repvggdw_manual()"
+    },
+    {
+      "stage": 3,
+      "block": 0,
+      "channels": 384,
+      "input_shape": [
+        2,
+        384,
+        28,
+        28
+      ],
+      "manual_out_shape": [
+        2,
+        384,
+        28,
+        28
+      ],
+      "reference_out_shape": [
+        2,
+        384,
+        28,
+        28
+      ],
+      "max_abs_weight_diff": 0.0,
+      "max_abs_bias_diff": 2.384185791015625e-07,
+      "max_abs_out_diff": 4.76837158203125e-07,
+      "mean_abs_out_diff": 1.145819794601266e-08,
+      "manual_params_after": 3840,
+      "manual_params_before": 5760,
+      "reference_backend": "timm.models.repvit.RepVggDw.fuse()",
+      "manual_backend": "tools.reparam_deep.fuse_repvggdw_manual()"
+    },
+    {
+      "stage": 3,
+      "block": 1,
+      "channels": 384,
+      "input_shape": [
+        2,
+        384,
+        28,
+        28
+      ],
+      "manual_out_shape": [
+        2,
+        384,
+        28,
+        28
+      ],
+      "reference_out_shape": [
+        2,
+        384,
+        28,
+        28
+      ],
+      "max_abs_weight_diff": 0.0,
+      "max_abs_bias_diff": 3.5762786865234375e-07,
+      "max_abs_out_diff": 9.5367431640625e-07,
+      "mean_abs_out_diff": 1.5413510467965352e-08,
+      "manual_params_after": 3840,
+      "manual_params_before": 5760,
+      "reference_backend": "timm.models.repvit.RepVggDw.fuse()",
+      "manual_backend": "tools.reparam_deep.fuse_repvggdw_manual()"
+    }
+  ]
+}

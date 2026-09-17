@@ -39,7 +39,8 @@ AI 辅助生成或修改的内容**。本文件是这份标注的唯一真源。
 | 官方预训练权重 ×5 | THU-MIG/RepViT Releases v1.0 | Apache-2.0 | 官方模型评价 |
 | timm/HF 预训练权重 | `timm/repvit_m0_9.dist_300e_in1k` | Apache-2.0 | 迁移训练起点 |
 | Oxford-IIIT Pet 数据集 | University of Oxford | CC BY-SA 4.0 | 迁移训练 |
-| ImageNet-1K 验证集 | `mrm8488/ImageNet1K-val`（HF 镜像） | 非商业研究用途 | 官方模型评价子集 |
+| **ImageNetV2 matched-frequency 测试集** | `vaishaal/ImageNetV2`（HF 作者方镜像，`gated=false`） | MIT（HF `cardData.license`；图像本体按 ImageNet 数据集同等方式使用） | **官方模型评价（唯一口径）**：归档 `imagenetv2-matched-frequency.tar.gz` = 1,264,079,360 B，sha256 `f0c37fdf925916b19ea1323cd9a2208cdb6959ba2c32eef2a7fc393835c9ca7c`（与 HF `X-Linked-ETag` 逐字符一致）；固定子集清单 `datasets/lists/imagenetv2_mf_1000.txt`。出处与选取规则见 `report/IMAGENETV2_PROVENANCE.md` |
+| ImageNet-1K 验证集（原始上游数据） | `mrm8488/ImageNet1K-val`（HF 镜像，14 分片） | 非商业研究用途 | `external/` 跨集合实拍演示图的来源；**不参与官方模型评价口径**（本仓唯一评测口径是上一行的 ImageNetV2） |
 | `torchvision` / `torch` / `onnxruntime` / `scikit-learn` / `matplotlib` / `pandas` / `OpenCV` | 各自官方发布 | BSD-3 / MIT / Apache-2.0 等 | 通用依赖 |
 
 **代理声明**：本机直连 `github.com` 返回 HTTP 000，官方权重经
@@ -51,9 +52,16 @@ SHA256 记录在 `outputs/metrics/weight_sha256.json`。
 
 ## 三、自撰代码（self-written）
 
-`tools/`、`deploy/`、`utils/`、`datasets/` 下的全部 `.py`，以及 `configs/` 下的全部 `.yaml`。
-各文件头部均带 `Source:` 注释标明来源类别。
+`tools/`、`deploy/`、`utils/`、`datasets/` 下的全部 `.py`，以及 `configs/` 下的全部 `.yaml`，
+均为本项目自撰（不含逐字节拷贝的第三方实现，官方代码见第一节）。
 
+**「来源类别」的唯一真源是本文件**。文件头 `Source:` 注释只覆盖一部分文件，
+清点结果（2026-09，`git ls-files tools/*.py deploy/*.py utils/*.py datasets/*.py configs/*.yaml`
+共 **88** 个文件）：**20** 个文件头带 `Source:` 注释（如 `tools/report_spec.py` 的
+`Source: Self-written`、`tools/make_report_assets.py` 的 `Source  : Self-written`），
+其余 68 个（含 `configs/*.yaml` 与各 `__init__.py`）未逐文件加注释。
+未加注释的文件不影响来源判定：它们全部是自撰代码，来源按本文件第一节到第四节的分类标注。
+"
 关键自撰模块：
 
 | 文件 | 职责 |
@@ -110,7 +118,8 @@ SHA256 记录在 `outputs/metrics/weight_sha256.json`。
 | Pet `images.tar.gz` | 官方 MD5 `5c4f3ee8e5d25df40f4fd59a7f44e54c` | 一致 |
 | Pet `annotations.tar.gz` | 官方 MD5 `95a8c909bbe2e81eed6a22bccdf3f68f` | 一致 |
 | ImageNet 1000 类标签 | 四锚点 tench / golden retriever / tabby / toilet tissue | 全部命中 |
-| ImageNet val | 1000 类 × 50 张、JPEG 魔数、目录序 = synset 序 | 通过 |
+| **ImageNetV2 归档 + 固定子集** | 归档体积 + SHA256（与 HF `X-Linked-ETag` 逐字符比对）；解压后 1000 类 × 10 张；清单 1000 行 | 归档 1,264,079,360 B / `f0c37fdf…c9ca7c` 一致；清单 sha256 `d5532205d8f30099aa70ed9392078adcdbd305c47055930c66e704f7976c9d05` |
+| ImageNet val（原始上游数据） | 1000 类 × 50 张、JPEG 魔数、目录序 = synset 序 | 通过（**不参与评测口径**，见第二节） |
 | Pet 划分 | 三层两两交集 = 0、MD5 交集 = 0 | 通过 |
 
 ---

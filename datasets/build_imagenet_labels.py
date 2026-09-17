@@ -33,7 +33,11 @@ ANCHORS = {0: "tench", 207: "golden retriever", 281: "tabby", 999: "toilet tissu
 
 
 def load_timm_info():
-    """优先用 timm 的 ImageNetInfo 取 wnid 序列；取不到就退回直接读 _info 文件。"""
+    """优先用 timm 的 ImageNetInfo 取 wnid 序列；取不到就退回直接读 _info 文件。
+
+    返回的第三项是**timm 包内的相对目录名**（不是采集机的绝对路径）：
+    落盘报告里写绝对路径会让产物不可移植（试题第 14 页要求不得写死个人电脑路径）。
+    """
     import timm
     info_dir = Path(timm.__file__).parent / "data" / "_info"
     syn_file = info_dir / "imagenet_synsets.txt"
@@ -47,7 +51,7 @@ def load_timm_info():
         if "\t" in line:
             k, v = line.split("\t", 1)
             lemma[k.strip()] = v.split(",")[0].strip()
-    return wnids, lemma, info_dir
+    return wnids, lemma, "timm/data/_info", getattr(timm, "__version__", "unknown")
 
 
 def main() -> int:
@@ -57,9 +61,9 @@ def main() -> int:
     ap.add_argument("--report", default="outputs/metrics/imagenet_labels_report.json")
     a = ap.parse_args()
 
-    wnids, lemma, info_dir = load_timm_info()
+    wnids, lemma, info_rel, timm_version = load_timm_info()
     print("=" * 70)
-    print(f"[src] timm 内置词典目录: {info_dir}")
+    print(f"[src] timm 内置词典目录: {info_rel}（timm {timm_version}）")
     print(f"[src] wnid 数 = {len(wnids)}")
 
     names, missing = [], []
@@ -71,7 +75,9 @@ def main() -> int:
         names.append(n)
 
     # ---- 自检：维度 ----
-    rep = {"source": str(info_dir), "n_wnids": len(wnids), "n_names": len(names),
+    rep = {"source": info_rel, "source_note": "timm 包内置词典目录（相对 timm 包根，不写采集机绝对路径）",
+           "timm_version": timm_version,
+           "n_wnids": len(wnids), "n_names": len(names),
            "n_missing_lemma": len(missing), "missing_lemma": missing[:20],
            "order": "wnid 字典序（timm/data/_info/imagenet_synsets.txt 的行序）"}
 

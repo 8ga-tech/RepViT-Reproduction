@@ -8,7 +8,8 @@
 | PyTorch 重参数化 | Pet-37 baseline；timm 单头、distillation=False；32 个固定随机输入，seed=20240912，batch=8，224×224，CPU FP32；eval 后深拷贝再 fuse | 7.092952728271484e-06 / 2.030726818702533e-06；展示 7.093e-06 / 2.031e-06 | Top-1 32/32，Top-5 最小交集5；max<1e-4；BN模块107→0 | outputs/reparam/repvit_m0_9_pet37_reparam_report.json |
 
 两项均已实际复跑，`max` / `mean` 与上述原始 JSON 字段逐位一致；复跑副本位于 outputs/verification/。
-展示统一取 **4 位有效数字**（6.199e-06 / 1.501e-06 / 1.717e-05 / 2.360e-06 / 1.812e-05 / 2.464e-06 / 7.093e-06 / 2.031e-06），不要再用 7.1e-06 这类 2 位写法。
+展示统一取 **4 位有效数字**（B1 6.199e-06 / 1.501e-06；B2 1.383e-05 / 2.334e-06；B3 1.335e-05 / 2.215e-06；B12 1.860e-05 / 2.219e-06；B13 1.144e-05 / 1.876e-06；B4 7.093e-06 / 2.031e-06），不要再用 7.1e-06 这类 2 位写法。
+（2026-09-17 更新：官方型号一致性按 **ImageNetV2 matched-frequency 固定子集**重跑，B2/B3 数值已随之变化，并新增 B12（M1.1）/ B13（M1.5）；逐桶展示值与复跑命令见 `report/LOGITS_AUDIT_FINDINGS.md` §1。B1 与 B4 **未变**。）
 结果覆盖已测输入与阈值，不是位级完全相等，也不代表所有输入、所有后端或全测试集都一致。
 **两项实验必须分开表述**：重参数化是「融合前后 PyTorch ↔ PyTorch」（32 个随机张量），
 PyTorch–ONNX 是「融合态 PyTorch ↔ ONNX Runtime」（12 张真实图片），
@@ -20,14 +21,16 @@ PyTorch–ONNX 是「融合态 PyTorch ↔ ONNX Runtime」（12 张真实图片�
 （这段话在 README.md 第 11 节、report/REPORT.md 第 13.3 节与本文件**逐字一致**。）
 - README/PPT_CONTENT 曾出现 6.53e-06、6.527e-06 等旧 Pet-37 重参数化值。引用同一个 outputs/reparam 文件的地方统一为 7.093e-06（mean 2.031e-06、Top-1 32/32）；不能把不同日期/权重/输入下的值视为相同实验。
 - “共用 transform 会使 logits 误差恒为0”不成立。当前 compare_torch_onnx.py 使用同一张量，隔离预处理变量，只测模型/后端差异；独立实现的部署预处理仍需要另外与训练侧核对。
-- 原先“六个 ONNX 模型一致率100%”范围过大：仓库只有三份 consistency JSON，分别是 Pet-37 M0.9、ImageNet M0.9/M1.0，各 n=12。其余三型号的导出或性能结果不能代替同口径一致性验证。
+- 原先“六个 ONNX 模型一致率100%”范围过大：仓库现有**五份** consistency JSON，分别是 Pet-37 M0.9、以及 ImageNet 侧的 M0.9 / M1.0 / M1.1 / M1.5，各 n=12（对应桶 B1/B2/B3/B12/B13）。未入库型号（M2.3）的导出或性能结果不能代替同口径一致性验证。
 
 ## 保持独立的其他实验
 
 | 证据位置 | 它实际比较什么 | 处理方式 |
 |---|---|---|
-| outputs/metrics/consistency_repvit_m0_9_in1k.json | ImageNet固定子集前12张，PyTorch–ONNX；max=1.71661376953125e-05，mean=2.360081756099438e-06 | 保留独立型号与标签口径 |
-| outputs/metrics/consistency_repvit_m1_0_in1k.json | ImageNet固定子集前12张，PyTorch–ONNX；max=1.811981201171875e-05，mean=2.4635197632960626e-06 | 不与Pet-37合并 |
+| outputs/metrics/consistency_repvit_m0_9_in1k.json | ImageNetV2 固定子集（`imagenetv2_mf_1000`）前12张，PyTorch–ONNX；max=1.3828277587890625e-05，mean=2.333735949378024e-06 | 保留独立型号与标签口径 |
+| outputs/metrics/consistency_repvit_m1_0_in1k.json | ImageNetV2 固定子集（`imagenetv2_mf_1000`）前12张，PyTorch–ONNX；max=1.33514404296875e-05，mean=2.2154212805010807e-06 | 不与Pet-37合并 |
+| outputs/metrics/consistency_repvit_m1_1_in1k.json | ImageNetV2 固定子集（`imagenetv2_mf_1000`）前12张，PyTorch–ONNX；max=1.8596649169921875e-05，mean=2.218950858908405e-06 | 同口径独立桶（B12） |
+| outputs/metrics/consistency_repvit_m1_5_in1k.json | ImageNetV2 固定子集（`imagenetv2_mf_1000`）前12张，PyTorch–ONNX；max=1.1444091796875e-05，mean=1.8764107115506097e-06 | 同口径独立桶（B13） |
 | outputs/pretrained_eval/*/metrics.json 中 fuse_max_abs_logits_diff | 官方权重评价流程里的融合前后探针；M0.9/M1.0/M1.1/M1.5/M2.3分别约3.073e-05/3.290e-05/2.217e-05/2.587e-05/5.925e-05 | 型号、输入、设备取各文件与 eval_pretrained.py；不替换Pet-37的32输入实验 |
 | outputs/benchmarks/export_*.json 与 deploy/export_onnx.py | 导出检查及单个随机输入探针；导出脚本的随机输入未固定seed | 不充当n=12真实图片一致性结果 |
 | outputs/advanced/repvit_m0_9_pet37_reparam_report.json | reparam_deep.py 的历史结构探针；seed=0、2个随机输入；构造时未显式关蒸馏头，strict=False允许部分加载；数值max=2.9802322387695312e-06 | 保留历史记录，不能作为当前单头baseline的独立复现；108个BN与当前107不同 |
@@ -44,9 +47,9 @@ PyTorch BN模块数与导出图BatchNormalization节点数也不同：当前Pet-
 
 | 文件 | 规范化前（第 4 行 / 第 8 行） | 规范化后 |
 |---|---|---|
-| outputs/metrics/consistency_repvit_m0_9_pet37.json | `C:\Users\14675\…\RepViT-Reproduction\onnx\repvit_m0_9_pet37.onnx` / `…\datasets\lists\pet_test.txt` | `onnx/repvit_m0_9_pet37.onnx` / `datasets/lists/pet_test.txt` |
-| outputs/metrics/consistency_repvit_m0_9_in1k.json | 同上形态（采集机绝对路径） | `onnx/repvit_m0_9_in1k.onnx` / `datasets/lists/imagenet_val_subset.txt` |
-| outputs/metrics/consistency_repvit_m1_0_in1k.json | 同上形态（采集机绝对路径） | `onnx/repvit_m1_0_in1k.onnx` / `datasets/lists/imagenet_val_subset.txt` |
+| outputs/metrics/consistency_repvit_m0_9_pet37.json | （采集机绝对路径，形如 `<repo-abs>\onnx\repvit_m0_9_pet37.onnx`）/（同为绝对路径的 `pet_test.txt`） | `onnx/repvit_m0_9_pet37.onnx` / `datasets/lists/pet_test.txt` |
+| outputs/metrics/consistency_repvit_m0_9_in1k.json | 同上形态（采集机绝对路径） | `onnx/repvit_m0_9_in1k.onnx` / `datasets/lists/imagenetv2_mf_1000.txt` |
+| outputs/metrics/consistency_repvit_m1_0_in1k.json | 同上形态（采集机绝对路径） | `onnx/repvit_m1_0_in1k.onnx` / `datasets/lists/imagenetv2_mf_1000.txt` |
 
 **理由**：试题第 14 页明确要求不得写死个人电脑绝对路径。这三个 JSON 是答辩正文的引用源，
 采集机绝对路径会随提交物外传。**逐行字符串替换**（不做 `json.load` + `json.dump` 往返，
@@ -67,23 +70,29 @@ Top-1 / Top-5 与 outputs/metrics 的正式产物逐字段一致。
 从仓库根目录执行；权重、ONNX和数据按README准备。复跑写入单独目录，避免覆盖原证据。
 命令参数与脚本实际 CLI 一致（`--num-samples/--batch-size/--seed/--skip-onnx/--out-dir` 均已实测存在）：
 
-    # 三项 n=12 真实图片一致性（B1/B2/B3），各自写入 outputs/verification/
+    # 五项 n=12 真实图片一致性（B1/B2/B3/B12/B13），各自写入 outputs/verification/
     python deploy/compare_torch_onnx.py --model repvit_m0_9_pet37 --images datasets/lists/pet_test.txt --limit 12 --out outputs/verification/consistency_repvit_m0_9_pet37_n12.json
-    python deploy/compare_torch_onnx.py --model repvit_m0_9_in1k --images datasets/lists/imagenet_val_subset.txt --limit 12 --out outputs/verification/consistency_repvit_m0_9_in1k_n12.json
-    python deploy/compare_torch_onnx.py --model repvit_m1_0_in1k --images datasets/lists/imagenet_val_subset.txt --limit 12 --out outputs/verification/consistency_repvit_m1_0_in1k_n12.json
+    python deploy/compare_torch_onnx.py --model repvit_m0_9_in1k --images datasets/lists/imagenetv2_mf_1000.txt --limit 12 --out outputs/verification/consistency_repvit_m0_9_in1k_n12.json
+    python deploy/compare_torch_onnx.py --model repvit_m1_0_in1k --images datasets/lists/imagenetv2_mf_1000.txt --limit 12 --out outputs/verification/consistency_repvit_m1_0_in1k_n12.json
+    python deploy/compare_torch_onnx.py --model repvit_m1_1_in1k --images datasets/lists/imagenetv2_mf_1000.txt --limit 12 --out outputs/verification/consistency_repvit_m1_1_in1k_n12.json
+    python deploy/compare_torch_onnx.py --model repvit_m1_5_in1k --images datasets/lists/imagenetv2_mf_1000.txt --limit 12 --out outputs/verification/consistency_repvit_m1_5_in1k_n12.json
     # 结构重参数化（B4）：32 个固定随机输入 seed=20240912，batch=8
     python tools/reparam_verify.py --model repvit_m0_9_pet37 --weights checkpoints/baseline_best.pt --num-samples 32 --batch-size 8 --seed 20240912 --skip-onnx --out-dir outputs/verification/reparam_pet37
     # DoD 自检（只跑与本文件相关的三项）
     python tools/selfcheck.py --only rep.verify onnx.consistency onnx.realimg --strict --json outputs/verification/selfcheck_logits.json
     # 按 experiment bucket 检索全仓误差引用；不要用「grep 数字」核对：
-    # outputs/logs 里 lr_bb=1.81e-05 与 B3 的 1.811981201171875e-05 前三位相同，
+    # outputs/logs 里 lr_bb=1.81e-05 这类**学习率**与误差值同形（B3 的 max|Δ| 现为 1.335e-05），
     # eval_family_5models.log 的 3.07e-05 属于 B5（五型号融合探针），都不能与 B1 并列。
     python tools/audit_logits_references.py
 
 若要重新导出重参数化对照图，去掉 --skip-onnx。官方ImageNet模型使用登记键 repvit_m0_9_in1k，使实现与权重匹配；不要将官方键名直接装入timm结构。
 PPT 侧的文案改写走 `tools/update_defense.py`（只改 `report/答辩PPT_RepViT.pptx`，属于 PPT 任务，不在本口径统一流程内）。
 
-扫描清单：outputs/verification/logits_reference_inventory.csv，覆盖Git跟踪的文本、代码、JSON、日志、SVG，以及PPTX/DOCX/PDF正文与PPT备注；核对请按该表的 `bucket` 列查。原始实验产物不做数字替换；旧SVG演示源保留为历史素材，不作为答辩口径。
+扫描清单：outputs/verification/logits_reference_inventory.csv（**2026-09-17 t35 暂存态登记：4790 条引用 / 178 个文件**；上一轮 t32 为 4788 / 178、t28 为 4788 / 178、t23 为 4778 / 177、t21 为 4776 / 177、t20 为 4731 / 176，更早的历史值为 4124 / 153），覆盖Git跟踪的文本、代码、JSON、日志、SVG，以及PPTX/DOCX/PDF正文与PPT备注；核对请按该表的 `bucket` 列查。原始实验产物不做数字替换；旧SVG演示源保留为历史素材，不作为答辩口径。
+（t35 增量 +2 / +0：全部来自 t34 在审计文档里新增的一行（L722）—— 该行含两处被扫词（同一关键词的大小写各一处），故条目 156 → 158、按桶归 B1；`tools/check_audit_evidence.py` 新增两条断言不产生新条目。字节 1,245,757 → **1,246,586**、SHA256 `3E46CD7B…189D` → **`E1F708BF…1B3B`**。）
+（t32 增量 +0 / +0：条数与文件数都与 t28 相同，但清单正文与校验值已变——t30 改写的审计文档里 1 条 `statement` 行的归属由 B2 改为 B3，另有多处文本换位，故字节 1,245,560 → **1,245,757**、SHA256 `6509CC6E…68B2` → **`3E46CD7B…189D`**。）
+（t28 增量 +10 / +1：全部来自 t27 新增的证据指针校验器 `tools/check_audit_evidence.py`（10 条均为 `statement`，按桶归 B11）；t25/t27 另外改到的 `report/REQUIREMENTS_AUDIT.md`、`report/SPEC13_SWITCH_RUNBOOK.md`、`report/ppt_svg/README.md`、`tools/selfcheck.py` 四份文件条目数均不变。逐来源台账见同目录的审计发现文档 §2.8。）
+（t23 增量 +2：其中 +1 来自审计文档「1.2-8 为什么可以减少推理开销」行的现行证据与判定复核后记（该文件 155→156 行），另 +1 为本轮新增台账文本自身；t22 另外改的两份 SVG/README 与冻结基线、切换 Runbook 的条目数均不变。t21 那一轮的 +45 见 `report/LOGITS_AUDIT_FINDINGS.md` §2.6。）
 
 ## 试题与答辩图表对应
 

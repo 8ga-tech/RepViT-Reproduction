@@ -29,8 +29,8 @@
   <g id="cover-metrics" data-pptx-bounds="96 560 1090 110">
     <line x1="96" y1="560" x2="1184" y2="560" stroke="#1E3050" stroke-width="2"/>
     <g id="metric-1">
-      <text x="96" y="608" font-family="Consolas" font-size="38" font-weight="bold" fill="#35D0F0">78.20%</text>
-      <text x="96" y="642" font-family="Microsoft YaHei" font-size="15" fill="#93A4C0">ImageNet 子集 Top-1</text>
+      <text x="96" y="608" font-family="Consolas" font-size="38" font-weight="bold" fill="#35D0F0">68.70%</text>
+      <text x="96" y="642" font-family="Microsoft YaHei" font-size="15" fill="#93A4C0">ImageNetV2 固定子集 Top-1</text>
     </g>
     <g id="metric-2">
       <text x="360" y="608" font-family="Consolas" font-size="38" font-weight="bold" fill="#3FDB9B">92.34%</text>
@@ -42,7 +42,7 @@
     </g>
     <g id="metric-4">
       <text x="888" y="608" font-family="Consolas" font-size="38" font-weight="bold" fill="#C79BFF">100%</text>
-      <text x="888" y="642" font-family="Microsoft YaHei" font-size="15" fill="#93A4C0">ONNX Top-1 一致（3 型号各 12 张）</text>
+      <text x="888" y="642" font-family="Microsoft YaHei" font-size="15" fill="#93A4C0">ONNX 一致（入库 5 型号各 12 张）</text>
     </g>
   </g>
 </svg>

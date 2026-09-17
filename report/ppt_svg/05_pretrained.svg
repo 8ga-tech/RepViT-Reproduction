@@ -2,8 +2,8 @@
   <rect id="bg-canvas" data-pptx-role="background" x="0" y="0" width="1280" height="720" fill="#0B1220"/>
 
   <g id="page-header" data-pptx-bounds="72 44 1136 100">
-    <text x="72" y="82" font-family="Microsoft YaHei" font-size="34" font-weight="bold" fill="#E6EDF7">官方权重在自建子集上的实际表现</text>
-    <text x="72" y="118" font-family="Microsoft YaHei" font-size="16" fill="#93A4C0">1000 张自建分层子集（每类 1 张，种子 20260912）· 224×224 · batch 64 · FP32 · RTX 4060 Laptop</text>
+    <text x="72" y="82" font-family="Microsoft YaHei" font-size="34" font-weight="bold" fill="#E6EDF7">官方权重在 ImageNetV2 固定子集上的实际表现</text>
+    <text x="72" y="118" font-family="Microsoft YaHei" font-size="16" fill="#93A4C0">ImageNetV2 matched-frequency 固定子集 1000 张（1000 类各 1 张，确定性选取）· 224×224 · batch 64 · FP32 · NVIDIA GeForce RTX 4060 Laptop GPU</text>
     <line x1="72" y1="136" x2="1208" y2="136" stroke="#1E3050" stroke-width="2"/>
   </g>
 
@@ -12,49 +12,55 @@
     <g id="tbl-head">
       <rect x="72" y="168" width="800" height="50" rx="10" fill="#1B2740"/>
       <text x="106" y="200" font-family="Microsoft YaHei" font-size="15" font-weight="bold" fill="#93A4C0">型号</text>
-      <text x="290" y="200" font-family="Microsoft YaHei" font-size="15" font-weight="bold" fill="#93A4C0" text-anchor="middle">参数量 (M)</text>
-      <text x="450" y="200" font-family="Microsoft YaHei" font-size="15" font-weight="bold" fill="#93A4C0" text-anchor="middle">MACs (G)</text>
-      <text x="620" y="200" font-family="Microsoft YaHei" font-size="15" font-weight="bold" fill="#93A4C0" text-anchor="middle">本机 Top-1</text>
-      <text x="790" y="200" font-family="Microsoft YaHei" font-size="15" font-weight="bold" fill="#93A4C0" text-anchor="middle">官方公布</text>
+      <text x="252" y="200" font-family="Microsoft YaHei" font-size="15" font-weight="bold" fill="#93A4C0" text-anchor="middle">参数量 (M)</text>
+      <text x="392" y="200" font-family="Microsoft YaHei" font-size="15" font-weight="bold" fill="#93A4C0" text-anchor="middle">MACs (G)</text>
+      <text x="546" y="200" font-family="Microsoft YaHei" font-size="15" font-weight="bold" fill="#93A4C0" text-anchor="middle">文件大小 (MB)</text>
+      <text x="686" y="200" font-family="Microsoft YaHei" font-size="15" font-weight="bold" fill="#93A4C0" text-anchor="middle">Top-1</text>
+      <text x="816" y="200" font-family="Microsoft YaHei" font-size="15" font-weight="bold" fill="#93A4C0" text-anchor="middle">Top-5</text>
     </g>
     <g id="tr-1">
       <text x="106" y="252" font-family="Consolas" font-size="16" fill="#35D0F0">RepViT-M0.9</text>
-      <text x="290" y="252" font-family="Consolas" font-size="16" fill="#E6EDF7" text-anchor="middle">5.489</text>
-      <text x="450" y="252" font-family="Consolas" font-size="16" fill="#E6EDF7" text-anchor="middle">0.847</text>
-      <text x="620" y="252" font-family="Consolas" font-size="17" font-weight="bold" fill="#3FDB9B" text-anchor="middle">78.20%</text>
-      <text x="790" y="252" font-family="Consolas" font-size="16" fill="#93A4C0" text-anchor="middle">78.7%</text>
+      <text x="252" y="252" font-family="Consolas" font-size="16" fill="#E6EDF7" text-anchor="middle">5.067</text>
+      <text x="392" y="252" font-family="Consolas" font-size="16" fill="#E6EDF7" text-anchor="middle">0.847</text>
+      <text x="546" y="252" font-family="Consolas" font-size="16" fill="#E6EDF7" text-anchor="middle">21.38</text>
+      <text x="686" y="252" font-family="Consolas" font-size="17" font-weight="bold" fill="#3FDB9B" text-anchor="middle">68.70%</text>
+      <text x="816" y="252" font-family="Consolas" font-size="16" fill="#93A4C0" text-anchor="middle">85.70%</text>
       <line x1="106" y1="268" x2="838" y2="268" stroke="#1E3050" stroke-width="1"/>
     </g>
     <g id="tr-2">
       <text x="106" y="304" font-family="Consolas" font-size="16" fill="#35D0F0">RepViT-M1.0</text>
-      <text x="290" y="304" font-family="Consolas" font-size="16" fill="#E6EDF7" text-anchor="middle">7.303</text>
-      <text x="450" y="304" font-family="Consolas" font-size="16" fill="#E6EDF7" text-anchor="middle">1.143</text>
-      <text x="620" y="304" font-family="Consolas" font-size="17" font-weight="bold" fill="#3FDB9B" text-anchor="middle">79.90%</text>
-      <text x="790" y="304" font-family="Consolas" font-size="16" fill="#93A4C0" text-anchor="middle">80.0%</text>
+      <text x="252" y="304" font-family="Consolas" font-size="16" fill="#E6EDF7" text-anchor="middle">6.810</text>
+      <text x="392" y="304" font-family="Consolas" font-size="16" fill="#E6EDF7" text-anchor="middle">1.143</text>
+      <text x="546" y="304" font-family="Consolas" font-size="16" fill="#E6EDF7" text-anchor="middle">28.30</text>
+      <text x="686" y="304" font-family="Consolas" font-size="17" font-weight="bold" fill="#3FDB9B" text-anchor="middle">69.20%</text>
+      <text x="816" y="304" font-family="Consolas" font-size="16" fill="#93A4C0" text-anchor="middle">86.40%</text>
       <line x1="106" y1="320" x2="838" y2="320" stroke="#1E3050" stroke-width="1"/>
     </g>
     <g id="tr-3">
       <text x="106" y="356" font-family="Consolas" font-size="16" fill="#93A4C0">RepViT-M1.1</text>
-      <text x="290" y="356" font-family="Consolas" font-size="16" fill="#93A4C0" text-anchor="middle">8.803</text>
-      <text x="450" y="356" font-family="Consolas" font-size="16" fill="#93A4C0" text-anchor="middle">1.358</text>
-      <text x="620" y="356" font-family="Consolas" font-size="16" fill="#93A4C0" text-anchor="middle">79.90%</text>
-      <text x="790" y="356" font-family="Consolas" font-size="16" fill="#93A4C0" text-anchor="middle">80.7%</text>
+      <text x="252" y="356" font-family="Consolas" font-size="16" fill="#93A4C0" text-anchor="middle">8.244</text>
+      <text x="392" y="356" font-family="Consolas" font-size="16" fill="#93A4C0" text-anchor="middle">1.377</text>
+      <text x="546" y="356" font-family="Consolas" font-size="16" fill="#93A4C0" text-anchor="middle">34.02</text>
+      <text x="686" y="356" font-family="Consolas" font-size="16" fill="#93A4C0" text-anchor="middle">70.80%</text>
+      <text x="816" y="356" font-family="Consolas" font-size="16" fill="#93A4C0" text-anchor="middle">87.20%</text>
       <line x1="106" y1="372" x2="838" y2="372" stroke="#1E3050" stroke-width="1"/>
     </g>
     <g id="tr-4">
       <text x="106" y="408" font-family="Consolas" font-size="16" fill="#93A4C0">RepViT-M1.5</text>
-      <text x="290" y="408" font-family="Consolas" font-size="16" fill="#93A4C0" text-anchor="middle">14.644</text>
-      <text x="450" y="408" font-family="Consolas" font-size="16" fill="#93A4C0" text-anchor="middle">2.308</text>
-      <text x="620" y="408" font-family="Consolas" font-size="16" fill="#93A4C0" text-anchor="middle">82.80%</text>
-      <text x="790" y="408" font-family="Consolas" font-size="16" fill="#93A4C0" text-anchor="middle">82.3%</text>
+      <text x="252" y="408" font-family="Consolas" font-size="16" fill="#93A4C0" text-anchor="middle">14.050</text>
+      <text x="392" y="408" font-family="Consolas" font-size="16" fill="#93A4C0" text-anchor="middle">2.340</text>
+      <text x="546" y="408" font-family="Consolas" font-size="16" fill="#93A4C0" text-anchor="middle">56.62</text>
+      <text x="686" y="408" font-family="Consolas" font-size="16" fill="#93A4C0" text-anchor="middle">71.40%</text>
+      <text x="816" y="408" font-family="Consolas" font-size="16" fill="#93A4C0" text-anchor="middle">89.00%</text>
       <line x1="106" y1="424" x2="838" y2="424" stroke="#1E3050" stroke-width="1"/>
     </g>
     <g id="tr-5">
       <text x="106" y="456" font-family="Consolas" font-size="16" fill="#93A4C0">RepViT-M2.3</text>
-      <text x="290" y="456" font-family="Consolas" font-size="16" fill="#93A4C0" text-anchor="middle">23.689</text>
-      <text x="450" y="456" font-family="Consolas" font-size="16" fill="#93A4C0" text-anchor="middle">4.574</text>
-      <text x="620" y="456" font-family="Consolas" font-size="16" fill="#93A4C0" text-anchor="middle">83.10%</text>
-      <text x="790" y="456" font-family="Consolas" font-size="16" fill="#93A4C0" text-anchor="middle">83.3%</text>
+      <text x="252" y="456" font-family="Consolas" font-size="16" fill="#93A4C0" text-anchor="middle">22.927</text>
+      <text x="392" y="456" font-family="Consolas" font-size="16" fill="#93A4C0" text-anchor="middle">4.626</text>
+      <text x="546" y="456" font-family="Consolas" font-size="16" fill="#93A4C0" text-anchor="middle">91.42</text>
+      <text x="686" y="456" font-family="Consolas" font-size="16" fill="#93A4C0" text-anchor="middle">73.60%</text>
+      <text x="816" y="456" font-family="Consolas" font-size="16" fill="#93A4C0" text-anchor="middle">89.90%</text>
     </g>
   </g>
 
@@ -67,16 +73,16 @@
     <text x="928" y="316" font-family="Consolas" font-size="15" fill="#FFC857">crop_pct = 0.95</text>
     <text x="928" y="340" font-family="Microsoft YaHei" font-size="14" fill="#93A4C0">Resize(235) + CenterCrop(224)</text>
     <line x1="928" y1="364" x2="1184" y2="364" stroke="#1E3050" stroke-width="1"/>
-    <text x="928" y="396" font-family="Microsoft YaHei" font-size="14" fill="#93A4C0">M0.9：78.20 / 78.60</text>
-    <text x="928" y="420" font-family="Microsoft YaHei" font-size="14" fill="#93A4C0">M1.0：79.90 / 80.00</text>
-    <text x="928" y="452" font-family="Microsoft YaHei" font-size="13" fill="#5C7096">两套口径差 0.1~0.4 个点</text>
+    <text x="928" y="396" font-family="Microsoft YaHei" font-size="14" fill="#93A4C0">M0.9：68.70 / 68.30</text>
+    <text x="928" y="420" font-family="Microsoft YaHei" font-size="14" fill="#93A4C0">M1.0：69.20 / 69.40</text>
+    <text x="928" y="452" font-family="Microsoft YaHei" font-size="13" fill="#5C7096">两套口径差 0.2~1.9 个点</text>
   </g>
 
   <g id="disclosure" data-pptx-bounds="72 484 1136 152">
     <rect x="72" y="484" width="1136" height="152" rx="10" fill="#1A1408" stroke="#FFC857" stroke-width="1"/>
     <text x="100" y="520" font-family="Microsoft YaHei" font-size="18" font-weight="bold" fill="#FFC857">必须声明的口径边界</text>
-    <text x="100" y="556" font-family="Microsoft YaHei" font-size="16" fill="#E6EDF7">本结果为「该自建验证子集上的实际运行结果」，不代表论文完整 ImageNet-1K 验证集结果。</text>
-    <text x="100" y="586" font-family="Microsoft YaHei" font-size="15" fill="#93A4C0">子集为每类 1 张的分层抽样（1000 张），非考核方下发的指定子集；清单与哈希见 datasets/lists/imagenet_val_subset.txt</text>
+    <text x="100" y="556" font-family="Microsoft YaHei" font-size="16" fill="#E6EDF7">ImageNetV2 是独立重采样的测试集，不代表论文完整 ImageNet-1K 验证集结果；本页 Top-1/Top-5 与论文/官方的 ImageNet-1K 公布值不可直接比较。</text>
+    <text x="100" y="586" font-family="Microsoft YaHei" font-size="15" fill="#93A4C0">清单固定可复现：1000 类各 1 张、按类目录内文件名 sorted() 取第一个、无随机种子（datasets/lists/imagenetv2_mf_1000.txt）。</text>
     <text x="100" y="614" font-family="Microsoft YaHei" font-size="15" fill="#FFC857">官方 iPhone 12 延迟（0.9 / 1.0 ms）与本机 CPU 结果不可横向比较</text>
   </g>
 

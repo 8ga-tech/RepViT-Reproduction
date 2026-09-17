@@ -210,7 +210,9 @@ def main() -> None:
 
     snapshot = {
         "timestamp": time.strftime("%Y-%m-%d %H:%M:%S"),
-        "cwd": os.getcwd(),
+        # X-3：落盘不写采集机绝对路径（试题第 14 页）。写「相对仓库根」的调用位置即可定位用法，
+        # 绝对路径会随环境变化，对复现没有任何信息增量。
+        "cwd": os.path.relpath(os.getcwd(), str(ROOT)),
         "python": {
             "version": sys.version,
             "version_info": list(sys.version_info[:3]),

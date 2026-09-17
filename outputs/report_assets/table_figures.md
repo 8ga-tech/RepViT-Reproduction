@@ -1,20 +1,26 @@
 | 文件名 | 用途 | 对应题目要求 | 生成脚本 | 状态 | 大小KB |
 |---|---|---|---|---|---|
-| outputs/architecture/repvit_m0_9_arch.png | RepViT-M0.9 整网结构图（9 要素：输入尺寸 224；Stem；四个主要阶段；分辨率 224→112→56→28→14→7；通道 3→24→48→96→192→384；RepViT Block；Global Average Pooling；分类头；最终输出维度 37） | 报告第 3 节 / PPT 第 2 页 | tools/draw_arch.py | 已生成 | 105.2 |
-| figures/config_diff_b0_o1.png | Baseline 与优化实验的 YAML 差异对照（控制变量证据） | PPT 第 7 页 | tools/diff_config.py | 缺失 |  |
-| figures/latency_bar_three_models.png | 三个 ONNX 模型延迟柱状图（含 P50/P95 误差棒） | 报告第 14 节 / PPT 第 13 页 | tools/visualize.py | 缺失 |  |
-| figures/latency_vs_acc.png | 延迟—准确率关系图（同子集/同预处理/同后端） | 进阶任务 1 / 报告第 5 节 / PPT 第 4 页 | tools/pareto_family.py | 缺失 |  |
-| figures/m0_9_block.png | RepViTBlock 训练态/推理态结构图 | 报告第 3 节 / PPT 第 2 页 | tools/draw_arch.py --figure block | 缺失 |  |
-| figures/m0_9_cfg_table.png | M0.9 各 stage 的 block/cfg 参数表 | 报告第 3 节 | tools/draw_arch.py --figure cfg_table | 缺失 |  |
-| figures/official_eval_bar.png | 官方权重在 ImageNet 验证子集上的 Top-1/Top-5 | 报告第 4 节 | tools/eval_pretrained.py | 缺失 |  |
-| figures/onnx_io_nodes.png | 三个 ONNX 模型输入输出节点信息截图排版 | 报告第 13 节 / PPT 第 12 页 | tools/visualize.py | 缺失 |  |
-| figures/params_vs_acc.png | 参数量—准确率关系图 | 进阶任务 1 / 报告第 5 节 / PPT 第 4 页 | tools/pareto_family.py | 缺失 |  |
-| figures/pet37_class_hist.png | Pet-37 各类样本数分布 | 报告第 6 节 / PPT 第 5 页 | tools/visualize.py | 缺失 |  |
-| figures/reparam_graph_nodes.png | 重参数化前后 ONNX 算子数对比（BN/Conv/Add） | 报告第 12 节 / PPT 第 11 页 | tools/reparam_verify.py | 缺失 |  |
-| figures/roadmap_incremental.png | 论文增量现代化设计路线 | 报告第 2 节 / PPT 第 3 页 | tools/draw_arch.py --figure roadmap | 缺失 |  |
-| outputs/confusion_matrix/O1_randaug_test_norm.png | 行归一化混淆矩阵（normalize='true'） | 报告第 10 节 / PPT 第 9 页 | tools/visualize.py | 缺失 |  |
-| outputs/confusion_matrix/per_class_f1_O1.png | 37 类 F1 升序柱状图 | 报告第 10 节 | tools/visualize.py | 缺失 |  |
-| outputs/curves/training_curves_B0.png | Baseline 训练曲线 | 报告第 7 节 | tools/visualize.py | 缺失 |  |
-| outputs/curves/training_curves_all.png | Baseline vs 优化模型同图对比 | 报告第 9/10 节 / PPT 第 8 页 | tools/visualize.py | 缺失 |  |
-| outputs/gradcam/gradcam_compare_O1.png | Baseline vs 优化模型 Grad-CAM 对比（上原图/下 CAM） | 报告第 11 节 / PPT 第 10 页 | tools/gradcam.py | 缺失 |  |
-| outputs/predictions/top5_failures_O1.png | 高置信度错误案例 Top-5 预测图 | 报告第 11 节 / PPT 第 9 页 | tools/visualize.py | 缺失 |  |
+| outputs/advanced/latency_vs_acc.png | 延迟—准确率关系图（同子集/同预处理/同后端） | 进阶任务 1 / 报告第 5 节 | tools/pareto_family.py | 已生成 | 53.2 |
+| outputs/advanced/macs_vs_acc.png | MACs—准确率关系图 | 进阶任务 1 / 报告第 5 节 | tools/pareto_family.py | 已生成 | 51.5 |
+| outputs/advanced/params_vs_acc.png | 参数量—准确率关系图 | 进阶任务 1 / 报告第 5 节 | tools/pareto_family.py | 已生成 | 52.6 |
+| outputs/advanced/robustness_gradcam.png | 扰动下 Grad-CAM 关注区域的变化（3 类扰动 × 2 级 severity + 干净对照，逐格元信息见 outputs/advanced/robustness_gradcam.json） | 进阶任务 5 / 报告附录 C | tools/robustness_gradcam.py | 已生成 | 2347.8 |
+| outputs/advanced/robustness_repvit_m0_9_pet37.json | 7 类扰动 × 6 级 severity 的鲁棒性结果 | 进阶任务 5 / 报告附录 C | tools/robustness_test.py | 已生成 | 10.7 |
+| outputs/architecture/repvit_m0_9_arch.md | 结构图的文字版（每层形状由 forward hook 现测） | 报告第 3 节 | tools/draw_arch.py | 已生成 | 1.7 |
+| outputs/architecture/repvit_m0_9_arch.png | RepViT-M0.9 整网结构图（9 要素：输入尺寸 224；Stem；四个主要阶段；分辨率 224→112→56→28→14→7；通道 3→24→48→96→192→384；RepViT Block；Global Average Pooling；分类头；最终输出维度 37） | 报告第 3 节 / PPT 第 3 页 | tools/draw_arch.py | 已生成 | 105.2 |
+| outputs/benchmarks/igpu_cpu_baseline.json | 集显/CPU 四路后端延迟对照 | 进阶任务 4 / 报告附录 E | tools/bench_igpu.py | 已生成 | 1.9 |
+| outputs/confusion_matrix/baseline_cm.png | 行归一化混淆矩阵（normalize='true'） | 报告第 10 节 / PPT 第 9 页 | tools/check_cm.py | 已生成 | 216.0 |
+| outputs/confusion_matrix/baseline_per_class_f1.png | 37 类 F1 升序柱状图 | 报告第 10 节 / PPT 第 9 页 | tools/check_cm.py | 已生成 | 138.9 |
+| outputs/curves/ablation_curves.png | Baseline 与三组消融臂的同图训练曲线 | 进阶任务 2 / 报告第 9 节 | tools/plot_curves.py | 已生成 | 229.0 |
+| outputs/curves/baseline_curves.png | Baseline 五条训练曲线 | 报告第 7 / 10 节 | tools/plot_curves.py | 已生成 | 162.1 |
+| outputs/curves/opt_compare.png | Baseline vs 优化模型同图对比（共用坐标范围） | 报告第 9 / 10 节 / PPT 第 8 页 | tools/plot_curves.py | 已生成 | 221.9 |
+| outputs/gradcam/gradcam_correct_baseline.png | 判对案例的 Grad-CAM 拼图 | 报告第 11 节 / PPT 第 10 页 | tools/gradcam.py | 已生成 | 434.4 |
+| outputs/gradcam/gradcam_layer_compare_baseline.png | 不同挂载层的 CAM 对比 | 报告第 11 节 | tools/gradcam.py | 已生成 | 316.2 |
+| outputs/gradcam/gradcam_wrong_baseline.png | 判错案例的 Grad-CAM 拼图 | 报告第 11 节 / PPT 第 10 页 | tools/gradcam.py | 已生成 | 428.7 |
+| outputs/predictions/case_wrong_baseline_case01.png | 失败案例 1（含 Top-5 与置信度） | 报告第 10 节 / PPT 第 9 页 | tools/plot_predictions.py | 已生成 | 198.0 |
+| outputs/predictions/case_wrong_baseline_case02.png | 失败案例 2（含 Top-5 与置信度） | 报告第 10 节 / PPT 第 9 页 | tools/plot_predictions.py | 已生成 | 377.4 |
+| outputs/predictions/compare_baseline_vs_opt_combo_grid4.png | Baseline vs 优化模型同批图片 4 组对比 | 报告第 9 节 / PPT 第 11 页 | tools/plot_side_by_side.py | 已生成 | 1658.1 |
+| outputs/predictions/external_top5_pet37_grid5.png | 训练集以外的实拍图片 5 张 Top-5 | 报告第 11 节 / PPT 第 11 页 | tools/plot_predictions.py | 已生成 | 2695.2 |
+| outputs/predictions/test_top5_baseline_grid8.png | 测试集 8 张预测（Top-5 类别 + 置信度） | 报告第 11 节 / PPT 第 11 页 | tools/plot_predictions.py | 已生成 | 2405.3 |
+| outputs/report_assets/table_benchmark_meta.csv | 性能测试 10 项元信息表 | 题目第 13 / 17 页（报告第 14 节） | tools/make_report_assets.py | 已生成 | 1.4 |
+| outputs/report_assets/table_cases.csv | 官方模型评价的正误案例表（2 正 + 2 误） | 题目第 5 页 1.1-7/1.1-8（报告第 4.5 节） | tools/make_report_assets.py | 已生成 | 4.8 |
+| outputs/report_assets/table_results.csv | 7 类结果口径对照表 | 题目第 16 页（报告第 9 节 / PPT 第 8 页） | tools/make_report_assets.py | 已生成 | 1.2 |

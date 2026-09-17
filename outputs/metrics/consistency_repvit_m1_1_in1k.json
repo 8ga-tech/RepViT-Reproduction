@@ -1,0 +1,23 @@
+{
+  "model": "repvit_m1_1_in1k",
+  "arch": "repvit_m1_1_in1k",
+  "onnx_path": "onnx/repvit_m1_1_in1k.onnx",
+  "num_classes": 1000,
+  "label_file": "labels/imagenet_classes.txt",
+  "source": "imagenetv2_mf_1000",
+  "images": "datasets/lists/imagenetv2_mf_1000.txt",
+  "n": 12,
+  "max_abs_logits": 1.8596649169921875e-05,
+  "mean_abs_logits": 2.218950858908405e-06,
+  "top1_agree_rate": 1.0,
+  "top5_set_agree_rate": 1.0,
+  "mismatches": [],
+  "mismatch_count": 0,
+  "threshold": {
+    "top1_agree_rate": 0.99,
+    "max_abs_logits": 0.001
+  },
+  "top1_agree": 1.0,
+  "top1_agreement": 1.0,
+  "verdict": "PASS"
+}

@@ -1,199 +1,199 @@
 {
   "samples": [
     {
-      "image_path": "data/imagenet/val/n04357314/ILSVRC2012_val_00000838_32.JPEG",
-      "true_label_idx": 838,
-      "true_label_name": "sunscreen",
+      "image_path": "data/imagenetv2/matched-frequency/351/06ca91b59a223e7ec1d00ce89155eb4d12bf9e88.jpeg",
+      "true_label_idx": 351,
+      "true_label_name": "hartebeest",
       "top5": [
         {
-          "idx": 838,
-          "name": "sunscreen",
-          "prob": 0.9995532631874084
+          "idx": 351,
+          "name": "hartebeest",
+          "prob": 0.9995331764221191
         },
         {
-          "idx": 419,
-          "name": "Band Aid",
-          "prob": 9.117844456341118e-05
+          "idx": 571,
+          "name": "gas pump",
+          "prob": 0.0001388280652463436
         },
         {
-          "idx": 631,
-          "name": "lotion",
-          "prob": 5.932071144343354e-05
+          "idx": 352,
+          "name": "impala",
+          "prob": 6.915848643984646e-05
         },
         {
-          "idx": 445,
-          "name": "bikini",
-          "prob": 5.1917246310040355e-05
+          "idx": 343,
+          "name": "warthog",
+          "prob": 1.2456382137315813e-05
         },
         {
-          "idx": 775,
-          "name": "sarong",
-          "prob": 2.5490488042123616e-05
+          "idx": 101,
+          "name": "tusker",
+          "prob": 8.100601007754449e-06
         }
       ],
       "correct": true
     },
     {
-      "image_path": "data/imagenet/val/n02869837/ILSVRC2012_val_00000452_46.JPEG",
-      "true_label_idx": 452,
-      "true_label_name": "bonnet",
+      "image_path": "data/imagenetv2/matched-frequency/586/1e71728d85217309f067542c7d81439ab9b68050.jpeg",
+      "true_label_idx": 586,
+      "true_label_name": "half track",
       "top5": [
         {
-          "idx": 452,
-          "name": "bonnet",
-          "prob": 0.9994333386421204
+          "idx": 586,
+          "name": "half track",
+          "prob": 0.9995075464248657
         },
         {
-          "idx": 658,
-          "name": "mitten",
-          "prob": 0.00014936429215595126
+          "idx": 652,
+          "name": "military uniform",
+          "prob": 3.766333975363523e-05
         },
         {
-          "idx": 533,
-          "name": "dishrag",
-          "prob": 4.514328975346871e-05
+          "idx": 847,
+          "name": "tank",
+          "prob": 2.4136050342349336e-05
         },
         {
-          "idx": 615,
-          "name": "knee pad",
-          "prob": 2.7426625820226036e-05
+          "idx": 408,
+          "name": "amphibian",
+          "prob": 1.4605354408558924e-05
         },
         {
-          "idx": 806,
-          "name": "sock",
-          "prob": 2.0653955289162695e-05
+          "idx": 609,
+          "name": "jeep",
+          "prob": 1.1337243449816015e-05
         }
       ],
       "correct": true
     },
     {
-      "image_path": "data/imagenet/val/n04264628/ILSVRC2012_val_00000810_49.JPEG",
-      "true_label_idx": 810,
-      "true_label_name": "space bar",
+      "image_path": "data/imagenetv2/matched-frequency/356/0da57934fe1db8352e6f3d3bcb93cfcbd3d91b69.jpeg",
+      "true_label_idx": 356,
+      "true_label_name": "weasel",
       "top5": [
         {
-          "idx": 878,
-          "name": "typewriter keyboard",
-          "prob": 0.9965007305145264
+          "idx": 387,
+          "name": "lesser panda",
+          "prob": 0.9957470297813416
         },
         {
-          "idx": 810,
-          "name": "space bar",
-          "prob": 0.0013049746630713344
+          "idx": 388,
+          "name": "giant panda",
+          "prob": 0.0006224000826478004
         },
         {
-          "idx": 681,
-          "name": "notebook",
-          "prob": 0.00016417019651271403
+          "idx": 358,
+          "name": "polecat",
+          "prob": 0.0003242089005652815
         },
         {
-          "idx": 401,
-          "name": "accordion",
-          "prob": 4.0349288610741496e-05
+          "idx": 371,
+          "name": "patas",
+          "prob": 0.00011453590559540316
         },
         {
-          "idx": 687,
-          "name": "organ",
-          "prob": 3.838519478449598e-05
+          "idx": 365,
+          "name": "orangutan",
+          "prob": 0.00010827177175087854
         }
       ],
       "correct": false
     },
     {
-      "image_path": "data/imagenet/val/n03759954/ILSVRC2012_val_00000650_07.JPEG",
-      "true_label_idx": 650,
-      "true_label_name": "microphone",
+      "image_path": "data/imagenetv2/matched-frequency/55/008786499c1726d2614f9e3aee20478c5ef48ae2.jpeg",
+      "true_label_idx": 55,
+      "true_label_name": "green snake",
       "top5": [
         {
-          "idx": 593,
-          "name": "harmonica",
-          "prob": 0.994443953037262
+          "idx": 59,
+          "name": "vine snake",
+          "prob": 0.9921058416366577
         },
         {
-          "idx": 650,
-          "name": "microphone",
-          "prob": 0.0018325743731111288
+          "idx": 55,
+          "name": "green snake",
+          "prob": 0.005442111287266016
         },
         {
-          "idx": 691,
-          "name": "oxygen mask",
-          "prob": 0.00044951029121875763
+          "idx": 392,
+          "name": "rock beauty",
+          "prob": 0.00026495588826946914
         },
         {
-          "idx": 684,
-          "name": "ocarina",
-          "prob": 0.00034347892506048083
+          "idx": 64,
+          "name": "green mamba",
+          "prob": 7.91439670138061e-05
         },
         {
-          "idx": 764,
-          "name": "rifle",
-          "prob": 0.0002248317759949714
+          "idx": 60,
+          "name": "night snake",
+          "prob": 5.5597181926714256e-05
         }
       ],
       "correct": false
     },
     {
-      "image_path": "data/imagenet/val/n01491361/ILSVRC2012_val_00000003_13.JPEG",
-      "true_label_idx": 3,
-      "true_label_name": "tiger shark",
+      "image_path": "data/imagenetv2/matched-frequency/928/07e0dddbf11b4a667fc7a94409dac94cbd3f781c.jpeg",
+      "true_label_idx": 928,
+      "true_label_name": "ice cream",
       "top5": [
         {
-          "idx": 3,
-          "name": "tiger shark",
-          "prob": 0.966432511806488
+          "idx": 960,
+          "name": "chocolate sauce",
+          "prob": 0.9198325276374817
         },
         {
-          "idx": 2,
-          "name": "great white shark",
-          "prob": 0.01653234474360943
+          "idx": 928,
+          "name": "ice cream",
+          "prob": 0.05014479532837868
         },
         {
-          "idx": 4,
-          "name": "hammerhead",
-          "prob": 0.0038271311204880476
+          "idx": 700,
+          "name": "paper towel",
+          "prob": 0.011083221063017845
         },
         {
-          "idx": 983,
-          "name": "scuba diver",
-          "prob": 0.001965038711205125
+          "idx": 923,
+          "name": "plate",
+          "prob": 0.006389182060956955
         },
         {
-          "idx": 973,
-          "name": "coral reef",
-          "prob": 0.0006947640795260668
+          "idx": 999,
+          "name": "toilet tissue",
+          "prob": 0.0005314218578860164
         }
       ],
-      "correct": true
+      "correct": false
     },
     {
-      "image_path": "data/imagenet/val/n02089078/ILSVRC2012_val_00000165_44.JPEG",
-      "true_label_idx": 165,
-      "true_label_name": "black-and-tan coonhound",
+      "image_path": "data/imagenetv2/matched-frequency/654/117d49d278892f6f23c2bc21ec92edbf38b23335.jpeg",
+      "true_label_idx": 654,
+      "true_label_name": "minibus",
       "top5": [
         {
-          "idx": 165,
-          "name": "black-and-tan coonhound",
-          "prob": 0.9667101502418518
+          "idx": 654,
+          "name": "minibus",
+          "prob": 0.9200160503387451
         },
         {
-          "idx": 236,
-          "name": "Doberman",
-          "prob": 0.018863346427679062
+          "idx": 874,
+          "name": "trolleybus",
+          "prob": 0.034121379256248474
         },
         {
-          "idx": 164,
-          "name": "bluetick",
-          "prob": 0.004928416572511196
+          "idx": 407,
+          "name": "ambulance",
+          "prob": 0.013960517011582851
         },
         {
-          "idx": 166,
-          "name": "Walker hound",
-          "prob": 0.002284047193825245
+          "idx": 705,
+          "name": "passenger car",
+          "prob": 0.01155093777924776
         },
         {
-          "idx": 163,
-          "name": "bloodhound",
-          "prob": 0.0010847459780052304
+          "idx": 757,
+          "name": "recreational vehicle",
+          "prob": 0.010968085378408432
         }
       ],
       "correct": true

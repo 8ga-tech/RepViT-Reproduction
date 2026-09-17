@@ -1,4 +1,4 @@
 ﻿device,constraint,model,score,top1,lat_p50_ms,lat_p95_ms,reason
-Intel Iris Xe iGPU / 4-thread CPU,P50 <= 15.0 ms,repvit_m0_9_in1k,0.9842,78.1,7.373,8.002,P50=7.37ms 落在 15.0ms 预算内；Top-1 相对该预算内最优 79.90% 差 1.80 个点
-Intel Iris Xe iGPU / 4-thread CPU,P50 <= 15.0 ms,repvit_m1_0_in1k,0.946,79.9,9.147,9.76,P50=9.15ms 落在 15.0ms 预算内；Top-1 相对该预算内最优 79.90% 差 0.00 个点
-Intel Iris Xe iGPU / 4-thread CPU,P50 <= 15.0 ms,repvit_m1_1_in1k,0.9136,79.9,10.234,11.241,P50=10.23ms 落在 15.0ms 预算内；Top-1 相对该预算内最优 79.90% 差 0.00 个点
+Intel Iris Xe iGPU / 4-thread CPU,P50 <= 15.0 ms,repvit_m0_9_in1k,0.9792,68.7,7.684,8.488,P50=7.68ms 落在 15.0ms 预算内；Top-1 相对该预算内最优 70.80% 差 2.10 个点
+Intel Iris Xe iGPU / 4-thread CPU,P50 <= 15.0 ms,repvit_m1_1_in1k,0.9123,70.8,10.929,11.993,P50=10.93ms 落在 15.0ms 预算内；Top-1 相对该预算内最优 70.80% 差 0.00 个点
+Intel Iris Xe iGPU / 4-thread CPU,P50 <= 15.0 ms,repvit_m1_0_in1k,0.9081,69.2,10.404,11.37,P50=10.40ms 落在 15.0ms 预算内；Top-1 相对该预算内最优 70.80% 差 1.60 个点

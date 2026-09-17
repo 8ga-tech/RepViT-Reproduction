@@ -1,7 +1,7 @@
 # logits 误差引用审计发现（LOGITS_AUDIT_FINDINGS）
 
 - 审计日期：2026-09-16（工作区 HEAD `2d65e63`）
-- 扫描清单：`outputs/verification/logits_reference_inventory.csv`（4124 条引用 / 153 个文件；由 `python tools/audit_logits_references.py` 可重复生成，两次运行 SHA256 完全一致）
+- 扫描清单：`outputs/verification/logits_reference_inventory.csv`（**4790 条引用 / 178 个文件**；由 `python tools/audit_logits_references.py` 可重复生成，两次运行 SHA256 相同。**2026-09-17 t35 在暂存态第六次登记**：t32 为 4788 / 178、t28 为 4788 / 178、t23 为 4778 / 177、t21 为 4776 / 177、t20 为 4731 / 176，再早的历史登记值为 4124 条 / 153 个文件）
 - 本文用途：**t2（README / REPORT / LOGITS_AUDIT 文档统一）与 t3（PPT 改写）的措辞依据。**
   第 1 节可以照着抄数值与口径；第 3 节是逐条修改单（文件 + 行号/页码/幻灯片 + 建议改法）。
 - 边界：本次只做扫描、分级与发现记录。**没有改动任何 `outputs/` 实验产物的数值，没有改 README/REPORT/PPT 正文，没有 commit/push。**
@@ -10,7 +10,7 @@
 
 ## 0. 一页结论
 
-1. 仓库里的 logits 误差引用可以无损地归入 **10 个实验桶**，其中只有 **4 个**（B1–B4）是答辩正文可以引用数值的主桶；其余是独立桶（B5/B6/B9/B10）、不得作为结论的桶（B7）和无产物的孤值桶（B8）。
+1. 仓库里的 logits 误差引用可以无损地归入 **13 个实验桶**，其中 **6 个**（B1/B2/B3/B12/B13/B4）是答辩正文可以引用数值的主桶；其余是独立桶（B5/B6/B9/B10）、不得作为结论的桶（B7）和无产物的孤值桶（B8）。
 2. **一个数值属于哪个桶，由「它出现在哪个落盘产物里」决定，不由散文字面决定。** 本次审计把 4 个权威产物的数值建成"规范值集合"，逐 token 按写入精度匹配，因此 `6.199e-06`（B1）与 `6.53e-06`（B8 孤值）不会被混为一谈。
 3. **口径矛盾（缺陷 D1）已定案：** `report/REPORT.md:796-797` 的"5.25e-06 属于旧的 n=8 对照记录"**没有证据支持**，应按 `report/LOGITS_AUDIT.md:15` 的说法收敛。三条相互独立的证据见 D1。
 4. **8 个孤值**（5.25e-06 / 1.41e-06、5.245e-06 / 1.414e-06、6.53e-06、6.527e-06、2.265e-06、4.108e-07）在仓库的 **14 个提交里的 `outputs/` 树中一次都没有出现过**；初始交付提交 `81693dd` 就已经同时存在"散文字面值"和"n=12 的落盘 JSON"。任何一个都不应再作为实验结论引用。
@@ -28,8 +28,10 @@
 | 实验桶 | 权威落盘产物 | 应统一引用的展示值 | 复跑命令 |
 |---|---|---|---|
 | `B1_onnx_pet37_n12`<br>PyTorch↔ONNX｜Pet-37 baseline｜n=12 张真实图片 | `outputs/metrics/consistency_repvit_m0_9_pet37.json` | max **6.199e-06** / mean **1.501e-06**；Top-1 与 Top-5 集合一致率均 **1.000**；verdict **PASS** | `python deploy/compare_torch_onnx.py --model repvit_m0_9_pet37 --images datasets/lists/pet_test.txt --limit 12 --out outputs/verification/consistency_repvit_m0_9_pet37_n12.json` |
-| `B2_onnx_m0_9_in1k_n12`<br>PyTorch↔ONNX｜M0.9 官方 ImageNet 子集｜n=12 张真实图片 | `outputs/metrics/consistency_repvit_m0_9_in1k.json` | max **1.717e-05** / mean **2.360e-06** | `python deploy/compare_torch_onnx.py --model repvit_m0_9_in1k --images datasets/lists/imagenet_val_subset.txt --limit 12 --out outputs/verification/consistency_repvit_m0_9_in1k_n12.json` |
-| `B3_onnx_m1_0_in1k_n12`<br>PyTorch↔ONNX｜M1.0 官方 ImageNet 子集｜n=12 张真实图片 | `outputs/metrics/consistency_repvit_m1_0_in1k.json` | max **1.812e-05** / mean **2.464e-06** | `python deploy/compare_torch_onnx.py --model repvit_m1_0_in1k --images datasets/lists/imagenet_val_subset.txt --limit 12 --out outputs/verification/consistency_repvit_m1_0_in1k_n12.json` |
+| `B2_onnx_m0_9_in1k_n12`<br>PyTorch↔ONNX｜M0.9 官方 ImageNetV2 子集｜n=12 张真实图片 | `outputs/metrics/consistency_repvit_m0_9_in1k.json` | max **1.383e-05** / mean **2.334e-06** | `python deploy/compare_torch_onnx.py --model repvit_m0_9_in1k --images datasets/lists/imagenetv2_mf_1000.txt --limit 12 --out outputs/verification/consistency_repvit_m0_9_in1k_n12.json` |
+| `B3_onnx_m1_0_in1k_n12`<br>PyTorch↔ONNX｜M1.0 官方 ImageNetV2 子集｜n=12 张真实图片 | `outputs/metrics/consistency_repvit_m1_0_in1k.json` | max **1.335e-05** / mean **2.215e-06** | `python deploy/compare_torch_onnx.py --model repvit_m1_0_in1k --images datasets/lists/imagenetv2_mf_1000.txt --limit 12 --out outputs/verification/consistency_repvit_m1_0_in1k_n12.json` |
+| `B12_onnx_m1_1_in1k_n12`<br>PyTorch↔ONNX｜M1.1 官方 ImageNetV2 子集｜n=12 张真实图片 | `outputs/metrics/consistency_repvit_m1_1_in1k.json` | max **1.860e-05** / mean **2.219e-06** | `python deploy/compare_torch_onnx.py --model repvit_m1_1_in1k --images datasets/lists/imagenetv2_mf_1000.txt --limit 12 --out outputs/verification/consistency_repvit_m1_1_in1k_n12.json` |
+| `B13_onnx_m1_5_in1k_n12`<br>PyTorch↔ONNX｜M1.5 官方 ImageNetV2 子集｜n=12 张真实图片 | `outputs/metrics/consistency_repvit_m1_5_in1k.json` | max **1.144e-05** / mean **1.876e-06** | `python deploy/compare_torch_onnx.py --model repvit_m1_5_in1k --images datasets/lists/imagenetv2_mf_1000.txt --limit 12 --out outputs/verification/consistency_repvit_m1_5_in1k_n12.json` |
 | `B4_reparam_pet37_32rand`<br>结构重参数化｜Pet-37 baseline｜32 个固定随机输入 seed=20240912 | `outputs/reparam/repvit_m0_9_pet37_reparam_report.json` | max **7.093e-06** / mean **2.031e-06**；Top-1 **32/32**；BN **107→0** | `python tools/reparam_verify.py --model repvit_m0_9_pet37 --weights checkpoints/baseline_best.pt --num-samples 32 --batch-size 8 --seed 20240912 --skip-onnx --out-dir outputs/verification/reparam_pet37` |
 | `B5_official_fuse_probe`<br>结构重参数化｜五个官方 ImageNet 型号｜评价流程内单输入融合探针 | `outputs/pretrained_eval/*/metrics.json` 的 `fuse_max_abs_logits_diff` | M0.9 **3.073e-05**；M1.0 **3.290e-05**；M1.1 **2.217e-05**；M1.5 **2.587e-05**；M2.3 **5.925e-05** | `python tools/eval_pretrained.py --cfg configs/pretrained_eval.yaml` |
 | `B6_export_probe`<br>导出检查｜单个随机输入前后向探针（导出脚本未固定 seed） | `outputs/benchmarks/export_*.json` | 按文件记录值；**不充当 n=12 真实图片一致性结果** | `python deploy/export_onnx.py --model repvit_m0_9_pet37` |
@@ -38,11 +40,13 @@
 | `B9_route_probe`<br>路线等价探针｜两条权重路线的特征 / 主头 / 蒸馏平均 logits 比较 | `outputs/metrics/probe_route.json` | **max=0**（同进程同权重路线对比，不是 ONNX 或融合实验） | `python tools/probe_pretrained_route.py --official-ckpt checkpoints/pretrained/repvit_m0_9_distill_300e.pth --out outputs/metrics/probe_route.json`（两参数均有默认值） |
 | `B10_smoke_early`<br>早期冒烟与结构统计 | `outputs/metrics/smoke_phase0.json` | 按文件记录值 | `python tools/smoke_phase0.py` |
 
-### 1.1 主桶（答辩正文只引用这 4 个）
+### 1.1 主桶（答辩正文只引用这 6 个）
 
 - **B1 = 6.199e-06 / 1.501e-06**（n=12 真实图片，Pet-37，PyTorch↔ONNX）
-- **B2 = 1.717e-05 / 2.360e-06**（n=12 真实图片，M0.9 ImageNet 子集）
-- **B3 = 1.812e-05 / 2.464e-06**（n=12 真实图片，M1.0 ImageNet 子集）
+- **B2 = 1.383e-05 / 2.334e-06**（n=12 真实图片，M0.9，ImageNetV2 固定子集）
+- **B3 = 1.335e-05 / 2.215e-06**（n=12 真实图片，M1.0，ImageNetV2 固定子集）
+- **B12 = 1.860e-05 / 2.219e-06**（n=12 真实图片，M1.1，ImageNetV2 固定子集）
+- **B13 = 1.144e-05 / 1.876e-06**（n=12 真实图片，M1.5，ImageNetV2 固定子集）
 - **B4 = 7.093e-06 / 2.031e-06**（32 个固定随机输入，Pet-37，结构重参数化）
 
 主桶的原始值（写进 JSON 的完整精度，供需要"给出全精度"的场合使用）：
@@ -50,11 +54,14 @@
 | 桶 | 原始字段 | 全精度值 |
 |---|---|---|
 | B1 | `max_abs_logits` / `mean_abs_logits` | 6.198883056640625e-06 / 1.5006899711048998e-06 |
-| B2 | 同上 | 1.71661376953125e-05 / 2.360081756099438e-06 |
-| B3 | 同上 | 1.811981201171875e-05 / 2.4635197632960626e-06 |
+| B2 | 同上 | 1.3828277587890625e-05 / 2.333735949378024e-06 |
+| B3 | 同上 | 1.33514404296875e-05 / 2.2154212805010807e-06 |
+| B12 | 同上 | 1.8596649169921875e-05 / 2.218950858908405e-06 |
+| B13 | 同上 | 1.1444091796875e-05 / 1.8764107115506097e-06 |
 | B4 | `max_abs_err` / `mean_abs_err` | 7.092952728271484e-06 / 2.030726818702533e-06 |
 
-> 展示口径统一为 **4 位有效数字**（6.199e-06 / 1.501e-06 / 1.717e-05 / 2.360e-06 / 1.812e-05 / 2.464e-06 / 7.093e-06 / 2.031e-06）。
+> 展示口径统一为 **4 位有效数字**（6.199e-06 / 1.501e-06 / 1.383e-05 / 2.334e-06 / 1.335e-05 / 2.215e-06 / 1.860e-05 / 2.219e-06 / 1.144e-05 / 1.876e-06 / 7.093e-06 / 2.031e-06）。
+> （2026-09-17：官方型号一致性改按 ImageNetV2 固定子集；Buckets 表新增 B12/B13。—— 本表的展示值与本文件 §1 的规范值集合同源，改口径后必须整表刷新。）
 > 不要再用 `7.1e-06` 这种 2 位写法（现出现在 `README.md:13`、`report/PPT_CONTENT.md:31,95`、`答辩PPT_RepViT.pptx` slide 1 para 19 / slide 2 para 37、`paper` 封面 SVG `01_cover.svg:40`、`02_status.svg:56`）。
 
 ### 1.2 独立桶（保留，但不得与主桶合并成一句结论）
@@ -85,11 +92,11 @@
 | `.pdf` | `page N` | PyMuPDF 逐页提取文本 |
 | 不扫 | — | 二进制 `.pt/.onnx/.npy/图片`、以及清单自身 |
 
-结论：**4124 条引用 / 153 个文件**；`kind` 分布 = `noise_float` 2568、`statement` 942、`error_value` 614；`flag` 命中 560 条（`MIXED` 351 / 纯 137、`ORPHAN` 278 / 纯 72、`OVERCLAIM` 137 / 纯 45、`SELF_TOOL` 85 / 纯 67、`ABS_PATH` 4；同一行可带多个标记，故计数相加大于 560）。
+结论：**4790 条引用 / 178 个文件**（2026-09-17 t35 暂存态实测；t32 与 t28 均为 4788 / 178、t23 为 4778 / 177、t21 为 4776 / 177、t20 为 4731 / 176，再早为 4124 / 153）；`kind` 分布 = `noise_float` 2775、`statement` 1217、`error_value` 798；`flag` 命中 673 条（`MIXED` 443 / 纯 247、`ORPHAN` 275 / 纯 76、`OVERCLAIM` 156 / 纯 46、`SELF_TOOL` 95 / 纯 77、`AMBIGUOUS` 6 / 纯 6、`ABS_PATH` 4 / 纯 4；同一行可带多个标记，故计数相加大于 673）。
 
 ### 2.2 分级规则（为什么可以放心按桶引用）
 
-1. 先把权威产物的数值读成"规范值集合"（B1–B7 + B8 的 8 个孤值字面量）。
+1. 先把权威产物的数值读成"规范值集合"（B1–B7、B12、B13 + B8 的 8 个孤值字面量）。
 2. 对每个浮点 token，按**它自己写出的有效位数**判断是否等于某个规范值（例：`6.199e-06` 与 `6.198883056640625e-06` 匹配；`6.527e-06` 不匹配 B4 的 7.092952728271484e-06，落到 B8）。
 3. 匹配不上规范值的 token，若行内有误差上下文（`logits` / `误差` / `abs_err` / `Δ` …）才当引用，否则标 `noise_float`。
 4. 纯数值日志（`outputs/logs/*`、`outputs/metrics/*.jsonl`、`*.csv`）额外要求 token ≥4 位有效数字或无误差上下文 —— 否则学习率会被误判（见 D8）。
@@ -105,7 +112,7 @@ python tools/audit_logits_references.py --table  # 额外打印第 1 节的 Mark
 python tools/audit_logits_references.py --stdout # 只统计不写文件
 ```
 
-连续两次运行的 CSV SHA256 一致（`2074F146…E33B`，见第 6 节复核记录），无时间戳、无随机性。
+连续两次运行的 CSV SHA256 相同（`E1F708BF…1B3B`，见第 6 节复核记录），无时间戳、无随机性。（历史值：t32 轮为 `3E46CD7B…189D`、t28 轮为 `6509CC6E…68B2`、t23 轮为 `9B4F9317…5678`、t21 轮为 `650A522C…60E3`、t20 轮为 `8EABE27A…D24C94`，更早为 `2074F146…E33B`。）
 
 ### 2.4 本次独立复跑（三条证据，写在 `%TEMP%`，未动仓库产物）
 
@@ -118,6 +125,170 @@ python tools/audit_logits_references.py --stdout # 只统计不写文件
 | `python tools/reparam_verify.py --model repvit_m0_9_pet37 --weights checkpoints/baseline_best.pt --num-samples 32 --batch-size 8 --seed 20240912 --skip-onnx --out-dir <temp>` | max **7.092952728271484e-06** / mean **2.030726818702533e-06** / Top-1 32/32 / BN **107→0** | **完全一致（B4）** |
 
 值得注意的细节：`--limit 8` 与 `--limit 12` 的 **max 相同（6.198883056640625e-06）**，只有 mean 不同 —— 说明最大误差落在前 8 张里；"n=8 / n=12" 的区别并不会改变 max 的展示值，但两者都不是 5.25e-06。
+
+---
+
+### 2.5 t20 终局刷新：逐文件增量台账（2026-09-17，暂存态）
+
+> **本节是 t20 轮次的历史台账**（4124 / 153 → 4731 / 176）。此后 t13 交付流程图又带来 **+45 / +1**，见 **§2.6**（该轮登记值 4776 / 177；最新见 §2.9）。
+
+本轮把统计基线从 **4124 条 / 153 个文件** 刷新为 **4731 条 / 176 个文件**。总增量 **+607 条 / +23 个文件**，三段对账：
+
+| 段 | 条数 | 文件数 |
+|---|---|---|
+| 新增进入统计的文件 | **+520** | 26 个 |
+| 退出统计的文件（条目归零） | **−14** | 3 个 |
+| 既有文件净变化 | **+101** | 22 个文件发生变化 |
+| **合计** | **+607** | **+23** |
+
+**A. 新增进入统计的文件（26 个，逐项列出）**
+
+| 条数 | 文件 |
+|---|---|
+| +155 | `report/REQUIREMENTS_AUDIT.md` |
+| +84 | `outputs/predictions/repvit_m1_5_in1k_beagle__ILSVRC2012_val_00000162_00_probs.json` |
+| +68 | `outputs/advanced/manual_fusion_alignment.json` |
+| +49 | `outputs/predictions/repvit_m1_0_in1k_beagle__ILSVRC2012_val_00000162_00_probs.json` |
+| +41 | `outputs/predictions/repvit_m0_9_in1k_beagle__ILSVRC2012_val_00000162_00_probs.json` |
+| +29 | `outputs/predictions/repvit_m1_1_in1k_beagle__ILSVRC2012_val_00000162_00_probs.json` |
+| +15 | `tools/manual_fusion_align.py` |
+| +12 | `outputs/metrics/onnx_io_nodes.json` |
+| +12 | `report/SPEC13_FREEZE.json` |
+| +6 | `outputs/metrics/bench.jsonl`、`outputs/report_assets/table_benchmark_meta.csv`、`outputs/report_assets/table_benchmark_meta.md`（各 +6） |
+| +5 | `outputs/metrics/consistency_repvit_m1_1_in1k.json`、`consistency_repvit_m1_5_in1k.json`、`outputs/verification/consistency_repvit_m1_1_in1k_n12.json`、`consistency_repvit_m1_5_in1k_n12.json`（各 +5） |
+| +4 | `report/SPEC13_SWITCH_RUNBOOK.md` |
+| +3 | `deploy/model_registry.py` |
+| +2 | `report/IMAGENETV2_PROVENANCE.md`、`tools/robustness_gradcam.py`（各 +2） |
+| +1 | 六份 `outputs/benchmarks/repvit_*_benchmark.json`（各 +1） |
+
+**B. 退出统计的文件（3 个）**
+
+| 条数 | 文件 | 原因 |
+|---|---|---|
+| −10 | `outputs/logs/eval_family_5models.log` | 该日志按现行流程重写，不再含可归桶的数值行 |
+| −2 | `outputs/report_assets/table_figures.csv` | 素材表改版，原数值行移除 |
+| −2 | `outputs/report_assets/table_figures.md` | 同上 |
+
+**C. 既有文件净变化（±1 及以上，共 22 个文件，合计 +101）**
+
+| 变化 | 文件 | 变化 | 文件 |
+|---|---|---|---|
+| +28 | `report/LOGITS_AUDIT_FINDINGS.md` | +7 | `outputs/pretrained_eval/repvit_m1_1/top5_samples.json` |
+| +15 | `tools/update_defense.py` | +6 | `outputs/REPORT.md` |
+| +13 | `report/LOGITS_AUDIT.md` | +5 | `README.md` |
+| +11 | `report/VERIFICATION_LOGITS_PPT.md` | −5 | `report/REPORT.docx`、`report/REPORT.md` |
+| +10 | `tools/audit_logits_references.py` | +3 | `outputs/pretrained_eval/repvit_m0_9/top5_samples.json` |
+| −8 | `PROGRESS.md` | −3 | `outputs/pretrained_eval/repvit_m2_3/top5_samples.json` |
+| +8 | `report/PPT_CONTENT.md`、`report/答辩PPT_RepViT.pdf`、`report/答辩PPT_RepViT.pptx`（各 +8） | −2 | `report.pdf`；+2 `report/ppt_svg/15_summary.svg`；+1 `deploy/run_all.sh`；+1 `tools/selfcheck.py`；−1 `outputs/pretrained_eval/repvit_m1_0/top5_samples.json`；−1 `tools/report_spec.py` |
+
+**归因（谁改的）**：`report/REQUIREMENTS_AUDIT.md`（+155）来自 t2/t10 的要求审计文档，本轮首次随暂存进入统计；`*_probs.json`（+203）与 `manual_fusion_alignment.json`（+68）、`tools/manual_fusion_align.py`、`robustness_gradcam` 来自 t12/t17 的复评与加分项；`SPEC13_FREEZE/SPEC13_SWITCH_RUNBOOK/IMAGENETV2_PROVENANCE`（+18）来自 t11/t19 的口径冻结；本体 +28 与本轮就地刷新有关；`REPORT/PPT/PDF` 的增减来自 t4/t9/t18/t19 的重生成。
+
+---
+
+### 2.6 t21 二次刷新：新增流程图的增量（2026-09-17，新暂存态）
+
+> 本节是 **t21 轮次** 的台账（4776 / 177）。此后 t22 又带来 **+2 / +0**，见 **§2.7**；t25/t27 又带来 **+10 / +1**，见 **§2.8**；t30 之后条数不变、校验值刷新（§2.9）；t34 又带来 **+2 / +0**，现行登记值见 **§2.10（4790 / 178）**。
+
+**为什么还要刷新**：t20 的登记前提是「此后不再新增文件」。此后 **t13 交付了两份仓库内流程图**（`docs/workflow_zh.html` 686,265 B 与 `docs/workflow_zh.svg` 249,585 B，**已 `git add` 暂存、未 commit**），必须在新暂存态再登记一次。
+
+**结果：4776 条 / 177 个文件**（t20：4731 / 176）。总增量 **+45 条 / +1 个文件**，逐来源对账：
+
+| 来源 | 条数 | 文件数 | 明细 |
+|---|---|---|---|
+| 新增 `docs/workflow_zh.svg` | **+43** | +1 | 43 条 = `statement` 38 + `error_value` 4 + `noise_float` 1；按桶 = B1 **21** + B4 **19** + 口径陈述类 2 + 噪音 1。原因是该 SVG 的文本层含「结构重参数化」「一致性」「ONNX 部署」等节点标签与 aria-label |
+| 新增 `docs/workflow_zh.html` | **0** | 0 | **该后缀不在脚本的文本后缀白名单内**（`.md/.json/.jsonl/.csv/.log/.txt/.py/.sh/.svg/.yaml/.yml`）—— 即使 686 KB、含大量数值字面量，也**一条都不计** |
+| 本文件新增的 §2.6 台账自身 | **+2** | 0 | **自指项**：新写进本文件的两行属可扫文本，故本节的表会把自身计入；这是本轮唯一「因写文档而涨」的部分 |
+| 其它文件（含本轮一并暂存的自检报告） | **0** | 0 | 与 t20 逐文件相减无差异 |
+| **合计** | **+45** | **+1** | 4731 → 4776 |
+
+> 这条对账同时纠正一个直觉误判：**增量只由「后缀在白名单内」的新文件产生**，文件体积与数值密度不决定是否计入。
+
+**本轮核对（沿用 §2.4 的分类框架）**：悬空权威 **0**；归不到具体桶的数值引用 **5**（与 t20 同一批，全为工具误报）；歧义行 **6**（全部在 `--dump-probs` 的概率矩阵里，工具误报）；无效前提桶 16 / 无产物孤值桶 165（设计内）；`ABS_PATH` 4（引用检测器自身字面量，工具误报）。
+
+**附录 B 的连带变化**：B4 桶的 `error_value` 行由 210 增至 **214**（新增的 4 条来自 `docs/workflow_zh.svg`，未进 Top-7 引用方）；其余桶不变。
+
+**严格幂等**：连跑两次，条数与 CSV 逐字节相同（登记值只写在脚本扫不到的行里）。
+
+---
+
+### 2.7 t23 第三次登记：t22 修复后的增量（2026-09-17，暂存态）
+
+本轮（t23）只登记 t22 修复后的增量：**+2 条 / +0 个文件**（4776 → **4778**）。逐来源对账：
+
+| 来源 | 条数 | 文件数 | 说明 |
+|---|---|---|---|
+| `report/REQUIREMENTS_AUDIT.md` | **+1** | 0 | 该文件 155 → **156** 行；t22 的 F2 在「1.2-8 为什么可以减少推理开销」行补写了现行证据与判定复核后记，新增 1 处命中 |
+| 本节（§2.7）新增的台账文本自身 | **+1** | 0 | **自指项**：写进本文件的两行属可扫文本 |
+| `report/ppt_svg/14_perf.svg` | 0 | 0 | 内容确有两行变化（+0.11→+0.08、+0.13→+0.14），但这些值不落进脚本的取值模式，条目数不变（0 → 0） |
+| `report/ppt_svg/README.md` | 0 | 0 | 同上（0 → 0） |
+| `report/SPEC13_FREEZE.json` | 0 | 0 | 12 → 12（片段定位改为内容锚点，条目数不变） |
+| `report/SPEC13_SWITCH_RUNBOOK.md` | 0 | 0 | 4 → 4（只把冻结基线版本号由 3 更正为 4） |
+| 其余全部文件 | 0 | 0 | 逐文件相减无差异 |
+| **合计** | **+2** | **0** | 4776 → 4778 |
+
+**本轮核对**（沿用 §2.4 的分类框架）：悬空权威 **0**；归不到具体桶的数值引用 **5**（同一批工具误报）；歧义行 **6**（工具误报）；无效前提桶 16 / 无产物孤值桶 165（设计内）；`ABS_PATH` 4（引用检测器自身字面量，工具误报）。附录 B 的按桶清点**无变化**（九个桶的 `error_value` 行数与 t21 相同）。
+
+**严格幂等**：连跑两次，条数与 CSV 逐字节相同。
+
+---
+
+### 2.8 t28 第四次登记：t25 + t27 修复后的增量（2026-09-17，暂存态）
+
+> 本节是 **t28 轮次** 的台账（4778 → 4788）。t30 之后条数不变、校验值刷新，现行登记值见 **§2.9**。
+
+本轮（t28）只登记 t25（repair r2）与 t27（类别级修复）之后的增量：**+10 条 / +1 个文件**（4778 → **4788**）。逐来源对账：
+
+| 来源 | 条数 | 文件数 | 说明 |
+|---|---|---|---|
+| 新增 `tools/check_audit_evidence.py` | **+10** | **+1** | t27 新增的证据指针校验器；10 条全部为 `statement`（方法或口径说明，不指向具体数值），按桶全归 B11 |
+| `report/REQUIREMENTS_AUDIT.md` | 0 | 0 | 156 → 156（净 0）；行号与匹配文本有 121 条换位：B1 39→38、B4 16→19、B11 49→46、噪音 0→1，四者相抵 |
+| `report/SPEC13_SWITCH_RUNBOOK.md` | 0 | 0 | 4 → 4（4 条换位，计数不变） |
+| `tools/selfcheck.py` | 0 | 0 | 11 → 11（9 条换位，计数不变） |
+| `report/ppt_svg/README.md` | 0 | 0 | 0 → 0 |
+| 其余全部文件 | 0 | 0 | 逐文件相减无差异 |
+| **合计** | **+10** | **+1** | 4778 → 4788 |
+
+**本轮核对**（沿用 §2.4 的分类框架）：悬空权威 **0**；归不到具体桶的数值引用 **5**（同一批工具误报）；歧义行 **6**（工具误报）；无效前提桶 16 / 无产物孤值桶 165（设计内）；`ABS_PATH` 4（引用检测器自身字面量，工具误报）。附录 B 的按桶清点**无变化**（各桶的 `error_value` 行数与 t23 相同）。
+
+**严格幂等**：连跑两次，条数与 CSV 逐字节相同（第三次 `--stdout` 后哈希不变）。
+
+---
+
+### 2.9 t32 第五次登记：t30 修复后的校验值刷新（2026-09-17，暂存态）
+
+> 本节是 **t32 轮次** 的台账（4788 / 178，校验值刷新）。此后 t34 又带来 **+2 / +0**，现行登记值见 **§2.10**。
+
+本轮（t32）登记 t30（repair r3）之后的暂存态：**条数 / 文件数 +0，但清单正文与校验值已变**（4,789 行；1,245,560 → **1,245,757 B**；`6509CC6E…68B2` → **`3E46CD7B…189D`**）。逐来源对账：
+
+| 来源 | 条数 | 文件数 | 说明 |
+|---|---|---|---|
+| `report/REQUIREMENTS_AUDIT.md` | 0 | 0 | 156 → 156；1 条 `statement` 行的归属由 B2 改为 B3（B2 4→3、B3 0→1），另有多处文本换位（t30 的计数更正、判定复核后记、体积与行数刷新），故清单正文随之一变 |
+| `tools/check_audit_evidence.py` | 0 | 0 | 10 → 10（校验器扩到「可比对」维度，只改判定逻辑与断言表） |
+| `tools/selfcheck.py` | 0 | 0 | 11 → 11（并入既有检查项，未新增 check id） |
+| 其余全部文件 | 0 | 0 | 逐文件相减无差异 |
+| **合计** | **0** | **0** | 4788 → 4788 |
+
+**本轮核对**（沿用 §2.4 的分类框架）：悬空权威 **0**；归不到具体桶的数值引用 **5**（同一批工具误报）；歧义行 **6**（工具误报）；无效前提桶 16 / 无产物孤值桶 165（设计内）；`ABS_PATH` 4（引用检测器自身字面量，工具误报）。附录 B 的按桶清点**无变化**。
+
+**严格幂等**：连跑两次，条数与 CSV 逐字节相同（第三次 `--stdout` 后哈希不变）。
+
+---
+
+### 2.10 t35 第六次登记：t34 末轮修复后的增量（2026-09-17，暂存态）
+
+本轮（t35）登记 t34（末轮修复）之后的暂存态：**+2 条 / +0 个文件**（4788 → **4790**），清单 4,791 行；校验值 1,245,757 → **1,246,586 B**、`3E46CD7B…189D` → **`E1F708BF…1B3B`**。逐来源对账：
+
+| 来源 | 条数 | 文件数 | 说明 |
+|---|---|---|---|
+| `report/REQUIREMENTS_AUDIT.md` | **+2** | 0 | 156 → 158：t34 新增的一行（L722）含两处被扫词（同一关键词的大小写各一处），两处各记 1 条，按桶全归 B1 |
+| `tools/check_audit_evidence.py` | 0 | 0 | 10 → 10（新增两条断言只改判定逻辑与断言表，未增条目） |
+| `tools/selfcheck.py` | 0 | 0 | 11 → 11 |
+| 其余全部文件 | 0 | 0 | 逐文件相减无差异 |
+| **合计** | **+2** | **0** | 4788 → 4790 |
+
+**本轮核对**（沿用 §2.4 的分类框架）：悬空权威 **0**；归不到具体桶的数值引用 **5**（同一批工具误报）；歧义行 **6**（工具误报）；无效前提桶 16 / 无产物孤值桶 165（设计内）；`ABS_PATH` 4（引用检测器自身字面量，工具误报）。附录 B 的按桶清点**无变化**。
+
+**严格幂等**：连跑两次，条数与 CSV 逐字节相同（第三次 `--stdout` 后哈希不变）。
 
 ---
 
@@ -322,17 +493,20 @@ python -c "import csv;rows=list(csv.DictReader(open('outputs/verification/logits
 | `reproducible` | `yes` / `partial` / `no` / `-` |
 | `flag` | `ORPHAN` / `MIXED` / `OVERCLAIM` / `ABS_PATH` / `AMBIGUOUS` / `SELF_TOOL`（多个用 `+` 连接） |
 
-`SELF_TOOL` 标记的行来自 `tools/audit_logits_references.py` 自身的规范值登记表，不是外部引用点，统计时应剔除。本次 `AMBIGUOUS = 0`。
+`SELF_TOOL` 标记的行来自 `tools/audit_logits_references.py` 自身的规范值登记表，不是外部引用点，统计时应剔除。
+本次 `AMBIGUOUS = 6`（2026-09-17 实测，全部落在 `outputs/predictions/*_probs.json`）：这些文件是 `--dump-probs` 落的**原始概率矩阵**，其中两位有效数字、写成 `×e-05` 形式的概率值会同时落进 B12 与 B13 的舍入容差，属**工具误报**，不是误差值引用。除此之外没有任何 token 同时命中多个桶。
 
 ## 附录 B：按桶清点"谁在引用"（`error_value` 行）
 
 | 桶 | error_value 行数 | 主要引用方（本次实测，括号内为该文件的 error_value 行数） |
 |---|---|---|
-| B1 | 133 | `LOGITS_AUDIT_FINDINGS.md`(23)、`VERIFICATION_LOGITS_PPT.md`(30)、`README.md`(14)、`report.pdf`(8)、`PROGRESS.md`(8)、`LOGITS_AUDIT.md`(8)、`REPORT.docx`(8) |
-| B2 | 37 | `LOGITS_AUDIT_FINDINGS.md`(8)、`PROGRESS.md`(4)、`LOGITS_AUDIT.md`(4)、`consistency_repvit_m0_9_in1k.json`(2)、`verification/consistency_repvit_m0_9_in1k_n12.json`(2)、`PPT_CONTENT.md`(2) |
-| B3 | 42 | `LOGITS_AUDIT_FINDINGS.md`(10)、`LOGITS_AUDIT.md`(6)、`PROGRESS.md`(4)、`audit_logits_references.py`(3)、`consistency_repvit_m1_0_in1k.json`(2)、`verification/consistency_repvit_m1_0_in1k_n12.json`(2) |
-| B4 | 188 | `LOGITS_AUDIT_FINDINGS.md`(32)、`VERIFICATION_LOGITS_PPT.md`(43)、`update_defense.py`(14)、`PPT_CONTENT.md`(11)、`答辩PPT_RepViT.pptx`(11)、`README.md`(10)、`LOGITS_AUDIT.md`(9) |
-| B5 | 27 | `LOGITS_AUDIT.md`(6)、`LOGITS_AUDIT_FINDINGS.md`(6)、`eval_family_5models.log`(5)、`audit_logits_references.py`(5)、`pretrained_eval/*/metrics.json`(各 1) |
+| B1 | 140 | `VERIFICATION_LOGITS_PPT.md`(30)、`LOGITS_AUDIT_FINDINGS.md`(23)、`README.md`(14)、`REQUIREMENTS_AUDIT.md`(12)、`PROGRESS.md`(8)、`LOGITS_AUDIT.md`(8)、`PPT_CONTENT.md`(5) |
+| B2 | 57 | `predictions/repvit_m1_5_in1k_*_probs.json`(8)、`LOGITS_AUDIT_FINDINGS.md`(8)、`REQUIREMENTS_AUDIT.md`(5)、`predictions/repvit_m1_0_in1k_*_probs.json`(4)、`LOGITS_AUDIT.md`(4)、`VERIFICATION_LOGITS_PPT.md`(4)、`predictions/repvit_m0_9_in1k_*_probs.json`(3) |
+| B3 | 58 | `LOGITS_AUDIT_FINDINGS.md`(8)、`predictions/repvit_m1_5_in1k_*_probs.json`(7)、`LOGITS_AUDIT.md`(5)、`REQUIREMENTS_AUDIT.md`(5)、`predictions/repvit_m1_1_in1k_*_probs.json`(4)、`VERIFICATION_LOGITS_PPT.md`(4)、`predictions/repvit_m0_9_in1k_*_probs.json`(3) |
+| B12 | 47 | `LOGITS_AUDIT_FINDINGS.md`(8)、`REQUIREMENTS_AUDIT.md`(5)、`LOGITS_AUDIT.md`(4)、`VERIFICATION_LOGITS_PPT.md`(4)、`README.md`(2)、`consistency_repvit_m1_1_in1k.json`(2)、`predictions/repvit_m0_9_in1k_*_probs.json`(2) |
+| B13 | 70 | `predictions/repvit_m1_5_in1k_*_probs.json`(11)、`predictions/repvit_m1_0_in1k_*_probs.json`(8)、`LOGITS_AUDIT_FINDINGS.md`(8)、`predictions/repvit_m1_1_in1k_*_probs.json`(5)、`REQUIREMENTS_AUDIT.md`(5)、`predictions/repvit_m0_9_in1k_*_probs.json`(4)、`LOGITS_AUDIT.md`(4) |
+| B4 | 214 | `VERIFICATION_LOGITS_PPT.md`(43)、`LOGITS_AUDIT_FINDINGS.md`(32)、`REQUIREMENTS_AUDIT.md`(16)、`update_defense.py`(14)、`PPT_CONTENT.md`(12)、`答辩PPT_RepViT.pptx`(12)、`README.md`(10)（t21 起由 210 增至 214：新增 4 条来自 `docs/workflow_zh.svg`，未进 Top-7） |
+| B5 | 26 | `predictions/repvit_m1_5_in1k_*_probs.json`(6)、`LOGITS_AUDIT.md`(5)、`LOGITS_AUDIT_FINDINGS.md`(5)、`predictions/repvit_m0_9_in1k_*_probs.json`(3)、`predictions/repvit_m1_0_in1k_*_probs.json`(1)、`predictions/repvit_m1_1_in1k_*_probs.json`(1)、`pretrained_eval/repvit_m0_9/metrics.json`(1) |
 | B7 | 16 | `repvit_m0_9_reparam_report.json`(6)、`LOGITS_AUDIT_FINDINGS.md`(6)、`advanced/repvit_m0_9_pet37_reparam_report.json`(2)、`LOGITS_AUDIT.md`(1) |
 | B8 | 171 | 主要是"旧值说明"位置：`LOGITS_AUDIT_FINDINGS.md`(72)、`VERIFICATION_LOGITS_PPT.md`(33)、`audit_logits_references.py`(17)、`LOGITS_AUDIT.md`(8)、`README.md`(7)、`report.pdf`(5) |
 

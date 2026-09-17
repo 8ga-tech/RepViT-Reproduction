@@ -1,7 +1,7 @@
 {
   "model_name": "repvit_m1_1",
-  "top1": 79.9,
-  "top5": 94.5,
+  "top1": 70.8,
+  "top5": 87.2,
   "weights_path": "checkpoints/pretrained/repvit_m1_1_distill_300e.pth",
   "weights_sha256": "1b364220241273d54547ef6632de7f892f71009c300f8aa4236e107974574570",
   "num_images": 1000,
@@ -19,15 +19,15 @@
     {
       "crop_pct": 0.875,
       "scale": 256,
-      "top1": 79.9,
-      "top5": 94.5,
+      "top1": 70.8,
+      "top5": 87.2,
       "reused": true
     },
     {
       "crop_pct": 0.95,
       "scale": 235,
-      "top1": 79.8,
-      "top5": 94.9,
+      "top1": 71.0,
+      "top5": 87.7,
       "reused": false
     }
   ],
@@ -36,17 +36,17 @@
   "device": "cuda",
   "torch_version": "2.14.0+cu126",
   "timm_version": "1.0.29",
-  "timestamp": "2026-09-13T16:48:26",
+  "timestamp": "2026-09-16T22:36:59",
   "impl": "official",
   "fused": true,
   "params_unfused": 8802912,
   "params_fused_delta": 558600,
-  "fuse_max_abs_logits_diff": 2.2172927856445312e-05,
+  "fuse_max_abs_logits_diff": 3.0994415283203125e-05,
   "bad_images": [],
   "n_bad_images": 0,
   "weights_dropped_shape": [],
   "weights_missing": [],
-  "latency_mean_ms": 10.4571,
-  "latency_p95_ms": 13.6965,
-  "elapsed_sec": 23.51
+  "latency_mean_ms": 8.1205,
+  "latency_p95_ms": 9.4602,
+  "elapsed_sec": 24.84
 }

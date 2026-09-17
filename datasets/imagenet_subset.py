@@ -1,21 +1,27 @@
 # datasets/imagenet_subset.py
 # -*- coding: utf-8 -*-
-"""考核方提供的固定 ImageNet 子集（规格书 2.3.2）。
+"""**固定 ImageNet 评价清单**的 Dataset 读取器（规格书 2.3.2；当前唯一口径 = ImageNetV2）。
+
+> 2026-09 口径变更：官方模型评价的清单是 ``datasets/lists/imagenetv2_mf_1000.txt``
+> （ImageNetV2 matched-frequency 的 1000 张确定性固定子集，1000 类各 1 张，
+> 选取规则见 ``datasets/make_imagenetv2_subset.py`` / ``report/IMAGENETV2_PROVENANCE.md``）。
+> 本文件**只读清单、不构建清单**，因此变更口径时只需换清单文件。
 
 职责边界（本文件是全仓最容易出「静默 bug」的地方）：
 
-* **只读**考核方给的列表文件，**绝不做任何划分或采样**——子集是考核方冻结的，
-  任何"顺手抽一半做验证"都会让 Top-1 数字不可复现。
+* **只读**清单文件，**绝不做任何划分或采样**——清单一旦冻结，任何"顺手抽一半做验证"
+  都会让 Top-1 数字不可复现。
 * 解析必须用 ``line.rsplit(None, 1)``（``None`` = 按任意空白串切分），这样 Tab 与空格
   两种分隔符、**含空格的 Windows 路径**都能正确解析。用 ``line.split()`` 遇到含空格路径
   必然切错：路径被砍成两段、标签变成路径尾巴，``int()`` 抛错还算幸运，若尾巴恰好是数字
   就会静默产生一条标签错位的样本，最终表现为 Top-1 掉到随机水平。
 
-列表行格式（``datasets/make_imagenet_subset.py`` 的产物，也是考核方给的格式）::
+列表行格式（当前 ImageNetV2 清单的形态）::
 
-    n01751748/ILSVRC2012_val_00000001.JPEG\t65
+    data/imagenetv2/matched-frequency/0/58fbc3e7….jpeg\t0
 
-即「相对 ``data/imagenet/val`` 的路径 + TAB + 0-based 标签（0..999）」。
+即「相对**仓库根**的路径 + TAB + 0-based 标签（0..999）」。旧式 ``n01751748/xxx.JPEG`` 这种
+相对 ``data/imagenet/val`` 的写法仍能解析（:meth:`path` 有兜底），但已不在当前口径中。
 
 两条诊断判据（写进报告用）：
 
@@ -24,6 +30,9 @@
   ``suspect`` 会如实为 True，**这是正常的**，所以它只警告不报错。
 * ``verify_with_imagefolder``：用 ``ImageFolder(root).class_to_idx`` 对每张图**逐图反查**，
   比 min/max 硬得多。若 Top-1 掉到 0.1% 附近（1/1000 的随机水平），基本可判定标签体系整体错位。
+  ⚠ ImageNetV2 的类目录是**未补零的数字目录**（``0/1/10/100/…``），ImageFolder 的隐式序号
+  会按字符串排序错位（上游 issue #10），因此该自检对 ImageNetV2 目录**不适用**：请用
+  ``datasets/make_imagenetv2_subset.py`` 的锚点校验代替。
 """
 from __future__ import annotations
 
@@ -50,9 +59,9 @@ def _abs_path(p: str | Path) -> Path:
 def _resolve_image_path(rel: str, root: str | Path | None = None) -> Path:
     """把列表里的一条路径解析成真实文件路径，容忍两种书写约定。
 
-    规格书 3.5.3 的口径是「相对 ``data/imagenet/val``」，而实际交付的
-    ``datasets/lists/imagenet_val_subset.txt`` 里写的是**相对仓库根**
-    （``data/imagenet/val/n01440764/xxx.JPEG``）——两种都在真实项目里出现过，
+    规格书 3.5.3 的口径是「相对 ``data/imagenet/val``」，而当前交付的
+    ``datasets/lists/imagenetv2_mf_1000.txt`` 里写的是**相对仓库根**
+    （``data/imagenetv2/matched-frequency/0/xxx.jpeg``）——两种都在真实项目里出现过，
     所以这里按「绝对路径 -> root/rel -> 仓库根/rel -> cwd/rel」依次探测，
     取第一个存在的；都不存在时返回主约定 ``root/rel`` 供报错展示。
     逐条 ``exists()`` 只是 stat，1000 条约几十毫秒，换来的是换机器不返工。
@@ -185,11 +194,11 @@ class ImageNetSubset(Dataset):
     ----
     root
         列表里相对路径的根，通常 ``data/imagenet/val``（其下是 ``<synset>/<xxx>.JPEG``）。
-        相对路径按仓库根解析。列表里若写的是**相对仓库根**的路径（本仓库交付的
-        ``imagenet_val_subset.txt`` 就是这种），:meth:`path` 会自动回退到仓库根，
+        相对路径按仓库根解析。列表里若写的是**相对仓库根**的路径（当前交付的
+        ``imagenetv2_mf_1000.txt`` 就是这种），:meth:`path` 会自动回退到仓库根，
         两种约定都能读，无需改列表。
     list_file
-        ``datasets/lists/imagenet_val_subset.txt``；相对路径按仓库根解析。
+        ``datasets/lists/imagenetv2_mf_1000.txt``（ImageNetV2 固定子集；相对路径按仓库根解析）。
     transform
         PIL Image -> Tensor；``None`` 时返回原始 PIL 图。
     return_path
@@ -276,7 +285,8 @@ def _selfcheck() -> int:
 
     ap = argparse.ArgumentParser(description="ImageNet 固定子集 Dataset 自检（只读，不采样）")
     ap.add_argument("--root", default="data/imagenet/val", help="列表里相对路径的根")
-    ap.add_argument("--list", dest="list_file", default="datasets/lists/imagenet_val_subset.txt")
+    ap.add_argument("--list", dest="list_file", default="datasets/lists/imagenetv2_mf_1000.txt",
+                    help="固定评价清单；当前唯一口径 = ImageNetV2 matched-frequency 的 1000 张子集")
     ap.add_argument("--num-classes", type=int, default=IMAGENET_NUM_CLASSES)
     ap.add_argument("--verify", action="store_true", help="用 ImageFolder 逐图反查（需本地有图）")
     ap.add_argument("--batch", type=int, default=8)

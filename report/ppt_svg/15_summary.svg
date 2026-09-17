@@ -25,7 +25,7 @@
     <g id="pb-2">
       <text x="100" y="312" font-family="Consolas" font-size="15" font-weight="bold" fill="#35D0F0">02</text>
       <text x="150" y="312" font-family="Microsoft YaHei" font-size="15" fill="#E6EDF7">data/provided/ 在 29 页试题 PDF 中从未定义</text>
-      <text x="150" y="338" font-family="Microsoft YaHei" font-size="14" fill="#3FDB9B">改判为结构性偏差，改用官方归档 + 自建子集，并在 README 与报告中显式声明</text>
+      <text x="150" y="338" font-family="Microsoft YaHei" font-size="14" fill="#3FDB9B">改判为结构性偏差：改用官方归档构建的 ImageNetV2 固定子集与 Oxford-IIIT Pet，并在 README 与报告中显式声明</text>
     </g>
   </g>
 
@@ -40,10 +40,10 @@
     <rect x="72" y="488" width="700" height="172" rx="10" fill="#131C2E" stroke="#1E3050" stroke-width="1"/>
     <text x="100" y="524" font-family="Microsoft YaHei" font-size="18" font-weight="bold" fill="#E6EDF7">结论</text>
     <line x1="100" y1="538" x2="744" y2="538" stroke="#1E3050" stroke-width="1"/>
-    <text x="100" y="570" font-family="Microsoft YaHei" font-size="15" fill="#93A4C0">① RepViT 确为纯卷积，M0.9 实测 78.20%，贴近官方 78.7%</text>
-    <text x="100" y="596" font-family="Microsoft YaHei" font-size="15" fill="#93A4C0">② Pet-37 test Top-1 92.34%，跨物种错误仅 3.56%</text>
-    <text x="100" y="622" font-family="Microsoft YaHei" font-size="15" fill="#93A4C0">③ 重参数化 32 个随机输入通过（max 7.093e-06）；ONNX 一致性测了 3 个型号各 12 张</text>
-    <text x="100" y="648" font-family="Microsoft YaHei" font-size="15" fill="#FFC857">④ 四项优化未显示稳定提升；需要多种子实验进一步判断</text>
+    <text x="100" y="570" font-family="Microsoft YaHei" font-size="15" fill="#93A4C0">① RepViT 确为纯卷积；M0.9 在 ImageNetV2 固定子集上实测 68.70%（与 ImageNet-1K 公布值不可比）</text>
+    <text x="100" y="596" font-family="Microsoft YaHei" font-size="15" fill="#93A4C0">② Pet-37 test Top-1 92.34%（跨物种错误仅 3.56%）；四项优化未显示稳定提升，需多种子实验</text>
+    <text x="100" y="622" font-family="Microsoft YaHei" font-size="15" fill="#93A4C0">③ 重参数化（32 个固定随机输入）max|Δ| = 7.093e-06，Top-1 32/32 一致（与下面 ONNX 实验分列）</text>
+    <text x="100" y="648" font-family="Microsoft YaHei" font-size="15" fill="#FFC857">④ ONNX 一致性（Pet-37，n=12 真实图片）max|Δ| = 6.199e-06，Top-1/Top-5 集合一致率 100%</text>
   </g>
 
   <g id="next" data-pptx-bounds="804 488 404 172">

@@ -1,6 +1,13 @@
 # deploy/demo_camera.py —— 实时 Top-5 + 端到端 FPS + 按键切换型号 + 抖动分析
+#
+# 产物口径（X-6）：本机没有摄像头、也没有视频素材，因此**仓库里没有
+# outputs/benchmarks/realtime_jitter.json**——本脚本默认不落盘，不声明一个找不到的产物。
+# 现场跑通后按下面这条命令留证据：
+#   python deploy/demo_camera.py --source 0 --model 1 \
+#       --jitter-report outputs/benchmarks/realtime_jitter.json
 import argparse, json, time
 from collections import deque
+from pathlib import Path
 import cv2, numpy as np, onnxruntime as ort
 try:
     from deploy.model_registry import onnx_path, labels_for   # 禁止硬写 ONNX 文件名
@@ -41,7 +48,10 @@ def main():
     ap.add_argument("--source", default="0", help="0=摄像头；也可给视频文件路径")
     ap.add_argument("--model", default="1", choices=list(MODELS))
     ap.add_argument("--k", type=int, default=5)
-    ap.add_argument("--jitter-report", default="outputs/benchmarks/realtime_jitter.json")
+    ap.add_argument("--jitter-report", default=None,
+                    help="把抖动/置信度统计写到该路径；**默认不落盘**（仓库未提交 "
+                         "realtime_jitter.json，本机无摄像头也无视频素材）。"
+                         "现场留证据：--jitter-report outputs/benchmarks/realtime_jitter.json")
     a = ap.parse_args()
     src = int(a.source) if a.source.isdigit() else a.source
     cap = (cv2.VideoCapture(src, cv2.CAP_DSHOW) if isinstance(src, int)
@@ -80,8 +90,11 @@ def main():
                conf_std=float(np.std(conf_hist)), conf_mean=float(np.mean(conf_hist)),
                fps_avg30=float(np.mean(t_fps)),
                note="FPS 覆盖解码+预处理+推理+绘制四段（计时点在 waitKey 之后），只统计 sess.run 会虚高")
-    import os; os.makedirs(os.path.dirname(a.jitter_report), exist_ok=True)
-    with open(a.jitter_report, "w", encoding="utf-8") as f: json.dump(rep, f, ensure_ascii=True, indent=2)
+    if a.jitter_report:
+        out = Path(a.jitter_report)
+        out.parent.mkdir(parents=True, exist_ok=True)
+        out.write_text(json.dumps(rep, ensure_ascii=True, indent=2), encoding="utf-8")
+        print(f"[write] {a.jitter_report}")
     print(json.dumps(rep, ensure_ascii=True))
 
 if __name__ == "__main__":

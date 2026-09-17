@@ -22,7 +22,7 @@ seed: 42                            # int | 0 ~ 2**31-1 | 同时固定 random/nu
 pretrained_eval:
   model: repvit_m0_9                # str  | timm 已注册的 repvit* 白名单 | 结构由它决定，与权重文件解耦；允许带权重 tag（repvit_m0_9.dist_300e_in1k），产物目录一律取裸名 name.split('.')[0]
   weights: checkpoints/pretrained/repvit_m0_9_distill_300e.pth   # str | 本地 .pth 相对路径 / null | null 时回落 timm.create_model(pretrained=True) 走 HF 下载；官方 _distill_*.pth 是 {'model': {...}} 单键字典且 storage 在 cuda:0，必须 map_location='cpu' 后取 ['model']
-  data_list: datasets/lists/imagenet_val_subset.txt   # str | 每行 "<相对路径>\t<0-based 标签>" | 解析必须用 line.rsplit(None, 1)，不能用 line.split()（Windows 中文路径可能含空格）
+  data_list: datasets/lists/imagenetv2_mf_1000.txt   # str | 每行 "<相对路径>\t<0-based 标签>" | 解析必须用 line.rsplit(None, 1)，不能用 line.split()（Windows 中文路径可能含空格） | 当前值 = **ImageNetV2 matched-frequency 的 1000 张确定性固定子集**（1000 类各 1 张；选取规则见 datasets/make_imagenetv2_subset.py）。★ 它是本仓**唯一**的官方模型评价口径；它不是 ImageNet-1K 验证集，是 Recht et al. 2019 重采样构建的独立测试集，其准确率与 1K val / 论文公布值**不可直接比较**
   labels: labels/imagenet_classes.txt                 # str | 1000 行类别名，索引即模型输出下标 | 锚点自检：第 0 行 tench / 第 65 行 sea snake / 第 285 行 Egyptian cat / 第 999 行 toilet tissue
   input_size: 224                   # int  | 224（勿改） | 改动必须同步改 crop_pct，否则有效感受野与官方口径不一致
   batch_size: 64                    # int  | 32 ~ 128 | CPU 上 M0.9 用 64 约占 1.2 GB 内存；8 GB 机器降到 32
@@ -54,7 +54,7 @@ models:
     params_M: 5.1                   # float | - | 官方 README 口径（含蒸馏头）；单头未融合为 4.72M（timm 实测 4,732,805 @ 37 类）
     macs_G: 0.8                     # float | - | 官方 README 口径
     file_mb: 21.38                  # float | - | os.path.getsize()/1024**2
-    official_top1: 78.7             # float | - | 官方 300e Top-1（%）；本仓库 metrics.json 的 top1 同为百分数，可直接对照
+    official_top1: 78.7             # float | - | 官方 300e Top-1（%，**ImageNet-1K val 口径**）；仅作型号登记元数据。★ 本仓评测口径是 ImageNetV2 子集，metrics.json 的 top1 **不得**与这里的 1K 数值并列或算差值
     official_top5: 94.01            # float | - | 官方 300e Top-5（%）
   # ---- 基础必做 2 ----
   - key: repvit_m1_0_in1k

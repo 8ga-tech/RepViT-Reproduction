@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-16T18:56:21",
+  "generated_at": "2026-09-17T00:28:52",
   "python": "3.14.5",
   "platform": "Windows-11-10.0.26200-SP0",
   "summary": {
@@ -24,9 +24,9 @@
     },
     {
       "id": "bench.meta",
-      "title": "benchmark 元信息与次数",
+      "title": "benchmark 元信息与次数 + summary.csv 完整",
       "status": "PASS",
-      "detail": "['repvit_m0_9_in1k:P50=13.601 P95=16.664', 'repvit_m1_0_in1k:P50=17.177 P95=20.823', 'repvit_m0_9_pet37:P50=12.476 P95=15.996', 'repvit_m0_9_in1k:P50=7.373 P95=8.002', 'repvit_m1_0_in1k:P50=9.147 P95=9.76', 'repvit_m1_1_in1k:P50=10.234 P95=11.241', 'repvit_m1_5_in1k:P50=17.647 P95=18.926', 'repvit_m2_3_in1k:P50=32.687 P95=33.322', 'repvit_m0_9_pet37:P50=7.122 P95=7.692'] 问题=[]",
+      "detail": "['repvit_m0_9_in1k:P50=13.601 P95=16.664', 'repvit_m1_0_in1k:P50=17.177 P95=20.823', 'repvit_m0_9_pet37:P50=12.476 P95=15.996', 'repvit_m0_9_in1k:P50=7.373 P95=8.002', 'repvit_m1_0_in1k:P50=9.147 P95=9.76', 'repvit_m1_1_in1k:P50=10.234 P95=11.241', 'repvit_m1_5_in1k:P50=17.647 P95=18.926', 'repvit_m2_3_in1k:P50=32.687 P95=33.322', 'repvit_m0_9_pet37:P50=7.122 P95=7.692', 'repvit_m0_9_in1k:P50=7.68",
       "fix": ""
     },
     {
@@ -82,7 +82,7 @@
       "id": "labels.pair",
       "title": "标签文件与类别数配对",
       "status": "PASS",
-      "detail": "['repvit_m0_9_in1k:1000类/labels/imagenet_classes.txt', 'repvit_m0_9_pet37:37类/labels/pet_classes.txt', 'repvit_m1_0_in1k:1000类/labels/imagenet_classes.txt'] 错配=[]",
+      "detail": "['repvit_m0_9_in1k:1000类/labels/imagenet_classes.txt', 'repvit_m0_9_pet37:37类/labels/pet_classes.txt', 'repvit_m1_0_in1k:1000类/labels/imagenet_classes.txt', 'repvit_m1_1_in1k:1000类/labels/imagenet_classes.txt', 'repvit_m1_5_in1k:1000类/labels/imagenet_classes.txt'] 错配=[]",
       "fix": ""
     },
     {
@@ -115,9 +115,9 @@
     },
     {
       "id": "official.top1",
-      "title": "官方模型 Top-1 落在 70~82",
+      "title": "官方评价口径与落盘结构正确",
       "status": "PASS",
-      "detail": "['repvit_m0_9:78.20%(官方78.7)', 'repvit_m1_0:79.90%(官方80.0)', 'repvit_m1_1:79.90%(官方80.7)', 'repvit_m1_5:82.80%(官方82.3)', 'repvit_m2_3:83.10%(官方83.3)'] 全部在官方值 ±1.5 内",
+      "detail": "['清单=datasets/lists/imagenetv2_mf_1000.txt 1000 行', '标签 1000 行，锚点 OK', '落盘型号 5/5'] 结构断言通过（不做官方值比对）",
       "fix": ""
     },
     {
@@ -131,14 +131,14 @@
       "id": "onnx.consistency",
       "title": "PyTorch vs ONNX 一致率 >= 0.99",
       "status": "PASS",
-      "detail": "['repvit_m0_9_in1k:1.0', 'repvit_m0_9_pet37:1.0', 'repvit_m1_0_in1k:1.0'] 全部 >=0.99，共 3 个模型",
+      "detail": "['repvit_m0_9_in1k:1.0', 'repvit_m0_9_pet37:1.0', 'repvit_m1_0_in1k:1.0', 'repvit_m1_1_in1k:1.0', 'repvit_m1_5_in1k:1.0'] 全部 >=0.99，共 5 个模型",
       "fix": ""
     },
     {
       "id": "onnx.realimg",
       "title": "一致性用真实图片计算",
       "status": "PASS",
-      "detail": "数据来源={'pet_test', 'imagenet_val_subset'}（必须是固定划分列表，不能是 torch.randn）",
+      "detail": "['repvit_m0_9_in1k:imagenetv2_mf_1000(1000 行/12 张)', 'repvit_m0_9_pet37:pet_test(3669 行/12 张)', 'repvit_m1_0_in1k:imagenetv2_mf_1000(1000 行/12 张)', 'repvit_m1_1_in1k:imagenetv2_mf_1000(1000 行/12 张)', 'repvit_m1_5_in1k:imagenetv2_mf_1000(1000 行/12 张)'] 全部来自真实固定清单",
       "fix": ""
     },
     {
@@ -243,7 +243,7 @@
       "id": "viz",
       "title": "八类可视化产物齐全",
       "status": "PASS",
-      "detail": "curves=1 cm=2 preds=23 compare=3 cam=15",
+      "detail": "curves=2 cm=2 preds=23 compare=3 cam=15",
       "fix": ""
     }
   ]

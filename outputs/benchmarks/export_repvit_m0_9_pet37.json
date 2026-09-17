@@ -50,6 +50,6 @@
   "ep": [
     "CPUExecutionProvider"
   ],
-  "torch_vs_onnx_max_abs": 3.814697265625e-06,
+  "torch_vs_onnx_max_abs": 4.112720489501953e-06,
   "torch_vs_onnx_top1_same": true
 }

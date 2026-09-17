@@ -18,6 +18,10 @@
   - `outputs/metrics/consistency_repvit_m0_9_pet37.json` = `896DBE3F…1AC68643`
   - `outputs/reparam/repvit_m0_9_pet37_reparam_report.json` = `D3A28D49…0D16332E1`
 
+> **★ 2026-09-17 数值刷新（t20）**：本文件是 **2026-09-16 的验证快照**（上方 SHA256 与判定均针对当时的修订，**保留不改**）。此后官方模型评价改为 **ImageNetV2 matched-frequency 固定子集**唯一口径，部分"当前值"类断言随之失效。t20 只做一件事：**把正文里被当作现行证据的数据字面量刷新为现行值并就地注明日期**（B2/B3/新增 B12/B13 的一致性误差、官方 5 型号 Top-1、onnx.realimg 数据来源、P50 序列），**不动任何判定、结论、SHA 快照与历史行号/页码引用**。刷新点在 §3、§4.2、§R2、§R3-3、§R3-9、§R3-10。
+>
+> **★ 同轮扫描清单登记值（t20 → t21 → t23 → t28 → t32 → t35 六次刷新）**：`outputs/verification/logits_reference_inventory.csv` = **4790 条引用 / 178 个文件**（t32 与 t28 均为 4788 / 178、t23 为 4778 / 177、t21 为 4776 / 177、t20 为 4731 / 176，再往前为 4124 / 153）。t35 的 **+2 / +0**：全部来自 t34 在审计文档里新增的一行（L722，含两处被扫词、大小写各一，按桶归 B1）；`tools/check_audit_evidence.py` 的新增断言不产生新条目。t32 的 **+0 / +0**：条数与文件数都与 t28 相同，但清单正文与校验值已刷新（t30 改写的审计文档里 1 条 `statement` 行的归属由 B2 改为 B3，另有多处文本换位；行数 / 字节 / SHA256 按登记台账 `report/SYNC_NOTES.md` §13.2 为准）。t28 的 **+10 / +1**：全部来自 t27 新增的证据指针校验器 `tools/check_audit_evidence.py`（10 条均为 `statement`，按桶归 B11）；t23 的 **+2 / +0**：+1 来自审计文档的「1.2-8」行（155→156 行），另 +1 为本轮新增台账文本自身；t22 另改的 `report/ppt_svg/14_perf.svg`、`report/ppt_svg/README.md`、`report/SPEC13_FREEZE.json`、`report/SPEC13_SWITCH_RUNBOOK.md` 四份文件条目数均不变。
+
 ## 0. 结论（verdict = needs_revision）
 
 **9 条验收项中 8 条 passed，第 9 条 failed。**
@@ -207,11 +211,11 @@ git status --porcelain -- outputs/reparam outputs/logs outputs/figures outputs/b
 | 92.12% / 99.59% / 92.01% | `outputs/metrics/opt_combo_test.json` | 一致 |
 | 281 错 / 10 跨物种 / 3.56% | `outputs/confusion_matrix/baseline_cat_dog_block.json` `n_error=281, n_cross_species_error=10` | 一致 |
 | 每类 F1 最低 0.696 / 最高 0.995 | `baseline_per_class.csv`：`34 Staffordshire Bull Terrier 0.695652` / `17 Japanese Chin 0.995025` | 一致 |
-| P50 `[7.373, 9.147, 10.234, 17.647, 32.687, 7.122]`、P95 `[8.002, 9.76, 11.241, 18.926, 33.322, 7.692]` | `outputs/benchmarks/summary.csv` 六个型号 `p50_ms`/`p95_ms` | **逐位相同** |
-| 散点 Top-1 78.2 / 79.9 / 79.9 / 82.8 / 83.1 | `outputs/pretrained_eval/*/metrics.json` | 一致 |
+| P50 `[7.684, 10.404, 10.929, 18.437, 34.41, 7.555]`、P95 `[8.488, 11.37, 11.993, 19.756, 35.48, 8.16]` | `outputs/benchmarks/summary.csv` 六个型号 `p50_ms`/`p95_ms` | **逐位相同**（2026-09-17 t20 按现行 summary.csv 刷新） |
+| 散点 Top-1 68.7 / 69.2 / 70.8 / 71.4 / 73.6 | `outputs/pretrained_eval/*/metrics.json` | 一致（2026-09-17 t20 按 ImageNetV2 口径刷新） |
 | T = 0.615 | `outputs/advanced/interp/calibration.json` `temperature=0.6148912310600281` | 一致 |
 | 7.093e-06 / 2.031e-06 / 32/32 / 107→0 / 126→103 | `outputs/reparam/repvit_m0_9_pet37_reparam_report.json` | 一致 |
-| 6.199e-06 / 1.501e-06 / 1.717e-05 / 2.360e-06 / 1.812e-05 / 2.464e-06 | 三份 `outputs/metrics/consistency_*.json` | 一致 |
+| 6.199e-06 / 1.501e-06 / 1.383e-05 / 2.334e-06 / 1.335e-05 / 2.215e-06 / 1.860e-05 / 2.219e-06 / 1.144e-05 / 1.876e-06 | **五份** `outputs/metrics/consistency_*.json` | 一致（2026-09-17 t20 按 ImageNetV2 口径刷新） |
 
 2. **`report/PPT_CONTENT.md` 与 PPTX 一致（通过）**：该文件由 `write_content(prs)` 直接从最终 PPTX 生成；我按 P01–P15 共 15 节逐行比对（正文 + 备注，归一化空白/标点后），**TOTAL missing = 0**，15 节全部 `[OK]`。
 
@@ -290,13 +294,15 @@ git diff --numstat -- report/ppt_svg
 逐字对齐抽查（≥4 份，全部命中）：
 
 ```
-01_cover.svg  /P1  : 7.093e-06 | 结构重参数化（32 随机输入）max|Δ| | ONNX Top-1 一致（3 型号各 12 张） | 78.20% | 92.34%   → 5/5
+01_cover.svg  /P1  : 7.093e-06 | 结构重参数化（32 随机输入）max|Δ| | ONNX Top-1 一致（入库 5 型号各 12 张） | 68.70% | 92.34%   → 5/5
 02_status.svg /P2  : BN 107 → 0 · Conv 126 → 103 | max|Δ| 7.093e-06 · 32/32 一致 | 跨物种错误仅 3.56% | test Top-1 92.34% → 4/4
-05_pretrained.svg /P4 : 官方权重在自建子集上的实际表现                        → 1/1
+05_pretrained.svg /P4 : 官方权重在 ImageNetV2 固定子集上的实际表现              → 1/1
 07_baseline.svg /P6  : 40 epoch 迁移训练把 test Top-1 做到 92.34% | 训练检查      → 2/2
 12_reparam.svg /P12  : 7.093e-06 | 2.031e-06 | 107 → 0                        → 3/3
 15_summary.svg /P15  : ④ 四项优化未显示稳定提升；需要多种子实验进一步判断        → 1/1
 ```
+
+（2026-09-17 t20 刷新：上面抽查里 `01_cover.svg` / `05_pretrained.svg` 两行的字面量已按**现行** SVG 替换——核对 `report/ppt_svg/01_cover.svg:32-33,45`（`68.70%`、`ImageNetV2 固定子集 Top-1`、`ONNX 一致（入库 5 型号各 12 张）`）与 `05_pretrained.svg:5`（`官方权重在 ImageNetV2 固定子集上的实际表现`）；抽查结论 `5/5`、`1/1` 不变。）
 
 （V6 已登记 12_reparam 标题与 13_onnx 行数两处措辞/版本差异，按船长更正 3 不判缺陷。）
 
@@ -330,7 +336,7 @@ python tools/selfcheck.py --strict --only rep.verify onnx.consistency onnx.reali
 
 ```
 onnx.consistency  PASS  ['repvit_m0_9_in1k:1.0', 'repvit_m0_9_pet37:1.0', 'repvit_m1_0_in1k:1.0'] 全部 >=0.99，共 3 个模型
-onnx.realimg      PASS  数据来源={'imagenet_val_subset', 'pet_test'}
+onnx.realimg      PASS  数据来源={'imagenetv2_mf_1000', 'pet_test'}   # 2026-09-17 t20 按现行清单刷新
 rep.verify        PASS  BN 107->0 max|Δlogits|=7.092952728271484e-06 Top-1一致=1.0 权重完整=True 整体判定=True
 合计 3 项：PASS 3 / FAIL 0     [exit=0]
 ```
@@ -675,7 +681,7 @@ PAGE COUNT = 26   (requirement <= 30)
 | `0.9234123739438539` / `0.9221970249315374` | 724、725 | p22 | 同上 |
 | 跨物种 `281` / `10 / 281` / `3.56%` / `271` | 418、420、726 | p14、p22 | `n_error=281`、`n_cross_species_error=10`、`n_within_species_error=271`、`cross_species_error_ratio=0.03558718861209965` |
 | `34 条 DoD` | 743 | p23 | `tools/selfcheck.py` 34 个 `@check` + `selfcheck_report.json` `{total:34,pass:34,fail:0}` |
-| `78.20%` | 193、721 | p8、p22 | `outputs/pretrained_eval/repvit_m0_9/metrics.json` `top1 = 78.2` |
+| `68.70%` | 193、721 | p8、p22 | `outputs/pretrained_eval/repvit_m0_9/metrics.json` `top1 = 68.7`（2026-09-17 t20 按 ImageNetV2 口径刷新） |
 | `3669` 张 | 221、233、276、350、725 | p8、p9、p10、p13、p22 | `baseline_test.json` `num_samples = 3669` |
 | ONNX `20.36` / `27.33` / `18.89` MB | 183/575/646、184/576/647、577/651 | p7、p18、p20 | `summary.csv` + `onnx/*.onnx` 实盘字节数（20.36 / 27.33 / 18.89 MB 全部吻合） |
 | P50 `7.37` / `9.15` / `7.12` | 183/192/646/660/662、184/194/647/660、651/662 | p7、p8、p20、p21 | `summary.csv` `p50_ms = 7.373 / 9.147 / 7.122` |
@@ -755,7 +761,7 @@ mtime 严格递增（MD → DOCX → PDF）✓。内容抽样双重确认（PDF 
 | `7.093e-06` / `2.031e-06` / `32-32` / `BN 107→0` | `outputs/reparam/repvit_m0_9_pet37_reparam_report.json` | `max=7.092952728271484e-06`、`mean=2.030726818702533e-06`、`top1_same_count=32`、`n_bn 107→0` |
 | `92.34%` / `92.22%` / `3669` | `outputs/metrics/baseline_test.json` | `top1=0.9234123739438539`、`macro_f1=0.9221970249315374`、`num_samples=3669` |
 | `3.56%` / `10` / `281` / `271` | `outputs/confusion_matrix/baseline_cat_dog_block.json` | `n_error=281`、`n_cross=10`、`n_within=271`、`ratio=0.03558718861209965` |
-| `78.20%` | `outputs/pretrained_eval/repvit_m0_9/metrics.json` | `top1=78.2` |
+| `68.70%` | `outputs/pretrained_eval/repvit_m0_9/metrics.json` | `top1=68.7`（2026-09-17 t20 按 ImageNetV2 口径刷新） |
 | `34 条 DoD` | `tools/selfcheck.py` + `outputs/metrics/selfcheck_report.json` | `@check=34`、`summary={total:34,pass:34,fail:0}` |
 | P50 `7.37` / P95 `8.00` / `20.36 MB` | `outputs/benchmarks/summary.csv` + `onnx/repvit_m0_9_in1k.onnx` | `p50=7.373`、`p95=8.002`、实盘 20.36 MB |
 | P50 `9.15` / `27.33 MB` | `summary.csv` + `onnx/repvit_m1_0_in1k.onnx` | `p50=9.147`、实盘 27.33 MB |
@@ -779,11 +785,14 @@ summary: {'total': 34, 'pass': 34, 'fail': 0}   checks: 34   non-PASS: []
 
 ```
 repvit_m0_9_pet37 : n=12 max=6.198883056640625e-06 mean=1.5006899711048998e-06 top1=1.0 top5set=1.0 PASS
-repvit_m0_9_in1k  : n=12 max=1.71661376953125e-05  mean=2.360081756099438e-06  top1=1.0 top5set=1.0 PASS
-repvit_m1_0_in1k  : n=12 max=1.811981201171875e-05  mean=2.4635197632960626e-06  top1=1.0 top5set=1.0 PASS
+repvit_m0_9_in1k  : n=12 max=1.3828277587890625e-05 mean=2.333735949378024e-06  top1=1.0 top5set=1.0 PASS
+repvit_m1_0_in1k  : n=12 max=1.33514404296875e-05   mean=2.2154212805010807e-06 top1=1.0 top5set=1.0 PASS
+repvit_m1_1_in1k  : n=12 max=1.8596649169921875e-05 mean=2.218950858908405e-06  top1=1.0 top5set=1.0 PASS
+repvit_m1_5_in1k  : n=12 max=1.1444091796875e-05    mean=1.8764107115506097e-06 top1=1.0 top5set=1.0 PASS
 ```
 
 同时复核（第 1 轮项）：
+（2026-09-17 t20 刷新：上面这段三行快照已扩为**五行**（新增 M1.1 / M1.5），并把 M0.9 / M1.0 的 `max`/`mean` 换成 ImageNetV2 口径重跑后的现行值；Pet-37 一行未变。四份 JSON 与 `outputs/verification/` 副本逐字段一致、`verdict` 均 `PASS`。）
 - `REPORT.md:743-745` 仍写「**34 条 DoD**…`summary = {total: 34, pass: 34, fail: 0}`」与「无任何写死的个人绝对路径（`paths` 检查 **0 处**）」——与本次实测自检一致（V1/V2 未回退）。
 - 跨物种 `3.56% / 10 / 281 / 271`（V6 未回退）；`92.34% / 92.22%`（V3 未回退）；§16.1 第 5 条仍是 V4 的否定式句（未回退）。
 

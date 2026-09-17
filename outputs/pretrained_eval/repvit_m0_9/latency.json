@@ -1,11 +1,11 @@
 {
   "warmup": 10,
   "runs": 50,
-  "mean_ms": 7.971312003210187,
-  "p50_ms": 7.790550036588684,
-  "p95_ms": 9.224754985189064,
-  "min_ms": 6.68210000731051,
-  "max_ms": 12.79649999924004,
+  "mean_ms": 8.409629999805475,
+  "p50_ms": 8.262000003014691,
+  "p95_ms": 9.925784997540177,
+  "min_ms": 7.419500005198643,
+  "max_ms": 10.794899993925355,
   "threads": 4,
   "device": "cuda",
   "cpu_model": "Intel64 Family 6 Model 183 Stepping 1, GenuineIntel",
@@ -13,7 +13,7 @@
   "torch_version": "2.14.0+cu126",
   "ep": null,
   "ort_version": null,
-  "mean_ms_unfused": 14.106948002008721,
-  "p50_ms_unfused": 13.786000024992973,
-  "p95_ms_unfused": 17.199585001799278
+  "mean_ms_unfused": 17.147823999694083,
+  "p50_ms_unfused": 16.745349999837345,
+  "p95_ms_unfused": 19.744095002897666
 }

@@ -149,7 +149,10 @@ def check(prs, out):
     need("合并页备注写明合并事实", "合并页" in merged_notes and "环节 3" in merged_notes)
     missing_ms = [m for m in MILESTONES if m not in merged_notes]
     need("合并页备注列全 15 个建议环节", not missing_ms, f"缺 {missing_ms}" if missing_ms else "15/15")
-    for idx, label in ((7, "第 8 页训练曲线"), (13, "第 14 页部署性能")):
+    # 性能类页面都要 7 项元信息齐全（试题第 17 页）：P04 官方多型号评价表、
+    # P08 训练曲线、P14 部署性能。P04 的口径行由 tools/update_defense.py 的
+    # update_pretrained_meta() 补写（推理后端 / 测试次数）。
+    for idx, label in ((3, "第 4 页官方多型号评价表"), (7, "第 8 页训练曲线"), (13, "第 14 页部署性能")):
         page = slide_text(prs.slides[idx])
         missing = [k for k, alts in META_KEYS.items() if not any(a in page for a in alts)]
         need(f"{label}元信息齐全（型号/输入尺寸/batch/硬件/后端/精度/测试次数）",

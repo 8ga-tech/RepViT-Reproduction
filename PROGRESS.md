@@ -37,9 +37,9 @@
 | m0_9_params_fused_delta | 36504 | 融合净减 | 同上 | 同上 |
 | m0_9_macs_thop | 847050816 | thop，未融合 eval，@224 | outputs/metrics/count_flops.json | `python tools/count_flops.py --model repvit_m0_9 --input-size 224` |
 | m0_9_macs_fvcore | 832165824 | fvcore，同口径（**不是 2 倍**） | 同上 | 同上 |
-| official_m0_9_top1 | 78.20 | 百分数，1000 张自建子集，crop_pct=0.875 | outputs/pretrained_eval/repvit_m0_9/metrics.json | `python tools/eval_pretrained.py --cfg configs/pretrained_eval.yaml` |
-| official_m0_9_top5 | 93.70 | 同上 | 同上 | 同上 |
-| official_m1_0_top1 | 79.90 | 百分数，同子集同口径 | outputs/pretrained_eval/repvit_m1_0/metrics.json | 加 `--set pretrained_eval.model=repvit_m1_0` |
+| official_m0_9_top1 | （待复评回填） | 百分数，**ImageNetV2 matched-frequency 1000 张固定子集**（唯一口径）@crop_pct=0.875；数值由复评流程落盘后回填 | outputs/pretrained_eval/repvit_m0_9/metrics.json | `python tools/run_all_pretrained.py --cfg configs/pretrained_eval.yaml --model repvit_m0_9` |
+| official_m0_9_top5 | （待复评回填） | 同上 | 同上 | 同上 |
+| official_m1_0_top1 | （待复评回填） | 同上 | outputs/pretrained_eval/repvit_m1_0/metrics.json | 加 `--set pretrained_eval.model=repvit_m1_0` |
 | baseline_val_macro_f1_best | 0.946166 | 验证集 best epoch | outputs/logs/baseline_metrics.csv | `python tools/train.py --cfg configs/baseline.yaml` |
 | baseline_test_top1 | 0.923410 | test，**0~1 小数**，eval_count=1（重跑后的最终值） | outputs/metrics/baseline_test.json | 见 M06 主流程 |
 | baseline_test_top5 | 0.992641 | 同上 | 同上 | 同上 |
@@ -56,8 +56,8 @@
 | bench_m1_0_in1k | mean=9.20 p50=9.15 p95=9.76 ms | 同上 | 同上 | 同上 |
 | bench_m0_9_pet37 | mean=7.20 p50=7.12 p95=7.69 ms | 同上 | 同上 | 同上 |
 | consistency_pet37 | n=12 真实图片; max|Δ|=6.198883056640625e-06（展示 6.199e-06）, mean|Δ|=1.5006899711048998e-06（展示 1.501e-06）, Top-1 与 Top-5 集合一致率均 1.000 | PyTorch↔ONNX，Pet-37，pet_test.txt 按顺序前 12 张；每张独立预处理一次后同一张量送两端，CPU FP32 / batch=1 / 224×224（**与重参数化实验分开，不可并列**） | outputs/metrics/consistency_repvit_m0_9_pet37.json | `python deploy/compare_torch_onnx.py --model repvit_m0_9_pet37 --images datasets/lists/pet_test.txt --limit 12 --out outputs/verification/consistency_repvit_m0_9_pet37_n12.json` |
-| consistency_m0_9_in1k | n=12 真实图片; max|Δ|=1.71661376953125e-05（展示 1.717e-05）, mean|Δ|=2.360081756099438e-06（展示 2.360e-06） | PyTorch↔ONNX，官方 M0.9，imagenet_val_subset.txt 前 12 张 | outputs/metrics/consistency_repvit_m0_9_in1k.json | `python deploy/compare_torch_onnx.py --model repvit_m0_9_in1k --images datasets/lists/imagenet_val_subset.txt --limit 12 --out outputs/verification/consistency_repvit_m0_9_in1k_n12.json` |
-| consistency_m1_0_in1k | n=12 真实图片; max|Δ|=1.811981201171875e-05（展示 1.812e-05）, mean|Δ|=2.4635197632960626e-06（展示 2.464e-06） | PyTorch↔ONNX，官方 M1.0，同子集 | outputs/metrics/consistency_repvit_m1_0_in1k.json | `python deploy/compare_torch_onnx.py --model repvit_m1_0_in1k --images datasets/lists/imagenet_val_subset.txt --limit 12 --out outputs/verification/consistency_repvit_m1_0_in1k_n12.json` |
+| consistency_m0_9_in1k | （待按 ImageNetV2 清单重跑替换） | PyTorch↔ONNX，官方 M0.9，取 `datasets/lists/imagenetv2_mf_1000.txt` 前 12 张 | outputs/metrics/consistency_repvit_m0_9_in1k.json | `python deploy/compare_torch_onnx.py --model repvit_m0_9_in1k --images datasets/lists/imagenetv2_mf_1000.txt --limit 12 --out outputs/verification/consistency_repvit_m0_9_in1k_n12.json` |
+| consistency_m1_0_in1k | （待按 ImageNetV2 清单重跑替换） | PyTorch↔ONNX，官方 M1.0，同上清单前 12 张 | outputs/metrics/consistency_repvit_m1_0_in1k.json | `python deploy/compare_torch_onnx.py --model repvit_m1_0_in1k --images datasets/lists/imagenetv2_mf_1000.txt --limit 12 --out outputs/verification/consistency_repvit_m1_0_in1k_n12.json` |
 | cross_species_error_ratio | 0.0356（10/281） | test 集错误里真正跨物种（猫↔狗）的占比 | outputs/confusion_matrix/baseline_cat_dog_block.json | `python tools/visualize.py --pred-csv outputs/predictions/baseline_test_preds.csv ...` |
 | external_top5_correct | 8/8 | 跨集合（ImageNet 实拍）图片的品种判断 | outputs/benchmarks/external_top5_repvit_m0_9_pet37.csv | `python tools/predict_external.py --model repvit_m0_9_pet37 --dir external --num 8` |
 
@@ -67,7 +67,8 @@
 |---|---|---|---|
 | 官方权重 ×5 | `https://ghfast.top/https://github.com/THU-MIG/RepViT/releases/download/v1.0/*` | m0_9=22,422,548 B / m1_0=29,675,245 / m1_1=35,668,677 / m1_5=59,375,411（旧文件曾损坏）/ m2_3=95,860,931，SHA256 见 `outputs/metrics/weight_sha256.json` | ✅ |
 | Oxford-IIIT Pet 官方归档 | hf-mirror 上的官方归档镜像 | **MD5 `5c4f3ee8e5d25df40f4fd59a7f44e54c` / `95a8c909bbe2e81eed6a22bccdf3f68f` 与官方基准逐字符一致** | ✅ |
-| ImageNet-1K val | `hf-mirror.com/datasets/mrm8488/ImageNet1K-val`（14 分片，gated=False） | 1000 类 × 50 张 = 50,000；JPEG 魔数、目录序=synset 序 | ✅ `data/imagenet/val/` |
+| ImageNet-1K val | `hf-mirror.com/datasets/mrm8488/ImageNet1K-val`（14 分片，gated=False） | 1000 类 × 50 张 = 50,000；JPEG 魔数、目录序=synset 序 | ✅ `data/imagenet/val/`（**不参与官方模型评价口径**——该口径唯一使用 ImageNetV2 子集，见决策记录 09-16；本目录现仅作 `external/` 跨集合实拍演示图的来源） |
+| ImageNetV2 matched-frequency | `huggingface.co/datasets/vaishaal/ImageNetV2`（作者方镜像，MIT / gated=False） | 归档 1,264,079,360 B、sha256 `f0c37fdf…c9ca7c`（= HF `X-Linked-ETag`）；解压 1000 类 × 10 张；固定子集清单 1000 行 | ✅ `data/imagenetv2/matched-frequency/` + `datasets/lists/imagenetv2_mf_1000.txt`（**官方模型评价唯一口径**） |
 | ImageNet 1000 类标签 | timm 内置 synset 表生成 | DoD #10 四锚点全 PASS | ✅ `labels/imagenet_classes.txt` |
 
 ## 阻塞与待确认
@@ -76,9 +77,15 @@
       **从未定义该路径**——它是 02 规格书自创的约定；PDF 第 28 页「考核方发布前建议准备内容」
       是**对出题方的建议清单**，不代表已下发。
       缓解：Pet 的官方 trainval/test 划分与 37 类映射已从官方归档得到；
-      ImageNet 类别映射已自建并通过 DoD #10；ImageNet 验证子集为**自建**分层抽样
-      （每类 1 张，种子 20260912，清单 `datasets/lists/imagenet_val_subset.txt`），
-      **已在 README 与报告中显式声明非考核方指定子集**。
+      ImageNet 类别映射已自建并通过 DoD #10。
+      **官方模型评价的数据源（09-16 起，唯一口径）** = **ImageNetV2 matched-frequency 的 1000 张
+      确定性固定子集**（`datasets/lists/imagenetv2_mf_1000.txt`；每类 1 张、无随机种子、
+      文件名排序取第一张，任何人可 byte-for-byte 复现；来源与许可见
+      `report/IMAGENETV2_PROVENANCE.md`）。★ ImageNetV2 **不是** ImageNet-1K 验证集，
+      其准确率与 1K val / 论文公布值**不可直接比较**。
+      此前的**自建** ImageNet-1K val 分层子集（每类 1 张、种子 20260912）及其清单
+      `datasets/lists/imagenet_val_subset.txt` 已按用户决议（09-16「不要留存旧的自建子集作为对照」）
+      **整体删除**：仓库内**不存在**第二套官方模型评价口径，不做对照、不做附录、不做历史留存。
 - [ ] github.com 直连不可达（HTTP 000），已用 ghfast.top 代理取得官方 weight release；
       **该替代来源已在 README 与 PROVENANCE.md 声明**，每条权重均记录字节数与 SHA256。
 - [ ] 官方站点 `www.robots.ox.ac.uk` 不可达，Pet 数据改用 HF 镜像的官方归档，
@@ -90,6 +97,30 @@
 
 ## 决策记录
 
+- **09-16 官方模型评价数据源切换为 ImageNetV2 matched-frequency 的 1000 张确定性固定子集**（用户指令）。
+  依据：ImageNetV2 公开、带标签、有版本、可哈希校验，在「所有候选人使用相同数据」这一条上
+  比原先「按 seed 自建」**更强**——任何人拿同一归档 + `python datasets/make_imagenetv2_subset.py`
+  即可 byte-for-byte 复现这 1000 张。
+  ★ 同日追加决议（用户）：「**不要留存之前旧的自建子集作为对照**」——
+  原自建 ImageNet-1K val 子集清单 `datasets/lists/imagenet_val_subset.txt` 已 `git rm` **删除**，
+  其口径与数字**不在任何文档里留作对照/历史/附录**；ImageNetV2 是**唯一**的官方模型评价口径。
+  归档：HF 作者方镜像 `vaishaal/ImageNetV2` → `imagenetv2-matched-frequency.tar.gz`，
+  **1,264,079,360 B**，sha256 `f0c37fdf925916b19ea1323cd9a2208cdb6959ba2c32eef2a7fc393835c9ca7c`
+  （实测与 HF `X-Linked-ETag` 逐字符一致），`license: mit`、`gated: false`；
+  原始 S3 路径 `s3.amazonaws.com/imagenetv2-public/...` 已 404 失效（故走 HF 镜像）。
+  清单：`datasets/lists/imagenetv2_mf_1000.txt`，1000 行 / 87,780 B，
+  sha256 `d5532205d8f30099aa70ed9392078adcdbd305c47055930c66e704f7976c9d05`。
+  实测坑两条：① 上游文件名是 `.tar.gz`，内容其实是**不带 gzip 的 pax tar**（首字节 `PaxHeader/`），
+  必须用 `tarfile.open(..., "r:*")`；② **不能**用 `ImageFolder` 的隐式类别序号解释 V2 目录
+  （目录名是未补零的数字串，字符串排序会错位，见上游 issue #10），本仓用显式 `路径\t标签` 清单。
+  ★ 口径纪律：ImageNetV2 是 Recht et al., *Do ImageNet Classifiers Generalize to ImageNet?*
+  (NeurIPS 2019) 构建的 **distribution-matched 独立测试集**（1000 类 × 10 张 = 10,000 张，本次取 1000 张），
+  **不得**称作「ImageNet-1K 验证集」或「考核方指定的 ImageNet-1K 验证子集」；其 Top-1 与
+  ImageNet-1K val 的数字、与论文/官方公布值**不得并列比较**（文献中同模型通常低 10~15 个点）。
+  标签映射经模型实测复核（M0.9，crop_pct=0.875，各取该类 10 张）：目录 0 → tench 9/10、
+  207 → golden retriever 8/10、285 → Egyptian cat 7/10、999 → toilet tissue 5/10、281 → tabby 3/10，
+  误判全部落在语义相邻类（tiger cat / paper towel / Chesapeake Bay retriever），
+  确认「目录名 = 标准 0-based 类别下标」成立。
 - **09-12 环境取舍：改全局 `C:\Python314` 而非建 .venv**（人类决策）。理由：本机已有 95% 依赖预置。
   已执行：`onnxruntime 1.29.0 → 1.30.0`（规格书禁止事项点名版本）、`torch 2.14.0+cpu → +cu126`。
   影响：全局环境被改动；其他项目若依赖 CPU 版 torch 需注意。

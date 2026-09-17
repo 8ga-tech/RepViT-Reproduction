@@ -5,7 +5,16 @@ Source : Self-written。数据来源为 HuggingFace 数据集 mrm8488/ImageNet1K
          字段在上传时被剥离，因此无法直接恢复原始文件名；本脚本改用 `label` 列 + timm 的
          `imagenet_synsets.txt` 反推 WNID 目录名）。
 
-为什么需要这一步：
+⚠ 已不在主线流程内（2026-09 口径变更）
+    官方模型评价的唯一口径是 **ImageNetV2 matched-frequency 的确定性 1000 张子集**
+    （`datasets/lists/imagenetv2_mf_1000.txt`，由 `datasets/make_imagenetv2_subset.py` 构建）。
+    旧的自建 ImageNet-1K val 子集（本脚本还原出的 5 万张母集 + `make_imagenet_subset.py`
+    抽样 1000 张）已按用户决议**整体删除**，本脚本因此不再被任何流水线步骤调用。
+    保留原因：本机确实存在 `data/imagenet/val/`，本文件是该目录的获取与校验记录（可复现来源），
+    并且 `data/` 已被 `.gitignore` 忽略 —— 它不影响提交物，也不构成复现路径的一部分。
+    **不要**按本脚本重新构建旧的 1000 张子集（那套口径已作废）。
+
+为什么当初需要这一步：
     规格书 §3.6.1 要求 `data/imagenet/val` 必须是 ImageFolder 结构（`val/<wnid>/<file>.JPEG`），
     因为 ImageFolder 的类别序 = `sorted(目录名)` = wnid 字母序 = 模型输出下标 0..999。
     而本机拿到的是 14 个 parquet 分片，必须先落成目录树。

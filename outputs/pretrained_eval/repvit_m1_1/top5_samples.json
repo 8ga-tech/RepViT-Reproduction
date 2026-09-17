@@ -1,202 +1,202 @@
 {
   "samples": [
     {
-      "image_path": "data/imagenet/val/n03492542/ILSVRC2012_val_00000592_18.JPEG",
-      "true_label_idx": 592,
-      "true_label_name": "hard disc",
+      "image_path": "data/imagenetv2/matched-frequency/747/069930cfb7f1650ace5b3d86f6cb87b9a23e2dbd.jpeg",
+      "true_label_idx": 747,
+      "true_label_name": "punching bag",
       "top5": [
         {
-          "idx": 592,
-          "name": "hard disc",
-          "prob": 0.9999749660491943
+          "idx": 747,
+          "name": "punching bag",
+          "prob": 0.9998953342437744
         },
         {
-          "idx": 485,
-          "name": "CD player",
-          "prob": 3.5465338896756293e-06
+          "idx": 797,
+          "name": "sleeping bag",
+          "prob": 1.8739481674856506e-05
         },
         {
-          "idx": 622,
-          "name": "lens cap",
-          "prob": 2.7614532882580534e-06
+          "idx": 731,
+          "name": "plunger",
+          "prob": 6.137513992143795e-06
         },
         {
-          "idx": 635,
-          "name": "magnetic compass",
-          "prob": 1.464123329242284e-06
-        },
-        {
-          "idx": 546,
-          "name": "electric guitar",
-          "prob": 1.350908178210375e-06
-        }
-      ],
-      "correct": true
-    },
-    {
-      "image_path": "data/imagenet/val/n04501370/ILSVRC2012_val_00000877_49.JPEG",
-      "true_label_idx": 877,
-      "true_label_name": "turnstile",
-      "top5": [
-        {
-          "idx": 877,
-          "name": "turnstile",
-          "prob": 0.9999737739562988
-        },
-        {
-          "idx": 704,
-          "name": "parking meter",
-          "prob": 2.3233901629282627e-06
-        },
-        {
-          "idx": 571,
-          "name": "gas pump",
-          "prob": 1.5633962675565272e-06
+          "idx": 422,
+          "name": "barbell",
+          "prob": 4.905214154860005e-06
         },
         {
           "idx": 480,
           "name": "cash machine",
-          "prob": 1.2290082622712362e-06
-        },
-        {
-          "idx": 398,
-          "name": "abacus",
-          "prob": 8.076013955360395e-07
+          "prob": 2.9890409223298775e-06
         }
       ],
       "correct": true
     },
     {
-      "image_path": "data/imagenet/val/n02909870/ILSVRC2012_val_00000463_08.JPEG",
-      "true_label_idx": 463,
-      "true_label_name": "bucket",
+      "image_path": "data/imagenetv2/matched-frequency/701/29d195d15a9b7648a066f3c7d5111dac32e05e41.jpeg",
+      "true_label_idx": 701,
+      "true_label_name": "parachute",
       "top5": [
         {
-          "idx": 429,
-          "name": "baseball",
-          "prob": 0.9954710006713867
+          "idx": 701,
+          "name": "parachute",
+          "prob": 0.9998677968978882
         },
         {
-          "idx": 574,
-          "name": "golf ball",
-          "prob": 0.0010753781534731388
+          "idx": 417,
+          "name": "balloon",
+          "prob": 3.0407063604798168e-05
         },
         {
-          "idx": 522,
-          "name": "croquet ball",
-          "prob": 0.0004786766367033124
+          "idx": 447,
+          "name": "binoculars",
+          "prob": 1.930257712956518e-05
         },
         {
-          "idx": 852,
-          "name": "tennis ball",
-          "prob": 0.0004499406204558909
+          "idx": 983,
+          "name": "scuba diver",
+          "prob": 1.3258068975119386e-05
         },
         {
-          "idx": 544,
-          "name": "Dutch oven",
-          "prob": 0.0002925031294580549
-        }
-      ],
-      "correct": false
-    },
-    {
-      "image_path": "data/imagenet/val/n03216828/ILSVRC2012_val_00000536_26.JPEG",
-      "true_label_idx": 536,
-      "true_label_name": "dock",
-      "top5": [
-        {
-          "idx": 510,
-          "name": "container ship",
-          "prob": 0.9919314980506897
-        },
-        {
-          "idx": 628,
-          "name": "liner",
-          "prob": 0.0011088920291513205
-        },
-        {
-          "idx": 536,
-          "name": "dock",
-          "prob": 0.000944958534091711
-        },
-        {
-          "idx": 833,
-          "name": "submarine",
-          "prob": 0.0006562906200997531
-        },
-        {
-          "idx": 540,
-          "name": "drilling platform",
-          "prob": 0.00036789264413528144
-        }
-      ],
-      "correct": false
-    },
-    {
-      "image_path": "data/imagenet/val/n01695060/ILSVRC2012_val_00000048_08.JPEG",
-      "true_label_idx": 48,
-      "true_label_name": "Komodo dragon",
-      "top5": [
-        {
-          "idx": 39,
-          "name": "common iguana",
-          "prob": 0.9461456537246704
-        },
-        {
-          "idx": 48,
-          "name": "Komodo dragon",
-          "prob": 0.009355857037007809
-        },
-        {
-          "idx": 43,
-          "name": "frilled lizard",
-          "prob": 0.0046228268183767796
-        },
-        {
-          "idx": 41,
-          "name": "whiptail",
-          "prob": 0.002916875062510371
-        },
-        {
-          "idx": 42,
-          "name": "agama",
-          "prob": 0.0025559747591614723
-        }
-      ],
-      "correct": false
-    },
-    {
-      "image_path": "data/imagenet/val/n02114712/ILSVRC2012_val_00000271_25.JPEG",
-      "true_label_idx": 271,
-      "true_label_name": "red wolf",
-      "top5": [
-        {
-          "idx": 271,
-          "name": "red wolf",
-          "prob": 0.946885347366333
-        },
-        {
-          "idx": 277,
-          "name": "red fox",
-          "prob": 0.00845374260097742
-        },
-        {
-          "idx": 272,
-          "name": "coyote",
-          "prob": 0.0025734188966453075
-        },
-        {
-          "idx": 278,
-          "name": "kit fox",
-          "prob": 0.002533038379624486
-        },
-        {
-          "idx": 352,
-          "name": "impala",
-          "prob": 0.001659715548157692
+          "idx": 768,
+          "name": "rugby ball",
+          "prob": 5.119226898386842e-06
         }
       ],
       "correct": true
+    },
+    {
+      "image_path": "data/imagenetv2/matched-frequency/775/12013926ecf4cbd277c71e053c1c82c752c4bde7.jpeg",
+      "true_label_idx": 775,
+      "true_label_name": "sarong",
+      "top5": [
+        {
+          "idx": 879,
+          "name": "umbrella",
+          "prob": 0.999300479888916
+        },
+        {
+          "idx": 460,
+          "name": "breakwater",
+          "prob": 4.640889528673142e-05
+        },
+        {
+          "idx": 580,
+          "name": "greenhouse",
+          "prob": 3.601126809371635e-05
+        },
+        {
+          "idx": 672,
+          "name": "mountain tent",
+          "prob": 3.478465441730805e-05
+        },
+        {
+          "idx": 718,
+          "name": "pier",
+          "prob": 3.448598727118224e-05
+        }
+      ],
+      "correct": false
+    },
+    {
+      "image_path": "data/imagenetv2/matched-frequency/742/04245c2746a64c4b402f2394300bf7a0f08df010.jpeg",
+      "true_label_idx": 742,
+      "true_label_name": "printer",
+      "top5": [
+        {
+          "idx": 713,
+          "name": "photocopier",
+          "prob": 0.9988598823547363
+        },
+        {
+          "idx": 742,
+          "name": "printer",
+          "prob": 0.0005997120751999319
+        },
+        {
+          "idx": 553,
+          "name": "file",
+          "prob": 7.951432053232566e-05
+        },
+        {
+          "idx": 760,
+          "name": "refrigerator",
+          "prob": 3.280425880802795e-05
+        },
+        {
+          "idx": 410,
+          "name": "apiary",
+          "prob": 2.2217498553800397e-05
+        }
+      ],
+      "correct": false
+    },
+    {
+      "image_path": "data/imagenetv2/matched-frequency/184/2c31222ea3a4b75649cdc1c853b019148e1e87d7.jpeg",
+      "true_label_idx": 184,
+      "true_label_name": "Irish terrier",
+      "top5": [
+        {
+          "idx": 184,
+          "name": "Irish terrier",
+          "prob": 0.864601194858551
+        },
+        {
+          "idx": 191,
+          "name": "Airedale",
+          "prob": 0.09639222174882889
+        },
+        {
+          "idx": 267,
+          "name": "standard poodle",
+          "prob": 0.005559656769037247
+        },
+        {
+          "idx": 188,
+          "name": "wire-haired fox terrier",
+          "prob": 0.0032534762285649776
+        },
+        {
+          "idx": 189,
+          "name": "Lakeland terrier",
+          "prob": 0.0025319871492683887
+        }
+      ],
+      "correct": true
+    },
+    {
+      "image_path": "data/imagenetv2/matched-frequency/884/11d4e503d34e1a3a08552f1ad81fd8b6368f604c.jpeg",
+      "true_label_idx": 884,
+      "true_label_name": "vault",
+      "top5": [
+        {
+          "idx": 698,
+          "name": "palace",
+          "prob": 0.8647426962852478
+        },
+        {
+          "idx": 406,
+          "name": "altar",
+          "prob": 0.07277215272188187
+        },
+        {
+          "idx": 663,
+          "name": "monastery",
+          "prob": 0.01598023623228073
+        },
+        {
+          "idx": 884,
+          "name": "vault",
+          "prob": 0.010052450932562351
+        },
+        {
+          "idx": 497,
+          "name": "church",
+          "prob": 0.010039004497230053
+        }
+      ],
+      "correct": false
     }
   ]
 }

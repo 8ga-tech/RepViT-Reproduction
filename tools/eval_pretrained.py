@@ -11,7 +11,7 @@ Third-party: torch / torchvision / timm / Pillow / numpy / matplotlib（均已�
     python tools/eval_pretrained.py --cfg configs/pretrained_eval.yaml \
       --set pretrained_eval.model=repvit_m0_9 \
             pretrained_eval.weights=checkpoints/pretrained/repvit_m0_9_distill_300e.pth \
-            pretrained_eval.data_list=datasets/lists/imagenet_val_subset.txt \
+            pretrained_eval.data_list=datasets/lists/imagenetv2_mf_1000.txt \
             pretrained_eval.labels=labels/imagenet_classes.txt \
             pretrained_eval.out_dir=outputs/pretrained_eval/repvit_m0_9 \
             pretrained_eval.threads=4
@@ -243,8 +243,8 @@ def resolve_image_path(raw: str, data_root: str | None = None) -> Path | None:
     """把 list 里的路径解析成真实文件路径；找不到返回 None（调用方记入 bad 列表）。
 
     依次尝试：绝对路径 -> data_root -> 仓库根 -> data/imagenet/val。
-    最后一项是兜底：`datasets/make_imagenet_subset.py` 写出的相对路径是相对
-    `data/imagenet/val` 的（ImageNet 官方 val 目录结构），不是相对仓库根。
+    最后一项是兜底：清单里若写相对 ``data/imagenet/val`` 的旧式路径（ImageNet 官方 val 目录结构）
+    仍能解析；当前口径的 ImageNetV2 清单写的是**相对仓库根**的完整路径。
     """
     p = Path(raw)
     if p.is_absolute():
@@ -652,8 +652,8 @@ def check_data_mode(seg: dict) -> int:
     for req in ("data_list", "labels"):
         if not repo_path(seg[req]).exists():
             raise SystemExit(f"[错误] 找不到 pretrained_eval.{req}: {repo_path(seg[req])}"
-                             f"（相对路径按仓库根解析；ImageNet 子集由 "
-                             f"datasets/make_imagenet_subset.py 生成）")
+                             f"（相对路径按仓库根解析；ImageNetV2 固定子集由 "
+                             f"datasets/make_imagenetv2_subset.py 生成）")
     rows = read_data_list(repo_path(seg["data_list"]))
     labs = [y for _, y in rows]
     lo, hi = min(labs), max(labs)

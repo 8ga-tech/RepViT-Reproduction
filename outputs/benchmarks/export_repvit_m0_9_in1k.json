@@ -1,6 +1,6 @@
 {
   "model": "repvit_m0_9_in1k",
-  "onnx": "C:\\Users\\14675\\Desktop\\one团队秋招ai算法\\RepViT-Reproduction\\onnx\\repvit_m0_9_in1k.onnx",
+  "onnx": "C:\\Users\\14675\\Desktop\\one\u56e2\u961f\u79cb\u62dbai\u7b97\u6cd5\\RepViT-Reproduction\\onnx\\repvit_m0_9_in1k.onnx",
   "file_size_mb": 20.36,
   "opset": [
     [
@@ -52,6 +52,6 @@
   "ep": [
     "CPUExecutionProvider"
   ],
-  "torch_vs_onnx_max_abs": 1.1801719665527344e-05,
+  "torch_vs_onnx_max_abs": 1.239776611328125e-05,
   "torch_vs_onnx_top1_same": true
 }

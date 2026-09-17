@@ -13,7 +13,7 @@
     <text x="98" y="256" font-family="Microsoft YaHei" font-size="22" font-weight="bold" fill="#E6EDF7">官方模型评价</text>
     <line x1="98" y1="274" x2="404" y2="274" stroke="#1E3050" stroke-width="1"/>
     <text x="98" y="306" font-family="Microsoft YaHei" font-size="16" fill="#93A4C0">5 个型号 · 1000 张子集</text>
-    <text x="98" y="334" font-family="Consolas" font-size="16" fill="#3FDB9B">M0.9 Top-1 78.20%</text>
+    <text x="98" y="334" font-family="Consolas" font-size="16" fill="#3FDB9B">M0.9 Top-1 68.70%</text>
     <text x="98" y="362" font-family="Microsoft YaHei" font-size="14" fill="#5C7096">outputs/pretrained_eval/</text>
   </g>
 
@@ -63,7 +63,7 @@
     <text x="874" y="484" font-family="Microsoft YaHei" font-size="22" font-weight="bold" fill="#E6EDF7">ONNX 多模型部署</text>
     <line x1="874" y1="502" x2="1182" y2="502" stroke="#1E3050" stroke-width="1"/>
     <text x="874" y="534" font-family="Microsoft YaHei" font-size="16" fill="#93A4C0">6 个 ONNX · ORT CPU</text>
-    <text x="874" y="562" font-family="Consolas" font-size="16" fill="#3FDB9B">P50 7.1 ~ 32.7 ms</text>
+    <text x="874" y="562" font-family="Consolas" font-size="16" fill="#3FDB9B">P50 7.6 ~ 34.4 ms</text>
     <text x="874" y="590" font-family="Microsoft YaHei" font-size="14" fill="#5C7096">onnx/*.onnx</text>
   </g>
 

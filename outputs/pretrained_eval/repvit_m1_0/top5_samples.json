@@ -1,199 +1,199 @@
 {
   "samples": [
     {
-      "image_path": "data/imagenet/val/n03000684/ILSVRC2012_val_00000491_00.JPEG",
-      "true_label_idx": 491,
-      "true_label_name": "chain saw",
+      "image_path": "data/imagenetv2/matched-frequency/419/5bfde25883425ace6a55f9d94e5c29172f9f3438.jpeg",
+      "true_label_idx": 419,
+      "true_label_name": "Band Aid",
       "top5": [
         {
-          "idx": 491,
-          "name": "chain saw",
-          "prob": 0.9999278783798218
+          "idx": 419,
+          "name": "Band Aid",
+          "prob": 0.9999275207519531
         },
         {
-          "idx": 740,
-          "name": "power drill",
-          "prob": 5.786012116004713e-05
+          "idx": 478,
+          "name": "carton",
+          "prob": 4.846916635870002e-05
         },
         {
-          "idx": 621,
-          "name": "lawn mower",
-          "prob": 3.272642061347142e-06
+          "idx": 674,
+          "name": "mousetrap",
+          "prob": 5.732292265747674e-06
         },
         {
-          "idx": 899,
-          "name": "water jug",
-          "prob": 1.3570953569796984e-06
+          "idx": 692,
+          "name": "packet",
+          "prob": 2.9849354632460745e-06
         },
         {
-          "idx": 758,
-          "name": "reel",
-          "prob": 9.020947118187905e-07
+          "idx": 680,
+          "name": "nipple",
+          "prob": 2.6691648145060753e-06
         }
       ],
       "correct": true
     },
     {
-      "image_path": "data/imagenet/val/n03942813/ILSVRC2012_val_00000722_34.JPEG",
-      "true_label_idx": 722,
-      "true_label_name": "ping-pong ball",
+      "image_path": "data/imagenetv2/matched-frequency/691/05517c0565801bff83d99555ea6d5695a0ba4156.jpeg",
+      "true_label_idx": 691,
+      "true_label_name": "oxygen mask",
       "top5": [
         {
-          "idx": 722,
-          "name": "ping-pong ball",
-          "prob": 0.9998834133148193
+          "idx": 691,
+          "name": "oxygen mask",
+          "prob": 0.9999229907989502
         },
         {
-          "idx": 752,
-          "name": "racket",
-          "prob": 1.1360159078321885e-05
+          "idx": 712,
+          "name": "Petri dish",
+          "prob": 2.3939128368510865e-05
         },
         {
-          "idx": 702,
-          "name": "parallel bars",
-          "prob": 9.690752449387219e-06
+          "idx": 680,
+          "name": "nipple",
+          "prob": 6.900033440615516e-06
         },
         {
-          "idx": 429,
-          "name": "baseball",
-          "prob": 6.4711507548054215e-06
+          "idx": 570,
+          "name": "gasmask",
+          "prob": 6.057875452825101e-06
         },
         {
-          "idx": 852,
-          "name": "tennis ball",
-          "prob": 4.691176400228869e-06
+          "idx": 617,
+          "name": "lab coat",
+          "prob": 5.033999968873104e-06
         }
       ],
       "correct": true
     },
     {
-      "image_path": "data/imagenet/val/n02909870/ILSVRC2012_val_00000463_08.JPEG",
-      "true_label_idx": 463,
-      "true_label_name": "bucket",
+      "image_path": "data/imagenetv2/matched-frequency/356/0da57934fe1db8352e6f3d3bcb93cfcbd3d91b69.jpeg",
+      "true_label_idx": 356,
+      "true_label_name": "weasel",
       "top5": [
         {
-          "idx": 429,
-          "name": "baseball",
-          "prob": 0.9985468983650208
+          "idx": 387,
+          "name": "lesser panda",
+          "prob": 0.9975191354751587
         },
         {
-          "idx": 574,
-          "name": "golf ball",
-          "prob": 0.00010630743054207414
+          "idx": 388,
+          "name": "giant panda",
+          "prob": 0.00021733363973908126
         },
         {
-          "idx": 86,
-          "name": "partridge",
-          "prob": 8.694708230905235e-05
+          "idx": 358,
+          "name": "polecat",
+          "prob": 0.00010844790085684508
         },
         {
-          "idx": 117,
-          "name": "chambered nautilus",
-          "prob": 4.280597568140365e-05
+          "idx": 377,
+          "name": "marmoset",
+          "prob": 5.365765900933184e-05
         },
         {
-          "idx": 852,
-          "name": "tennis ball",
-          "prob": 3.1641895475331694e-05
+          "idx": 371,
+          "name": "patas",
+          "prob": 5.238989251665771e-05
         }
       ],
       "correct": false
     },
     {
-      "image_path": "data/imagenet/val/n03216828/ILSVRC2012_val_00000536_26.JPEG",
-      "true_label_idx": 536,
-      "true_label_name": "dock",
+      "image_path": "data/imagenetv2/matched-frequency/660/020d45d2491d9795f67c6340b7dec69d1a2efd8e.jpeg",
+      "true_label_idx": 660,
+      "true_label_name": "mobile home",
       "top5": [
         {
-          "idx": 510,
-          "name": "container ship",
-          "prob": 0.9918562173843384
+          "idx": 717,
+          "name": "pickup",
+          "prob": 0.9962524771690369
         },
         {
-          "idx": 628,
-          "name": "liner",
-          "prob": 0.0005575358518399298
+          "idx": 864,
+          "name": "tow truck",
+          "prob": 0.0009707590797916055
         },
         {
-          "idx": 565,
-          "name": "freight car",
-          "prob": 0.0003297668881714344
+          "idx": 448,
+          "name": "birdhouse",
+          "prob": 0.0007783404435031116
         },
         {
-          "idx": 718,
-          "name": "pier",
-          "prob": 0.0003256357740610838
+          "idx": 609,
+          "name": "jeep",
+          "prob": 0.00039480856503359973
         },
         {
-          "idx": 540,
-          "name": "drilling platform",
-          "prob": 0.00029740348691120744
+          "idx": 627,
+          "name": "limousine",
+          "prob": 0.00022632112086284906
         }
       ],
       "correct": false
     },
     {
-      "image_path": "data/imagenet/val/n04258138/ILSVRC2012_val_00000807_09.JPEG",
-      "true_label_idx": 807,
-      "true_label_name": "solar dish",
+      "image_path": "data/imagenetv2/matched-frequency/352/065d07809583e06b4f9ebc7dcd46e7a8b1dbd31d.jpeg",
+      "true_label_idx": 352,
+      "true_label_name": "impala",
       "top5": [
         {
-          "idx": 807,
-          "name": "solar dish",
-          "prob": 0.9374383687973022
+          "idx": 352,
+          "name": "impala",
+          "prob": 0.8459001183509827
         },
         {
-          "idx": 744,
-          "name": "projectile",
-          "prob": 0.00833769328892231
+          "idx": 351,
+          "name": "hartebeest",
+          "prob": 0.07661126554012299
         },
         {
-          "idx": 657,
-          "name": "missile",
-          "prob": 0.006988948211073875
+          "idx": 353,
+          "name": "gazelle",
+          "prob": 0.051611654460430145
         },
         {
-          "idx": 517,
-          "name": "crane",
-          "prob": 0.0026977118104696274
+          "idx": 350,
+          "name": "ibex",
+          "prob": 0.0009291276219300926
         },
         {
-          "idx": 409,
-          "name": "analog clock",
-          "prob": 0.002458038041368127
+          "idx": 340,
+          "name": "zebra",
+          "prob": 0.0008555687963962555
         }
       ],
       "correct": true
     },
     {
-      "image_path": "data/imagenet/val/n02123159/ILSVRC2012_val_00000282_17.JPEG",
-      "true_label_idx": 282,
-      "true_label_name": "tiger cat",
+      "image_path": "data/imagenetv2/matched-frequency/231/13972c2f94d6b15bba363452111127733ebddaa8.jpeg",
+      "true_label_idx": 231,
+      "true_label_name": "collie",
       "top5": [
         {
-          "idx": 797,
-          "name": "sleeping bag",
-          "prob": 0.9374592900276184
+          "idx": 232,
+          "name": "Border collie",
+          "prob": 0.846017599105835
         },
         {
-          "idx": 281,
-          "name": "tabby",
-          "prob": 0.015801673755049706
+          "idx": 169,
+          "name": "borzoi",
+          "prob": 0.03907603397965431
         },
         {
-          "idx": 750,
-          "name": "quilt",
-          "prob": 0.014326912350952625
+          "idx": 231,
+          "name": "collie",
+          "prob": 0.028230534866452217
         },
         {
-          "idx": 282,
-          "name": "tiger cat",
-          "prob": 0.01121722161769867
+          "idx": 264,
+          "name": "Cardigan",
+          "prob": 0.014109203591942787
         },
         {
-          "idx": 285,
-          "name": "Egyptian cat",
-          "prob": 0.005453028250485659
+          "idx": 805,
+          "name": "soccer ball",
+          "prob": 0.008973984979093075
         }
       ],
       "correct": false

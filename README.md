@@ -7,9 +7,13 @@ RepViT（*Revisiting Mobile CNN From ViT Perspective*, CVPR 2024, [arXiv:2307.09
 - 现代实现：[timm](https://github.com/huggingface/pytorch-image-models)（Apache-2.0）
 - 数据集：[Oxford-IIIT Pet](https://www.robots.ox.ac.uk/~vgg/data/pets/)（CC BY-SA 4.0）
 
-> **一句话结论**：RepViT-M0.9 是一个**纯卷积**网络（无自注意力）。它在 ImageNet-1K
-> 指定子集上 Top-1 = **78.20%**（官方权重实测，官方公布 78.7%）；迁移到 Pet 37 类后
-> test Top-1 = **92.34%**、Macro-F1 = **92.22%**。
+> **一句话结论**：RepViT-M0.9 是一个**纯卷积**网络（无自注意力）。官方权重在
+> **ImageNetV2 matched-frequency 的 1000 张固定子集**（本仓**唯一**官方模型评价口径，见 §2.2）
+> 上 Top-1 = **68.70%**、Top-5 = **85.70%**（落盘 `outputs/pretrained_eval/repvit_m0_9/metrics.json`）；
+> 迁移到 Pet 37 类后 test Top-1 = **92.34%**、Macro-F1 = **92.22%**。
+> ImageNetV2 是 Recht et al. (NeurIPS 2019) 按 ImageNet 分布**重新采样**构建的独立测试集，
+> **不是 ImageNet-1K 验证集**——其准确率与论文/官方公布的 ImageNet-1K 数值**不可并列、
+> 不可算差值**（文献中同模型在 V2 上通常低 10~15 个百分点，这是基准性质，不是模型退化）。
 >
 > **两项 logits 误差实验分开报告**（实验对象、输入批次与代码路径都不同，不能并列成
 > 一句结论，也不能互相替代）：
@@ -22,9 +26,10 @@ RepViT（*Revisiting Mobile CNN From ViT Perspective*, CVPR 2024, [arXiv:2307.09
 >   集合一致率均 100%；落盘 `outputs/metrics/consistency_repvit_m0_9_pet37.json`。
 >
 > 六个 ONNX 模型在 ONNX Runtime CPU 上批量 1 / FP32 / 224×224 的 P50 延迟为
-> **7.1 ~ 32.7 ms**。其中**只有 Pet-37 / ImageNet M0.9 / ImageNet M1.0 三个型号**
-> 各自做过 n=12 的一致性验证（见第 11 节与 `report/LOGITS_AUDIT.md`），**其余型号只有
-> 导出与性能结果，不做同口径一致性声明**。
+> **7.6 ~ 34.4 ms**（`outputs/benchmarks/summary.csv`）。其中**只有 5 个型号**
+> （Pet-37 / ImageNet M0.9 / M1.0 / M1.1 / M1.5）各自做过 n=12 的一致性验证
+> （见第 11 节与 `outputs/metrics/consistency_*.json`），**其余型号（M2.3）只有导出与
+> 性能结果，不做同口径一致性声明**。
 
 ---
 
@@ -99,22 +104,46 @@ python datasets/audit_leakage.py
 `labels/pet_species.json`（猫/狗，**不能用 `idx<12` 判猫，官方 CLASS-ID 是猫狗交错的**）、
 `datasets/lists/pet_{train,val,test}.txt`（格式 `<image_id>\t<class_idx>`）。
 
-### 2.2 ImageNet-1K 验证子集（官方模型评价用）
+### 2.2 官方模型评价的固定子集（**唯一口径**：ImageNetV2 matched-frequency 1000 张）
+
+#### 2.2.1 ImageNetV2 matched-frequency 固定子集（**主口径**，1000 张，确定性可复现）
 
 ```bash
-# 把 14 个 parquet 分片还原成 ImageFolder（1000 类 × 50 张 = 50,000 张）
-python datasets/unpack_imagenet_val.py
+# (1) 下载官方 ImageNetV2 归档（作者方 HuggingFace 镜像 vaishaal/ImageNetV2，MIT，非 gated）
+#     期望体积 1,264,079,360 B；sha256 f0c37fdf925916b19ea1323cd9a2208cdb6959ba2c32eef2a7fc393835c9ca7c
+curl -L --retry 15 --retry-all-errors -C - --speed-limit 50000 --speed-time 60 \
+  -o data/_src/imagenetv2/imagenetv2-matched-frequency.tar.gz \
+  https://huggingface.co/datasets/vaishaal/ImageNetV2/resolve/main/imagenetv2-matched-frequency.tar.gz
 
-# 分层抽样出 1000 张（每类 1 张，固定种子）
-python datasets/make_imagenet_subset.py --n 1000 --seed 20260912
-# -> datasets/lists/imagenet_val_subset.txt
+# (2) 校验 sha256 + 解压成 ImageFolder + 构建 1000 张固定子集（幂等，可重复执行）
+python datasets/make_imagenetv2_subset.py
+# -> datasets/lists/imagenetv2_mf_1000.txt （1000 行）
 
-# 标签顺序三重自检（DoD #10 的四个锚点）
+# (3) 只校验归档与既有清单，不解压、不重写
+python datasets/make_imagenetv2_subset.py --verify-only
+
+# (4) 标签顺序三重自检（DoD #10 的四个锚点；V2 与 ImageNet-1K 共用同一套 1000 类）
 python tools/verify_imagenet_labels.py
 ```
 
-> **声明**：`imagenet_val_subset.txt` 是**自建**的分层抽样清单（每类 1 张、种子 20260912），
-> **不是考核方下发的指定子集**。本仓库对它的每一条结论都只声称「在该自建子集上的结果」。
+> **口径声明（必须逐条保留）**
+> - 数据源是 **ImageNetV2 matched-frequency**（Recht et al., *Do ImageNet Classifiers Generalize
+>   to ImageNet?*, NeurIPS 2019）：按 ImageNet 分布**重新采样**构建的**独立测试集**，
+>   1000 类 × 10 张 = 10,000 张。**它不是 ImageNet-1K 验证集，也不含任何 ImageNet-1K 图像。**
+> - 本仓库从中取 **1000 张（每类 1 张）**。选取规则写死在 `datasets/make_imagenetv2_subset.py`：
+>   **每个类别目录内文件名 `sorted()` 取第一个**，按类别下标 0..999 升序写行，
+>   **不依赖任何随机种子** —— 任何人用同一下载链接 + 同一脚本都能 byte-for-byte 复现这 1000 张
+>   （清单 sha256 = `d5532205d8f30099aa70ed9392078adcdbd305c47055930c66e704f7976c9d05`，
+>   1000 行 / 87,780 B）。
+> - 类别映射沿用 ImageNet-1K 的 1000 个 WNID（V2 与 1K 类别体系相同），
+>   `labels/imagenet_classes.txt` 继续有效；V2 的目录名是**十进制类别下标**，与标签文件行号一一对应。
+> - ★ **V2 上的准确率与 ImageNet-1K val 准确率、与论文/官方公布值不可直接比较**
+>   （文献中同模型通常低 10~15 个百分点，这是该基准的性质，不是模型退化）。
+> - 来源 / 许可（MIT）/ 论文引用 / 三个变体的选择理由 / 全部哈希见 `report/IMAGENETV2_PROVENANCE.md`。
+
+> **唯一口径**：自 2026-09-16 起，官方模型评价**只使用上表的 ImageNetV2 matched-frequency
+> 1000 张固定子集**这一套数据。仓库里不存在第二套「官方模型评价」数据源
+> （此前的自建 ImageNet-1K val 分层子集及其清单已按用户决议整体删除，不做对照、不做附录、不做历史留存）。
 
 ## 3. 如何获取官方权重
 
@@ -159,16 +188,23 @@ python tools/eval_pretrained.py --cfg configs/pretrained_eval.yaml \
   --set pretrained_eval.check_data=true
 ```
 
-**实测结果**（1000 张自建分层子集，crop_pct=0.875 即官方 `Resize(256)+CenterCrop(224)` 口径）：
+**实测结果（ImageNetV2 matched-frequency 1000 张固定子集，crop_pct=0.875 即官方
+`Resize(256)+CenterCrop(224)` 口径；每型号的 Top-1/Top-5/参数量/MACs/延迟落盘在
+`outputs/pretrained_eval/<model>/{metrics.json,latency.json}`，汇总在 `outputs/pretrained_eval/summary.csv`）**：
 
-| 型号 | Top-1 (%) | Top-5 (%) | 官方公布 Top-1 |
+| 型号 | Top-1 (%) | Top-5 (%) | 落盘证据 |
 |---|---|---|---|
-| RepViT-M0.9 | **78.20** | 93.70 | 78.7 |
-| RepViT-M1.0 | **79.90** | 94.20 | 80.0 |
-| （crop_pct=0.95 口径）M0.9 | 78.60 | 93.00 | — |
-| （crop_pct=0.95 口径）M1.0 | 80.00 | 93.90 | — |
+| RepViT-M0.9（基础必做） | 见 `outputs/pretrained_eval/repvit_m0_9/metrics.json` | 同左 | `top1` / `top5` 字段（百分数口径） |
+| RepViT-M1.0（基础必做） | 见 `outputs/pretrained_eval/repvit_m1_0/metrics.json` | 同左 | 同上 |
+| 家族扫描 M1.1 / M1.5 / M2.3 | 见各自 `outputs/pretrained_eval/<model>/metrics.json` | 同左 | 同上 |
 
-> 本结果为**指定规模的自建验证子集上的实际运行结果**，不代表论文完整 ImageNet-1K 验证集结果。
+> 本节表格**不预填任何数字**：ImageNetV2 子集上的复评结果由复评流程直接落盘到上表证据路径，
+> 以避免出现「报告里有数、仓库里没产物」的无源数字（该类缺陷见 `report/LOGITS_AUDIT_FINDINGS.md`）。
+>
+> **口径边界（必须保留）**：ImageNetV2 是 Recht et al. (NeurIPS 2019) 按 ImageNet 分布重新采样
+> 构建的**独立测试集**，**不是 ImageNet-1K 验证集**。其上 Top-1 与论文/官方公布的 ImageNet-1K
+> 数值（如 78.7 / 80.0）**不可直接比较、不得并列或算差值**——文献中同模型在 V2 上通常低
+> 10~15 个百分点，这是基准性质，不是模型退化。
 
 ## 5. 如何训练 Baseline
 
@@ -321,24 +357,43 @@ python tools/reparam_verify.py --model repvit_m0_9 \
 ## 10. 如何导出不同型号的 ONNX 模型
 
 ```bash
-# 三个交付模型：官方 M0.9 / 官方 M1.0 / 自训练 Pet-37
+# 三个基础交付模型：官方 M0.9 / 官方 M1.0 / 自训练 Pet-37
 python deploy/export_onnx.py --model repvit_m0_9_in1k repvit_m1_0_in1k repvit_m0_9_pet37
+
+# 家族型号（进阶①「至少四种官方型号」）：M1.1 / M1.5 已随仓库提交，M2.3 因 92 MB 不入库
+python deploy/export_onnx.py --model repvit_m1_1_in1k repvit_m1_5_in1k repvit_m2_3_in1k
+
+# 优化实验模型的独立 ONNX（按需导出：导出后才有 onnx/repvit_m0_9_pet37_opt.onnx）
+python deploy/export_onnx.py --model repvit_m0_9_pet37_opt
 
 # 导出未融合的训练态对照（非交付物）
 python deploy/export_onnx.py --model repvit_m0_9_pet37 --no-fuse --out-dir outputs/reparam
 
-# 列出登记表与 ONNX 就位情况
+# 列出登记表与 ONNX 就位情况（OK / LOCAL=本机有但不入库 / ONDEMAND=按需导出）
 python deploy/model_registry.py
 ```
 
 **ONNX 文件名一律由 `deploy/model_registry.py` 的 `onnx_path(key)` 决定**，
 任何脚本、文档、验收命令都不得硬写 `*.onnx` 文件名。
+「随仓库交付的 ONNX 型号」以登记表的 `shipped=True` 为准（`shipped_keys()`），
+`tools/check_report_assets.py` 的强制清单与 `.gitignore` 都取自同一份定义。
 
-| registry key | 文件 | 大小 | 图内节点 | 用途 |
-|---|---|---|---|---|
-| `repvit_m0_9_in1k` | `onnx/repvit_m0_9_in1k.onnx` | 20.36 MB | BN=0, Conv=103 | 基础①官方 M0.9 |
-| `repvit_m1_0_in1k` | `onnx/repvit_m1_0_in1k.onnx` | 27.33 MB | BN=0, Conv=103 | 基础②官方 M1.0 |
-| `repvit_m0_9_pet37` | `onnx/repvit_m0_9_pet37.onnx` | 18.89 MB | BN=0, Conv=103 | 基础③自训练 Pet-37 |
+| registry key | 文件 | 大小 | 图内节点 | 用途 | 入库 |
+|---|---|---|---|---|---|
+| `repvit_m0_9_in1k` | `onnx/repvit_m0_9_in1k.onnx` | 20.36 MB | BN=0, Conv=103 | 基础①官方 M0.9 | ✅ |
+| `repvit_m1_0_in1k` | `onnx/repvit_m1_0_in1k.onnx` | 27.33 MB | BN=0, Conv=103 | 基础②官方 M1.0 | ✅ |
+| `repvit_m0_9_pet37` | `onnx/repvit_m0_9_pet37.onnx` | 18.89 MB | BN=0, Conv=103 | 基础③自训练 Pet-37 | ✅ |
+| `repvit_m1_1_in1k` | `onnx/repvit_m1_1_in1k.onnx` | 33.06 MB | BN=0, Conv=103 | 进阶①家族扫描 | ✅ |
+| `repvit_m1_5_in1k` | `onnx/repvit_m1_5_in1k.onnx` | 56.35 MB | BN=0, Conv=103 | 进阶①家族扫描（第 4 个官方型号） | ✅ |
+| `repvit_m2_3_in1k` | `onnx/repvit_m2_3_in1k.onnx` | 91.90 MB | BN=0, Conv=103 | 进阶①家族扫描（最大型号） | ❌ 体积原因，命令可复现 |
+| `repvit_m0_9_pet37_opt` | `onnx/repvit_m0_9_pet37_opt.onnx` | — | — | 优化实验模型（`opt_combo`）的独立部署闭环 | ❌ 按需导出 |
+
+> **早期落盘产物里的路径字段（可移植性说明）**：`outputs/benchmarks/*`、
+> `outputs/metrics/bench.jsonl`、`outputs/env_snapshot.json` 等是 2026-09 早期版本写下的，
+> 其中的 `onnx_path` / `cwd` 字段仍是采集机的绝对路径。**代码层的落盘函数已全部改为
+> 「相对仓库根的 POSIX 路径」**（`deploy/compare_torch_onnx.py` 的 `repo_rel()`，
+> `deploy/benchmark.py`、`tools/env_check.py`、`datasets/build_imagenet_labels.py` 均已改），
+> 新产物不再出现个人路径；旧产物**不回改**——回改就得重跑基准，会改动已发布的延迟数字。
 
 ## 11. 如何运行 ONNX 推理
 
@@ -373,7 +428,7 @@ resize+crop，不 import torchvision），与训练侧共用同一份 transform 
 - **重参数化 logits 误差**：Pet-37 baseline，timm 单头、`distillation=False`，32 个**固定随机输入**（`torch.randn`，seed=20240912）、batch=8、224×224、CPU FP32；`eval()` 后深拷贝再 `fuse()`，比较融合前后的 PyTorch logits。`max|Δ| = 7.092952728271484e-06`（展示 **7.093e-06**）、`mean|Δ| = 2.030726818702533e-06`（展示 **2.031e-06**）、Top-1 32/32 一致、BN 模块 107 → 0，落盘于 `outputs/reparam/repvit_m0_9_pet37_reparam_report.json`。
 - **PyTorch↔ONNX logits 误差**：Pet-37 baseline 融合态与 `onnx/repvit_m0_9_pet37.onnx`，`datasets/lists/pet_test.txt` 前 12 张真实图片（n=12），每张独立预处理一次后同一张量送入两端，CPU FP32、batch=1、224×224。`max|Δlogits| = 6.198883056640625e-06`（展示 **6.199e-06**）、`mean|Δlogits| = 1.5006899711048998e-06`（展示 **1.501e-06**）、Top-1 与 Top-5 集合一致率均 100%，落盘于 `outputs/metrics/consistency_repvit_m0_9_pet37.json`。
 - 两者实验对象（融合前后 PyTorch ↔ PyTorch 与 ONNX）、输入批次（32 个随机张量 ↔ 12 张真实图片）和代码路径都不同，必须分开报告，数值不可互相替代。旧引用 `5.25e-06` / `1.41e-06` 的处置见上一条。
-- 三个型号各有一份同口径（n=12 真实图片）的落盘产物：`outputs/metrics/consistency_repvit_m0_9_pet37.json`（6.199e-06 / 1.501e-06）、`outputs/metrics/consistency_repvit_m0_9_in1k.json`（1.717e-05 / 2.360e-06）、`outputs/metrics/consistency_repvit_m1_0_in1k.json`（1.812e-05 / 2.464e-06）；其余型号不参与该口径。
+- **入库的 5 个 ONNX 型号各有一份同口径（n=12 真实图片）的落盘产物**：ImageNet 侧统一取 `datasets/lists/imagenetv2_mf_1000.txt` 按顺序前 12 张（`source = imagenetv2_mf_1000`）——`outputs/metrics/consistency_repvit_m0_9_pet37.json`（6.199e-06 / 1.501e-06，Pet-37）、`consistency_repvit_m0_9_in1k.json`（1.383e-05 / 2.334e-06）、`consistency_repvit_m1_0_in1k.json`（1.335e-05 / 2.215e-06）、`consistency_repvit_m1_1_in1k.json`（1.860e-05 / 2.219e-06）、`consistency_repvit_m1_5_in1k.json`（1.144e-05 / 1.876e-06）；Top-1 与 Top-5 集合一致率均 100%。`repvit_m2_3_in1k` 未入库（91.90 MB），只做导出检查与性能结果，不建议直接横向引用。
 
 复跑命令（写入 `outputs/verification/`，不覆盖正式产物）：
 
@@ -411,20 +466,21 @@ CPU = 13th Gen Intel Core i7-13650HX，OS = Windows 11 10.0.26200）：
 
 | 模型 | mean (ms) | P50 (ms) | P95 (ms) | 文件大小 |
 |---|---|---|---|---|
-| `repvit_m0_9_in1k` | 7.45 | 7.37 | 8.00 | 20.36 MB |
-| `repvit_m1_0_in1k` | 9.20 | 9.15 | 9.76 | 27.33 MB |
-| `repvit_m0_9_pet37` | 7.20 | 7.12 | 7.69 | 18.89 MB |
+| `repvit_m0_9_in1k` | 7.70 | 7.68 | 8.49 | 20.36 MB |
+| `repvit_m1_0_in1k` | 10.42 | 10.40 | 11.37 | 27.33 MB |
+| `repvit_m0_9_pet37` | 7.63 | 7.55 | 8.16 | 18.89 MB |
 
 > 上表取自**逐型号落盘**的 `outputs/benchmarks/repvit_*_benchmark.json` 与
-> `outputs/benchmarks/summary.csv`（同一批 6 型号基准，另见报告第 14.2 节）。
+> `outputs/benchmarks/summary.csv`（同一批 6 型号基准，全部 6 行见该 CSV；另见报告第 14.2 节）。
 > `outputs/metrics/bench.jsonl` 里还留有**更早一次**同协议 3 型号基准
 > （P50 13.60 / 17.18 / 12.48 ms，对应 mean 12.74 / 17.49 / 12.74 ms）；
 > 两次运行的差异未逐项定位，**引用时必须写明是哪一次，不要把两批数字混用**
 > （`tools/selfcheck.py` 的 `bench.meta` 只校验协议字段，不区分批次）。
 >
 > M0.9 与 M1.0 的参数量相差 33.0%、MACs 相差 35.2%（`outputs/benchmarks/family_summary.csv`），
-> 但 P50 延迟只增加 24.2%（7.37 → 9.15 ms）——**延迟并不与参数量/MACs 严格成正比**：
-> 小模型受内存带宽与算子启动开销支配，depthwise 卷积的算术强度低，GPU/CPU 都吃不满。
+> P50 延迟相差 **35.4%**（7.68 → 10.40 ms）。**延迟与参数量/MACs 没有固定比例关系**：
+> 不同批次、不同算子实现与线程调度都会让比值漂移（早期一批 3 型号基准里这个比值是 24.2%），
+> 因此只做同批同协议的横向对比，不跨批引用。
 
 ## 13. 一键复现与耗时
 

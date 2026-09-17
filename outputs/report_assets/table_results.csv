@@ -1,8 +1,8 @@
 ﻿口径,数据集,类别数,Top-1,Top-5,Macro-F1,参数量,MACs,文件大小,延迟,依据
 论文公布,ImageNet-1K,1000,78.70%,—,—,5.1000 M (融合后单头),0.800 G (MACs 口径(未乘 2)),—,0.9 ms (iPhone 12/CoreML/bs=1，不可与本地 ORT CPU 对比),iPhone 12 + CoreML，四舍五入到 0.1ms
 官方仓库公布,ImageNet-1K,1000,78.70%,79.10%,—,5.1000 M (融合后单头（flops.py: replace_batchnorm 后取值）),0.800 G (MACs 口径(未乘 2)),—,0.9 ms (同论文口径),THU-MIG README Model Zoo 表
-官方权重实测,—,—,—,—,—,—,—,—,—,本机 ORT/PyTorch，须写明子集大小；**该文件的 top1/top5 已是百分数，不得再乘 100**
-自训练 Baseline,—,—,—,—,—,—,—,—,—,Pet-37 test split
-自优化模型,—,—,—,—,—,—,—,—,—,Pet-37 test split
-PyTorch 推理,—,—,—,—,—,—,—,—,—,"batch=1, fp32, 本机 CPU"
-ONNX 部署,—,—,—,—,—,—,—,18.89 MB,mean 7.20ms / P50 7.12 / P95 7.69,ORT CPUExecutionProvider
+官方权重实测,—,1000,68.70%,85.70%,—,5.0671 M (未标注口径),0.847 G (MACs 口径(未乘 2)),21.38 MB,mean 8.41ms,本机 PyTorch 2.14.0+cu126（CUDA）实跑；**该文件的 top1/top5 已是百分数，不得再乘 100**
+自训练 Baseline,—,37,92.34%,99.26%,92.22%,4.7328 M (未标注口径),—,—,—,Pet-37 test split（baseline）
+自优化模型,—,37,92.12%,99.59%,92.01%,4.7328 M (未标注口径),—,—,—,Pet-37 test split（组合方案 opt_combo）
+PyTorch 推理,—,—,—,—,—,—,—,—,mean 8.41ms / P50 8.26 / P95 9.93,"batch=1, fp32, 本机 CUDA（PyTorch 2.14.0+cu126）, threads=4"
+ONNX 部署,—,—,—,—,—,—,—,91.90 MB,mean 34.39ms / P50 34.41 / P95 35.48,ORT CPUExecutionProvider

@@ -1,0 +1,299 @@
+{
+  "generated_by": "python tools/collect_onnx_io_nodes.py",
+  "purpose": "\u6027\u80fd\u6d4b\u8bd5\u7b2c 8 \u6761\uff1a\u8bb0\u5f55\u6a21\u578b\u8f93\u5165\u8f93\u51fa\u8282\u70b9\u4fe1\u606f\uff08\u53ea\u8bfb onnx.load\uff0c\u672a\u91cd\u8dd1\u57fa\u51c6\uff09",
+  "onnx_version": "1.22.0",
+  "onnxruntime": "1.30.0",
+  "models": {
+    "repvit_m0_9_in1k": {
+      "onnx_path": "onnx/repvit_m0_9_in1k.onnx",
+      "file_size_mb": 20.36,
+      "sha256": "0b080dd350514e0dfd19dc4c9e3c172c17ac3878aa0d53a50cf16c6a8eda03ac",
+      "graph_input_count": 1,
+      "graph_output_count": 1,
+      "onnx_input": {
+        "name": "input",
+        "shape": [
+          1,
+          3,
+          224,
+          224
+        ],
+        "type": "1"
+      },
+      "onnx_output": {
+        "name": "logits",
+        "shape": [
+          1,
+          1000
+        ],
+        "type": "1"
+      },
+      "all_graph_inputs": [
+        {
+          "name": "input",
+          "shape": [
+            1,
+            3,
+            224,
+            224
+          ],
+          "type": "1"
+        }
+      ],
+      "all_graph_outputs": [
+        {
+          "name": "logits",
+          "shape": [
+            1,
+            1000
+          ],
+          "type": "1"
+        }
+      ],
+      "num_classes": 1000
+    },
+    "repvit_m0_9_pet37": {
+      "onnx_path": "onnx/repvit_m0_9_pet37.onnx",
+      "file_size_mb": 18.89,
+      "sha256": "8490bb4573decf2cbf742092514a2a603a5fbc13e52897a495bb3f833941db5a",
+      "graph_input_count": 1,
+      "graph_output_count": 1,
+      "onnx_input": {
+        "name": "input",
+        "shape": [
+          1,
+          3,
+          224,
+          224
+        ],
+        "type": "1"
+      },
+      "onnx_output": {
+        "name": "logits",
+        "shape": [
+          1,
+          37
+        ],
+        "type": "1"
+      },
+      "all_graph_inputs": [
+        {
+          "name": "input",
+          "shape": [
+            1,
+            3,
+            224,
+            224
+          ],
+          "type": "1"
+        }
+      ],
+      "all_graph_outputs": [
+        {
+          "name": "logits",
+          "shape": [
+            1,
+            37
+          ],
+          "type": "1"
+        }
+      ],
+      "num_classes": 37
+    },
+    "repvit_m1_0_in1k": {
+      "onnx_path": "onnx/repvit_m1_0_in1k.onnx",
+      "file_size_mb": 27.33,
+      "sha256": "91b0dc18b4a97dd500be2a68023baf0100077606f3ad254d3f3f6573ce8fa65b",
+      "graph_input_count": 1,
+      "graph_output_count": 1,
+      "onnx_input": {
+        "name": "input",
+        "shape": [
+          1,
+          3,
+          224,
+          224
+        ],
+        "type": "1"
+      },
+      "onnx_output": {
+        "name": "logits",
+        "shape": [
+          1,
+          1000
+        ],
+        "type": "1"
+      },
+      "all_graph_inputs": [
+        {
+          "name": "input",
+          "shape": [
+            1,
+            3,
+            224,
+            224
+          ],
+          "type": "1"
+        }
+      ],
+      "all_graph_outputs": [
+        {
+          "name": "logits",
+          "shape": [
+            1,
+            1000
+          ],
+          "type": "1"
+        }
+      ],
+      "num_classes": 1000
+    },
+    "repvit_m1_1_in1k": {
+      "onnx_path": "onnx/repvit_m1_1_in1k.onnx",
+      "file_size_mb": 33.06,
+      "sha256": "c3ef0998048188ce513daa204004601ff86a0dd15b94ddee20ab51d0b38d57c1",
+      "graph_input_count": 1,
+      "graph_output_count": 1,
+      "onnx_input": {
+        "name": "input",
+        "shape": [
+          1,
+          3,
+          224,
+          224
+        ],
+        "type": "1"
+      },
+      "onnx_output": {
+        "name": "logits",
+        "shape": [
+          1,
+          1000
+        ],
+        "type": "1"
+      },
+      "all_graph_inputs": [
+        {
+          "name": "input",
+          "shape": [
+            1,
+            3,
+            224,
+            224
+          ],
+          "type": "1"
+        }
+      ],
+      "all_graph_outputs": [
+        {
+          "name": "logits",
+          "shape": [
+            1,
+            1000
+          ],
+          "type": "1"
+        }
+      ],
+      "num_classes": 1000
+    },
+    "repvit_m1_5_in1k": {
+      "onnx_path": "onnx/repvit_m1_5_in1k.onnx",
+      "file_size_mb": 56.35,
+      "sha256": "5702b5d77850a371199c033124207639c8a64bd7260bb9cb8341befaa2df6068",
+      "graph_input_count": 1,
+      "graph_output_count": 1,
+      "onnx_input": {
+        "name": "input",
+        "shape": [
+          1,
+          3,
+          224,
+          224
+        ],
+        "type": "1"
+      },
+      "onnx_output": {
+        "name": "logits",
+        "shape": [
+          1,
+          1000
+        ],
+        "type": "1"
+      },
+      "all_graph_inputs": [
+        {
+          "name": "input",
+          "shape": [
+            1,
+            3,
+            224,
+            224
+          ],
+          "type": "1"
+        }
+      ],
+      "all_graph_outputs": [
+        {
+          "name": "logits",
+          "shape": [
+            1,
+            1000
+          ],
+          "type": "1"
+        }
+      ],
+      "num_classes": 1000
+    },
+    "repvit_m2_3_in1k": {
+      "onnx_path": "onnx/repvit_m2_3_in1k.onnx",
+      "file_size_mb": 91.9,
+      "sha256": "146ac854e32a32c54be1be0c074c47f9c0d4296211cbeb8884a361a33314d706",
+      "graph_input_count": 1,
+      "graph_output_count": 1,
+      "onnx_input": {
+        "name": "input",
+        "shape": [
+          1,
+          3,
+          224,
+          224
+        ],
+        "type": "1"
+      },
+      "onnx_output": {
+        "name": "logits",
+        "shape": [
+          1,
+          1000
+        ],
+        "type": "1"
+      },
+      "all_graph_inputs": [
+        {
+          "name": "input",
+          "shape": [
+            1,
+            3,
+            224,
+            224
+          ],
+          "type": "1"
+        }
+      ],
+      "all_graph_outputs": [
+        {
+          "name": "logits",
+          "shape": [
+            1,
+            1000
+          ],
+          "type": "1"
+        }
+      ],
+      "num_classes": 1000
+    }
+  },
+  "skipped": {
+    "repvit_m0_9_pet37_opt": "ONNX \u672a\u5bfc\u51fa\uff08\u6309\u9700\u5bfc\u51fa\u7684\u578b\u53f7\u4e0d\u53c2\u4e0e\u672c\u8868\uff09"
+  }
+}

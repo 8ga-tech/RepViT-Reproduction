@@ -1,199 +1,199 @@
 {
   "samples": [
     {
-      "image_path": "data/imagenet/val/n03000684/ILSVRC2012_val_00000491_00.JPEG",
-      "true_label_idx": 491,
-      "true_label_name": "chain saw",
+      "image_path": "data/imagenetv2/matched-frequency/419/5bfde25883425ace6a55f9d94e5c29172f9f3438.jpeg",
+      "true_label_idx": 419,
+      "true_label_name": "Band Aid",
       "top5": [
         {
-          "idx": 491,
-          "name": "chain saw",
-          "prob": 0.9999850988388062
+          "idx": 419,
+          "name": "Band Aid",
+          "prob": 0.9999904632568359
         },
         {
-          "idx": 740,
-          "name": "power drill",
-          "prob": 1.278489889955381e-05
+          "idx": 478,
+          "name": "carton",
+          "prob": 3.4267129649379058e-06
         },
         {
-          "idx": 621,
-          "name": "lawn mower",
-          "prob": 7.057094535412034e-07
+          "idx": 999,
+          "name": "toilet tissue",
+          "prob": 1.6257424704235746e-06
         },
         {
-          "idx": 758,
-          "name": "reel",
-          "prob": 5.195681183067791e-07
+          "idx": 692,
+          "name": "packet",
+          "prob": 1.4629122233600356e-06
         },
         {
-          "idx": 410,
-          "name": "apiary",
-          "prob": 1.7303163701853919e-07
+          "idx": 686,
+          "name": "oil filter",
+          "prob": 1.0257888334308518e-06
         }
       ],
       "correct": true
     },
     {
-      "image_path": "data/imagenet/val/n03942813/ILSVRC2012_val_00000722_34.JPEG",
-      "true_label_idx": 722,
-      "true_label_name": "ping-pong ball",
+      "image_path": "data/imagenetv2/matched-frequency/747/069930cfb7f1650ace5b3d86f6cb87b9a23e2dbd.jpeg",
+      "true_label_idx": 747,
+      "true_label_name": "punching bag",
       "top5": [
         {
-          "idx": 722,
-          "name": "ping-pong ball",
-          "prob": 0.9999632835388184
+          "idx": 747,
+          "name": "punching bag",
+          "prob": 0.9999064207077026
         },
         {
-          "idx": 752,
-          "name": "racket",
-          "prob": 5.747682735091075e-06
+          "idx": 797,
+          "name": "sleeping bag",
+          "prob": 3.308882878627628e-05
         },
         {
-          "idx": 852,
-          "name": "tennis ball",
-          "prob": 3.3976946269831387e-06
+          "idx": 756,
+          "name": "rain barrel",
+          "prob": 2.8675772227870766e-06
         },
         {
-          "idx": 681,
-          "name": "notebook",
-          "prob": 1.981969262487837e-06
+          "idx": 417,
+          "name": "balloon",
+          "prob": 2.5208341867255513e-06
         },
         {
-          "idx": 429,
-          "name": "baseball",
-          "prob": 1.5652028650947614e-06
+          "idx": 422,
+          "name": "barbell",
+          "prob": 2.288094492541859e-06
         }
       ],
       "correct": true
     },
     {
-      "image_path": "data/imagenet/val/n02909870/ILSVRC2012_val_00000463_08.JPEG",
-      "true_label_idx": 463,
-      "true_label_name": "bucket",
+      "image_path": "data/imagenetv2/matched-frequency/775/12013926ecf4cbd277c71e053c1c82c752c4bde7.jpeg",
+      "true_label_idx": 775,
+      "true_label_name": "sarong",
       "top5": [
         {
-          "idx": 429,
-          "name": "baseball",
-          "prob": 0.9977678060531616
+          "idx": 879,
+          "name": "umbrella",
+          "prob": 0.9989627599716187
         },
         {
-          "idx": 574,
-          "name": "golf ball",
-          "prob": 0.00024024711456149817
+          "idx": 565,
+          "name": "freight car",
+          "prob": 0.00015228729171212763
         },
         {
-          "idx": 544,
-          "name": "Dutch oven",
-          "prob": 6.257210770854726e-05
+          "idx": 672,
+          "name": "mountain tent",
+          "prob": 9.062323806574568e-05
         },
         {
-          "idx": 981,
-          "name": "ballplayer",
-          "prob": 5.3152900363784283e-05
+          "idx": 460,
+          "name": "breakwater",
+          "prob": 8.016822539502755e-05
         },
         {
-          "idx": 942,
-          "name": "butternut squash",
-          "prob": 4.828871169593185e-05
+          "idx": 701,
+          "name": "parachute",
+          "prob": 4.233998333802447e-05
         }
       ],
       "correct": false
     },
     {
-      "image_path": "data/imagenet/val/n02085782/ILSVRC2012_val_00000152_13.JPEG",
-      "true_label_idx": 152,
-      "true_label_name": "Japanese spaniel",
+      "image_path": "data/imagenetv2/matched-frequency/356/0da57934fe1db8352e6f3d3bcb93cfcbd3d91b69.jpeg",
+      "true_label_idx": 356,
+      "true_label_name": "weasel",
       "top5": [
         {
-          "idx": 156,
-          "name": "Blenheim spaniel",
-          "prob": 0.9875739216804504
+          "idx": 387,
+          "name": "lesser panda",
+          "prob": 0.9983921647071838
         },
         {
-          "idx": 152,
-          "name": "Japanese spaniel",
-          "prob": 0.0020315723959356546
+          "idx": 358,
+          "name": "polecat",
+          "prob": 0.00022522425570059568
         },
         {
-          "idx": 218,
-          "name": "Welsh springer spaniel",
-          "prob": 0.0019984242971986532
+          "idx": 274,
+          "name": "dhole",
+          "prob": 4.7243891458492726e-05
         },
         {
-          "idx": 157,
-          "name": "papillon",
-          "prob": 0.0007373210974037647
+          "idx": 277,
+          "name": "red fox",
+          "prob": 4.318976425565779e-05
         },
         {
-          "idx": 247,
-          "name": "Saint Bernard",
-          "prob": 0.0005453219637274742
+          "idx": 388,
+          "name": "giant panda",
+          "prob": 3.417415791773237e-05
         }
       ],
       "correct": false
     },
     {
-      "image_path": "data/imagenet/val/n02066245/ILSVRC2012_val_00000147_01.JPEG",
-      "true_label_idx": 147,
-      "true_label_name": "grey whale",
+      "image_path": "data/imagenetv2/matched-frequency/235/023b33e397c3345de3e75124cd13b30d9f85043f.jpeg",
+      "true_label_idx": 235,
+      "true_label_name": "German shepherd",
       "top5": [
         {
-          "idx": 147,
-          "name": "grey whale",
-          "prob": 0.9048388600349426
+          "idx": 235,
+          "name": "German shepherd",
+          "prob": 0.8106164932250977
         },
         {
-          "idx": 148,
-          "name": "killer whale",
-          "prob": 0.0831453949213028
+          "idx": 174,
+          "name": "Norwegian elkhound",
+          "prob": 0.056204430758953094
         },
         {
-          "idx": 913,
-          "name": "wreck",
-          "prob": 0.001331027946434915
+          "idx": 225,
+          "name": "malinois",
+          "prob": 0.0199399646371603
         },
         {
-          "idx": 2,
-          "name": "great white shark",
-          "prob": 0.0010416333097964525
+          "idx": 249,
+          "name": "malamute",
+          "prob": 0.012471555732190609
         },
         {
-          "idx": 833,
-          "name": "submarine",
-          "prob": 0.0009534803102724254
+          "idx": 227,
+          "name": "kelpie",
+          "prob": 0.009132259525358677
         }
       ],
       "correct": true
     },
     {
-      "image_path": "data/imagenet/val/n04367480/ILSVRC2012_val_00000840_02.JPEG",
-      "true_label_idx": 840,
-      "true_label_name": "swab",
+      "image_path": "data/imagenetv2/matched-frequency/945/19e38f22fba0903651d1222af6e703d636ae924c.jpeg",
+      "true_label_idx": 945,
+      "true_label_name": "bell pepper",
       "top5": [
         {
-          "idx": 840,
-          "name": "swab",
-          "prob": 0.9051581025123596
+          "idx": 945,
+          "name": "bell pepper",
+          "prob": 0.8106854557991028
         },
         {
-          "idx": 462,
-          "name": "broom",
-          "prob": 0.08361717313528061
+          "idx": 987,
+          "name": "corn",
+          "prob": 0.14723604917526245
         },
         {
-          "idx": 749,
-          "name": "quill",
-          "prob": 0.0018707739654928446
+          "idx": 948,
+          "name": "Granny Smith",
+          "prob": 0.006765460129827261
         },
         {
-          "idx": 784,
-          "name": "screwdriver",
-          "prob": 0.0012958578299731016
+          "idx": 951,
+          "name": "lemon",
+          "prob": 0.005210347007960081
         },
         {
-          "idx": 456,
-          "name": "bow",
-          "prob": 0.0012618160108104348
+          "idx": 582,
+          "name": "grocery store",
+          "prob": 0.004159841220825911
         }
       ],
       "correct": true

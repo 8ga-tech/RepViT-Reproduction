@@ -27,14 +27,17 @@ mkdir -p outputs/logs outputs/metrics outputs/benchmarks onnx
 echo "== 0/9 环境自检 =="
 $PY tools/env_check.py
 
-echo "== 1/9 数据准备（划分 + 泄漏检查 + 审计）=="
+echo "== 1/9 数据准备（Pet 划分 + 泄漏检查 + 审计；ImageNetV2 固定子集）=="
 $PY tools/assert_data.py --root data/oxford-iiit-pet
 $PY datasets/make_pet_split.py --root data/oxford-iiit-pet \
     --out-dir datasets/lists --val-per-class 20 --seed 42
 $PY datasets/audit_leakage.py
 $PY tools/evaluate.py --cfg "$CFG_B" --audit
+# 官方模型评价的唯一清单（ImageNetV2 matched-frequency 的确定性 1000 张子集）。
+# 幂等：归档与目录树已就绪时只校验不重下；首次运行会拉 1.2 GB 归档（HF，可用 HF_ENDPOINT 换镜像）。
+$PY datasets/make_imagenetv2_subset.py
 
-echo "== 2/9 官方权重评价（2 个基础型号 + 3 个家族型号）=="
+echo "== 2/9 官方权重评价（ImageNetV2 固定子集：2 个基础型号 + 3 个家族型号）=="
 $PY tools/run_all_pretrained.py --cfg "$CFG_P" \
     --model repvit_m0_9 repvit_m1_0 repvit_m1_1 repvit_m1_5 repvit_m2_3 \
     2>&1 | tee "outputs/logs/eval_pretrained_$(TS).log"
@@ -85,7 +88,9 @@ bash deploy/run_all.sh
 
 echo "== 9/9 报告素材 + 全局自检 =="
 $PY tools/draw_arch.py --out-dir outputs/architecture
+$PY tools/collect_onnx_io_nodes.py                  # 性能测试第 8 项：ONNX 输入输出节点信息（只读）
 $PY tools/make_report_assets.py --root . --out outputs/report_assets
+$PY tools/check_report_assets.py                    # 报告/PPT 产物契约，应为 FAIL=0
 $PY tools/selfcheck.py --json outputs/metrics/selfcheck_report.json || true
 
 echo

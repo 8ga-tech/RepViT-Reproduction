@@ -7,15 +7,20 @@ ONNX_DIR, LABEL_DIR = ROOT / "onnx", ROOT / "labels"
 IMAGENET_MEAN, IMAGENET_STD = [0.485, 0.456, 0.406], [0.229, 0.224, 0.225]
 
 def _entry(name, arch, impl, ncls, labels, ckpt=None, ckpt_url=None,
-           source="", note=""):
-    """字段固定 15 个。crop_pct / distillation 由 num_classes 推导，再由 _check() 硬校验。"""
+           source="", note="", shipped=True):
+    """字段固定 16 个。crop_pct / distillation 由 num_classes 推导，再由 _check() 硬校验。
+
+    ``shipped``：**该型号的 ONNX 是否随仓库交付**（决定它是否进入
+    ``tools/check_report_assets.py`` 的强制产物清单，也决定它是否需要同口径一致性记录）。
+    两个 False 的条目都有明确理由，见下面的注释。
+    """
     return dict(
         name=name, arch=arch, impl=impl, num_classes=ncls, labels=labels,
         crop_pct=0.875 if ncls == 37 else 0.95,
         input_size=224, mean=IMAGENET_MEAN, std=IMAGENET_STD,
         distillation=0 if ncls == 37 else 1,
         ckpt=ckpt, ckpt_url=ckpt_url, onnx=f"{name}.onnx",
-        source=source, note=note)
+        source=source, note=note, shipped=shipped)
 
 _RELEASE = "https://github.com/THU-MIG/RepViT/releases/download/v1.0"
 
@@ -40,14 +45,22 @@ MODELS = {e["name"]: e for e in [
            source="THU-MIG/RepViT Releases v1.0", note="进阶①家族扫描。"),
     _entry("repvit_m1_5_in1k", "repvit_m1_5", "official", 1000, "imagenet_classes.txt",
            ckpt_url=f"{_RELEASE}/repvit_m1_5_distill_300e.pth",
-           source="THU-MIG/RepViT Releases v1.0", note="进阶①家族扫描。"),
+           source="THU-MIG/RepViT Releases v1.0",
+           note="进阶①家族扫描。入库（随仓库交付），见 README §10 的 ONNX 表与 .gitignore 说明。"),
+    # shipped=False：91 MB，为仓库体积故意不入库；指标与延迟已入库，一条命令可复现导出。
     _entry("repvit_m2_3_in1k", "repvit_m2_3", "official", 1000, "imagenet_classes.txt",
            ckpt_url=f"{_RELEASE}/repvit_m2_3_distill_300e.pth",
-           source="THU-MIG/RepViT Releases v1.0", note="进阶①家族扫描，最大型号。"),
+           source="THU-MIG/RepViT Releases v1.0", note="进阶①家族扫描，最大型号。",
+           shipped=False),
     # ---- 进阶：优化模型的独立部署闭环 ----
+    # shipped=False：这是「按需导出」的型号，不是随仓库提交的交付集成员。
+    #   原因：每个交付 ONNX 都必须配一份同口径 n=12 一致性记录（题目五-5 一致性 5 项），
+    #   而优化臂的 ONNX 属于可选的部署闭环演示；导出命令见 README §10，
+    #   导出后如需入库存档，把 shipped 改成 True 并补跑 compare_torch_onnx.py。
     _entry("repvit_m0_9_pet37_opt", "repvit_m0_9", "timm", 37, "pet_classes.txt",
-           ckpt="checkpoints/opt_randaug_best.pt", source="本任务自训练优化实验",
-           note="进阶：优化实验模型的独立 ONNX（experiment_name 按实际所选项同步）。"),
+           ckpt="checkpoints/opt_combo_best.pt", source="本任务自训练优化实验",
+           note="进阶：优化实验模型的独立 ONNX（experiment_name 按实际所选项同步：基础任务所选项 = opt_combo）。",
+           shipped=False),
 ]}
 
 def _check(e: dict) -> None:
@@ -72,6 +85,10 @@ def get(key: str) -> dict:
 
 def keys() -> list[str]:
     return sorted(MODELS)
+
+def shipped_keys() -> list[str]:
+    """随仓库交付 ONNX 的型号（shipped=True）——验收脚本的强制产物清单取自这里。"""
+    return sorted(k for k, e in MODELS.items() if e["shipped"])
 
 def onnx_path(key: str) -> str:
     """ONNX 路径一律由此函数给出：正文、验收与脚本都不得硬写 *.onnx 文件名。"""
@@ -114,8 +131,12 @@ def build_pt(key: str):
     return m
 
 if __name__ == "__main__":
-    print(f"{'name':<24}{'cls':>5}{'impl':>10}  exists  onnx")
+    print(f"{'name':<24}{'cls':>5}{'impl':>10}  state   onnx")
     for k in keys():
         p = Path(onnx_path(k))
-        ok = "OK " if p.exists() else "MISS"
-        print(f"{k:<24}{get(k)['num_classes']:>5}{get(k)['impl']:>10}  [{ok}]  {p.name}")
+        if p.exists():
+            state = "OK      " if get(k)["shipped"] else "LOCAL   "   # LOCAL = 本机有、不入库
+        else:
+            state = "MISS    " if get(k)["shipped"] else "ONDEMAND"   # ONDEMAND = 按需导出，未导出
+        print(f"{k:<24}{get(k)['num_classes']:>5}{get(k)['impl']:>10}  [{state}]  {p.name}")
+    print(f"\n随仓库交付 ONNX 的型号（check_report_assets 强制清单）：{shipped_keys()}")

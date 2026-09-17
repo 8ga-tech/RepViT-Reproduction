@@ -1,0 +1,42 @@
+{
+  "model": "repvit_m0_9_pet37",
+  "is_pet": true,
+  "image": "external/beagle__ILSVRC2012_val_00000162_00.JPEG",
+  "num_classes": 37,
+  "ep": [
+    "CPUExecutionProvider"
+  ],
+  "latency_ms": 10.335,
+  "topk": [
+    {
+      "rank": 1,
+      "index": 4,
+      "prob": 0.8875421285629272,
+      "name": "Beagle"
+    },
+    {
+      "rank": 2,
+      "index": 3,
+      "prob": 0.02209465019404888,
+      "name": "Basset Hound"
+    },
+    {
+      "rank": 3,
+      "index": 14,
+      "prob": 0.008579036220908165,
+      "name": "German Shorthaired"
+    },
+    {
+      "rank": 4,
+      "index": 2,
+      "prob": 0.004903202410787344,
+      "name": "American Pit Bull Terrier"
+    },
+    {
+      "rank": 5,
+      "index": 21,
+      "prob": 0.004893075209110975,
+      "name": "Miniature Pinscher"
+    }
+  ]
+}

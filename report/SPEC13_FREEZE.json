@@ -1,0 +1,775 @@
+{
+  "schema": "repvit.spec13.freeze/1",
+  "revision": 4,
+  "supersedes_revision": 3,
+  "supersedes_note": "revision 3（t11）冻结了 ImageNetV2 唯一口径与片段哈希集（**条数以本节末 `frozen_fragments.count` 为准**，revision 4 实测为 8 条；历史计数澄清见 `frozen_fragments.count_note`）。此后 t16 合法地改写了 README.md 与 PROGRESS.md，使其中 5 条**叙事段落**片段哈希漂移。revision 4 不把这些叙事段落当约束：① 按内容锚点重新定位这 5 段并刷新哈希，且显式标注 binding=false / volatile=true / locator；② 保留并逐条重算**实质性不变量**（V2 清单整文件哈希、上游 tarball 哈希、configs 四键、标签锚点），新增 binding_invariants 节；③ 补记 removed_paths 第 2 项（outputs/metrics/subset_report.json）已由 t12 实际删除；④ 顶层新增 note 说明「约束 vs 信息性」的分类规则。",
+  "generated_at": "2026-09-16T23:48:47+08:00",
+  "generated_by": "t19/fix（在 t11 的 revision 3 基础上刷新）",
+  "task_id": "t19",
+  "clause": "官方模型评价的数据源（ImageNetV2 唯一口径）",
+  "snapshot": {
+    "git_head": "dc0527bc346a909cf5cf529f0755ff5bbdb8100e",
+    "git_head_subject": "docs(sync): 回填第二轮同步的提交哈希、推送结果与远端核实",
+    "git_status_porcelain": [
+      "M .gitignore",
+      " M PROGRESS.md",
+      " M PROVENANCE.md",
+      " M README.md",
+      " M configs/pretrained_eval.yaml",
+      " M datasets/build_imagenet_labels.py",
+      "D  datasets/lists/imagenet_val_subset.txt",
+      " M deploy/benchmark.py",
+      " M deploy/demo_camera.py",
+      " M deploy/model_registry.py",
+      " M outputs/PPT_OUTLINE.md",
+      " M outputs/REPORT.md",
+      " M outputs/metrics/selfcheck_report.json",
+      " M outputs/report_assets/table_benchmark_meta.csv",
+      " M outputs/report_assets/table_benchmark_meta.md",
+      " M outputs/report_assets/table_figures.csv",
+      " M outputs/report_assets/table_figures.md",
+      " M outputs/report_assets/table_results.csv",
+      " M outputs/report_assets/table_results.md",
+      " M tools/check_report_assets.py",
+      " M tools/env_check.py",
+      " M tools/export_defense_pdf.py",
+      " M tools/make_report_assets.py",
+      " M tools/report_spec.py",
+      " M tools/run_all_pretrained.py",
+      " M tools/update_defense.py",
+      "?? datasets/lists/imagenetv2_mf_1000.txt",
+      "?? datasets/make_imagenetv2_subset.py",
+      "?? onnx/repvit_m1_5_in1k.onnx",
+      "?? outputs/advanced/manual_fusion_alignment.json",
+      "?? outputs/advanced/robustness_gradcam.json",
+      "?? outputs/advanced/robustness_gradcam.png",
+      "?? outputs/curves/ablation_curves.png",
+      "?? outputs/metrics/consistency_repvit_m1_1_in1k.json",
+      "?? outputs/metrics/consistency_repvit_m1_5_in1k.json",
+      "?? outputs/metrics/onnx_io_nodes.json",
+      "?? outputs/report_assets/table_cases.csv",
+      "?? outputs/report_assets/table_cases.md",
+      "?? outputs/verification/consistency_repvit_m1_1_in1k_n12.json",
+      "?? outputs/verification/consistency_repvit_m1_5_in1k_n12.json",
+      "?? report/IMAGENETV2_PROVENANCE.md",
+      "?? report/REQUIREMENTS_AUDIT.md",
+      "?? report/SPEC13_FREEZE.json",
+      "?? report/SPEC13_SWITCH_RUNBOOK.md",
+      "?? tools/collect_onnx_io_nodes.py",
+      "?? tools/manual_fusion_align.py",
+      "?? tools/robustness_gradcam.py"
+    ],
+    "hash_interpretation": "口径判定以 subset 的整文件哈希与本表的 fragment_sha256 为准；其余整文件 sha256 仅作参考（同轮其它任务会改动它们）。"
+  },
+  "decision": {
+    "status": "ACTIVE_IMAGENETV2_MF_1000_ONLY",
+    "resolution": "用户指令：以 https://github.com/modestyachts/ImageNetV2 为官方验证集，从中选取 1000 张作为评价子集并完成模型验证；追加指令：不要留存之前旧的自建子集作为对照",
+    "single_caliber": true,
+    "no_second_caliber": "仓库内不得存在第二套官方模型评价口径（对照/附录/历史/参考均不允许）",
+    "this_round_writes": [
+      "datasets/lists/imagenetv2_mf_1000.txt",
+      "datasets/make_imagenetv2_subset.py",
+      "report/IMAGENETV2_PROVENANCE.md",
+      "report/SPEC13_FREEZE.json",
+      "report/SPEC13_SWITCH_RUNBOOK.md"
+    ],
+    "touched_existing_files": [
+      "PROGRESS.md",
+      "README.md",
+      "configs/pretrained_eval.yaml",
+      "tools/run_all_pretrained.py"
+    ]
+  },
+  "removed_paths": [
+    {
+      "path": "datasets/lists/imagenet_val_subset.txt",
+      "action": "git rm + 删除工作区文件",
+      "why": "用户 09-16 决议：不要留存旧的自建子集作为对照",
+      "owner": "t11（本任务）",
+      "verified_absent": true,
+      "git_status_entry": [
+        "D  datasets/lists/imagenet_val_subset.txt"
+      ]
+    },
+    {
+      "path": "outputs/metrics/subset_report.json（自建子集报告 n=1000/seed=20260912）",
+      "action": "由 t12 执行 git rm 删除（未由 ImageNetV2 子集报告替换：V2 构建报告内嵌在本文件 subset 节）",
+      "owner": "t12",
+      "verified_absent": true,
+      "git_status_entry": [
+        "D  outputs/metrics/subset_report.json"
+      ]
+    }
+  ],
+  "subset": {
+    "role": "唯一口径（官方模型评价默认且唯一数据源）",
+    "file": "datasets/lists/imagenetv2_mf_1000.txt",
+    "sha256": "d5532205d8f30099aa70ed9392078adcdbd305c47055930c66e704f7976c9d05",
+    "bytes": 87780,
+    "lines": 1000,
+    "label_min": 0,
+    "label_max": 999,
+    "distinct_labels": 1000,
+    "per_class_min": 1,
+    "per_class_max": 1,
+    "first_line": "data/imagenetv2/matched-frequency/0/58fbc3e79ef15162b7726de04e98c90bb91a3055.jpeg\t0",
+    "last_line": "data/imagenetv2/matched-frequency/999/1d1df7c0a7790159d541396e421afc49f4fe67d2.jpeg\t999",
+    "subset_report": {
+      "where": "本文件本节的实测字段（构建报告内嵌；不写 outputs/，该目录归 t12）",
+      "class_dirs": 1000,
+      "images_total": 10000,
+      "images_per_class_min": 10,
+      "images_per_class_max": 10,
+      "rule": "按类别下标 0..999 升序；每个类别目录（目录名=十进制 0-based 下标）内文件名 sorted() 取第一个；无随机种子，任何人可 byte-for-byte 复现",
+      "rule_source": "datasets/make_imagenetv2_subset.py",
+      "source_images_per_class": {
+        "10": 1000
+      }
+    },
+    "label_alignment": "目录名 = 0-based 类别下标，与 labels/imagenet_classes.txt 行号一一对应",
+    "anchors": {
+      "0": {
+        "wnid": "n01440764",
+        "name": "tench",
+        "line": "data/imagenetv2/matched-frequency/0/58fbc3e79ef15162b7726de04e98c90bb91a3055.jpeg\t0"
+      },
+      "207": {
+        "wnid": "n02099601",
+        "name": "golden retriever",
+        "line": "data/imagenetv2/matched-frequency/207/0b6a2b5278e63cfab3d4806851606e286a2ca0d0.jpeg\t207"
+      },
+      "281": {
+        "wnid": "n02123045",
+        "name": "tabby",
+        "line": "data/imagenetv2/matched-frequency/281/376424d10c4482c36de24c0e75f38fefd20378c5.jpeg\t281"
+      },
+      "999": {
+        "wnid": "n15075141",
+        "name": "toilet tissue",
+        "line": "data/imagenetv2/matched-frequency/999/1d1df7c0a7790159d541396e421afc49f4fe67d2.jpeg\t999"
+      }
+    },
+    "anchor_model_check": {
+      "model": "repvit_m0_9 官方权重（713 键 loaded=713/missing=0，crop_pct=0.875，CUDA）",
+      "method": "对目录 <label> 下全部 10 张图推理，统计 argmax == label",
+      "results": {
+        "0": "9/10 tench",
+        "207": "8/10 golden retriever",
+        "285": "7/10 Egyptian cat",
+        "999": "5/10 toilet tissue",
+        "281": "3/10 tabby"
+      },
+      "conclusion": "命中率整体下移且误判全部落在语义相邻类，确认「目录名 = 标准 0-based 下标」成立"
+    },
+    "reproduce": [
+      "下载（README §2.2.1 命令）",
+      "python datasets/make_imagenetv2_subset.py",
+      "python datasets/make_imagenetv2_subset.py --verify-only"
+    ]
+  },
+  "source_archive": {
+    "tarball": "data/_src/imagenetv2/imagenetv2-matched-frequency.tar.gz",
+    "bytes": 1264079360,
+    "sha256": "f0c37fdf925916b19ea1323cd9a2208cdb6959ba2c32eef2a7fc393835c9ca7c",
+    "hf_x_linked_etag": "f0c37fdf925916b19ea1323cd9a2208cdb6959ba2c32eef2a7fc393835c9ca7c",
+    "sha256_matches_hf_etag": true,
+    "url": "https://huggingface.co/datasets/vaishaal/ImageNetV2/resolve/main/imagenetv2-matched-frequency.tar.gz",
+    "upstream_repo": "https://github.com/modestyachts/ImageNetV2",
+    "paper": "Recht et al. \"Do ImageNet Classifiers Generalize to ImageNet?\" NeurIPS 2019",
+    "license": "MIT（HF cardData.license；图像本体不适用该 LICENSE）",
+    "gated": false,
+    "variants": {
+      "matched-frequency": {
+        "bytes": 1264079360,
+        "chosen": true
+      },
+      "threshold0.7": {
+        "bytes": 1249906176,
+        "chosen": false
+      },
+      "top-images": {
+        "bytes": 1245927936,
+        "chosen": false
+      }
+    },
+    "quirks": [
+      "文件名 .tar.gz 但内容是不带 gzip 的 pax tar（首字节 PaxHeader/）→ tarfile 用 \"r:*\"",
+      "目录是数字类目录 <label>/<sha1>.jpeg（未补零）→ 不可用 ImageFolder 的字符串序（上游 issue #10）"
+    ]
+  },
+  "config_keys": {
+    "configs/pretrained_eval.yaml": {
+      "data_list": {
+        "line": 25,
+        "raw": "  data_list: datasets/lists/imagenetv2_mf_1000.txt   # str | 每行 \"<相对路径>\\t<0-based 标签>\" | 解析必须用 line.rsplit(None, 1)，不能用 line.split()（Windows 中文路径可能含空格） | 当前值 = **ImageNetV2 matched-frequency 的 1000 张确定性固定子集**（1000 类各 1 张；选取规则见 datasets/make_imagenetv2_subset.py）。★ 它是本仓**唯一**的官方模型评价口径；它不是 ImageNet-1K 验证集，是 Recht et al. 2019 重采样构建的独立测试集，其准确率与 1K val / 论文公布值**不可直接比较**"
+      },
+      "labels": {
+        "line": 26,
+        "raw": "  labels: labels/imagenet_classes.txt                 # str | 1000 行类别名，索引即模型输出下标 | 锚点自检：第 0 行 tench / 第 65 行 sea snake / 第 285 行 Egyptian cat / 第 999 行 toilet tissue"
+      },
+      "crop_pct": {
+        "line": 30,
+        "raw": "  crop_pct: 0.875                   # float| 0.875 / 0.95 | 本工具最关键的默认值。0.875 = 官方口径 floor(256/224 反向)即 int((256/224)*224)=256；0.95 = timm pretrained_cfg 口径 floor(224/0.95)=235。默认走官方口径"
+      },
+      "also_eval_crop_pct": {
+        "line": 31,
+        "raw": "  also_eval_crop_pct: [0.875, 0.95] # [float,...] | [0.875, 0.95] | 两套预处理口径各跑一遍并分别记录，用于量化「Resize 256 vs 235」对 Top-1 的影响；与 crop_pct 重复的那一次复用主结果，不重复推理"
+      }
+    },
+    "fragment_sha256": "f688ac10b70684c56e19b02648042a5b55554436654b2a2ce7a7442a80e3632d"
+  },
+  "frozen_fragments": {
+    "note": "逐条片段 sha256（片段 = 指定行原文按 \\n 连接，UTF-8）。binding=true 的片段是约束性不变量；binding=false / volatile=true 的README/PROGRESS 叙事段落只记录 revision 4 当时的字节，**不得**据其变化判定口径漂移。",
+    "count": 8,
+    "count_basis": "= len(frozen_fragments.items)，可机检，见 verify_commands 第 4 条",
+    "count_note": "片段数为 **8 条**（revision 4 实测 len(items) = 8，8/8 MATCH）。**历史计数澄清（任务 t22）**：t1 版冻结基线确有 **9 条** fragment_sha256，多出来的那条是考核 PDF 的免责句「候选人必须注明：本结果为指定 ImageNet-1K 验证子集上的实际运行结果…」（逐字 sha256 d6042e65…）；§1.3 口径整体变更为 ImageNetV2 后该句本身就是旧口径产物、已不再适用，其后的冻结集只含 8 条，本文件的 items 也只有这 8 条。故 `supersedes_note` 与历次报告里出现的「9 条」属**叙事计数沿用 t1 时代的数字**（本澄清 2026-09-17 追加，任务 t22），**不是漏了一条片段** —— 8 条片段全部在库、且 8/8 哈希 MATCH。",
+    "items": {
+      "configs/pretrained_eval.yaml 四键（data_list 指向 V2 清单）": {
+        "file": "configs/pretrained_eval.yaml",
+        "lines": [
+          25,
+          26,
+          30,
+          31
+        ],
+        "sha256": "f688ac10b70684c56e19b02648042a5b55554436654b2a2ce7a7442a80e3632d",
+        "binding": true,
+        "kind": "binding_invariant"
+      },
+      "tools/run_all_pretrained.py BASE 的 data_list 行": {
+        "file": "tools/run_all_pretrained.py",
+        "lines": [
+          21
+        ],
+        "sha256": "719a5d1eaa10b710b48006c5edefbeeda6dba97c1582648825c25631c656b97a",
+        "binding": true,
+        "kind": "binding_invariant"
+      },
+      "README.md §2.2「唯一口径」声明段": {
+        "file": "README.md",
+        "start_line": 144,
+        "end_line": 146,
+        "lines": 3,
+        "sha256": "da39a7ad85b6f83de5d1d8eb20dd83ccf6f0ce253e522215b42a69f70c980681",
+        "binding": false,
+        "volatile": true,
+        "kind": "informational",
+        "locator": "startswith('> **唯一口径**：自') .. startswith('> （此前的自建 ImageNet-1K val 分层子集')",
+        "note": "信息性/易变片段：后续任何文档任务都可能合法改动 README/PROGRESS，该哈希只记录 revision 4 当时的字节，**不构成约束**（不因它变化而判漂移）。约束性不变量见顶层 binding_invariants。"
+      },
+      "README.md §2.2.1 主口径声明块": {
+        "file": "README.md",
+        "start_line": 109,
+        "end_line": 142,
+        "lines": 34,
+        "sha256": "749558f164cd67c8a43da61b151b4f2d3b8deb4cffc0c5f41eee464c9540b6f3",
+        "binding": false,
+        "volatile": true,
+        "kind": "informational",
+        "locator": "startswith('#### 2.2.1 ImageNetV2') .. startswith('> - 来源 / 许可（MIT）')",
+        "note": "信息性/易变片段：后续任何文档任务都可能合法改动 README/PROGRESS，该哈希只记录 revision 4 当时的字节，**不构成约束**（不因它变化而判漂移）。约束性不变量见顶层 binding_invariants。"
+      },
+      "README.md §4 口径边界声明": {
+        "file": "README.md",
+        "start_line": 204,
+        "end_line": 207,
+        "lines": 4,
+        "sha256": "97b8b06eadc4122da24a8d3650589b0fdd2c091fb640ce2e99d9b0d24e51ca70",
+        "binding": false,
+        "volatile": true,
+        "kind": "informational",
+        "locator": "startswith('> **口径边界（必须保留）**：ImageNetV2') .. startswith('> 10~15 个百分点，这是基准性质')",
+        "note": "信息性/易变片段：后续任何文档任务都可能合法改动 README/PROGRESS，该哈希只记录 revision 4 当时的字节，**不构成约束**（不因它变化而判漂移）。约束性不变量见顶层 binding_invariants。"
+      },
+      "PROGRESS.md 阻塞项 V2 唯一口径段": {
+        "file": "PROGRESS.md",
+        "start_line": 81,
+        "end_line": 88,
+        "lines": 8,
+        "sha256": "fe4100b7f5833e9b9ebcbdbe4aa510faf7c6eedc99e7178c12ccca29db6b8acd",
+        "binding": false,
+        "volatile": true,
+        "kind": "informational",
+        "locator": "startswith('      **官方模型评价的数据源（09-16 起，唯一口径）**') .. startswith('      **整体删除**：仓库内')",
+        "note": "信息性/易变片段：后续任何文档任务都可能合法改动 README/PROGRESS，该哈希只记录 revision 4 当时的字节，**不构成约束**（不因它变化而判漂移）。约束性不变量见顶层 binding_invariants。"
+      },
+      "PROGRESS.md 决策记录 09-16 条目": {
+        "file": "PROGRESS.md",
+        "start_line": 100,
+        "end_line": 123,
+        "lines": 24,
+        "sha256": "bfbaef9df6aa1f72a03aa1c66125f155182462d7c508e36e128f2321d03d6ba6",
+        "binding": false,
+        "volatile": true,
+        "kind": "informational",
+        "locator": "startswith('- **09-16 官方模型评价数据源切换为') .. startswith('  确认「目录名 = 标准 0-based 类别下标」成立。')",
+        "note": "信息性/易变片段：后续任何文档任务都可能合法改动 README/PROGRESS，该哈希只记录 revision 4 当时的字节，**不构成约束**（不因它变化而判漂移）。约束性不变量见顶层 binding_invariants。"
+      },
+      "V2 子集清单整文件": {
+        "file": "datasets/lists/imagenetv2_mf_1000.txt",
+        "lines": null,
+        "sha256": "d5532205d8f30099aa70ed9392078adcdbd305c47055930c66e704f7976c9d05",
+        "binding": true,
+        "kind": "binding_invariant"
+      }
+    }
+  },
+  "mentions": {
+    "legacy_keywords": [
+      "imagenet_val_subset",
+      "自建子集",
+      "自建验证子集",
+      "非考核方下发",
+      "种子 20260912",
+      "seed 20260912"
+    ],
+    "new_keywords": [
+      "imagenetv2",
+      "ImageNetV2",
+      "imagenetv2_mf_1000"
+    ],
+    "scope_note": "统计 HEAD 已跟踪文本文件 + data/；跳过二进制扩展名与 >4MiB；pending_sync 排除本次新建文档与本次改写的 4 个文件",
+    "legacy_sites_total": 66,
+    "legacy_sites_by_file": {
+      "PROGRESS.md": [
+        85,
+        86,
+        103,
+        104
+      ],
+      "data/provided/README_这里要放什么.md": [
+        32
+      ],
+      "datasets/imagenet_subset.py": [
+        54,
+        189,
+        192,
+        279
+      ],
+      "datasets/make_imagenet_subset.py": [
+        2,
+        48
+      ],
+      "deploy/compare_torch_onnx.py": [
+        82,
+        109
+      ],
+      "outputs/logs/eval_family_5models.log": [
+        1,
+        23,
+        45,
+        67,
+        89
+      ],
+      "outputs/metrics/consistency_repvit_m0_9_in1k.json": [
+        7,
+        8
+      ],
+      "outputs/metrics/consistency_repvit_m1_0_in1k.json": [
+        7,
+        8
+      ],
+      "outputs/metrics/selfcheck_report.json": [
+        141
+      ],
+      "outputs/metrics/subset_report.json": [
+        10
+      ],
+      "outputs/verification/consistency_repvit_m0_9_in1k_n12.json": [
+        7,
+        8
+      ],
+      "outputs/verification/consistency_repvit_m1_0_in1k_n12.json": [
+        7,
+        8
+      ],
+      "outputs/verification/logits_reference_inventory.csv": [
+        19,
+        20,
+        21,
+        22,
+        23,
+        2947,
+        2950,
+        3655
+      ],
+      "outputs/verification/selfcheck_logits.json": [
+        22
+      ],
+      "report/LOGITS_AUDIT.md": [
+        48,
+        49,
+        72,
+        73
+      ],
+      "report/LOGITS_AUDIT_FINDINGS.md": [
+        31,
+        32
+      ],
+      "report/PPT_CONTENT.md": [
+        206,
+        208,
+        288,
+        290,
+        813
+      ],
+      "report/REPORT.md": [
+        120,
+        141,
+        695
+      ],
+      "report/VERIFICATION_LOGITS_PPT.md": [
+        295,
+        333
+      ],
+      "report/ppt_svg/05_pretrained.svg": [
+        5,
+        6,
+        78,
+        79
+      ],
+      "report/ppt_svg/15_summary.svg": [
+        28
+      ],
+      "tools/audit_logits_references.py": [
+        83,
+        90
+      ],
+      "tools/eval_pretrained.py": [
+        14
+      ],
+      "tools/selfcheck.py": [
+        267,
+        525
+      ],
+      "tools/update_defense.py": [
+        52,
+        78,
+        370
+      ]
+    },
+    "pending_sync_text_files": {
+      "data/provided/README_这里要放什么.md": [
+        32
+      ],
+      "datasets/imagenet_subset.py": [
+        54,
+        189,
+        192,
+        279
+      ],
+      "datasets/make_imagenet_subset.py": [
+        2,
+        48
+      ],
+      "deploy/compare_torch_onnx.py": [
+        82,
+        109
+      ],
+      "outputs/logs/eval_family_5models.log": [
+        1,
+        23,
+        45,
+        67,
+        89
+      ],
+      "outputs/metrics/consistency_repvit_m0_9_in1k.json": [
+        7,
+        8
+      ],
+      "outputs/metrics/consistency_repvit_m1_0_in1k.json": [
+        7,
+        8
+      ],
+      "outputs/metrics/selfcheck_report.json": [
+        141
+      ],
+      "outputs/metrics/subset_report.json": [
+        10
+      ],
+      "outputs/verification/consistency_repvit_m0_9_in1k_n12.json": [
+        7,
+        8
+      ],
+      "outputs/verification/consistency_repvit_m1_0_in1k_n12.json": [
+        7,
+        8
+      ],
+      "outputs/verification/logits_reference_inventory.csv": [
+        19,
+        20,
+        21,
+        22,
+        23,
+        2947,
+        2950,
+        3655
+      ],
+      "outputs/verification/selfcheck_logits.json": [
+        22
+      ],
+      "report/LOGITS_AUDIT.md": [
+        48,
+        49,
+        72,
+        73
+      ],
+      "report/LOGITS_AUDIT_FINDINGS.md": [
+        31,
+        32
+      ],
+      "report/PPT_CONTENT.md": [
+        206,
+        208,
+        288,
+        290,
+        813
+      ],
+      "report/REPORT.md": [
+        120,
+        141,
+        695
+      ],
+      "report/VERIFICATION_LOGITS_PPT.md": [
+        295,
+        333
+      ],
+      "report/ppt_svg/05_pretrained.svg": [
+        5,
+        6,
+        78,
+        79
+      ],
+      "report/ppt_svg/15_summary.svg": [
+        28
+      ],
+      "tools/audit_logits_references.py": [
+        83,
+        90
+      ],
+      "tools/eval_pretrained.py": [
+        14
+      ],
+      "tools/selfcheck.py": [
+        267,
+        525
+      ],
+      "tools/update_defense.py": [
+        52,
+        78,
+        370
+      ]
+    },
+    "pending_sync_binary_artifacts": {
+      "report/答辩PPT_RepViT.pptx": {
+        "legacy_slides": {
+          "4": [
+            "imagenet_val_subset",
+            "种子 20260912",
+            "自建子集",
+            "自建验证子集",
+            "非考核方下发"
+          ],
+          "15": [
+            "自建子集"
+          ]
+        },
+        "owner": "t9"
+      },
+      "report/答辩PPT_RepViT.pdf": {
+        "legacy_pages": [
+          {
+            "page": 4,
+            "legacy_keywords": [
+              "imagenet_val_subset",
+              "自建子集",
+              "自建验证子集",
+              "非考核方下发"
+            ]
+          },
+          {
+            "page": 15,
+            "legacy_keywords": [
+              "自建子集"
+            ]
+          }
+        ],
+        "owner": "t9"
+      },
+      "report.pdf": {
+        "legacy_pages": [
+          {
+            "page": 5,
+            "legacy_keywords": [
+              "imagenet_val_subset"
+            ]
+          },
+          {
+            "page": 6,
+            "legacy_keywords": [
+              "自建子集"
+            ]
+          },
+          {
+            "page": 21,
+            "legacy_keywords": [
+              "自建子集"
+            ]
+          }
+        ],
+        "owner": "t4"
+      },
+      "report/REPORT.docx": {
+        "legacy_paragraphs": [
+          "15.2 data/provided/ 是规格书虚构的路径：规格书要求读取考核方放在该目录的输入，但目录为空。 把 29 页试题 PDF 全文提取后搜索，\"provided\" 与 \"data/\" 各命中 0 次；PDF 第 28 页那段是 「建议考核方发布前准备内容」，写给出题方，不是「已下发给候选人」。解决：改判为 "
+        ],
+        "owner": "t4"
+      }
+    },
+    "new_sites_by_file": {
+      "PROGRESS.md": [
+        40,
+        59,
+        60,
+        80,
+        81,
+        83,
+        99,
+        100,
+        101,
+        105,
+        106,
+        109,
+        110,
+        115
+      ],
+      "README.md": [
+        102,
+        104,
+        107,
+        110,
+        111,
+        114,
+        115,
+        118,
+        125,
+        128,
+        139,
+        186,
+        196,
+        199
+      ],
+      "configs/pretrained_eval.yaml": [
+        25,
+        57
+      ],
+      "tools/run_all_pretrained.py": [
+        21,
+        23
+      ]
+    },
+    "snapshot_note": "本节是 **revision 3（t11 冻结时）** 的扫描快照，其 pending_sync_* 列表记录的是当时的待同步点，**不作为约束**；当前状态以最终验证任务的扫描结果为准。"
+  },
+  "crop_pct_closure": {
+    "unchanged": true,
+    "note": "数据源切换不改预处理口径：主口径仍是 a priori 固定的 crop_pct=0.875（官方 THU-MIG Resize(256)+CenterCrop(224)）；also_eval_crop_pct 两套口径仍是纯透明性记录，未用于任何模型选择或超参选择。V2 上绝对值整体下移，但声明结构不变。",
+    "code_evidence": {
+      "tools/eval_pretrained.py": {
+        "sweep_block_lines": "863-879",
+        "eval_helper_lines": "759-763",
+        "main_transform_lines": "752",
+        "main_top1_lines": "858-859",
+        "metrics_top1_write_line": "963",
+        "metrics_crop_pct_write_line": "977",
+        "metrics_sweep_write_line": "979",
+        "default_crop_pct_line": "86"
+      }
+    }
+  },
+  "pending_work_not_in_this_task": {
+    "t12": [
+      "按 V2 清单重跑 5 型号评价并就地替换 outputs/pretrained_eval/<model>/（不另存对照目录）",
+      "删除或替换 outputs/metrics/subset_report.json（自建子集报告）",
+      "deploy/compare_torch_onnx.py:82 默认清单 + :109 source 名",
+      "tools/selfcheck.py:525 白名单与 :267 容差注释",
+      "删除 datasets/make_imagenet_subset.py 等只服务旧子集的脚本"
+    ],
+    "t4": [
+      "report/REPORT.md",
+      "report/REPORT.docx",
+      "report.pdf"
+    ],
+    "t9": [
+      "report/答辩PPT_RepViT.pptx",
+      "report/答辩PPT_RepViT.pdf",
+      "report/PPT_CONTENT.md",
+      "report/ppt_svg/*.svg"
+    ],
+    "t5": [
+      "06_答辩Q&A_精简版.docx"
+    ],
+    "t10": [
+      "report/REQUIREMENTS_AUDIT.md 的 §1.3 五行"
+    ],
+    "status_note": "本节是 revision 3 记录的待办归属（当时尚未开工）；现各任务已按各自契约推进，本节仅作历史记录，不作为约束。"
+  },
+  "verify_commands": [
+    "python datasets/make_imagenetv2_subset.py --verify-only",
+    "python -c \"import json;d=json.load(open('report/SPEC13_FREEZE.json',encoding='utf-8'));print(d['revision'],[b['id'] for b in d['binding_invariants']],[f['binding'] for f in d['frozen_fragments']['items'].values()])\"",
+    "python -c \"import hashlib,json,pathlib;d=json.load(open('report/SPEC13_FREEZE.json',encoding='utf-8'));ok=True\nfor n,f in d['frozen_fragments']['items'].items():\n    L=pathlib.Path(f['file']).read_text(encoding='utf-8').splitlines()\n    seg='\\n'.join(L[i-1] for i in f['lines']) if isinstance(f['lines'],list) else ('\\n'.join(L[f['start_line']-1:f['end_line']]) if f.get('start_line') else pathlib.Path(f['file']).read_text(encoding='utf-8'))\n    ok &= hashlib.sha256(seg.encode()).hexdigest()==f['sha256']\nprint('fragments_all_match',ok)\"",
+    "python -c \"import json;d=json.load(open('report/SPEC13_FREEZE.json',encoding='utf-8'));f=d['frozen_fragments'];print('fragment_count',f['count'],'items',len(f['items']),'declared_equals_actual',f['count']==len(f['items']))\"",
+    "git status --porcelain"
+  ],
+  "binding_invariants": [
+    {
+      "id": "v2_list_whole_file",
+      "what": "ImageNetV2 matched-frequency 固定子集清单（唯一口径数据源）",
+      "file": "datasets/lists/imagenetv2_mf_1000.txt",
+      "sha256": "d5532205d8f30099aa70ed9392078adcdbd305c47055930c66e704f7976c9d05",
+      "bytes": 87780,
+      "lines": 1000,
+      "distinct_labels": 1000,
+      "per_class_min": 1,
+      "per_class_max": 1,
+      "verify": "python datasets/make_imagenetv2_subset.py --verify-only"
+    },
+    {
+      "id": "v2_source_tarball",
+      "what": "上游归档（HF vaishaal/ImageNetV2 matched-frequency）",
+      "file": "data/_src/imagenetv2/imagenetv2-matched-frequency.tar.gz",
+      "sha256": "f0c37fdf925916b19ea1323cd9a2208cdb6959ba2c32eef2a7fc393835c9ca7c",
+      "bytes": 1264079360,
+      "expected_sha256": "f0c37fdf925916b19ea1323cd9a2208cdb6959ba2c32eef2a7fc393835c9ca7c",
+      "sha256_ok": true,
+      "verify": "python datasets/make_imagenetv2_subset.py --verify-only"
+    },
+    {
+      "id": "config_four_keys",
+      "what": "configs/pretrained_eval.yaml 的 data_list / labels / crop_pct / also_eval_crop_pct 四行",
+      "file": "configs/pretrained_eval.yaml",
+      "lines": [
+        25,
+        26,
+        30,
+        31
+      ],
+      "sha256": "f688ac10b70684c56e19b02648042a5b55554436654b2a2ce7a7442a80e3632d",
+      "verify": "python -c \"import hashlib,pathlib;L=pathlib.Path('configs/pretrained_eval.yaml').read_text(encoding='utf-8').splitlines();print(hashlib.sha256('\\n'.join(L[i-1] for i in [25,26,30,31]).encode()).hexdigest())\""
+    },
+    {
+      "id": "imagenet_label_anchors",
+      "what": "1000 类标签锚点（0=tench / 207=golden retriever / 281=tabby / 999=toilet tissue）",
+      "file": "labels/imagenet_classes.txt",
+      "lines": 1000,
+      "sha256": "909f06e120437cc4482e95e12c718ec33292f87cdc1d93139d134f02eb7793a1",
+      "anchors": {
+        "0": "tench",
+        "207": "golden retriever",
+        "281": "tabby",
+        "999": "toilet tissue"
+      },
+      "verify": "python tools/verify_imagenet_labels.py"
+    }
+  ],
+  "note": "本文件区分两类条目：**binding_invariants**（约束性：清单/归档哈希、config 四键、标签锚点——变了就是真漂移，必须查因）与 **信息性/易变片段**（frozen_fragments 中 binding=false 的 README/PROGRESS 叙事段落——后续文档任务合法编辑就会变，只作时点记录，不构成约束）。revision 4 按该分类刷新。"
+}

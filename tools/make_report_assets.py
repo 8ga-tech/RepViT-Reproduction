@@ -1,11 +1,14 @@
 # tools/make_report_assets.py
 """
 Source  : Self-written
-用途    : 扫描 outputs/{logs,metrics,pretrained_eval}/ 下全部 json/csv/jsonl，生成报告与 PPT
-          所需的全部表格。**只搬运不编造**：任何取不到值的单元格写 "—" 而非 0。
+用途    : 扫描 outputs/{logs,metrics,pretrained_eval,benchmarks,report_assets}/ 下全部 json/csv/jsonl，
+          生成报告与 PPT 所需的全部表格。**只搬运不编造**：任何取不到值的单元格写 "—" 而非 0。
+          产物路径与「哪一节需要哪张图」的契约来自 tools/report_spec.py，与验收脚本同源。
 用法    :
     python tools/make_report_assets.py --root . --out outputs/report_assets
     python tools/make_report_assets.py --only results      # 只重建结果口径对照表
+    python tools/make_report_assets.py --only bench        # 只重建性能测试 10 项元信息表
+    python tools/make_report_assets.py --only cases        # 只重建正误案例表（2 正 + 2 误）
 """
 from __future__ import annotations
 import argparse, json, math
@@ -70,15 +73,31 @@ def _pct(v, already_pct: bool = False):
 
 
 def _lat(rec):
-    if rec is None:
+    """延迟单元格：优先 mean/p50/p95（bench.jsonl、latency.json），
+    只有 latency_ms 的行（literature.yaml）保留原来带 note 的写法。"""
+    if not isinstance(rec, dict):
         return "—"
-    m, p50, p95 = _first(rec, "mean_ms"), _first(rec, "p50_ms"), _first(rec, "p95_ms")
+    m = _first(rec, "mean_ms", "latency_mean_ms")
     if m is None:
-        return "—"
-    s = f"mean {m:.2f}ms"
+        return (f"{rec['latency_ms']} ms ({rec.get('latency_note', '—')})"
+                if rec.get("latency_ms") is not None else "—")
+    s = f"mean {float(m):.2f}ms"
+    p50, p95 = _first(rec, "p50_ms"), _first(rec, "p95_ms", "latency_p95_ms")
     if p50 is not None and p95 is not None:
-        s += f" / P50 {p50:.2f} / P95 {p95:.2f}"
+        s += f" / P50 {float(p50):.2f} / P95 {float(p95):.2f}"
     return s
+
+
+def _params_m(rec) -> float | None:
+    """参数量统一成 M 口径：显式 params_m / params 直接用；
+    只有元素个数（params_total / num_params）的落盘 JSON 按 1e6 换算（不编造）。"""
+    v = _first(rec, "params_m", "params")
+    if v is not None:
+        return float(v)
+    for k in ("params_total", "num_params"):
+        if rec.get(k):
+            return float(rec[k]) / 1e6
+    return None
 
 
 def build_results(root: Path) -> pd.DataFrame:
@@ -93,6 +112,7 @@ def build_results(root: Path) -> pd.DataFrame:
         else:
             rec = _json(root / path_str)
         rec = rec or {}
+        pv = _params_m(rec)
         rows.append({
             "口径": name,
             "数据集": _first(rec, "dataset", default="—"),
@@ -103,14 +123,12 @@ def build_results(root: Path) -> pd.DataFrame:
             "Macro-F1": _pct(_first(rec, "macro_f1", "f1_macro")),
             # 参数量必须带口径后缀：融合后单头 / 未融合单头 / 未融合双头
             "参数量": (lambda v, c: "—" if v is None else f"{v:.4f} M ({c})")(
-                _first(rec, "params_m", "params"), _first(rec, "params_caliber", default="未标注口径")),
+                pv, _first(rec, "params_caliber", default="未标注口径")),
             "MACs": (lambda v, c: "—" if v is None else f"{v:.3f} G ({c})")(
                 _first(rec, "macs_g"), _first(rec, "macs_caliber", default="MACs 口径(未乘 2)")),
             "文件大小": (lambda v: "—" if v is None else f"{v:.2f} MB")(
-                _first(rec, "file_size_mb")),
-            "延迟": _lat(rec) if isinstance(rec, dict) and "mean_ms" in rec else
-                    (f"{rec['latency_ms']} ms ({rec.get('latency_note', '—')})"
-                     if "latency_ms" in rec else "—"),
+                _first(rec, "file_size_mb", "model_file_size_mb")),
+            "延迟": _lat(rec),
             "依据": note,
         })
     df = pd.DataFrame(rows)
@@ -203,25 +221,78 @@ def _bench_latest(root: Path) -> list[dict]:
     return list(latest.values())
 
 
+def io_nodes_index(root: Path) -> dict:
+    """outputs/metrics/onnx_io_nodes.json（tools/collect_onnx_io_nodes.py 只读产出）的索引。
+
+    历史 bench.jsonl 记录里没有 onnx_input/onnx_output（早期只 print 不落盘），
+    这里用「同一份 ONNX 文件的图定义」补齐，**不重跑基准、不改动任何已发布的延迟数字**。
+    """
+    rec = _json(root / "outputs/metrics/onnx_io_nodes.json") or {}
+    return rec.get("models", {}) or {}
+
+
+def io_nodes_cell(inp: dict, out: dict) -> str:
+    if not inp and not out:
+        return "—"
+    return f"in={inp.get('name')}{inp.get('shape')} out={out.get('name')}{out.get('shape')}"
+
+
 def build_bench_meta(root: Path) -> pd.DataFrame:
+    io = io_nodes_index(root)
     rows = []
     for rec in _bench_latest(root):
-        inp, out = rec.get("onnx_input", {}), rec.get("onnx_output", {})
+        inp, out = rec.get("onnx_input") or {}, rec.get("onnx_output") or {}
+        if not inp or not out:                  # 旧记录缺字段 -> 用只读补全的节点信息
+            m = io.get(str(rec.get("model")), {})
+            inp, out = inp or m.get("onnx_input", {}), out or m.get("onnx_output", {})
         rows.append({
             "model": rec.get("model"),
             "input_size": rec.get("input_size"),
             "batch_size": rec.get("batch_size"),
             "precision": rec.get("precision"),
-            "backend": ",".join(rec.get("providers", [])),
+            "backend": rec.get("backend") or ",".join(rec.get("providers", [])),
             "hardware": f"{rec.get('cpu_model')} / {rec.get('os')}",
             "ort_version": rec.get("ort_version"),
             "runs": f"warmup={rec.get('warmup')}, runs={rec.get('runs')}",
             "file_size_mb": rec.get("file_size_mb"),
-            "io_nodes": f"in={inp.get('name')}{inp.get('shape')} out={out.get('name')}{out.get('shape')}",
+            "io_nodes": io_nodes_cell(inp, out),
             "mean_ms": rec.get("mean_ms"), "p50_ms": rec.get("p50_ms"), "p95_ms": rec.get("p95_ms"),
             "threads_intra": rec.get("threads_intra"),
         })
     return pd.DataFrame(rows)
+
+
+# ---------- 表 F：官方模型评价的正误案例表（题目 1.1-7 / 1.1-8 要求各 ≥2 例）----------
+def build_cases(root: Path) -> pd.DataFrame:
+    """从 outputs/pretrained_eval/<model>/top5_samples.json 取「代码挑选」的案例。
+
+    `pick_cases(..., n_each=2)` 的返回顺序是 [2 个正确, 2 个错误]，与落盘的
+    cases/correct_{1,2}.png / wrong_{1,2}.png 一一对应；≥6 条里多出的补位样本不入表
+    （它们不对应任何案例图）。挑选准则是代码写死的（Top-1 置信度最高），不是手工挑图。
+    """
+    rows = []
+    for model_dir in sorted((root / "outputs/pretrained_eval").glob("repvit_*")):
+        d = _json(model_dir / "top5_samples.json")
+        samples = (d or {}).get("samples", [])
+        groups = (("正确", [s for s in samples if s.get("correct")][:2]),
+                  ("错误", [s for s in samples if not s.get("correct")][:2]))
+        for kind, group in groups:
+            for i, s in enumerate(group, 1):
+                top5 = s.get("top5", [])
+                rows.append({
+                    "型号": model_dir.name,
+                    "案例": f"{kind}_{i}",
+                    "案例图": f"outputs/pretrained_eval/{model_dir.name}/cases/"
+                              f"{'correct' if kind == '正确' else 'wrong'}_{i}.png",
+                    "图片文件名": Path(str(s.get("image_path", ""))).name,
+                    "真值": s.get("true_label_name", "—"),
+                    "预测 Top-1": (top5[0]["name"] if top5 else "—"),
+                    "Top-1 置信度": (f"{top5[0]['prob']:.4f}" if top5 else "—"),
+                    "Top-5（类别|置信度）": " | ".join(f"{t['name']} {t['prob']:.4f}" for t in top5),
+                    "判定": "判对" if s.get("correct") else "判错",
+                })
+    return pd.DataFrame(rows)
+
 
 
 # ---------- 表 F：Markdown 模板骨架 ----------
@@ -276,7 +347,9 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--root", default=".")
     ap.add_argument("--out", default="outputs/report_assets")
-    ap.add_argument("--only", default=None, help="results/figures/configs/summary/bench/md")
+    ap.add_argument("--only", default=None, nargs="+", action="append",
+                    help="results/figures/configs/summary/bench/cases/md；可写多项，"
+                         "也可重复给（--only results --only cases 等价于 --only results cases）")
     a = ap.parse_args()
     root, out = Path(a.root).resolve(), Path(a.out)
 
@@ -286,10 +359,15 @@ def main():
         "configs": lambda: dump(build_configs(root), out, "table_configs"),
         "summary": lambda: dump(build_training_summary(root), out, "table_training_summary"),
         "bench":   lambda: dump(build_bench_meta(root), out, "table_benchmark_meta"),
+        "cases":   lambda: dump(build_cases(root), out, "table_cases"),
         "md":      lambda: (build_markdown(root, out), build_ppt_outline(out)),
     }
+    only = {k for group in (a.only or []) for k in group}      # 支持 --only a b 与 --only a --only b
+    unknown = only - set(build)
+    if unknown:
+        raise SystemExit(f"未知的 --only 取值：{sorted(unknown)}；可选 {sorted(build)}")
     for k, fn in build.items():
-        if a.only in (None, k):
+        if not only or k in only:
             fn()
 
 

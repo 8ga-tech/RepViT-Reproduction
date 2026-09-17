@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-16T18:23:28",
+  "generated_at": "2026-09-16T22:47:40",
   "python": "3.14.5",
   "platform": "Windows-11-10.0.26200-SP0",
   "summary": {
@@ -12,14 +12,14 @@
       "id": "onnx.consistency",
       "title": "PyTorch vs ONNX 一致率 >= 0.99",
       "status": "PASS",
-      "detail": "['repvit_m0_9_in1k:1.0', 'repvit_m0_9_pet37:1.0', 'repvit_m1_0_in1k:1.0'] 全部 >=0.99，共 3 个模型",
+      "detail": "['repvit_m0_9_in1k:1.0', 'repvit_m0_9_pet37:1.0', 'repvit_m1_0_in1k:1.0', 'repvit_m1_1_in1k:1.0', 'repvit_m1_5_in1k:1.0'] 全部 >=0.99，共 5 个模型",
       "fix": ""
     },
     {
       "id": "onnx.realimg",
       "title": "一致性用真实图片计算",
       "status": "PASS",
-      "detail": "数据来源={'pet_test', 'imagenet_val_subset'}（必须是固定划分列表，不能是 torch.randn）",
+      "detail": "['repvit_m0_9_in1k:imagenetv2_mf_1000(1000 行/12 张)', 'repvit_m0_9_pet37:pet_test(3669 行/12 张)', 'repvit_m1_0_in1k:imagenetv2_mf_1000(1000 行/12 张)', 'repvit_m1_1_in1k:imagenetv2_mf_1000(1000 行/12 张)', 'repvit_m1_5_in1k:imagenetv2_mf_1000(1000 行/12 张)'] 全部来自真实固定清单",
       "fix": ""
     },
     {

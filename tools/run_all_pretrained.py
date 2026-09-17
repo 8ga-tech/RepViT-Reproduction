@@ -16,8 +16,11 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]          # 仓库根，禁止写死个人绝对路径
 
 # 与 eval_pretrained.py 同源：配置走 --cfg，覆盖一律走 --set（键在 pretrained_eval. 段下）
+# ★ data_list 必须与 configs/pretrained_eval.yaml 的 pretrained_eval.data_list 保持一致：
+#   命令行 --set 优先级高于配置文件，这里写旧清单会让批量重跑静默用错数据。
+#   当前口径 = ImageNetV2 matched-frequency 的 1000 张确定性固定子集（非 ImageNet-1K 验证集）。
 BASE = ['--set',
-        'pretrained_eval.data_list=datasets/lists/imagenet_val_subset.txt',
+        'pretrained_eval.data_list=datasets/lists/imagenetv2_mf_1000.txt',
         'pretrained_eval.labels=labels/imagenet_classes.txt',
         'pretrained_eval.input_size=224', 'pretrained_eval.batch_size=64',
         'pretrained_eval.crop_pct=0.875', 'pretrained_eval.interpolation=bicubic',

@@ -62,6 +62,27 @@ BENCH_MARK = "部署怎么选"
 B4_REPORT = "outputs/reparam/repvit_m0_9_pet37_reparam_report.json"
 B1_REPORT = "outputs/metrics/consistency_repvit_m0_9_pet37.json"
 
+# PyTorch↔ONNX 一致性页读哪些型号：**顺序即表格顺序**，列表长度由落盘 JSON 决定，
+# 这里只声明「读哪几个 key」——新增型号时先跑 deploy/compare_torch_onnx.py 产出 JSON，
+# 再把 key 加进来（页面上的型号数、来源行、页脚都不写死数字）。
+CONSISTENCY_KEYS = [
+    ("repvit_m0_9_pet37", "M0.9 Pet-37 / pet_test"),
+    ("repvit_m0_9_in1k", "M0.9 / ImageNetV2 子集"),
+    ("repvit_m1_0_in1k", "M1.0 / ImageNetV2 子集"),
+    ("repvit_m1_1_in1k", "M1.1 / ImageNetV2 子集"),
+    ("repvit_m1_5_in1k", "M1.5 / ImageNetV2 子集"),
+]
+# P04（官方多型号评价）的页面锚点：先按题面环节名找，再退到「官方权重」字样与页序兜底。
+# 注意：**不要在代码里写死旧子集标题**（2026-09 口径已改为 ImageNetV2），否则标题一改就崩。
+PRETRAINED_MARK = "官方多型号评价"
+PRETRAINED_MARK_FALLBACKS = ("官方权重在", "官方多型号", "官方权重")
+# P04 的元信息补全行：型号/后端/设备/口径/评价次数/图片数与 crop_pct 全部从落盘 JSON 现读。
+PRETRAINED_META_FOOTNOTE = (
+    "元信息补全：推理后端 PyTorch {torch}（{device}，逐型号评价）；"
+    "测试次数：主口径 crop_pct={crop} 每型号评价次数 1 次（{n_images} 张），"
+    "另有 crop_pct=0.95 口径对照 1 次（仅额外推断，两套口径结果不可比）。"
+)
+
 
 # --------------------------------------------------------------------------- IO
 def data(path):
@@ -299,15 +320,22 @@ REPLACEMENTS = [
     ("数据来源：outputs/pretrained_eval/<model>/metrics.json · summary.csv",
      "数据来源：outputs/pretrained_eval/<model>/metrics.json · outputs/benchmarks/family_summary.csv（M1.1+ 的 MACs）· summary.csv"),
     # --- 归一化：把早期中间态的写法收敛到当前文案（替换是单向的，这一步保证重复运行仍正确）---
+    # 注意：新串不能包含旧串，否则重复运行会二次替换（例如旧「test 只评价一次」→ 新串里不能再出现该子串）。
     ("6 个 ONNX · ORT CPU（一致性只测了 3 个型号）", "6 个 ONNX · ORT CPU"),
     ("P50 7.1 ~ 32.7 ms（延迟，非误差）", "P50 7.1 ~ 32.7 ms"),
     ("max|Δ| 7.093e-06（32 个随机输入）· 32/32 一致", "max|Δ| 7.093e-06 · 32/32 一致"),
     ("ONNX Top-1 一致（3 型号各 12 张）率只测了", "PyTorch 与 ONNX 的 Top-1 一致率只测了"),
+    # --- G-4/G-1：一致性型号数从「3 个」收敛为「入库 5 个」（P13 与本脚本的页脚都由数据现算）---
+    ("ONNX Top-1 一致（3 型号各 12 张）", "ONNX 一致（入库 5 型号各 12 张）"),
+    ("ONNX 一致性只有 3 个型号各 n=12 的落盘 JSON，其余型号不做一致性声明",
+     "ONNX 一致性只有入库 5 个型号各 n=12 的落盘 JSON（M2.3 未入库），其余型号不做一致性声明"),
+    # --- G-1/X-7：test 评价次数必须限定为 Baseline（优化臂跨重跑累计 2 次，详见第 8 页）---
+    ("test 只评价一次", "Baseline 的 test 只评价 1 次"),
     # --- D4 外推：单型号一致率不能说成「六个模型一致」，九类问题不能说成已排除 ---
     ("6 个 ONNX 模型，PyTorch↔ONNX Top-1 一致率 100%",
-     "6 个 ONNX 模型；一致性只测了 3 个型号各 12 张"),
+     "6 个 ONNX 模型；入库的 5 个型号各测了 12 张一致性"),
     ("重参数化数值等价、BN 归零；ONNX 一致率 100%",
-     "重参数化 32 个随机输入通过（max 7.093e-06）；ONNX 一致性测了 3 个型号各 12 张"),
+     "重参数化 32 个随机输入通过（max 7.093e-06）；ONNX 一致性测了入库 5 个型号各 12 张"),
     ("重参数化数值等价、BN 归零；ONNX 一致率 100", "重参数化 32 个随机输入通过；ONNX 固定 n=12 样本一致"),
     ("没有出现题目列出的九类典型问题",
      "这 12 张图上未观察到九类典型问题的表现（不等于已排除九类问题）"),
@@ -315,7 +343,7 @@ REPLACEMENTS = [
     # 注意：状态页卡片文本框只有 ~2.5in 宽，卡片内文案必须短，长限定语放在页脚那一行。
     ("重参数化 max|Δlogits|", "结构重参数化（32 随机输入）max|Δ|"),
     ("max|Δ| 7.1e-06 · Top-1 32/32", "max|Δ| 7.093e-06 · 32/32 一致"),
-    ("PyTorch↔ONNX Top-1 一致", "ONNX Top-1 一致（3 型号各 12 张）"),
+    ("PyTorch↔ONNX Top-1 一致", "ONNX 一致（入库 5 型号各 12 张）"),
     # --- 展示值统一 4 位有效数字（D3/D7）---
     ("7.1e-06", "7.093e-06"),
     # --- D5 超证据断言：不再说「完全等价」---
@@ -338,7 +366,7 @@ REPLACEMENTS = [
      "实测两条路线权重逐位相同（同进程同权重对比，max|Δlogits| = 0），省去手写键转换器"),
     ("BN 108 → 0", "BN 107 → 0"),
     ("五曲线 · 混淆矩阵 · Grad-CAM", "五条曲线 · 混淆矩阵 · Grad-CAM"),
-    ("官方权重实测复现到 0.5 个点以内", "官方权重在自建子集上的实际表现"),
+    ("官方权重实测复现到 0.5 个点以内", "官方权重在 ImageNetV2 固定子集上的实际表现"),
     ("每个数字都能回到 outputs/ 里的文件", "关键数字与实验口径见 outputs/ 和审计说明"),
     ("重参数化数值等价", "重参数化 32 个随机输入通过"),
 ]
@@ -649,31 +677,61 @@ def build_reparam_slide(s):
          .65, 6.06, 12, .9, 14, MUTED)
 
 
+def consistency_records():
+    """读 CONSISTENCY_KEYS 里每个型号的落盘一致性 JSON（缺文件直接报错，不静默少一行）。"""
+    out = []
+    for key, label in CONSISTENCY_KEYS:
+        rel = "outputs/metrics/consistency_" + key + ".json"
+        if not (ROOT / rel).exists():
+            raise FileNotFoundError(
+                f"{rel} 不存在：先跑 python deploy/compare_torch_onnx.py --model {key} "
+                f"--images datasets/lists/<list>.txt --limit 12")
+        out.append((key, label, data(rel)))
+    return out
+
+
+def consistency_source_line(recs) -> str:
+    """来源行：型号清单与个数都从落盘 JSON 现读，页面不写死「三个型号」。"""
+    keys = ",".join(k for k, _, _ in recs)
+    return f"来源：outputs/metrics/consistency_{{{keys}}}.json（入库 {len(recs)} 个型号各 n=12）"
+
+
+def consistency_image_lists(recs) -> str:
+    """图片列表名从每份 JSON 的 `images` 字段现读（不写死列表文件名）。"""
+    from pathlib import PurePosixPath
+    names = sorted({PurePosixPath(str(d.get("images", ""))).name for _, _, d in recs if d.get("images")})
+    return " / ".join(names) if names else "—"
+
+
 def build_onnx_slide(s):
+    recs = consistency_records()
+    n_models = len(recs)
     clear_slide(
         s, "PyTorch ↔ ONNX：固定 n=12，比较同一输入张量",
         "原模型 vs 融合后 ONNX · ORT 1.30.0 CPUExecutionProvider · FP32 · batch 1 · 1×3×224×224 · "
-        "i7-13650HX / Windows 11 · 每个型号各 12 张真实图片 · 每张只跑一次",
-        13, "来源：outputs/metrics/consistency_{repvit_m0_9_pet37,repvit_m0_9_in1k,repvit_m1_0_in1k}.json",
+        f"i7-13650HX / Windows 11 · 入库的 {n_models} 个型号各 12 张真实图片 · 每张只跑一次",
+        13, consistency_source_line(recs),
         "python deploy/compare_torch_onnx.py --model repvit_m0_9_pet37 --images datasets/lists/pet_test.txt --limit 12 --out outputs/verification/consistency_repvit_m0_9_pet37_n12.json\n"
         "元信息：输入 1×3×224×224；batch 1；硬件 i7-13650HX / Windows 11；后端 ONNX Runtime 1.30.0 CPUExecutionProvider；"
-        "精度 FP32；每个型号各 12 张真实图片、每张只跑一次。\n"
-        "Pet-37 顺序取固定列表前 12 张，每张预处理一次，同一 numpy 张量送入两端。\n"
-        "max=6.198883056640625e-06；mean=1.5006899711048998e-06；Top-1/Top-5 集合均 1.0。\n"
+        f"精度 FP32；入库的 {n_models} 个型号各 12 张真实图片、每张只跑一次。\n"
+        "Pet-37 与 ImageNet 型号各自按固定列表顺序取前 12 张（"
+        f"图片列表从落盘 JSON 的 images 字段现读：{consistency_image_lists(recs)}）；"
+        "每张预处理一次，同一 numpy 张量送入两端。\n"
+        "max=6.198883056640625e-06；mean=1.5006899711048998e-06；Top-1/Top-5 集合均 1.0（Pet-37）。\n"
         "5.25e-06 是未找到对应完整产物的旧引用；旧命令写 limit=8 不能证明该值来自 n=8。当前权重跑 n=8 也不能复现旧值。\n"
-        "不是全测试集一致率，不验证两套预处理独立实现等价，也不能排除所有部署错误；只有 3 个型号各 12 张，不代表全部六个 ONNX 型号。")
+        f"不是全测试集一致率，不验证两套预处理独立实现等价，也不能排除所有部署错误；只有入库的 {n_models} 个型号各 12 张，"
+        "不代表全部六个 ONNX 型号（M2.3 因体积未入库，只做导出检查与性能结果）。")
     cells = [["模型 / 输入列表", "n", "最大 |Δlogits|", "平均 |Δlogits|", "Top-1 / Top-5"]]
-    for key, label in [("repvit_m0_9_pet37", "M0.9 Pet-37 / pet_test"),
-                       ("repvit_m0_9_in1k", "M0.9 / ImageNet 子集"), ("repvit_m1_0_in1k", "M1.0 / ImageNet 子集")]:
-        d = data("outputs/metrics/consistency_" + key + ".json")
+    for key, label, d in recs:
         # 展示口径：4 位有效数字（:.3e），与 report/LOGITS_AUDIT_FINDINGS.md 第 1 节一致
-        cells.append([label, d["n"], f"{d['max_abs_logits']:.3e}", f"{d['mean_abs_logits']:.3e}", "100% / 100%"])
-    table(s, cells, .65, 1.9, 12, 2.15, sizes=[3.65, .6, 2.4, 2.4, 2.95], font=16)
+        cells.append([label, d["n"], f"{d['max_abs_logits']:.3e}", f"{d['mean_abs_logits']:.3e}",
+                      f"{d['top1_agree_rate']*100:.0f}% / {d['top5_set_agree_rate']*100:.0f}%"])
+    table(s, cells, .65, 1.72, 12, 2.4, sizes=[3.65, .6, 2.4, 2.4, 2.95], font=14)
     text(s, "1  重参数化 7.093e-06（32 个随机输入）是第 12 页的另一批实验，不与本页并成一句结论。\n"
             "2  部署预处理由 PIL 独立实现；本次对比把同一张量送入两个推理后端，因此这里不比预处理实现。\n"
-            "3  结论仅覆盖这 12 张图片：不能说成完整测试集，也不能说成全部六个模型一致。\n"
+            f"3  结论仅覆盖每型号这 12 张图片：不能说成完整测试集，也不能说成全部六个模型一致。\n"
             "4  旧的 5.25e-06 缺少对应完整记录，当前统一引用上表落盘值（4 位有效数字）。",
-         .7, 4.35, 12, 1.6, 18)
+         .7, 4.3, 12, 1.6, 17)
     text(s, "复跑：python deploy/compare_torch_onnx.py --model repvit_m0_9_pet37 --limit 12\n"
             "完整命令、固定列表与输出路径已写入本页备注和 report/LOGITS_AUDIT.md。",
          .7, 6.12, 12, .73, 15, GREEN)
@@ -690,6 +748,8 @@ def build_bench_slide(s):
     b0 = br[0]
     labels = [model_label(r["model"]) for r in br]
     imnet = [r for r in br if r["model"].endswith("_in1k")]
+    p50_in1k = [float(r["p50_ms"]) for r in imnet]      # 官方 1K 型号的 P50 区间（卡 06 与备注共用）
+    p50s = [float(r["p50_ms"]) for r in br]             # 含自训练 Pet-37 的全量区间
     acc = {}
     for r in imnet:
         arch = r["model"].replace("_in1k", "")
@@ -712,6 +772,8 @@ def build_bench_slide(s):
         f"后端 ONNX Runtime {b0['ort_version']} {provider}；精度 {b0['precision']}；"
         f"每个模型预热 {b0['warmup']} 次 + 正式 {b0['runs']} 次（threads={b0['threads_intra']}）。\n"
         "左图含六个部署模型，只比速度；右图只放同一 ImageNet 子集的五个型号（准确率来自 PyTorch，延迟来自 ONNX Runtime CPU）。\n"
+        f"P50 区间（同一台机器 / ORT CPU）：官方 ImageNet-1K 型号 {min(p50_in1k):.2f}（M0.9）"
+        f" ~ {max(p50_in1k):.2f}（M2.3）ms；把自训练 Pet-37 也算进来时最小 {min(p50s):.2f} ms。\n"
         "官方 iPhone 延迟与本机 CPU 延迟不可直接比较。性能数据是历史落盘值，现场新测会有波动。")
     chart(s, "六个 ONNX 模型的推理耗时 (ms)", labels,
           [("P50", [float(r["p50_ms"]) for r in br]), ("P95", [float(r["p95_ms"]) for r in br])],
@@ -755,31 +817,321 @@ def build_bench_slide(s):
          .65, 5.85, 12, 1.05, 13)
 
 
+def consistency_scope_words() -> str:
+    """「一致性覆盖到哪几个型号」的一句话：型号与个数全部现读，不写死数字。"""
+    recs = consistency_records()
+    labels = " / ".join(model_label(k) for k, _, _ in recs)
+    return f"入库的 {len(recs)} 个型号（{labels}）各 12 张"
+
+
+def find_pretrained_slide(prs):
+    """P04 的定位：先按现有标题，再按题面关键词，最后按最终页序兜底。"""
+    for marker in (PRETRAINED_MARK, *PRETRAINED_MARK_FALLBACKS):
+        s = find_slide(prs, marker, required=False)
+        if s is not None:
+            return s
+    return prs.slides[3]
+
+
+def update_pretrained_meta(s):
+    """P04（官方多型号评价）性能图表元信息补全：推理后端 + 测试次数（试题第 17 页 7 项）。
+
+    取值全部来自 `outputs/pretrained_eval/repvit_m0_9/metrics.json`：
+    torch_version / device / crop_pct / num_images。测试次数的口径依据见
+    `tools/eval_pretrained.py` 步骤 6 的注释（主口径评价 1 次 + also_eval_crop_pct 额外推断 1 次）。
+    """
+    m = data("outputs/pretrained_eval/repvit_m0_9/metrics.json")
+    device = str(m.get("device", "—"))
+    ensure_footnote(
+        s,
+        PRETRAINED_META_FOOTNOTE.format(torch=m.get("torch_version", "—"),
+                                       device=device.upper() if device.isascii() else device,
+                                       crop=m.get("crop_pct", "—"),
+                                       n_images=m.get("num_images", "—")),
+        .74, 6.64, 11.85, .3, 10.5, MUTED, marker_chars=6)
+
+
+def _cover_numbers() -> str:
+    """封面两个准确率数字的口径，全部现读落盘产物（口径或子集变更时不再写死旧数字）。"""
+    m = data("outputs/pretrained_eval/repvit_m0_9/metrics.json")
+    b = data("outputs/metrics/baseline_test.json")
+    d = str(m.get("device", "—"))
+    dev = d.upper() if d.isascii() else d
+    return (f"{float(m['top1']):.2f}% = ImageNetV2 matched-frequency 固定子集 "
+            f"{m.get('num_images')} 张（PyTorch {m.get('torch_version', '—')} / {dev} / "
+            f"batch {m.get('batch_size')}；与 ImageNet-1K 公布值不可比）；"
+            f"{float(b['top1']) * 100:.2f}% = Pet-37 test {b.get('num_samples')} 张"
+            f"（Baseline 的 test 只评价 1 次，eval_count={b.get('eval_count')}）")
+
+
+def gpu_name() -> str:
+    """硬件名从 outputs/env_snapshot.json 现读（读不到就退回中性串，不写死型号）。"""
+    try:
+        env = data("outputs/env_snapshot.json")
+        for d in ((env.get("gpu") or {}).get("devices") or []):
+            if d.get("name"):
+                return str(d["name"])
+    except Exception:
+        pass
+    return "本机 GPU"
+
+
+def pretrained_rows() -> list[dict]:
+    """P04 表体数据：五个官方型号在 ImageNetV2 固定子集上的实测值（全部现读，不写死）。"""
+    rows = []
+    for key in ("repvit_m0_9", "repvit_m1_0", "repvit_m1_1", "repvit_m1_5", "repvit_m2_3"):
+        m = data(f"outputs/pretrained_eval/{key}/metrics.json")
+        rows.append(dict(
+            key=key, label=model_label(key + "_in1k"),
+            params=float(m["params_total"]) / 1e6, macs=float(m["macs_g"]),
+            size=float(m["model_file_size_mb"]), top1=float(m["top1"]), top5=float(m["top5"]),
+            batch=m.get("batch_size"), precision=str(m.get("precision", "")).upper(),
+            torch=m.get("torch_version"), device=str(m.get("device", "")).upper(),
+            input_size=m.get("input_size"), n=int(m.get("num_images", 0)),
+            crop=m.get("crop_pct"), macs_source=m.get("macs_source", "thop"),
+            sweep=[(float(s["crop_pct"]), s.get("scale"), float(s["top1"]))
+                   for s in (m.get("crop_pct_sweep") or [])]))
+    return rows
+
+
+def build_pretrained_slide(s):
+    """P04（官方多型号评价）**整页重建**：标题/表体/口径行/边界行全部从落盘产物现读。
+
+    为什么必须有这个构建器：此前这一页只被 update_pretrained_meta() 补了一行脚注，
+    而 REPLACEMENTS 里没有任何规则能命中这一页的旧串 —— 于是「重跑生成器」在**原理上**
+    就清不掉「自建子集 / 种子 20260912 / 78.20 / 官方公布列」。整页重建后口径只有唯一来源。
+
+    表体**不含「官方公布」列**：ImageNetV2 是独立重采样的测试集，把它与论文/官方公布的
+    ImageNet-1K 数值并列（或算差值）等于暗示可比，政策明令禁止。
+    """
+    rows = pretrained_rows()
+    r0 = rows[0]
+    clear_slide(
+        s,
+        "官方权重在 ImageNetV2 固定子集上的实际表现",
+        f"{len(rows)} 个官方型号 · ImageNetV2 matched-frequency 固定子集 {r0['n']} 张"
+        f"（1000 类各 1 张，确定性选取）· {r0['input_size']}×{r0['input_size']} · "
+        f"batch {r0['batch']} · {r0['precision']} · {gpu_name()}",
+        4,
+        "数据来源：outputs/pretrained_eval/<model>/metrics.json（Top-1/Top-5/参数量/MACs/文件大小）· "
+        "清单 datasets/lists/imagenetv2_mf_1000.txt（SHA-256 见 report/IMAGENETV2_PROVENANCE.md）",
+        "复跑：python tools/run_all_pretrained.py --cfg configs/pretrained_eval.yaml "
+        "--model repvit_m0_9 repvit_m1_0 repvit_m1_1 repvit_m1_5 repvit_m2_3\n"
+        f"元信息：模型 {len(rows)} 个官方型号；输入 {r0['input_size']}×{r0['input_size']}；"
+        f"batch {r0['batch']}；硬件 {gpu_name()}；后端 PyTorch {r0['torch']}（{r0['device']}）；"
+        f"精度 {r0['precision']}；每型号评价次数 1 次（{r0['n']} 张）。\n"
+        "口径纪律：ImageNetV2 是 Recht et al. 2019 独立重采样的测试集，其准确率与 ImageNet-1K 的"
+        "公布值不可直接比较（预期低 10~15 个点是基准性质，不是模型退化）；"
+        "因此本页只报本机实测，不做跨数据集并列或差值。")
+    cells = [["型号", "参数量 (M)", "MACs (G)", "文件大小 (MB)", "Top-1", "Top-5"]]
+    for r in rows:
+        cells.append([r["label"], f"{r['params']:.3f}", f"{r['macs']:.3f}",
+                      f"{r['size']:.2f}", f"{r['top1']:.2f}%", f"{r['top5']:.2f}%"])
+    table(s, cells, .65, 1.7, 8.4, 2.55, sizes=[2.3, 1.1, 1.1, 1.3, 1.3, 1.3], font=15)
+
+    # 右侧：预处理口径（两套 crop_pct 的实测 Top-1 现读自 metrics.json 的 crop_pct_sweep）
+    text(s, "预处理口径必须标", 9.35, 1.72, 3.3, .3, 15, CYAN, True)
+    sweep_lines = [f"crop_pct = {cp:g} → Resize({scale}) + CenterCrop(224)"
+                   for cp, scale, _ in r0["sweep"]]
+    pair_lines = [f"{r['label']}：{r['sweep'][0][2]:.2f} / {r['sweep'][-1][2]:.2f}"
+                  for r in rows[:2] if len(r["sweep"]) >= 2]
+    deltas = [abs(r["sweep"][0][2] - r["sweep"][-1][2]) for r in rows if len(r["sweep"]) >= 2]
+    delta_txt = (f"两套口径差 {min(deltas):.1f}~{max(deltas):.1f} 个点" if deltas
+                 else "两套口径分别报告")
+    text(s, "\n".join(sweep_lines + pair_lines + [delta_txt]), 9.35, 2.08, 3.35, 2.1, 12, MUTED)
+
+    # 底部：口径边界（三条，都与 ImageNetV2 的身份/口径有关，不含任何旧子集表述）
+    text(s, "必须声明的口径边界", .65, 4.42, 3.0, .3, 15, CYAN, True)
+    text(s, "· ImageNetV2 是独立重采样的测试集，不代表论文完整 ImageNet-1K 验证集结果；"
+            "本页 Top-1/Top-5 与论文/官方的 ImageNet-1K 公布值不可直接比较。\n"
+            "· 清单固定可复现：1000 类各 1 张、按类目录内文件名 sorted() 取第一个、无随机种子"
+            "（datasets/lists/imagenetv2_mf_1000.txt）。\n"
+            f"· 参数量取「融合后单头」口径；MACs 取 {r0['macs_source']}「未融合」口径（不乘 2）；"
+            "官方 iPhone 12 延迟（0.9 / 1.0 ms）与本机结果不可横向比较，延迟口径见第 14 页。",
+         .65, 4.78, 11.9, 1.6, 12.5, MUTED)
+
+
+def update_summary_slide(s):
+    """P15：结论块与「问题 02」按当前口径重写（数字现读，幂等）。
+
+    P15 不整页重建（它是原刻板的总结页，卡片布局保留），但结论里的旧数字与旧子集措辞
+    必须由生成器负责清掉：结论块是四个独立文本框（①~④），按前缀逐个改写。
+    """
+    m = data("outputs/pretrained_eval/repvit_m0_9/metrics.json")
+    b = data("outputs/metrics/baseline_test.json")
+    cb = data("outputs/confusion_matrix/baseline_cat_dog_block.json")
+    b4 = data(B4_REPORT)
+    b1 = data(B1_REPORT)
+    concl = {
+        "①": f"① RepViT 确为纯卷积；M0.9 在 ImageNetV2 固定子集上实测 {float(m['top1']):.2f}%"
+              f"（与 ImageNet-1K 公布值不可比）",
+        "②": f"② Pet-37 test Top-1 {float(b['top1']) * 100:.2f}%"
+              f"（跨物种错误仅 {cb['cross_species_error_ratio'] * 100:.2f}%）；"
+              f"四项优化未显示稳定提升，需多种子实验",
+        "③": f"③ 重参数化（32 个固定随机输入）max|Δ| = {b4['diff']['max_abs_err']:.3e}，"
+              f"Top-1 32/32 一致（与下面 ONNX 实验分列）",
+        "④": f"④ ONNX 一致性（Pet-37，n=12 真实图片）max|Δ| = {b1['max_abs_logits']:.3e}，"
+              f"Top-1/Top-5 集合一致率 100%",
+    }
+    problem02 = ("改判为结构性偏差：改用官方归档构建的 ImageNetV2 固定子集与 Oxford-IIIT Pet，"
+                 "并在 README 与报告中显式声明")
+    n_done = 0
+    for sh in iter_shapes(s):
+        if not getattr(sh, "has_text_frame", False):
+            continue
+        t = sh.text.strip()
+        for pre, new in concl.items():
+            if t.startswith(pre) and t != new:
+                set_text(sh.text_frame, new)
+                n_done += 1
+        if "自建子集" in t and t != problem02:          # 问题卡 02 的处置句
+            set_text(sh.text_frame, problem02)
+            n_done += 1
+    print(f"[P15] 结论/措辞重写 {n_done} 处（数字现读）")
+
+
+def bench_rows() -> list[dict]:
+    """outputs/benchmarks/summary.csv 的数据行（现读；文件缺失时返回空列表）。"""
+    p = ROOT / "outputs/benchmarks/summary.csv"
+    if not p.exists():
+        return []
+    with p.open(encoding="utf-8-sig", newline="") as f:
+        return [r for r in csv.DictReader(f) if r.get("model")]
+
+
+def _update_cover_page(s) -> int:
+    """P01 四张数字卡：按「组内恰好两个文本 = 数字 + 标签」的结构定位并改写。"""
+    m = data("outputs/pretrained_eval/repvit_m0_9/metrics.json")
+    b = data("outputs/metrics/baseline_test.json")
+    b4 = data(B4_REPORT)
+    c_recs = consistency_records()
+    n_done = 0
+    for grp in iter_shapes(s):
+        if getattr(grp, "shapes", None) is None:
+            continue
+        texts = [sub for sub in iter_shapes(grp)
+                 if getattr(sub, "has_text_frame", False) and sub.text.strip()]
+        if len(texts) != 2:
+            continue
+        label, value = texts[1].text.strip(), texts[0].text.strip()
+        new_label = new_value = None
+        if "Top-1" in label and ("子集" in label or "ImageNet" in label):
+            new_label = "ImageNetV2 固定子集 Top-1"
+            new_value = f"{float(m['top1']):.2f}%"
+        elif "Top-1" in label and label.startswith("M0.9"):
+            # P02 阶段 01 卡同构形态（M0.9 Top-1 78.20%）：
+            # 旧规则只给含「子集/ImageNet」的标签赋 new_label、**不回写值**，
+            # 于是这一格没有任何代码路径负责写 → 重跑生成器也清不掉（t15 的阻断项）。
+            new_value = f"{float(m['top1']):.2f}%"
+        elif label.startswith("Pet-37 test"):
+            new_value = f"{float(b['top1']) * 100:.2f}%"
+        elif "ONNX" in label:
+            new_label = f"ONNX 一致（入库 {len(c_recs)} 型号各 12 张）"
+        elif "重参数化" in label:
+            new_value = f"{b4['diff']['max_abs_err']:.3e}"
+        if new_label and label != new_label:
+            set_text(texts[1].text_frame, new_label); n_done += 1
+        if new_value and value != new_value:
+            set_text(texts[0].text_frame, new_value); n_done += 1
+    return n_done
+
+
+def _update_status_page(s) -> int:
+    """P02 六张阶段卡：值/口径全部从落盘产物现读（幂等）。
+
+    P02 的卡片组内是 6 个文本框（序号/标题/分隔线/副标题/值/路径），**不是**「值 + 标签」
+    两元组，所以这里按**文本内容**命中规则改写（命中即整条替换为现读值）。
+    这一页原先完全没有构建器：'M0.9 Top-1 78.20%' 只活在 PPTX 静态 XML 里。
+
+    数据来源：metrics.json（官方评价）/ baseline_test.json（自训）/ baseline_cat_dog_block.json
+    （跨物种错误）/ B4 报告 + onnx 节点统计（重参数化）/ summary.csv（ONNX 性能）/
+    configs/opt_*.yaml（配置数）。
+    """
+    m = data("outputs/pretrained_eval/repvit_m0_9/metrics.json")
+    b = data("outputs/metrics/baseline_test.json")
+    cb = data("outputs/confusion_matrix/baseline_cat_dog_block.json")
+    b4 = data(B4_REPORT)
+    nodes = data("outputs/reparam/repvit_m0_9_pet37_onnx_nodes.json")
+    rows_b = bench_rows()
+    n_models = len(pretrained_rows())
+    n_img = int(m.get("num_images", 0))
+    cfgs = sorted(p.name for p in (ROOT / "configs").glob("opt_*.yaml"))
+    n_abl = len([c for c in cfgs if "abl" in c])
+    n_scheme = len(cfgs) - n_abl
+    p50s = [float(r["p50_ms"]) for r in rows_b if r.get("p50_ms")]
+    # 卡 06 的 P50 区间按「**官方 ImageNet-1K 型号**」取（M0.9 → M2.3），与发布口径一致；
+    # 自训练 Pet-37（7.555 ms）比 M0.9 略快，单独在页面备注里说明，避免区间语义含糊。
+    p50_in1k = [float(r["p50_ms"]) for r in rows_b
+                if r.get("p50_ms") and str(r["model"]).endswith("_in1k")]
+    p50_span = p50_in1k or p50s
+    total = int(b4.get("diff", {}).get("num_samples", 0))
+    agree = int(round(float(b4.get("top1_same_rate", 0.0)) * total))
+    rules = {                                        # 命中子串 -> 现读值
+        "M0.9 Top-1": f"M0.9 Top-1 {float(m['top1']):.2f}%",
+        "个型号 ·": f"{n_models} 个型号 · ImageNetV2 {n_img} 张",
+        "test Top-1": f"test Top-1 {float(b['top1']) * 100:.2f}%",
+        "方案 +": f"{n_scheme} 方案 + {n_abl} 组消融",
+        "份配置 DIFF": f"{len(cfgs)} 份配置 DIFF PASS",
+        "跨物种错误仅": f"跨物种错误仅 {cb['cross_species_error_ratio'] * 100:.2f}%",
+        "BN ": f"BN {b4['before']['n_bn']} → 0 · Conv {nodes['before']['Conv']} → {nodes['after']['Conv']}",
+        "max|Δ|": f"max|Δ| {b4['diff']['max_abs_err']:.3e} · {agree}/{total} 一致",
+        "个 ONNX": f"{len(rows_b)} 个 ONNX · ORT CPU",
+        "P50 ": (f"P50 {min(p50_span):.2f} ~ {max(p50_span):.2f} ms" if p50_span else None),
+    }
+    n_done = 0
+    for sh in iter_shapes(s):
+        if not getattr(sh, "has_text_frame", False):
+            continue
+        t = sh.text.strip()
+        for key, new in rules.items():
+            if new and key in t and t != new:
+                set_text(sh.text_frame, new); n_done += 1
+                break
+    return n_done
+
+
+def update_cover_cards(prs):
+    """P01 封面卡 + P02 状态页卡：数字与口径标签都从落盘产物现读（幂等）。
+
+    目标页 = **P01 + P02**（`prs.slides[0]` 与 `prs.slides[1]`）。两页的卡片结构不同：
+    P01 是「组内恰好两个文本」，P02 是「组内 6 个文本框」，所以分成两个策略分别处理，
+    但都保证「值由代码写」，而不是只活在静态 XML 里。
+    """
+    n_done = _update_cover_page(prs.slides[0]) + _update_status_page(prs.slides[1])
+    print(f"[P01+P02] 封面/状态页卡改写 {n_done} 处（数字与口径现读）")
+
+
 def add_cover_and_status_limits(prs):
     """D3/D4：封面与状态页的口径限定语（幂等）。"""
     cover = prs.slides[0]
     ensure_footnote(
         cover,
         "口径分开：结构重参数化 = 32 个固定随机输入（max|Δ| 7.093e-06，Top-1 32/32）；"
-        "ONNX 一致性 = Pet-37 / M0.9 / M1.0 三个型号各 12 张真实图片（第 13 页，3 份 n=12 落盘），"
-        "只覆盖这 12 张，不代表全部六个 ONNX 型号。旧的 5.25e-06 未找到配套产物。",
+        f"ONNX 一致性 = {consistency_scope_words()}真实图片（第 13 页，{len(consistency_records())} 份 n=12 落盘），"
+        "只覆盖这些图片，不代表全部六个 ONNX 型号（M2.3 未入库）。旧的 5.25e-06 未找到配套产物。",
         .98, 6.92, 11.35, .5, 11, MUTED, marker_chars=6)
-    set_notes(cover, "封面数字的口径：78.20% = 自建 1000 张 ImageNet 子集（PyTorch / CUDA / batch 64）；"
-                     "92.34% = Pet-37 test 3669 张（只评价 1 次）；7.093e-06 = 结构重参数化 B4（32 个固定随机输入，"
+    set_notes(cover, f"封面数字的口径：{_cover_numbers()}；"
+                     "7.093e-06 = 结构重参数化 B4（32 个固定随机输入，"
                      "outputs/reparam/repvit_m0_9_pet37_reparam_report.json）；100% = PyTorch↔ONNX B1（Pet-37 前 12 张真实图片）。"
                      "重参数化误差与 ONNX 一致率是两批实验，不并成一句结论。\n"
-                     "逐条依据与桶分级见 report/LOGITS_AUDIT_FINDINGS.md 第 1 节。")
+                     "逐条依据与桶分级见 report/LOGITS_AUDIT_FINDINGS.md 第 1 节。\n"
+                     "口径纪律：ImageNetV2 是 Recht et al. 2019 独立重采样的测试集，其准确率与论文/"
+                     "官方公布的 ImageNet-1K 数值不可直接比较（低 10~15 个点是基准性质）。")
 
     status = prs.slides[1]
     ensure_footnote(
         status,
-        "口径与边界：PyTorch 与 ONNX 的 Top-1 一致率只测了 Pet-37 / ImageNet-M0.9 / ImageNet-M1.0 三个型号各 12 张（均为 100%）；"
-        "其余型号只有导出检查与性能结果，不做同口径一致性声明。重参数化 7.093e-06 来自 32 个固定随机输入，与上面这批 ONNX 实验不是同一批。",
+        f"口径与边界：PyTorch 与 ONNX 的 Top-1 一致率只测了{consistency_scope_words()}（均为 100%）；"
+        "其余型号（M2.3 未入库）只有导出检查与性能结果，不做同口径一致性声明。"
+        "重参数化 7.093e-06 来自 32 个固定随机输入，与上面这批 ONNX 实验不是同一批。",
         .74, 7.05, 11.85, .35, 10.5, MUTED, marker_chars=6)
     set_notes(status, "六个环节卡片对应试题基础任务 1–6 的交付物；卡片里每行末尾是落盘路径。\n"
                       "口径边界（试题第 16–17 页要求区分：论文 / 官方仓库 / 官方权重实跑 / 自训 Baseline / 优化模型 / PyTorch / ONNX）："
                       "卡片 01 是官方权重实跑，02/03/05 是自训结果，05 是 PyTorch 侧重参数化，06 是 ONNX 部署与性能。\n"
-                      "ONNX 一致性只有 3 个型号各 n=12 的落盘 JSON，其余型号不做一致性声明（不含 5.25e-06 旧引用，该值无配套产物）。")
+                      f"ONNX 一致性只有{consistency_scope_words()}的落盘 JSON，其余型号不做一致性声明"
+                      "（不含 5.25e-06 旧引用，该值无配套产物）。\n"
+                      "test 评价次数：Baseline 的 test 只评价 1 次；4 个优化臂跨重跑累计为 2 次，"
+                      "模型选择始终只用验证集 val_macro_f1，两次结果均落盘可查。")
 
 
 # ------------------------------------------------------------------ 内容同步
@@ -834,10 +1186,16 @@ def main():
     build_reparam_slide(find_slide(prs, REPARAM_MARK))
     build_onnx_slide(find_slide(prs, ONNX_MARK))
     build_bench_slide(find_slide(prs, BENCH_MARK))
+    # P04 整页重建（标题/表体/口径/边界全部现读）。必须在 apply_replacements 之后跑，
+    # 否则后续替换可能改回措辞；update_pretrained_meta 必须在本函数之后（clear_slide 会清页）。
+    build_pretrained_slide(find_pretrained_slide(prs))
 
-    # 4) 口径限定语（封面 / 状态页）+ 全页正文与备注的措辞替换
+    # 4) 口径限定语（封面 / 状态页 / P04 元信息 / P15 结论 / P01 封面卡）+ 全页措辞替换
     add_cover_and_status_limits(prs)
     apply_replacements(prs)
+    update_pretrained_meta(find_pretrained_slide(prs))
+    update_cover_cards(prs)
+    update_summary_slide(prs.slides[14])
 
     # 5) 页脚页码按最终顺序重排
     renumber(prs)

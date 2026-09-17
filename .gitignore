@@ -46,11 +46,14 @@ checkpoints/opt_abl_ab_best.pt
 # 完整版仍在本机 checkpoints/_full/，需要断点续训时从这里取。
 checkpoints/_full/
 
-# ---- ONNX：提交 4 个（3 个基础交付 + 1 个家族型号，满足进阶①「≥4 型号部署」）----
-# 不提交 m1_5(56 MB) / m2_3(92 MB)：它们只用于家族帕累托图的延迟点，
-# 其指标与延迟已入库（outputs/benchmarks/*_benchmark.json、summary.csv），
-# 复现：python deploy/export_onnx.py --model repvit_m1_5_in1k repvit_m2_3_in1k
-onnx/repvit_m1_5_in1k.onnx
+# ---- ONNX：提交 5 个（3 个基础交付 + 2 个官方家族型号，满足进阶①「≥4 个官方型号部署」）----
+# 入库：m0_9_in1k / m1_0_in1k / m1_1_in1k / m1_5_in1k（官方，共 4 个）+ m0_9_pet37（自训练）。
+# m1_5（56 MB）入库的理由：进阶①要求「累计评价并部署至少四种官方型号」，
+#   判定以仓库内可直接复现的 ONNX 为准，不能只靠一句「本机已导出」。
+# 不提交 m2_3（92 MB）：它只用于家族帕累托图的延迟点，其指标与延迟已入库
+#   （outputs/benchmarks/*_benchmark.json、summary.csv），复现：
+#     python deploy/export_onnx.py --model repvit_m2_3_in1k
+# 「随仓库交付的 ONNX 型号」以 deploy/model_registry.py 的 shipped=True 为准，两边必须一致。
 onnx/repvit_m2_3_in1k.onnx
 
 # ---- 下载缓存与临时目录 ----

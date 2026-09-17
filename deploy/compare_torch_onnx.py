@@ -70,8 +70,11 @@ def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--model", required=True)
     ap.add_argument("--images", default=None,
-                    help="每行一个图片路径的 txt；默认按 num_classes 取 datasets/lists/ 下的固定列表")
-    ap.add_argument("--limit", type=int, default=500, help="冒烟自测可用 --limit 8")
+                    help="每行一个图片路径的 txt；默认按 num_classes 取 datasets/lists/ 下的固定列表"
+                         "（37 类 -> pet_test.txt；1000 类 -> imagenetv2_mf_1000.txt，即 ImageNetV2 "
+                         "matched-frequency 的 1000 张确定性固定子集，见 report/IMAGENETV2_PROVENANCE.md）")
+    ap.add_argument("--limit", type=int, default=12,
+                    help="默认 12，与入库的 outputs/metrics/consistency_*.json 口径一致")
     ap.add_argument("--out", default=None)
     a = ap.parse_args()
     reg = get(a.model)
@@ -79,7 +82,12 @@ def main() -> None:
         list_file = Path(a.images)
     else:
         list_file = ROOT / "datasets/lists" / (
-            "pet_test.txt" if reg["num_classes"] == 37 else "imagenet_val_subset.txt")
+            "pet_test.txt" if reg["num_classes"] == 37 else "imagenetv2_mf_1000.txt")
+    if not list_file.exists():
+        raise FileNotFoundError(
+            f"固定列表不存在：{list_file}。1000 类型号的默认清单是 ImageNetV2 matched-frequency "
+            f"的确定性 1000 张子集，用 `python datasets/make_imagenetv2_subset.py` 构建"
+            f"（见 report/IMAGENETV2_PROVENANCE.md）；也可用 --images 显式指定其它列表。")
     paths = load_list_paths(list_file, reg, a.limit)
     pt, sess = fuse_pt(reg), build_session(onnx_path(a.model))
     iname = sess.get_inputs()[0].name
@@ -102,11 +110,12 @@ def main() -> None:
     #   model        -> registry key（不是 arch 名）
     #   num_classes  -> 37 / 1000
     #   label_file   -> 实际使用的标签文件，37 类必须是 labels/pet_classes.txt
-    #   source       -> 必须是固定划分列表名，不能是随机张量
+    #   source       -> 固定划分列表的**文件名词干**，不能是随机张量；与 images 一一对应，
+    #                   这样 selfcheck 能反过来校验「source 指向的清单文件真的存在」
     #   top1_agree   -> selfcheck 读这个键
     #   top1_agreement -> DoD #31 的验收命令读这个键；两个都写，避免口径分歧
     _label_file = "labels/pet_classes.txt" if reg["num_classes"] == 37 else "labels/imagenet_classes.txt"
-    _source = "pet_test" if reg["num_classes"] == 37 else "imagenet_val_subset"
+    _source = Path(list_file).stem      # pet_test / imagenetv2_mf_1000
     # 落盘元信息里的两个路径字段一律写成仓库相对路径（见 repo_rel 的注释）：
     #   onnx_path -> onnx/<registry_key>.onnx（由 deploy/model_registry.py 给出）
     #   images    -> datasets/lists/<list>.txt（由 --images 给出，缺省时取固定划分列表）

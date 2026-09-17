@@ -1,0 +1,42 @@
+{
+  "model": "repvit_m0_9_in1k",
+  "is_pet": false,
+  "image": "external/beagle__ILSVRC2012_val_00000162_00.JPEG",
+  "num_classes": 1000,
+  "ep": [
+    "CPUExecutionProvider"
+  ],
+  "latency_ms": 8.741,
+  "topk": [
+    {
+      "rank": 1,
+      "index": 162,
+      "prob": 0.944675624370575,
+      "name": "beagle"
+    },
+    {
+      "rank": 2,
+      "index": 166,
+      "prob": 0.03132205829024315,
+      "name": "Walker hound"
+    },
+    {
+      "rank": 3,
+      "index": 238,
+      "prob": 0.009655757807195187,
+      "name": "Greater Swiss Mountain dog"
+    },
+    {
+      "rank": 4,
+      "index": 161,
+      "prob": 0.0038105982821434736,
+      "name": "basset"
+    },
+    {
+      "rank": 5,
+      "index": 167,
+      "prob": 0.002895775716751814,
+      "name": "English foxhound"
+    }
+  ]
+}

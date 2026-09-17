@@ -1,199 +1,199 @@
 {
   "samples": [
     {
-      "image_path": "data/imagenet/val/n04357314/ILSVRC2012_val_00000838_32.JPEG",
-      "true_label_idx": 838,
-      "true_label_name": "sunscreen",
+      "image_path": "data/imagenetv2/matched-frequency/648/3b5f30ae68b3376f6f2c7817670abb163a88df05.jpeg",
+      "true_label_idx": 648,
+      "true_label_name": "medicine chest",
       "top5": [
         {
-          "idx": 838,
-          "name": "sunscreen",
-          "prob": 0.9997414946556091
+          "idx": 648,
+          "name": "medicine chest",
+          "prob": 0.9992358684539795
         },
         {
-          "idx": 631,
-          "name": "lotion",
-          "prob": 0.00023255968699231744
+          "idx": 453,
+          "name": "bookcase",
+          "prob": 0.00014896209177095443
         },
         {
-          "idx": 739,
-          "name": "potter's wheel",
-          "prob": 4.153842837695265e-06
+          "idx": 904,
+          "name": "window screen",
+          "prob": 0.00010259586269967258
         },
         {
-          "idx": 696,
-          "name": "paintbrush",
-          "prob": 1.6965044551398023e-06
+          "idx": 771,
+          "name": "safe",
+          "prob": 3.786743764067069e-05
         },
         {
-          "idx": 842,
-          "name": "swimming trunks",
-          "prob": 1.5820220369278104e-06
+          "idx": 495,
+          "name": "china cabinet",
+          "prob": 2.0727611627080478e-05
         }
       ],
       "correct": true
     },
     {
-      "image_path": "data/imagenet/val/n01930112/ILSVRC2012_val_00000111_11.JPEG",
-      "true_label_idx": 111,
-      "true_label_name": "nematode",
+      "image_path": "data/imagenetv2/matched-frequency/473/052b1f469a4c30672953c782e212601635c99907.jpeg",
+      "true_label_idx": 473,
+      "true_label_name": "can opener",
       "top5": [
         {
-          "idx": 111,
-          "name": "nematode",
-          "prob": 0.999326229095459
+          "idx": 473,
+          "name": "can opener",
+          "prob": 0.9984626770019531
         },
         {
-          "idx": 59,
-          "name": "vine snake",
-          "prob": 4.320708831073716e-05
+          "idx": 587,
+          "name": "hammer",
+          "prob": 0.00017765568918548524
         },
         {
-          "idx": 712,
-          "name": "Petri dish",
-          "prob": 1.6144016626640223e-05
+          "idx": 512,
+          "name": "corkscrew",
+          "prob": 0.00013474418665282428
         },
         {
-          "idx": 592,
-          "name": "hard disc",
-          "prob": 1.2337529369688127e-05
+          "idx": 777,
+          "name": "scabbard",
+          "prob": 0.00012865560711361468
         },
         {
-          "idx": 26,
-          "name": "common newt",
-          "prob": 1.0088803719554562e-05
+          "idx": 783,
+          "name": "screw",
+          "prob": 0.00012808950850740075
         }
       ],
       "correct": true
     },
     {
-      "image_path": "data/imagenet/val/n03759954/ILSVRC2012_val_00000650_07.JPEG",
-      "true_label_idx": 650,
-      "true_label_name": "microphone",
+      "image_path": "data/imagenetv2/matched-frequency/356/0da57934fe1db8352e6f3d3bcb93cfcbd3d91b69.jpeg",
+      "true_label_idx": 356,
+      "true_label_name": "weasel",
       "top5": [
         {
-          "idx": 593,
-          "name": "harmonica",
-          "prob": 0.9963364601135254
+          "idx": 387,
+          "name": "lesser panda",
+          "prob": 0.9950050711631775
         },
         {
-          "idx": 699,
-          "name": "panpipe",
-          "prob": 0.0013205916620790958
+          "idx": 358,
+          "name": "polecat",
+          "prob": 0.000201688744709827
         },
         {
-          "idx": 684,
-          "name": "ocarina",
-          "prob": 0.00042614442645572126
+          "idx": 388,
+          "name": "giant panda",
+          "prob": 0.00010222325363429263
         },
         {
-          "idx": 650,
-          "name": "microphone",
-          "prob": 0.00040959674515761435
+          "idx": 365,
+          "name": "orangutan",
+          "prob": 9.715321357361972e-05
         },
         {
-          "idx": 558,
-          "name": "flute",
-          "prob": 0.00021193378779571503
+          "idx": 96,
+          "name": "toucan",
+          "prob": 6.823370495112613e-05
         }
       ],
       "correct": false
     },
     {
-      "image_path": "data/imagenet/val/n02125311/ILSVRC2012_val_00000286_10.JPEG",
-      "true_label_idx": 286,
-      "true_label_name": "cougar",
+      "image_path": "data/imagenetv2/matched-frequency/923/04717b50bba19723e0958629c05ac8fb2b6b8750.jpeg",
+      "true_label_idx": 923,
+      "true_label_name": "plate",
       "top5": [
         {
-          "idx": 293,
-          "name": "cheetah",
-          "prob": 0.9948509335517883
+          "idx": 624,
+          "name": "library",
+          "prob": 0.9933428764343262
         },
         {
-          "idx": 291,
-          "name": "lion",
-          "prob": 0.00048097199760377407
+          "idx": 762,
+          "name": "restaurant",
+          "prob": 0.0011277871672064066
         },
         {
-          "idx": 286,
-          "name": "cougar",
-          "prob": 0.00024378136731684208
+          "idx": 532,
+          "name": "dining table",
+          "prob": 0.0008902858244255185
         },
         {
-          "idx": 289,
-          "name": "snow leopard",
-          "prob": 0.0001656656531849876
+          "idx": 454,
+          "name": "bookshop",
+          "prob": 0.0008394577307626605
         },
         {
-          "idx": 288,
-          "name": "leopard",
-          "prob": 0.0001656391250435263
+          "idx": 553,
+          "name": "file",
+          "prob": 0.0002957693941425532
         }
       ],
       "correct": false
     },
     {
-      "image_path": "data/imagenet/val/n02859443/ILSVRC2012_val_00000449_17.JPEG",
-      "true_label_idx": 449,
-      "true_label_name": "boathouse",
+      "image_path": "data/imagenetv2/matched-frequency/500/22c6297e91c20ca5cd3a1391df0b93390d2f9a50.jpeg",
+      "true_label_idx": 500,
+      "true_label_name": "cliff dwelling",
       "top5": [
         {
-          "idx": 449,
-          "name": "boathouse",
-          "prob": 0.9731166362762451
+          "idx": 500,
+          "name": "cliff dwelling",
+          "prob": 0.9380866289138794
         },
         {
-          "idx": 975,
-          "name": "lakeside",
-          "prob": 0.008091877214610577
+          "idx": 972,
+          "name": "cliff",
+          "prob": 0.051650889217853546
         },
         {
-          "idx": 979,
-          "name": "valley",
-          "prob": 0.001991265220567584
+          "idx": 349,
+          "name": "bighorn",
+          "prob": 0.0005788537091575563
+        },
+        {
+          "idx": 609,
+          "name": "jeep",
+          "prob": 0.00031200324883684516
         },
         {
           "idx": 525,
           "name": "dam",
-          "prob": 0.001801533275283873
-        },
-        {
-          "idx": 472,
-          "name": "canoe",
-          "prob": 0.0014054004568606615
+          "prob": 0.00024794801720418036
         }
       ],
       "correct": true
     },
     {
-      "image_path": "data/imagenet/val/n02444819/ILSVRC2012_val_00000360_18.JPEG",
-      "true_label_idx": 360,
-      "true_label_name": "otter",
+      "image_path": "data/imagenetv2/matched-frequency/732/0a3f4c624ada6f790f85b6a705f9f49fcc688445.jpeg",
+      "true_label_idx": 732,
+      "true_label_name": "Polaroid camera",
       "top5": [
         {
-          "idx": 360,
-          "name": "otter",
-          "prob": 0.9732992053031921
+          "idx": 732,
+          "name": "Polaroid camera",
+          "prob": 0.9383565187454224
         },
         {
-          "idx": 337,
-          "name": "beaver",
-          "prob": 0.007455348502844572
+          "idx": 759,
+          "name": "reflex camera",
+          "prob": 0.0461309552192688
         },
         {
-          "idx": 150,
-          "name": "sea lion",
-          "prob": 0.003088927362114191
+          "idx": 622,
+          "name": "lens cap",
+          "prob": 0.0015840505948290229
         },
         {
-          "idx": 357,
-          "name": "mink",
-          "prob": 0.0018563360208645463
+          "idx": 447,
+          "name": "binoculars",
+          "prob": 0.0002750092826317996
         },
         {
-          "idx": 356,
-          "name": "weasel",
-          "prob": 0.001133400364778936
+          "idx": 754,
+          "name": "radio",
+          "prob": 0.00020531821064651012
         }
       ],
       "correct": true

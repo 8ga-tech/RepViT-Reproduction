@@ -118,7 +118,27 @@ def c_paths():
             probe = line.split("://")[0] if "://" in line else line   # 丢掉 URL 主体再匹配
             if any(p.search(probe) for p in pat):
                 hits.append(f"{f.relative_to(ROOT).as_posix()}:{i}")
-    return (not hits), (f"{len(hits)} 处" + (f" 首处 {hits[0]}" if hits else ""))
+    # t27 并入：审计文档的**证据指针**校验（不新增 check id，总数保持 34 —— 与 t14/t19 同一手法）。
+    # 背景：t2 写的证据引用在 t4 压缩报告 / 删除违规表 / 重排章节后集体失效，t6/t22 只修了被点名的行。
+    # 这里把「判定=满足/部分 的证据必须仍可核对」变成常驻闸：
+    #   ① 被引产物必须存在；② 每处 §x.y 在目标文档（自指 / 跨文档）里确有该标题；
+    #   ③ t30 起还做「可重算断言」比对：计数（git ls-files onnx/、官方 ONNX）、体积（实测 **N B**）、
+    #      行数（实测 **N 行** / **N 行数据**）、grep 命中（**N 命中 / 个文件 / 行**）、§8 统计求和。
+    ev_ok, ev_detail = True, "证据指针 OK"
+    try:
+        import check_audit_evidence as cae          # 同目录模块（tools/）
+        res = cae.scan()
+        ev_ok = not res["fails"]
+        ev_detail = (f"证据指针 OK（行 {res['rows']} / 路径 {res['path_refs']} / § {res['sec_refs']} / "
+                     f"可重算断言 {res.get('assertions', 0)}）"
+                     if ev_ok else
+                     f"证据指针 {len(res['fails'])} 处失效："
+                     + "; ".join(f"{x['kind']}@L{x['line']}" for x in res["fails"][:5]))
+    except Exception as e:                          # noqa: BLE001
+        ev_ok, ev_detail = False, f"证据指针扫描器异常 {type(e).__name__}: {e}"
+
+    detail = f"{len(hits)} 处" + (f" 首处 {hits[0]}" if hits else "") + "；" + ev_detail
+    return (not hits) and ev_ok, detail
 
 
 @check("tag", "timm 权重 tag 解析", "显式写 repvit_m0_9.dist_450e_in1k 以区分 450e")
@@ -253,32 +273,79 @@ def c_model_size():
 
 
 # ---------------------------------------------------------------- D 官方模型评价
-@check("official.top1", "官方模型 Top-1 落在 70~82", "<1 查 ILSVRC2012_ID 映射；30~60 查部分类映射")
+# 口径（2026-09 用户决议）：官方模型评价的**唯一**数据集是 ImageNetV2 matched-frequency 的
+# 1000 张确定性固定子集（1000 类各 1 张，无随机种子；选取规则见 datasets/make_imagenetv2_subset.py）。
+# ImageNetV2 是 Recht et al. 2019 独立重采样的测试集，其准确率与论文/官方公布的 ImageNet-1K
+# 数值**不可直接比较**（预期低 10~15 个点是基准性质，不是模型退化），因此本项**不再**做
+# 「与官方公布值 ±1.5 以内」的值域比对，改为「口径 + 落盘结构」的结构性断言。
+OFFICIAL_MODELS = ["repvit_m0_9", "repvit_m1_0", "repvit_m1_1", "repvit_m1_5", "repvit_m2_3"]
+IMAGENET_LABEL_ANCHORS = {0: "tench", 207: "golden retriever", 281: "tabby", 999: "toilet tissue"}
+
+
+def _eval_data_list() -> Path:
+    """从 configs/pretrained_eval.yaml 读当前官方评价清单（唯一配置真源）。"""
+    import yaml
+    cfg = yaml.safe_load((ROOT / "configs/pretrained_eval.yaml").read_text(encoding="utf-8"))
+    return ROOT / cfg["pretrained_eval"]["data_list"]
+
+
+@check("official.top1", "官方评价口径与落盘结构正确",
+       "ImageNetV2 与 ImageNet-1K 公布值不可比，只做结构性断言")
 def c_official_top1():
-    fs = sorted((ROOT / "outputs/pretrained_eval").glob("*/metrics.json"))
-    if not fs:
-        return False, "outputs/pretrained_eval/<model_name>/metrics.json 不存在"
-    # 判据：与**该型号官方公布值**的偏差，而不是一个固定的 70~82 区间。
-    # 固定区间只适用于 M0.9 量级；M1.5(官方 82.3)/M2.3(官方 83.3) 天然 > 82，
-    # 用固定区间会把「复现正确」误判成「越界」（实测复现）。
-    # 官方值来自 THU-MIG/RepViT README 的 300e 列。
-    OFFICIAL_TOP1 = {"repvit_m0_6": 74.1, "repvit_m0_9": 78.7, "repvit_m1_0": 80.0,
-                     "repvit_m1_1": 80.7, "repvit_m1_5": 82.3, "repvit_m2_3": 83.3}
-    TOL = 1.5                       # 1000 张自建子集，单张翻转即 0.1 个点，1.5 是合理容差
-    rows, bad = [], []
-    for f in fs:
+    bad, rows = [], []
+
+    # (1) 清单本身：真实存在、1000 行、1000 个不同标签各 1 张
+    try:
+        lf = _eval_data_list()
+    except Exception as e:                                   # 配置读不到就是硬错误
+        return False, f"读 configs/pretrained_eval.yaml 失败：{e}"
+    if not lf.exists():
+        return False, f"评价清单不存在：{_rel(lf)}（口径必须是 ImageNetV2 固定子集）"
+    lines = [l for l in lf.read_text(encoding="utf-8").splitlines() if l.strip()]
+    labels = [int(l.rsplit(None, 1)[1]) for l in lines]
+    per_class = {}
+    for y in labels:
+        per_class[y] = per_class.get(y, 0) + 1
+    rows.append(f"清单={_rel(lf)} {len(lines)} 行")
+    if not (500 <= len(lines) <= 1000):
+        bad.append(f"张数 {len(lines)} 不在 500~1000")
+    if len(set(labels)) != 1000:
+        bad.append(f"标签只覆盖 {len(set(labels))} 类（应为 1000）")
+    if max(per_class.values(), default=0) != 1:
+        bad.append(f"存在每类 >1 张（max={max(per_class.values(), default=0)}）")
+    if sorted(per_class) != list(range(1000)):
+        bad.append("标签不是 0..999")
+
+    # (2) 标签映射锚点：0=tench / 207=golden retriever / 281=tabby / 999=toilet tissue
+    lpf = ROOT / "labels/imagenet_classes.txt"
+    if not lpf.exists():
+        bad.append("缺少 labels/imagenet_classes.txt")
+    else:
+        names = [l.strip() for l in lpf.read_text(encoding="utf-8").splitlines() if l.strip()]
+        for idx, want in IMAGENET_LABEL_ANCHORS.items():
+            got = names[idx] if idx < len(names) else None
+            if got != want:
+                bad.append(f"锚点 {idx}: 期望 {want!r} 实际 {got!r}")
+        rows.append(f"标签 {len(names)} 行，锚点 {'OK' if not bad else '异常'}")
+
+    # (3) 5 个型号落盘齐全：metrics.json 的 num_images / num_classes
+    n_done = 0
+    for m in OFFICIAL_MODELS:
+        f = ROOT / f"outputs/pretrained_eval/{m}/metrics.json"
+        if not f.exists():
+            bad.append(f"{m} 缺 metrics.json")
+            continue
         d = json.loads(f.read_text(encoding="utf-8"))
-        name = d.get("model_name", f.parent.name)
-        ref = OFFICIAL_TOP1.get(name.split(".")[0])
-        rows.append(f"{name}:{d['top1']:.2f}%(官方{ref})")
-        if ref is None:
-            bad.append(f"{name}(无官方基准)")
-        elif abs(d["top1"] - ref) > TOL:
-            bad.append(f"{name}(偏差{d['top1']-ref:+.2f} > {TOL})")
-        # 无论哪个型号，掉到随机水平(≈0.1)或 30~60 都说明标签体系有问题
-        if d["top1"] < 70.0:
-            bad.append(f"{name}(低于 70，查标签映射)")
-    return (not bad), (f"{rows} 全部在官方值 ±{TOL} 内" if not bad else f"异常={bad}")
+        n_done += 1
+        n_img = int(d.get("num_images", 0))
+        if not (500 <= n_img <= 1000):
+            bad.append(f"{m} num_images={n_img} 不在 500~1000")
+        if int(d.get("num_classes", 0)) != 1000:
+            bad.append(f"{m} num_classes={d.get('num_classes')} != 1000")
+    rows.append(f"落盘型号 {n_done}/{len(OFFICIAL_MODELS)}")
+    if n_done != len(OFFICIAL_MODELS):
+        bad.append(f"落盘型号数 {n_done} != {len(OFFICIAL_MODELS)}")
+    return (not bad), (f"{rows} 结构断言通过（不做官方值比对）" if not bad else f"异常={bad}")
 
 
 @check("official.latency", "官方评价延迟元信息完整", "缺项则性能数字不可比")
@@ -516,14 +583,49 @@ def c_onnx_cons():
     return (not bad), (f"{rows} 全部 >=0.99，共 {len(fs)} 个模型" if not bad else f"未达标={bad}")
 
 
+# 固定划分清单白名单：`source` 字段（= 清单文件名词干）-> 该清单必须**真实存在**且行数合法。
+# 只认「名字在不在白名单」是一个没有验证力的绿灯：清单被删掉之后 JSON 里的旧 source 仍会通过。
+# 这里连同「被引用的清单文件存在性 + 行数区间」一起断言，口径再变时下游会自动重新校验。
+SOURCE_LISTS = {
+    "pet_test": "datasets/lists/pet_test.txt",
+    "imagenetv2_mf_1000": "datasets/lists/imagenetv2_mf_1000.txt",
+}
+SOURCE_MIN_ROWS = 37            # 至少够跑 n=12 的一致性对比
+
+
 @check("onnx.realimg", "一致性用真实图片计算", "随机张量的对比说服力不足")
 def c_onnx_realimg():
     fs = sorted((ROOT / "outputs/metrics").glob("consistency_*.json"))
     if not fs:
         return False, "缺少 outputs/metrics/consistency_<registry_key>.json"
-    src = {json.loads(f.read_text(encoding="utf-8")).get("source") for f in fs}
-    return bool(src) and src <= {"pet_test", "imagenet_val_subset"}, \
-        f"数据来源={src}（必须是固定划分列表，不能是 torch.randn）"
+    rows, bad = [], []
+    for f in fs:
+        d = json.loads(f.read_text(encoding="utf-8"))
+        src = d.get("source")
+        n = int(d.get("n", 0) or 0)
+        key = d.get("model", f.stem)
+        if src not in SOURCE_LISTS:
+            bad.append(f"{key}(未知 source={src!r})")
+            continue
+        # source 指向的清单必须真的存在（否则就是「引用已删除清单的绿灯」）
+        lf = ROOT / SOURCE_LISTS[src]
+        if not lf.exists():
+            bad.append(f"{key}(清单缺失 {SOURCE_LISTS[src]})")
+            continue
+        rows_n = len([l for l in lf.read_text(encoding="utf-8").splitlines() if l.strip()])
+        if rows_n < SOURCE_MIN_ROWS:
+            bad.append(f"{key}(清单只有 {rows_n} 行)")
+            continue
+        # images 字段必须与 source 指向同一份清单（防止两处漂移）
+        imgs = str(d.get("images", "")).replace("\\", "/")
+        if imgs and not imgs.endswith(SOURCE_LISTS[src]):
+            bad.append(f"{key}(images={imgs} 与 source={src!r} 不一致)")
+            continue
+        if n < 12:
+            bad.append(f"{key}(n={n} < 12)")
+            continue
+        rows.append(f"{key}:{src}({rows_n} 行/{n} 张)")
+    return (not bad), (f"{rows} 全部来自真实固定清单" if not bad else f"异常={bad}")
 
 
 @check("labels.pair", "标签文件与类别数配对", "37 与 1000 混用会让 Top-5 名称错乱")
@@ -541,7 +643,8 @@ def c_labels_pair():
     return (not bad), f"{rows} 错配={bad}"
 
 
-@check("bench.meta", "benchmark 元信息与次数", "预热 10 + 正式 50 是硬性要求")
+@check("bench.meta", "benchmark 元信息与次数 + summary.csv 完整",
+       "预热 10 + 正式 50 是硬性要求；summary.csv 不得少于已落盘模型数")
 def c_bench():
     f = ROOT / "outputs/metrics/bench.jsonl"
     if not f.exists():
@@ -556,6 +659,54 @@ def c_bench():
         rows.append(f"{r['model']}:P50={r.get('p50_ms')} P95={r.get('p95_ms')}")
         if m:
             bad.append({r["model"]: m})
+
+    # summary.csv 完整性：必须覆盖 outputs/benchmarks 下**每一份** *_benchmark.json。
+    # 背景（真事故）：deploy/benchmark.py 曾被逐模型调用时整表覆盖写，把 6 行打成 1 行，
+    # 结果是 PPT P14 的型号元信息退化却一路绿灯。这个不变量现在有两条防线：
+    #   (1) deploy/benchmark.py 的 assert_summary_complete()（写盘时立刻报错）
+    #   (2) 这里（把已经发生的截断判成 FAIL，而不是等下游页面悄悄变形）
+    import csv as _csv
+    od = ROOT / "outputs/benchmarks"
+    json_models = {p.name[: -len("_benchmark.json")] for p in od.glob("*_benchmark.json")}
+    csv_path = od / "summary.csv"
+    if not csv_path.exists():
+        bad.append({"summary.csv": "缺失"})
+    else:
+        with csv_path.open(encoding="utf-8-sig", newline="") as fh:
+            got = {r["model"] for r in _csv.DictReader(fh) if r.get("model")}
+        miss = sorted(json_models - got)
+        rows.append(f"summary.csv={len(got)} 行/JSON {len(json_models)} 个")
+        if miss:
+            bad.append({"summary.csv": f"只 {len(got)} 行，缺 {len(miss)} 个已落盘模型：{miss}"})
+
+    # family_summary.csv 的 top1/top5 必须与 outputs/pretrained_eval/<model>/metrics.json 一致。
+    # 背景（真事故）：家族表由 tools/eval_family.py 在一次独立复跑里写出，其 top1/top5 是那次
+    # 复跑的实测值；当主口径换成 ImageNetV2 后，其中 2 个值（m0_9.top5=85.8、m1_5.top1=71.6）
+    # 与权威产物 metrics.json 分叉，且被 P04 当作 MACs/参数的来源之一、被报告 §5 当作边际收益的
+    # 对照——只有人工比对才会发现。这里把「家族表准确率 = 权威产物」变成可执行断言。
+    # 同样并入既有 bench.meta（不新增 check id，保持 34 项）。
+    fam_path = od / "family_summary.csv"
+    if fam_path.exists():
+        with fam_path.open(encoding="utf-8-sig", newline="") as fh:
+            fam_rows = [r for r in _csv.DictReader(fh) if r.get("model")]
+        mism, checked = [], 0
+        for r in fam_rows:
+            mj = ROOT / "outputs/pretrained_eval" / str(r["model"]).replace("_in1k", "") / "metrics.json"
+            if not mj.exists():
+                mism.append(f"{r['model']}: 缺 {mj.relative_to(ROOT).as_posix()}")
+                continue
+            m = json.loads(mj.read_text(encoding="utf-8"))
+            for col in ("top1", "top5"):
+                try:
+                    if abs(float(r[col]) - float(m[col])) > 1e-9:
+                        mism.append(f"{r['model']}.{col}={r[col]} ≠ metrics {m[col]}")
+                    else:
+                        checked += 1
+                except (KeyError, TypeError, ValueError) as e:
+                    mism.append(f"{r['model']}.{col} 无法比较（{e}）")
+        rows.append(f"family_summary.csv={len(fam_rows)} 行/{checked} 个准确率与 metrics.json 一致")
+        if mism:
+            bad.append({"family_summary.csv": mism})
     return (not bad), f"{rows} 问题={bad}"
 
 
