@@ -544,3 +544,43 @@ git add -A                                        # 只暂存，不提交
 
 - 本节只改 `report/` 下四份审计/验证文档与 `outputs/verification/` 下的清单 CSV；**未改**报告三件（`.md`/`.docx`/`.pdf`）、PPT 三件套、`README.md`、`REQUIREMENTS_AUDIT.md`、`tools/check_audit_evidence.py`、`SPEC13_FREEZE.json`、`report/ppt_svg/`、`docs/` 下的流程图、任何实验产物或代码；**未重跑**训练 / 权重评价 / 基准。
 - **提交范围基线**：以 t35 收尾时的 `git diff --cached --name-status` 为准（按 D/A/M 归组，见任务 output；暂存条目数仍为 **157**，无新增文件）。**此后不得再新增或暂存任何含数值字面量的文件，否则本登记（4790 / 178 与 `E1F708BF…1B3B`）失效，必须重跑本节流程。**
+
+---
+
+## 14. 第九轮：提交与推送到 `origin/main`（2026-09-17，队长执行）
+
+### 14.1 推送结果
+
+| 项 | 值 |
+|---|---|
+| 提交 | **`ea94c1814920f540de2e59c9e90fb7d920052006`** |
+| 推送范围 | `dc0527b..ea94c18  master -> main`（本地 `master` → 远端 `main`；本地 `master` 未配置 upstream，故显式指定） |
+| 远端核实 | `git ls-remote origin main` = `ea94c1814920f540de2e59c9e90fb7d920052006`，与本地 `HEAD` **逐字符一致** |
+| 暂存集 | **157 条**（D 3 / A 36 / M 118），`unstaged 0 / untracked 0`；推送前 `HEAD` = `dc0527bc…` |
+| 未入库核查 | 无 `data/`、无 `checkpoints/_full/`、无 `*_last.pt`、无 `checkpoints/pretrained/*.pth`、无 `onnx/repvit_m2_3_in1k.onnx`；暂存新增文本文件**无本机绝对路径** |
+| ONNX 入库 | **5 个**（官方 4：`m0_9_in1k` / `m1_0_in1k` / `m1_1_in1k` / `m1_5_in1k`；自训 1：`m0_9_pet37`），满足进阶①「≥4 个官方型号部署」 |
+| 交付物核查 | PDF 第 15 页「最终提交内容」**16 项全部存在**（缺项 0） |
+
+**GitHub 警告（非错误，推送已完成）**：`onnx/repvit_m1_5_in1k.onnx` 为 **53.74 MB**，超过 GitHub 建议的 50 MB 上限。
+依据：用户已明确选择「入库 M1.5 以凑满 4 个官方型号」（G-6），该体积代价为知情批准。
+
+### 14.2 ★ 自指声明（沿用 POLICY §22.2 的既定处理）
+
+不动点登记值 **4790 条 / 178 个文件** 与清单 CSV **`E1F708BF…1B3B`**，**对应本次推送前的暂存态**。
+
+**其后唯一的增量是本节自身新增的回填行**（本节含提交哈希与远端核实结果）——即**自指簿记**。按 POLICY §22.2 的既定裁决：**显式声明，不做递归重登记**（哈希只有在提交之后才知道，`记录推送结果` 必然晚于登记；若要求每次都重登记将无限递归）。
+
+**因此**：在本节提交后重跑 `tools/audit_logits_references.py`，所得条数/CSV 哈希会与 §13.2 的登记值相差本节新增的条目，**属预期行为，不是失配**。会话记录见 `POLICY_IMAGENETV2_ONLY.md` §22.2。
+
+### 14.3 ★ 已知残余（如实记录，未修）
+
+发布时存在 **2 条 medium 级复核发现未修复**，均为**我方自加的审计文档与其守卫**的问题，**不影响任何实验结果、指标数值，或 PDF 要求的交付物**：
+
+| ID | 位置 | 内容 | 为何未修 |
+|---|---|---|---|
+| **F-1** | `report/REQUIREMENTS_AUDIT.md` L719 / L740（G-1、X-7 路径列）与 L726（G-8，**两处**） | 引用 `report/ppt_svg/05_data.svg` 与 `04_pretrained.svg`，而**实际文件名是 `06_data.svg` / `05_pretrained.svg`**（`Test-Path` 均为 False）；这三行位于表头写「最小修复方案（可直接执行）」的列，且缺「t2 时点／不需再执行」的历史标注 | 修复任务 **t38** 已建但**未被调度执行** —— 团队在 t36 判 failed 后进入 `escalated`（自动 review/repair 触及轮次上限），调度停滞 |
+| **F-2** | `tools/check_audit_evidence.py:426` | `PLAN_PATH_RE` 白名单不含 `.svg / .pdf / .docx / .pptx / .log`，故**这一类死路径对断言整类不可见**（探针实证：`.svg` 死路径 exit 0 未捕获，`.json` 死路径 exit 1 `PLAN_DEAD_PATH`） | 同上（`t38` 未执行） |
+
+**这两项的定性**：`F-1` 是**我们自己额外加的严谨性文档**中的一处陈旧引用（非交付声明、非指标）；`F-2` 是**守卫的覆盖面缺口**（当前树未受影响）。**PDF 真正要求的交付物**（报告三件、PPT 三件、Q&A 精简版、代码、6 个 ONNX、训练日志、数据划分、性能记录）在最近一次独立验证（t36）中**全量回归全部 PASS**，且验证过程只读自证 `PRE=POST` 零差异。
+
+**后续**：经用户授权后，可按「修 F-1/F-2 → 重跑不动点登记 → 只读复验」的顺序做一次追补推送（见 `_coord/POLICY_IMAGENETV2_ONLY.md` §35.4 与 §36）。
