@@ -20,7 +20,7 @@
 
 > **★ 2026-09-17 数值刷新（t20）**：本文件是 **2026-09-16 的验证快照**（上方 SHA256 与判定均针对当时的修订，**保留不改**）。此后官方模型评价改为 **ImageNetV2 matched-frequency 固定子集**唯一口径，部分"当前值"类断言随之失效。t20 只做一件事：**把正文里被当作现行证据的数据字面量刷新为现行值并就地注明日期**（B2/B3/新增 B12/B13 的一致性误差、官方 5 型号 Top-1、onnx.realimg 数据来源、P50 序列），**不动任何判定、结论、SHA 快照与历史行号/页码引用**。刷新点在 §3、§4.2、§R2、§R3-3、§R3-9、§R3-10。
 >
-> **★ 同轮扫描清单登记值（t20 → t21 → t23 → t28 → t32 → t35 → t42 → t39 → t50 九次刷新）**：`outputs/verification/logits_reference_inventory.csv` = **4793 条引用 / 179 个文件**（t39 与 t42 均为 4791 / 179、t35 为 4790 / 178、t32 与 t28 均为 4788 / 178、t23 为 4778 / 177、t21 为 4776 / 177、t20 为 4731 / 176，再往前为 4124 / 153）。t50 的 **+2 / +0**：两处新增条目全部来自 `tools/selfcheck.py`（11 → 13）—— t49 的 F-13 机检文案与 F-15 载体清单各记 1 条；其余 178 个文件逐文件相减 0，**且 179 个文件的被扫行内容变化合计 = 0**（重生后的入库自检报告 JSON 的 6 行在扫、摘录未变）；行数 / 字节 / SHA256 按登记台账 `report/SYNC_NOTES.md` §17.2 为准。t39 的 **+0 / +0**：条数与文件数都与 t42 相同，但 t38/t45/t46/t47 四轮改动使 **33 行 / 3 个文件**的被扫内容变化（`tools/update_defense.py` 21、`tools/selfcheck.py` 11、`report/REQUIREMENTS_AUDIT.md` 1），校验值随之刷新。t42 的 **+1 / +1**：唯一新增条目与新增文件都来自 `report/SYNC_NOTES.md`（此前 0 条；首次命中来自 §14.2 自指声明自身那一行，即该节预告的「回填行」）；另有 4 个文件共 **119 行**被扫内容变化而计数不变（`tools/update_defense.py` 106、`tools/selfcheck.py` 11、`report/PPT_CONTENT.md` 1、`report/答辩PPT_RepViT.pptx` 1，均为 t41 改动）。t35 的 **+2 / +0**：全部来自 t34 在审计文档里新增的一行（L722，含两处被扫词、大小写各一，按桶归 B1）；`tools/check_audit_evidence.py` 的新增断言不产生新条目。t32 的 **+0 / +0**：条数与文件数都与 t28 相同，但清单正文与校验值已刷新（t30 改写的审计文档里 1 条 `statement` 行的归属由 B2 改为 B3，另有多处文本换位）。t28 的 **+10 / +1**：全部来自 t27 新增的证据指针校验器 `tools/check_audit_evidence.py`（10 条均为 `statement`，按桶归 B11）；t23 的 **+2 / +0**：+1 来自审计文档的「1.2-8」行（155→156 行），另 +1 为本轮新增台账文本自身；t22 另改的 `report/ppt_svg/14_perf.svg`、`report/ppt_svg/README.md`、`report/SPEC13_FREEZE.json`、`report/SPEC13_SWITCH_RUNBOOK.md` 四份文件条目数均不变。
+> **★ 同轮扫描清单登记值（t20 → t21 → t23 → t28 → t32 → t35 → t42 → t39 → t50 → **第十次登记** 十次刷新）**：`outputs/verification/logits_reference_inventory.csv` = **4779 条引用 / 179 个文件**（上一轮 t50 为 4793 / 179、t39 与 t42 均为 4791 / 179、t35 为 4790 / 178、t32 与 t28 均为 4788 / 178、t23 为 4778 / 177、t21 为 4776 / 177、t20 为 4731 / 176，再往前为 4124 / 153）。t50 的 **+2 / +0**：两处新增条目全部来自 `tools/selfcheck.py`（11 → 13）—— t49 的 F-13 机检文案与 F-15 载体清单各记 1 条；其余 178 个文件逐文件相减 0，**且 179 个文件的被扫行内容变化合计 = 0**（重生后的入库自检报告 JSON 的 6 行在扫、摘录未变）；行数 / 字节 / SHA256 按登记台账 `report/SYNC_NOTES.md` §18.2 为准。第十次登记（2026-09-19）的 **−14 / +0**：全部来自 `report/答辩PPT_RepViT.pptx`（95 → 81，用户在 PowerPoint 中保存导致的内部部件换号 + 第 3 页删除 3 字 `一句话：`，无其它内容变化），其余文件的条数与文件数均不变（报告三件与两份本轮修正的文档仅 location / 摘录位移）；清单 4,780 行、1,243,467 B、SHA256 `899F97B6…BC45`。t39 的 **+0 / +0**：条数与文件数都与 t42 相同，但 t38/t45/t46/t47 四轮改动使 **33 行 / 3 个文件**的被扫内容变化（`tools/update_defense.py` 21、`tools/selfcheck.py` 11、`report/REQUIREMENTS_AUDIT.md` 1），校验值随之刷新。t42 的 **+1 / +1**：唯一新增条目与新增文件都来自 `report/SYNC_NOTES.md`（此前 0 条；首次命中来自 §14.2 自指声明自身那一行，即该节预告的「回填行」）；另有 4 个文件共 **119 行**被扫内容变化而计数不变（`tools/update_defense.py` 106、`tools/selfcheck.py` 11、`report/PPT_CONTENT.md` 1、`report/答辩PPT_RepViT.pptx` 1，均为 t41 改动）。t35 的 **+2 / +0**：全部来自 t34 在审计文档里新增的一行（L722，含两处被扫词、大小写各一，按桶归 B1）；`tools/check_audit_evidence.py` 的新增断言不产生新条目。t32 的 **+0 / +0**：条数与文件数都与 t28 相同，但清单正文与校验值已刷新（t30 改写的审计文档里 1 条 `statement` 行的归属由 B2 改为 B3，另有多处文本换位）。t28 的 **+10 / +1**：全部来自 t27 新增的证据指针校验器 `tools/check_audit_evidence.py`（10 条均为 `statement`，按桶归 B11）；t23 的 **+2 / +0**：+1 来自审计文档的「1.2-8」行（155→156 行），另 +1 为本轮新增台账文本自身；t22 另改的 `report/ppt_svg/14_perf.svg`、`report/ppt_svg/README.md`、`report/SPEC13_FREEZE.json`、`report/SPEC13_SWITCH_RUNBOOK.md` 四份文件条目数均不变。
 
 ## 0. 结论（verdict = needs_revision）
 
@@ -253,7 +253,7 @@ python tools/selfcheck.py --json "$env:TEMP\selfcheck_outrepo.json"
 |---|---|---|---|---|
 | V1 | **blocker** | 交付物断言「paths 检查 0 处 / 代码零写死绝对路径 / 37 条自检 0 失败」，实际 `paths` FAIL 1 处。命中来自 t6 新增的 `tools/audit_logits_references.py:430` 的检测字面量 `'C:\\Users'`（**实质是误报**：它是检测器自身的匹配串，不是任何 I/O 路径）。但仓库自带检查器判 FAIL，交付物不能继续宣称 0 处。 | `python tools/selfcheck.py --stage skeleton` → `paths FAIL 1 处 首处 tools/audit_logits_references.py:430` | 二选一：(a) 让该字面量不再命中规则（例如改成 `'C:' + chr(92) + 'Users'` 或在 `c_paths()` 的 skip 里排除该文件并写明理由）；(b) 若选择保留，则同步改正 `report/REPORT.md:1011`、`PROGRESS.md:223`、PPTX P02/P15 的措辞并重新导出 PDF/DOCX。推荐 (a)，改动 1 行且与「代码零写死绝对路径」的事实一致。 |
 | V2 | medium | 「37 条验收项」与工具实际检查数不符：`tools/selfcheck.py` 在 `81693dd`、`HEAD`、当前工作区三处都恰好是 **34** 个 `@check`（`re.findall` 计数：34 / 34 / 34，无增删）。PPTX P02/P15、`report/PDF p2`、`PPT_CONTENT.md:56,799`、`REPORT.md:1010` 的「37 条」没有落盘对应物。 | `python -c "import re,io;print(len(re.findall(r'@check\(\s*\"',io.open('tools/selfcheck.py',encoding='utf-8').read())))"` → 34 | 把文案改为工具实际口径（34 项），或在 REPORT 里说明 37 条 DoD 与 34 条自检项的映射关系；至少不要写成「37 条由 selfcheck 逐条自检」。属**既有**问题（`81693dd` 起就在），非 t7/t8 引入。 |
-| V3 | medium | `report/REPORT.md` §16.1 第 2 条仍用 **92.26% / 92.14% / 3.17%**，与全仓唯一权威落盘 `outputs/metrics/baseline_test.json`（92.34 / 92.22）及本报告 §1.9 表格冲突；该句已导出到 `report.pdf` 第 29 页与 `REPORT.docx`。属**既有**问题（`git grep 92.26 81693dd -- report/REPORT.md` 命中 949 行），t7 未在 D1–D9 范围内处理。 | `git grep -n 92.26 81693dd -- report/REPORT.md`；`python -c "import json;print(json.load(open('outputs/metrics/baseline_test.json'))['top1'])"` → 0.9234123739438539 | 统一为落盘值 92.34% / 92.22% / 3.56%，或在括号里注明 92.26% 是重跑前的旧值（`REPORT.md:464` 已有「重跑一次 92.26→92.34」的说明，可交叉引用）。 |
+| V3 | medium | `report/REPORT.md` §16.1 第 2 条仍用 **92.26% / 92.14% / 3.17%**，与全仓唯一权威落盘 `outputs/metrics/baseline_test.json`（92.34 / 92.22）及本报告 §1.9 表格冲突；该句已导出到 `report.pdf` 第 29 页与 `REPORT.docx`。属**既有**问题（`git grep 92.26 81693dd -- report/REPORT.md` 命中 949 行），t7 未在 D1–D9 范围内处理。 | `git grep -n 92.26 81693dd -- report/REPORT.md`；`python -c "import json;print(json.load(open('outputs/metrics/baseline_test.json'))['top1'])"` → 0.9234123739438539 | 统一为落盘值 92.34% / 92.22% / 3.56%，或在括号里注明 92.26% 是重跑前的旧值（`REPORT.md:464` 已有「重跑一次 92.26→92.34」的说明，可交叉引用）。（审计当时定位，行号随后续改动漂移） |
 | V4 | medium | `report/REPORT.md:1001-1002` §16.1 第 5 条仍是超证据断言「8/8 全对**说明模型没有过拟合到 Pet 的拍摄风格**」，而 PPTX P10 与 `ppt_svg/11_gradcam.svg` 已改成「8/8 判对只是小样本观察，不能证明…」。同一事实在两个交付物里口径相反。属既有措辞（HEAD 就存在），但 D5 类问题应同批收口。 | 读 `report/REPORT.md:1001` 与 PPTX slide10 备注对比 | 与 PPTX 对齐：「8 张实拍上 8/8 判对；样本量太小，不能据此证明跨域泛化或没有过拟合」，并重新导出 PDF/DOCX。 |
 | V5 | low | PPTX P04 的 MACs 列口径混用：M0.9/M1.0 用 `outputs/pretrained_eval/*/metrics.json` 的 `macs_g`（0.8471/1.1428），M1.1/M1.5/M2.3 却等于 `outputs/benchmarks/family_summary.csv` 的 `macs_G`（1.3581/2.3084/4.5739）；而同一张表的「数据来源」只写了 `outputs/pretrained_eval/<model>/metrics.json · summary.csv`（此处 `macs_g` 分别是 1.3769/2.3397/4.6263，**与页面数字不一致**）。属既有问题（`81693dd` 与 `HEAD` 的 slide5 已是这 5 个数字，t8 未改动）。所有数字都能在 `outputs/` 找到，故不判为编造；但来源标注不完整。 | `git show 81693dd:report/答辩PPT_RepViT.pptx` 后抽取 slide5 文本可见 1.358/2.308/4.574 | 在「数据来源」补一句 MACs 来自 `outputs/benchmarks/family_summary.csv`（infer_fused 口径），或统一改成 metrics.json 的 macs_g。 |
 | V6 | low | `report/ppt_svg/13_onnx.svg`（设计源）只画了 Pet-37 一行（6.199e-06/1.501e-06/100%），最终 PPTX P13 表已扩成 3 个型号各 12 张；`report/ppt_svg/12_reparam.svg` 标题是「…是代数等价的替换，实测误差小于阈值」，而 PPTX P12 标题是「重参数化：合并分支后，误差仍在设定阈值内」。数值无矛盾，措辞不同。按船长更正 3（ppt_svg 是设计源、以 PPTX 为准）**不判为缺陷**，仅登记。 | 读两份 SVG 与 PPTX P12/P13 | 可选：在 `ppt_svg/README.md` 的注记里补一句「13_onnx.svg 是 3 型号表之前的版本」。 |
@@ -493,7 +493,7 @@ python -c "import json;d=json.load(open('outputs/metrics/baseline_test.json'));p
    且模型几乎不混淆猫狗（跨物种错误仅占 **3.56%**，10 / 281），全部错误集中在细粒度品种之间。
 ```
 
-未误改：`REPORT.md:464` 仍是「同一份配置（baseline）重跑一次的 test Top-1 从 **92.26 变到 92.34**（**±0.08 个点**）」。全仓扫描 `92.26` 仅 3 处且同源：`REPORT.md:464`、`report.pdf` 第 16 页、`REPORT.docx` 同一句；`92.14` 全仓 0 命中。
+未误改：`REPORT.md:464` 仍是「同一份配置（baseline）重跑一次的 test Top-1 从 **92.26 变到 92.34**（**±0.08 个点**）」。全仓扫描 `92.26` 仅 3 处且同源：`REPORT.md:464`、`report.pdf` 第 16 页、`REPORT.docx` 同一句；`92.14` 全仓 0 命中。（审计当时定位，行号随后续改动漂移）
 
 ## R2-4. 【passed】V4 — 「8/8 说明没有过拟合」已消失，与 PPTX P10 口径一致
 
@@ -525,7 +525,7 @@ PPTX P04 页脚（现行，逐字）：
 
 落盘（唯一）：`outputs/confusion_matrix/baseline_cat_dog_block.json` → `n_error=281`、`n_cross_species_error=10`、`n_within_species_error=271`、`cross_species_error_ratio=0.03558718861209965`（= 10/281 → 3.56%）。
 
-全仓一致性：`report/REPORT.md:555` = `**3.56 %（10 / 281 个错误）**`、`:556` = `271 个`、`:558` = `3.56%`、`:992` = `3.56%，10 / 281`（不再自相矛盾）；`README.md:287-288` = `281 个错误里只有 10 个（3.56%）是跨物种…其余 271 个`；PPTX P02/P15 = `跨物种错误仅 3.56%`、P09 = `281 个错误中，10 个跨猫狗物种（3.56%），其余 271 个是同物种品种判断错误`。
+全仓一致性：`report/REPORT.md:555` = `**3.56 %（10 / 281 个错误）**`、`:556` = `271 个`、`:558` = `3.56%`、`:992` = `3.56%，10 / 281`（不再自相矛盾）；`README.md:287-288` = `281 个错误里只有 10 个（3.56%）是跨物种…其余 271 个`；PPTX P02/P15 = `跨物种错误仅 3.56%`、P09 = `281 个错误中，10 个跨猫狗物种（3.56%），其余 271 个是同物种品种判断错误`。（审计当时定位，行号随后续改动漂移）
 旧三元组（`3.17%` / `284 个` / `275 个`）全仓扫描只剩 1 处，位于**本报告第 1 轮的 V6 记录**（引用语境），成品与其它文档 0 命中。
 
 ## R2-7. 【passed】第 1 轮已通过项回归（未被本轮修复放松）
@@ -698,7 +698,7 @@ PAGE COUNT = 26   (requirement <= 30)
 TOTAL juxtaposition hits = 0
 ```
 
-`REPORT.md:540-545` 的 12.4 备注（PDF p17）逐字保留：**「不是真实测试图片」**、「它与下一节的 PyTorch↔ONNX 一致性实验**不是同一批输入、也不是同一条代码路径**，**两处数值不可并列成一句结论，也不能互相替代**」。
+`REPORT.md:540-545` 的 12.4 备注（PDF p17）逐字保留：**「不是真实测试图片」**、「它与下一节的 PyTorch↔ONNX 一致性实验**不是同一批输入、也不是同一条代码路径**，**两处数值不可并列成一句结论，也不能互相替代**」。（审计当时定位，行号随后续改动漂移）
 
 ## R3-5. 【passed】5.25e-06 口径仍是唯一收敛表述且未超证据
 
@@ -793,7 +793,7 @@ repvit_m1_5_in1k  : n=12 max=1.1444091796875e-05    mean=1.8764107115506097e-06 
 
 同时复核（第 1 轮项）：
 （2026-09-17 t20 刷新：上面这段三行快照已扩为**五行**（新增 M1.1 / M1.5），并把 M0.9 / M1.0 的 `max`/`mean` 换成 ImageNetV2 口径重跑后的现行值；Pet-37 一行未变。四份 JSON 与 `outputs/verification/` 副本逐字段一致、`verdict` 均 `PASS`。）
-- `REPORT.md:743-745` 仍写「**34 条 DoD**…`summary = {total: 34, pass: 34, fail: 0}`」与「无任何写死的个人绝对路径（`paths` 检查 **0 处**）」——与本次实测自检一致（V1/V2 未回退）。
+- `REPORT.md:743-745` 仍写「**34 条 DoD**…`summary = {total: 34, pass: 34, fail: 0}`」与「无任何写死的个人绝对路径（`paths` 检查 **0 处**）」——与本次实测自检一致（V1/V2 未回退）。（审计当时定位，行号随后续改动漂移）
 - 跨物种 `3.56% / 10 / 281 / 271`（V6 未回退）；`92.34% / 92.22%`（V3 未回退）；§16.1 第 5 条仍是 V4 的否定式句（未回退）。
 
 ## R3-11. 第 3 轮遗留（均为 info 级，不阻塞放行）
@@ -822,3 +822,26 @@ git diff-tree --no-commit-id --numstat -r 4b5cda2 -- outputs/metrics/consistency
 ```
 
 > 第 3 轮只写了 `report/VERIFICATION_LOGITS_PPT.md`（追加本节）；未新建任何临时目录，未修改任何被验证产物，未执行 `git commit` / `git push`。
+
+
+---
+
+# R4. 第十三次·第十次登记（2026-09-19）
+
+> 本节为**追加登记**，不改动 R1–R3 与 §1–§13 的任何历史记录（含各轮的行号/页码引用，它们仍是「审计当时」的定位）。
+
+- 触发：① t2 插入 12 张插图并重生成 `REPORT.docx` / `report.pdf`；② 2026-09-19 用户在 PowerPoint 中保存 `report/答辩PPT_RepViT.pptx`；③ 该 PPT 的 PDF 版本同源重导（15 = 15 页）。
+- 本轮登记值：**4779 条 / 179 个文件**；清单 4,780 行、1,243,467 B、SHA256 `899F97B6…BC45`（上一轮 t50：4793 / 179、4,794 行、1,247,351 B、`D27779D6…54F8`）。
+- 增量 **−14 / +0**：全部来自 `report/答辩PPT_RepViT.pptx`（95 → 81）。该 PPTX 的变动性质如实登记为：**2026-09-19 用户在 PowerPoint 中的保存 —— 内部部件重排（图表 / 备注页 / media 换号）+ 第 3 页删除 3 字 `一句话：`，无其它内容变化**；随后该 PPT 的 PDF 版本已同源重导。
+- 报告三件（`REPORT.md` / `REPORT.docx` / `report.pdf`）条数均不变，仅随插图产生行号 / 段号 / 页码位移 —— 属版式重排，非口径变化。
+- 门禁（本轮实测）：`tools/check_audit_evidence.py` exit 0 且 FAIL 分类为空；`tools/selfcheck.py --json <仓外>` 34/34；`tools/check_report_assets.py --strict` exit 0。
+- 完整台账与边界见 `report/SYNC_NOTES.md` §18、本目录审计发现文档 §2.14。
+
+---
+
+# R5. 第十次登记的复审追加修订（2026-09-19）
+
+- 复用复审修正 `report/REQUIREMENTS_AUDIT.md` 的 3 处确证错误（4-A10 的括注与引用、A1-9 的 0.9842 → 0.9792 与引用、L155/L728 的 3 处简写行号指针）；两处判定均未改。
+- 这 4 行不在扫描命中集内 ⇒ 清单**逐字节不变**：4779 条 / 179 个文件、4,780 行、1,243,467 B、SHA256 `899F97B6…BC45`；**R4 的登记值继续有效**。
+- 门禁复跑：`tools/check_audit_evidence.py` exit 0 且 FAIL 分类为空；`tools/selfcheck.py --json <仓外>` 34/34；`tools/check_report_assets.py --strict` exit 0。
+- 台账见 `report/SYNC_NOTES.md` §19、本目录审计发现文档 §2.15。

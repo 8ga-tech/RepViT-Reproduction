@@ -47,11 +47,11 @@ PDF 原文（第 3~4 页）§1.3 共 4 组内容：选择型号 4 条、子集�
 
 | 要求原文摘录 | 仓库证据（相对路径或可直接运行的命令） | 判定 | 缺口说明 |
 |---|---|---|---|
-| **1.3-S1** 官方模型评价使用**考核方指定的 ImageNet-1K 验证子集** | 现用 `datasets/lists/imagenet_val_subset.txt`（1000 行，自建分层抽样，`python datasets/make_imagenet_subset.py --n 1000 --seed 20260912` 生成）；`data/provided/README_这里要放什么.md` 记载该目录为空；`README.md:116-117`、`report/REPORT.md:125-126` 均显式声明「**自建**、**不是考核方下发的指定子集**」 | **挂起（待考核方清单）** | 按用户决议挂起，不在本次范围 |
+| **1.3-S1** 官方模型评价使用**考核方指定的 ImageNet-1K 验证子集** | 现用 `datasets/lists/imagenet_val_subset.txt`（1000 行，自建分层抽样，`python datasets/make_imagenet_subset.py --n 1000 --seed 20260912` 生成）；`data/provided/README_这里要放什么.md` 记载该目录为空；`README.md:116-117`、`report/REPORT.md:127-128` 均显式声明「**自建**、**不是考核方下发的指定子集**」 | **挂起（待考核方清单）** | 按用户决议挂起，不在本次范围 |
 | **1.3-S2** 考核方**提供固定图片列表及标签** | `data/provided/` 为空（仅有说明 README）；现有 `datasets/lists/imagenet_val_subset.txt` 为自建；标签 `labels/imagenet_classes.txt`（1000 行，四锚点自检 `python tools/verify_imagenet_labels.py` 通过） | **挂起（待考核方清单）** | 按用户决议挂起，不在本次范围 |
 | **1.3-S3** **所有候选人使用相同数据** | 无考核方统一清单可比对；仓库只能声明使用自建清单，`outputs/pretrained_eval/summary.csv` 未记录 `subset_sha256`（`outputs/benchmarks/family_summary.csv` 的 `subset_sha256 = f9267fefe71a8345` 只覆盖家族 5 型号那次评价） | **挂起（待考核方清单）** | 按用户决议挂起，不在本次范围 |
 | **1.3-S4** **验证子集不得用于训练或调参** | 训练只用 Oxford-IIIT Pet（`datasets/lists/pet_*.txt`），ImageNet 子集只进 `tools/eval_pretrained.py`；`configs/pretrained_eval.yaml` 无任何训练/调参分支；`outputs/metrics/leakage_check.json` train∩val∩test = 0/0/0 | **挂起（待考核方清单）** | 按用户决议挂起，不在本次范围 |
-| **1.3-S5** 候选人**必须注明**：`本结果为指定ImageNet-1K验证子集上的实际运行结果，不代表论文完整ImageNet-1K验证集结果。` | `README.md:171`、`report/REPORT.md:125-126`、`report/ppt_svg/05_pretrained.svg:78`、`ppt_svg/04`（PPT 第 4 页 PDF 文本可读「本结果为「该自建验证子集上的实际运行结果」，不代表论文完整 ImageNet-1K 验证集结果。」）均有**等价句**，但措辞是「自建验证子集」而非 PDF 要求的「指定」子集 | **挂起（待考核方清单）** | 按用户决议挂起，不在本次范围 |
+| **1.3-S5** 候选人**必须注明**：`本结果为指定ImageNet-1K验证子集上的实际运行结果，不代表论文完整ImageNet-1K验证集结果。` | `README.md:171`、`report/REPORT.md:127-128`、`report/ppt_svg/05_pretrained.svg:78`、`ppt_svg/04`（PPT 第 4 页 PDF 文本可读「本结果为「该自建验证子集上的实际运行结果」，不代表论文完整 ImageNet-1K 验证集结果。」）均有**等价句**，但措辞是「自建验证子集」而非 PDF 要求的「指定」子集 | **挂起（待考核方清单）** | 按用户决议挂起，不在本次范围 |
 
 ### 2.1.1 后续决议与当前状态（2026-09-17 追加；不修改上方原判定）
 
@@ -123,10 +123,10 @@ PDF 原文（第 3~4 页）§1.3 共 4 组内容：选择型号 4 条、子集�
 | **0-2** 自行训练 RepViT-M0.9 Baseline | `configs/baseline.yaml` + `tools/train.py`；`checkpoints/baseline_best.pt`（19,386,027 B）；`outputs/logs/baseline_metrics.csv`；`outputs/metrics/baseline_test.json` | 满足 | — |
 | **0-3** 完成至少一项控制变量优化 | `configs/opt_{combo,mix,randaug,disc}.yaml` 四方案 + `configs/opt_abl_{a,b,ab}.yaml` 三消融臂；`outputs/logs/opt_*_metrics.csv` | 满足 | — |
 | **0-4** 完成自行训练模型及官方模型的 ONNX 独立部署 | `onnx/repvit_m0_9_pet37.onnx`（自训）+ `onnx/repvit_m0_9_in1k.onnx`、`onnx/repvit_m1_0_in1k.onnx`（官方）；推理入口 `deploy/infer_onnx.py` | 满足 | — |
-| **0-5** 提交完整报告、PPT 并参加现场答辩 | `report.pdf`（26 页）、`report/REPORT.md`、`report/REPORT.docx`、`report/答辩PPT_RepViT.pptx`、`report/答辩PPT_RepViT.pdf`（15 页） | 部分 | 「参加现场答辩」是现场环节，静态不可判定；已具备的静态交付物齐备 |
-| **0-6** 性能数据必须报告 CPU/GPU/集显型号 | `outputs/benchmarks/summary.csv` 的 `cpu_model = 13th Gen Intel(R) Core(TM) i7-13650HX`；`outputs/metrics/bench.jsonl` 的 `env.cpu`；`report/REPORT.md:648` | 满足 | — |
-| **0-7** 操作系统 | `outputs/benchmarks/summary.csv` 的 `os = Windows-11-10.0.26200-SP0`；`report/REPORT.md:648` | 满足 | — |
-| **0-8** 推理后端及版本 | `outputs/benchmarks/summary.csv` 的 `ort_version = 1.30.0`；`report/REPORT.md:645` | 满足 | — |
+| **0-5** 提交完整报告、PPT 并参加现场答辩 | `report.pdf`（31 页）、`report/REPORT.md`、`report/REPORT.docx`、`report/答辩PPT_RepViT.pptx`、`report/答辩PPT_RepViT.pdf`（15 页） | 部分 | 「参加现场答辩」是现场环节，静态不可判定；已具备的静态交付物齐备 |
+| **0-6** 性能数据必须报告 CPU/GPU/集显型号 | `outputs/benchmarks/summary.csv` 的 `cpu_model = 13th Gen Intel(R) Core(TM) i7-13650HX`；`outputs/metrics/bench.jsonl` 的 `env.cpu`；`report/REPORT.md:670` | 满足 | — |
+| **0-7** 操作系统 | `outputs/benchmarks/summary.csv` 的 `os = Windows-11-10.0.26200-SP0`；`report/REPORT.md:670` | 满足 | — |
+| **0-8** 推理后端及版本 | `outputs/benchmarks/summary.csv` 的 `ort_version = 1.30.0`；`report/REPORT.md:667` | 满足 | — |
 | **0-9** 实际 Execution Provider | `outputs/benchmarks/summary.csv` 的 `provider_actual = ['CPUExecutionProvider']`；`outputs/metrics/bench.jsonl` 的 `provider_actual` / `ep`；`deploy/benchmark.py:57` 打印 `EP(actual)`；`tools/bench_igpu.py` 在检测到回退时把该行标 `invalid` | 满足 | — |
 | **0-10** 模型型号 | `outputs/benchmarks/summary.csv` 的 `model` 列（6 型号） | 满足 | — |
 | **0-11** 输入尺寸 | `outputs/benchmarks/summary.csv` 的 `input_size = 224` | 满足 | — |
@@ -134,7 +134,7 @@ PDF 原文（第 3~4 页）§1.3 共 4 组内容：选择型号 4 条、子集�
 | **0-13** FP32/FP16/INT8 精度 | `outputs/benchmarks/summary.csv` 的 `precision = FP32` | 满足 | — |
 | **0-14** 预热和正式测试次数 | `outputs/benchmarks/summary.csv` 的 `warmup = 10` / `runs = 50`；`tools/selfcheck.py` 的 `bench.meta` 检查 PASS | 满足 | — |
 | **0-15** 线程数或其他重要运行配置 | `outputs/benchmarks/summary.csv` 的 `threads_intra = 4`；`outputs/metrics/bench.jsonl` 的 `threads_inter = 1` | 满足 | — |
-| **0-16** 不同设备、后端和精度下的延迟不能直接横向比较 | `outputs/benchmarks/family_summary.csv`（PyTorch CPU 计时，M0.9 = 36.1 ms）与 `outputs/benchmarks/summary.csv`（ORT CPU P50 7.37 ms）**分文件存放**；`report/REPORT.md:198-199` 显式警告「注意不要混用」；`report/REPORT.md:158-159` 声明 iPhone 12 延迟不可直接比较 | 满足 | README 第 12 节另注明 `outputs/metrics/bench.jsonl` 存在两批基准（早批 P50 13.60/17.18/12.48 ms），要求引用时写明批次 |
+| **0-16** 不同设备、后端和精度下的延迟不能直接横向比较 | `outputs/benchmarks/family_summary.csv`（PyTorch CPU 计时，M0.9 = 36.1 ms）与 `outputs/benchmarks/summary.csv`（ORT CPU P50 7.37 ms）**分文件存放**；`report/REPORT.md:200-201` 显式警告「注意不要混用」；`report/REPORT.md:160-161` 声明 iPhone 12 延迟不可直接比较 | 满足 | README 第 12 节另注明 `outputs/metrics/bench.jsonl` 存在两批基准（早批 P50 13.60/17.18/12.48 ms），要求引用时写明批次 |
 
 ### 3.1 基础任务 1.1：官方模型评价（15 分中的一部分，第 6 页，10 条）
 
@@ -144,20 +144,20 @@ PDF 原文（第 3~4 页）§1.3 共 4 组内容：选择型号 4 条、子集�
 | **1.1-2** 对**指定** ImageNet 验证子集完成推理 | `python tools/run_all_pretrained.py --cfg configs/pretrained_eval.yaml --model repvit_m0_9 repvit_m1_0 repvit_m1_1 repvit_m1_5 repvit_m2_3`（脚本内的清单已同步为 ImageNetV2）；落盘 `outputs/pretrained_eval/*/predictions.csv`（各 1000 行） | 部分 | 推理已在**现行唯一口径**（ImageNetV2 matched-frequency 1000 张固定子集）上完成，但该子集**不是考核方下发的清单** → 与 §1.3 挂起项 1.3-S1/S2 耦合。**2026-09-17 后记**：用户已指定 ImageNetV2 为唯一口径，故本条按现行口径记 `部分`（考核方清单仍未到），不再按「挂起」处理 —— 详见 §2.1.1 |
 | **1.1-3** 计算 Top-1 和 Top-5 准确率 | `outputs/pretrained_eval/*/metrics.json` 的 `top1`/`top5`（现行 M0.9 为 `68.7`/`85.7`）；`outputs/pretrained_eval/summary.csv` | 满足 | 注意 `metrics.json` 里已是百分数（`report_spec.py` 的 `CALIBER_ROWS` 也标注「不得再乘 100」） |
 | **1.1-4** 统计参数量、MACs 和模型文件大小 | `outputs/pretrained_eval/*/metrics.json` 的 `params_total`/`macs_g`/`macs_source="thop"`/`model_file_size_mb`；`outputs/metrics/count_params.json`（三口径）、`outputs/metrics/count_flops.json`（thop 847,050,816 与 fvcore 832,165,824 同口径，**不是 2 倍**） | 满足 | — |
-| **1.1-5** 统计 PyTorch 平均推理延迟 | `outputs/pretrained_eval/*/latency.json`（`warmup=10`、`runs=50`、`mean_ms`、`p50_ms`、`p95_ms`，含融合/未融合两组）；`report/REPORT.md:136`（§4.3 表第 6 行「**PyTorch 推理**」） | 满足 | — |
+| **1.1-5** 统计 PyTorch 平均推理延迟 | `outputs/pretrained_eval/*/latency.json`（`warmup=10`、`runs=50`、`mean_ms`、`p50_ms`、`p95_ms`，含融合/未融合两组）；`report/REPORT.md:138`（§4.3 表第 6 行「**PyTorch 推理**」） | 满足 | — |
 | **1.1-6** 输出至少 6 张图片的 Top-5 类别及置信度 | `outputs/pretrained_eval/<model>/top5_samples.json` 每型号 **`n_samples = 6`**（`repvit_m0_9 / m1_0 / m1_1 / m1_5 / m2_3` 均为 6），每条含 `top5[idx,name,prob]` | 满足 | 6 ≥ 6（踩线满足） |
-| **1.1-7** 分析至少 2 个正确案例 | 图片证据：每型号 `outputs/pretrained_eval/*/cases/correct_1.png` + `outputs/pretrained_eval/*/cases/correct_2.png`（2 正）；`outputs/pretrained_eval/repvit_m0_9/top5_samples.json` 中 `correct=true` 4 条。**文字分析**：`report/REPORT.md:164-165` 只具体写了 1 个正确案例（beagle 96.8%，Top-5 余项皆为猎犬类） | 部分 | 缺「第 2 个正确案例」的逐例文字分析（要求「分析至少 2 个」，现有 1 个成文 + 2 张图）；影响五-1（15 分）的案例分项。修复见 §9 得分项 G-3 |
-| **1.1-8** 分析至少 2 个错误案例 | 图片证据：每型号 `outputs/pretrained_eval/*/cases/wrong_1.png` + `outputs/pretrained_eval/*/cases/wrong_2.png`（2 误）。**文字分析**：`report/REPORT.md:166` 用一句话概括两类错误现象（细长体型小型犬混判、主色相近体型不同混判），未逐例对应到 `wrong_1/wrong_2` | 部分 | 与 1.1-7 同源：图有 2 张，成文分析未逐例；修复见 §9 得分项 G-3 |
+| **1.1-7** 分析至少 2 个正确案例 | 图片证据：每型号 `outputs/pretrained_eval/*/cases/correct_1.png` + `outputs/pretrained_eval/*/cases/correct_2.png`（2 正）；`outputs/pretrained_eval/repvit_m0_9/top5_samples.json` 中 `correct=true` 4 条。**文字分析**：`report/REPORT.md:166-167` 只具体写了 1 个正确案例（beagle 96.8%，Top-5 余项皆为猎犬类） | 部分 | 缺「第 2 个正确案例」的逐例文字分析（要求「分析至少 2 个」，现有 1 个成文 + 2 张图）；影响五-1（15 分）的案例分项。修复见 §9 得分项 G-3 |
+| **1.1-8** 分析至少 2 个错误案例 | 图片证据：每型号 `outputs/pretrained_eval/*/cases/wrong_1.png` + `outputs/pretrained_eval/*/cases/wrong_2.png`（2 误）。**文字分析**：`report/REPORT.md:168` 用一句话概括两类错误现象（细长体型小型犬混判、主色相近体型不同混判），未逐例对应到 `wrong_1/wrong_2` | 部分 | 与 1.1-7 同源：图有 2 张，成文分析未逐例；修复见 §9 得分项 G-3 |
 | **1.1-9** 比较所选模型的精度、规模和延迟 | `outputs/pretrained_eval/summary.csv`（params_M / macs_G / top1 / top5 / latency）；`report/REPORT.md` §5 表（5 型号，Top-1 + 参数量 + MACs + ONNX 文件 + P50 + P95）；`outputs/advanced/{params_vs_acc,latency_vs_acc,macs_vs_acc}.png` | 满足 | — |
-| **1.1-10** 分析较大模型是否在当前设备上获得了合理收益 | `report/REPORT.md:179-182`（M1.0 相比 M0.9：参数量 **+34.4 %**、MACs **+34.9 %**、P50 **+35.4 %**（7.68 → 10.40 ms）、Top-1 仅 **+0.5 个点** → 结论「在当前 CPU 部署目标下，这一档『加宽』的收益最不划算」）；同段 §五 边际收益（**acc/ms 口径**的 4 个值：M0.9→M1.0 = **+0.18**、M1.0→M1.1 = **+3.05**、M1.1→M1.5 = +0.08、M1.5→M2.3 = +0.14）；`outputs/advanced/marginal_returns.csv` | 满足 | — |
-| **1.1-11**（附注）不得直接复制官方表格作为个人实验结果 | `report/REPORT.md:127-133` 起的 **§4.3「七类结果来源（逐类分开，不得互相替代）」**（标题 L127，来源表表体 `report/REPORT.md:131-137`）：论文公布 / 官方仓库公布 / 官方权重实测 / 自训练 Baseline / 自优化模型 / PyTorch 推理 / ONNX 部署 **七类各占一行**，行内结果与「依据产物」列一一对应；`report/REPORT.md:167` 明写「**本表不含任何论文/官方公布值**——ImageNet-1K 公布值与本表不可比（见 §4.3）」；把「论文/官方公布」与本机实测**相减**（差值 −0.50 / −0.10）的那张违规三方表**已删除**（删除记录见 _coord/POLICY_IMAGENETV2_ONLY.md（仓库外协调文件，不入提交物）§15.2：「`report/REPORT.md` §4.3 七类拆列、并删除了『论文/官方公布 vs 本机实测差值 −0.50/−0.10』那张违规三方表」） | 满足 | — |
+| **1.1-10** 分析较大模型是否在当前设备上获得了合理收益 | `report/REPORT.md:181-184`（M1.0 相比 M0.9：参数量 **+34.4 %**、MACs **+34.9 %**、P50 **+35.4 %**（7.68 → 10.40 ms）、Top-1 仅 **+0.5 个点** → 结论「在当前 CPU 部署目标下，这一档『加宽』的收益最不划算」）；同段 §五 边际收益（**acc/ms 口径**的 4 个值：M0.9→M1.0 = **+0.18**、M1.0→M1.1 = **+3.05**、M1.1→M1.5 = +0.08、M1.5→M2.3 = +0.14）；`outputs/advanced/marginal_returns.csv` | 满足 | — |
+| **1.1-11**（附注）不得直接复制官方表格作为个人实验结果 | `report/REPORT.md:129-135` 起的 **§4.3「七类结果来源（逐类分开，不得互相替代）」**（标题 L127，来源表表体 `report/REPORT.md:133-139`）：论文公布 / 官方仓库公布 / 官方权重实测 / 自训练 Baseline / 自优化模型 / PyTorch 推理 / ONNX 部署 **七类各占一行**，行内结果与「依据产物」列一一对应；`report/REPORT.md:169` 明写「**本表不含任何论文/官方公布值**——ImageNet-1K 公布值与本表不可比（见 §4.3）」；把「论文/官方公布」与本机实测**相减**（差值 −0.50 / −0.10）的那张违规三方表**已删除**（删除记录见 _coord/POLICY_IMAGENETV2_ONLY.md（仓库外协调文件，不入提交物）§15.2：「`report/REPORT.md` §4.3 七类拆列、并删除了『论文/官方公布 vs 本机实测差值 −0.50/−0.10』那张违规三方表」） | 满足 | — |
 
-> **后记（2026-09-17 追加，任务 t22）**：本节 **1.1-7** 证据列引用的「beagle 96.8%」是 t2 审计时点的文字，**现行仓库已无该值的落盘依据**（现行仓库里含 beagle 的落点全是**外部实拍图 / ONNX 演示路径**这一类、都不是本行的案例成文：`report/REPORT.md:158` 的演示图 beagle **94.47%**、`report/REPORT.md:435`/`:773` 的外部实拍 8 张 beagle **90.32%**、`report/PPT_CONTENT.md:613` 的同图对比 beagle **0.903**；其余为标签 / 清单 / 命令示例类条目）。现行案例素材以 `outputs/pretrained_eval/repvit_m0_9/top5_samples.json` 为准：**6 条样本、`correct=true` 4 条**（Band Aid 1.0000 / punching bag 0.9999 / German shepherd 0.8106 / bell pepper 0.8107）、`correct=false` 2 条（sarong→umbrella 0.9990、weasel→lesser panda 0.9984）；逐例素材见 `outputs/report_assets/table_cases.{csv,md}`（5 型号 ×（2 正 + 2 误）= **20 行**，含 案例图 / 文件名 / 真值 / 预测 Top-1 / 置信度 / Top-5 / 判定）。**原判定列与缺口列保留不改**（t2 时点的文字分析确为「1 个正确案例 + 1 句泛化错误描述」）；该缺口已于 t4 处置 —— `report/REPORT.md:144` 的 §4.5 标题即「Top-5 样例与正误案例（**2 正 + 2 误**）」。
+> **后记（2026-09-17 追加，任务 t22）**：本节 **1.1-7** 证据列引用的「beagle 96.8%」是 t2 审计时点的文字，**现行仓库已无该值的落盘依据**（现行仓库里含 beagle 的落点全是**外部实拍图 / ONNX 演示路径**这一类、都不是本行的案例成文：`report/REPORT.md:160` 的演示图 beagle **94.47%**、`report/REPORT.md:457`/`:795` 的外部实拍 8 张 beagle **90.32%**、`report/PPT_CONTENT.md:613` 的同图对比 beagle **0.903**；其余为标签 / 清单 / 命令示例类条目）。现行案例素材以 `outputs/pretrained_eval/repvit_m0_9/top5_samples.json` 为准：**6 条样本、`correct=true` 4 条**（Band Aid 1.0000 / punching bag 0.9999 / German shepherd 0.8106 / bell pepper 0.8107）、`correct=false` 2 条（sarong→umbrella 0.9990、weasel→lesser panda 0.9984）；逐例素材见 `outputs/report_assets/table_cases.{csv,md}`（5 型号 ×（2 正 + 2 误）= **20 行**，含 案例图 / 文件名 / 真值 / 预测 Top-1 / 置信度 / Top-5 / 判定）。**原判定列与缺口列保留不改**（t2 时点的文字分析确为「1 个正确案例 + 1 句泛化错误描述」）；该缺口已于 t4 处置 —— `report/REPORT.md:146` 的 §4.5 标题即「Top-5 样例与正误案例（**2 正 + 2 误**）」。
 
-> **后记（2026-09-17 追加，任务 t25）**：本节 **1.1-10** 的增量为**按现行产物重算**：`report/REPORT.md:179-182` 与 §五 表（`report/REPORT.md:173-174`：M0.9 = 参数量 5.067 M / Top-1 68.70 / P50 7.68 ms，M1.0 = 6.810 M / 69.20 / 10.40 ms）→ 参数量 `6.810/5.067 − 1 = +34.4 %`、MACs `1.143/0.847 − 1 = +34.9 %`、P50 `10.40/7.68 − 1 = +35.4 %`、Top-1 `+0.50` 个点。原写的 `+33.0 %` / `+7.0 %` / `+1.70 点` 与 `+0.96` / `0.00` 属旧自建子集那一轮的口径，**全仓已无该组值**（现行边际收益是 **acc/ms 口径**的 4 个值 +0.18 / +3.05 / +0.08 / +0.14，取自 `outputs/advanced/marginal_returns.csv` 与 `report/REPORT.md:179-182`）。
+> **后记（2026-09-17 追加，任务 t25）**：本节 **1.1-10** 的增量为**按现行产物重算**：`report/REPORT.md:181-184` 与 §五 表（`report/REPORT.md:175-176`：M0.9 = 参数量 5.067 M / Top-1 68.70 / P50 7.68 ms，M1.0 = 6.810 M / 69.20 / 10.40 ms）→ 参数量 `6.810/5.067 − 1 = +34.4 %`、MACs `1.143/0.847 − 1 = +34.9 %`、P50 `10.40/7.68 − 1 = +35.4 %`、Top-1 `+0.50` 个点。原写的 `+33.0 %` / `+7.0 %` / `+1.70 点` 与 `+0.96` / `0.00` 属旧自建子集那一轮的口径，**全仓已无该组值**（现行边际收益是 **acc/ms 口径**的 4 个值 +0.18 / +3.05 / +0.08 / +0.14，取自 `outputs/advanced/marginal_returns.csv` 与 `report/REPORT.md:181-184`）。
 
 > **判定复核（更正数字后重新确认，非默认保留）**：**1.1-10 判定仍为「满足」** —— 「较大模型在当前设备上收益是否合理」这一问题在现行数据上**结论方向不变且更明确**：M1.0 付出 +34.4 % 参数量、+34.9 % MACs、+35.4 % P50，只换到 +0.5 个点 Top-1（边际收益 +0.18 acc/ms，是四条边际里最差的一档），报告 §五 给出的「不划算」结论有落盘依据。
-> **判定复核（更正证据后重新确认，非默认保留）**：**1.1-11 判定仍为「满足」** —— 现行 §4.3 已是**七类逐行分开**的表（`report/REPORT.md:127-133`），表前显式声明「本表不含任何论文/官方公布值」（`report/REPORT.md:167`），且把论文/官方公布值与本机实测**相减**的那张违规三方表**已从全仓删除**（复核（**可机检**，见 `tools/check_audit_evidence.py` 的断言校验维度）：`git grep -F -- "论文 / 官方公布" -- ':!report/REQUIREMENTS_AUDIT.md'` → **0 命中**；`git grep -F -- "−0.50" -- ':!report/REQUIREMENTS_AUDIT.md'` → **0 命中**；`git grep -F -- "−0.10" -- ':!report/REQUIREMENTS_AUDIT.md'` → **0 命中**（本文件自身引用这三个字面量，属自指，故显式排除本文件）；删除记录见 _coord/POLICY_IMAGENETV2_ONLY.md（仓库外协调文件）§15.2）。即：**没有把官方表格直接当作个人实验结果，也没有再并列/相减**。
+> **判定复核（更正证据后重新确认，非默认保留）**：**1.1-11 判定仍为「满足」** —— 现行 §4.3 已是**七类逐行分开**的表（`report/REPORT.md:129-135`），表前显式声明「本表不含任何论文/官方公布值」（`report/REPORT.md:169`），且把论文/官方公布值与本机实测**相减**的那张违规三方表**已从全仓删除**（复核（**可机检**，见 `tools/check_audit_evidence.py` 的断言校验维度）：`git grep -F -- "论文 / 官方公布" -- ':!report/REQUIREMENTS_AUDIT.md'` → **0 命中**；`git grep -F -- "−0.50" -- ':!report/REQUIREMENTS_AUDIT.md'` → **0 命中**；`git grep -F -- "−0.10" -- ':!report/REQUIREMENTS_AUDIT.md'` → **0 命中**（本文件自身引用这三个字面量，属自指，故显式排除本文件）；删除记录见 _coord/POLICY_IMAGENETV2_ONLY.md（仓库外协调文件）§15.2）。即：**没有把官方表格直接当作个人实验结果，也没有再并列/相减**。
 
 ### 3.2 基础任务 1.2：模型理解（14 项说明 + 自绘结构图 9 要素，第 7 页）
 
@@ -168,35 +168,35 @@ PDF 原文（第 3~4 页）§1.3 共 4 组内容：选择型号 4 条、子集�
 | **1.2-1** RepViT 为什么称为「从 ViT 视角重新审视 Mobile CNN」 | `report/REPORT.md:53-57`（增量架构改造实验：功劳在宏观架构与训练策略，不在 MHSA）；`report/ppt_svg` 路线图；`report/sources/literature.yaml#paper`（含 arXiv URL） | 满足 | — |
 | **1.2-2** RepViT 为什么仍然属于纯 CNN | `report/REPORT.md:59-63`（无自注意力算子；ONNX 图节点全为 Conv/Gemm/Add/Mul/Div/Clip/Relu，无 MatMul）；对应产物 `outputs/reparam/repvit_m0_9_pet37_onnx_nodes.json` 的 `op_histogram` 可复核 | 满足 | — |
 | **1.2-3** MobileNetV3 与 RepViT Block 的主要区别 | `report/REPORT.md:69`（Token/Channel Mixer 解耦 vs MobileNetV2 倒残差把空间与通道耦合；表头「与 ViT 的 MHSA + FFN 一一对应」） | 满足 | — |
-| **1.2-4** Token Mixer 和 Channel Mixer 分别负责什么 | `report/REPORT.md:69-70`、`report/REPORT.md:107-108`、PPT 第 3 页左栏 | 满足 | — |
+| **1.2-4** Token Mixer 和 Channel Mixer 分别负责什么 | `report/REPORT.md:69-70`、`report/REPORT.md:109-110`、PPT 第 3 页左栏 | 满足 | — |
 | **1.2-5** 为什么要将二者分离 | `report/REPORT.md:69`（容量可独立调节） | 满足 | — |
 | **1.2-6** 深度卷积和逐点卷积分别起什么作用 | `report/REPORT.md:76`（depthwise 空间局部混合 ≈ k²C；pointwise 跨通道 ≈ C²；把 C²k² 降到 C² + k²C） | 满足 | — |
 | **1.2-7** 结构重参数化的训练态与推理态有什么区别 | `report/REPORT.md:70`、§12.1（训练态 = 3×3 dw 分支 + 1×1 dw 分支 + 残差 + BN；推理态 = 单个 3×3 depthwise）；`outputs/reparam/*_structure_before/after.txt` | 满足 | — |
-| **1.2-8** 为什么重参数化后可以减少推理开销 | `report/REPORT.md:70`、§12.5（节点 −93、BN 24→0、Conv 126→103）；`report/REPORT.md:136`（§4.3 表第 6 行「**PyTorch 推理**」）实测延迟（M0.9 融合后 mean 8.41 ms vs 未融合 17.15 ms，降 51.0%；见下方「后记（2026-09-17 追加，任务 t22）」） | 满足 | — |
+| **1.2-8** 为什么重参数化后可以减少推理开销 | `report/REPORT.md:70`、§12.5（节点 −93、BN 24→0、Conv 126→103）；`report/REPORT.md:138`（§4.3 表第 6 行「**PyTorch 推理**」）实测延迟（M0.9 融合后 mean 8.41 ms vs 未融合 17.15 ms，降 51.0%；见下方「后记（2026-09-17 追加，任务 t22）」） | 满足 | — |
 | **1.2-9** 为什么降低 Channel Mixer 扩张比例并增加网络宽度 | `report/REPORT.md:71` | 满足 | — |
-| **1.2-10** Early Convolution Stem 的设计目的 | `report/REPORT.md:72` | 满足 | — |
+| **1.2-10** Early Convolution Stem 的设计目的 | `report/REPORT.md:65-66` | 满足 | — |
 | **1.2-11** 为什么使用更深的下采样层 | `report/REPORT.md:73` | 满足 | — |
-| **1.2-12** SE 模块放置位置的考虑 | `report/REPORT.md:74`（仅部分 Block 放；全局池化 + 两次全连接延迟不可忽略） | 满足 | — |
+| **1.2-12** SE 模块放置位置的考虑 | `report/REPORT.md:66-67`（仅部分 Block 放；全局池化 + 两次全连接延迟不可忽略） | 满足 | — |
 | **1.2-13** RepViT 为什么采用简单分类头 | `report/REPORT.md:75`（单个 BN + Linear `NormLinear`） | 满足 | — |
-| **1.2-14** M0.9、M1.0、M1.1、M1.5 和 M2.3 的主要差别 | `report/REPORT.md:78-81`（同套 Block 的宽度/深度缩放；实测 M0.9 四 stage Block 数 [2,2,14,2]）；`outputs/benchmarks/family_summary.csv`（5 型号同口径实测） | 满足 | — |
-| **1.2-15**（附注）可以引用论文图片作为补充，但不能只复制论文结构图代替个人理解 | 结构图由 `tools/draw_arch.py` 用 **forward hook 现测**真实张量形状生成；`report/REPORT.md:87` 显式声明「非论文插图、非手画」；产物 `outputs/architecture/repvit_m0_9_arch.png` + `outputs/architecture/repvit_m0_9_arch.md` | 满足 | — |
+| **1.2-14** M0.9、M1.0、M1.1、M1.5 和 M2.3 的主要差别 | `report/REPORT.md:78-83`（同套 Block 的宽度/深度缩放；实测 M0.9 四 stage Block 数 [2,2,14,2]）；`outputs/benchmarks/family_summary.csv`（5 型号同口径实测） | 满足 | — |
+| **1.2-15**（附注）可以引用论文图片作为补充，但不能只复制论文结构图代替个人理解 | 结构图由 `tools/draw_arch.py` 用 **forward hook 现测**真实张量形状生成；`report/REPORT.md:89` 显式声明「非论文插图、非手画」；产物 `outputs/architecture/repvit_m0_9_arch.png` + `outputs/architecture/repvit_m0_9_arch.md` | 满足 | — |
 
-> **后记（2026-09-17 追加，任务 t22）**：本节 **1.2-8** 证据列的延迟数字**已按现行产物更正**为 **M0.9 融合后 mean 8.41 ms vs 未融合 17.15 ms（降 51.0%）**；原引用「7.97 / 15.51 / 48.6%」属自建子集那一轮的评价，**全仓已无该组值**。依据：`outputs/pretrained_eval/repvit_m0_9/latency.json`（warmup=10 / runs=50，融合与未融合两组同机同后端）与 `report/REPORT.md:136`（§4.3 表第 6 行「**PyTorch 推理**」）。
+> **后记（2026-09-17 追加，任务 t22）**：本节 **1.2-8** 证据列的延迟数字**已按现行产物更正**为 **M0.9 融合后 mean 8.41 ms vs 未融合 17.15 ms（降 51.0%）**；原引用「7.97 / 15.51 / 48.6%」属自建子集那一轮的评价，**全仓已无该组值**。依据：`outputs/pretrained_eval/repvit_m0_9/latency.json`（warmup=10 / runs=50，融合与未融合两组同机同后端）与 `report/REPORT.md:138`（§4.3 表第 6 行「**PyTorch 推理**」）。
 > **判定复核（更正数字后重新确认，非默认保留）**：判定**仍为「满足」** —— 重参数化把 PyTorch 侧延迟降低约一半（17.15 → 8.41 ms，−51.0%），与「合并分支后减少推理开销」的机制方向一致；机制侧证据链也仍在：`outputs/reparam/repvit_m0_9_pet37_onnx_nodes.json`（BN 24→0、Conv 126→103、节点 480→387）与 `outputs/reparam/*_structure_before/after.txt`。
 
 **自绘结构图 9 要素**（原文「候选人需要自行绘制 RepViT-M0.9 结构图，至少标明：」）：
 
 | 要求原文摘录 | 仓库证据（相对路径或可直接运行的命令） | 判定 | 缺口说明 |
 |---|---|---|---|
-| **1.2-F1** 输入尺寸 | `report/REPORT.md:90`「输入 224 × 224 × 3 (RGB)」；`outputs/architecture/repvit_m0_9_arch.md` | 满足 | — |
-| **1.2-F2** Stem | `report/REPORT.md:92-93`（`stem.conv1` 3×3 s2 → 24ch 112×112；`stem.conv2` 3×3 s2 → 48ch 56×56） | 满足 | — |
-| **1.2-F3** 四个主要阶段 | `report/REPORT.md:95-98`（Stage 0~3） | 满足 | — |
-| **1.2-F4** 特征图分辨率变化 | `report/REPORT.md:105`「224 → 112 → 56 → 28 → 14 → 7（总下采样 32×）」 | 满足 | — |
-| **1.2-F5** 通道数变化 | `report/REPORT.md:105`「3 → 24 → 48 → 96 → 192 → 384」 | 满足 | — |
-| **1.2-F6** RepViT Block | `report/REPORT.md:107-108`（Token Mixer RepVGGDW + Channel Mixer + 残差 + 部分 SE） | 满足 | — |
-| **1.2-F7** Global Average Pooling | `report/REPORT.md:100`「GAP → 384 维」 | 满足 | — |
-| **1.2-F8** 分类头 | `report/REPORT.md:102`（`RepVitClassifier` → `NormLinear(BatchNorm1d + Linear)`） | 满足 | — |
-| **1.2-F9** 最终输出维度 | `report/REPORT.md:102`「→ 37 维」（Pet-37 任务口径）；`tools/report_spec.py` 的 `FIGURE_SPEC` 也把 9 要素写进同一登记项 | 满足 | 输出维度按任务口径写 37；如需同时体现 ImageNet 1000 类口径，可在图注补一行（非必须） |
+| **1.2-F1** 输入尺寸 | `report/REPORT.md:92`「输入 224 × 224 × 3 (RGB)」；`outputs/architecture/repvit_m0_9_arch.md` | 满足 | — |
+| **1.2-F2** Stem | `report/REPORT.md:94-95`（`stem.conv1` 3×3 s2 → 24ch 112×112；`stem.conv2` 3×3 s2 → 48ch 56×56） | 满足 | — |
+| **1.2-F3** 四个主要阶段 | `report/REPORT.md:97-100`（Stage 0~3） | 满足 | — |
+| **1.2-F4** 特征图分辨率变化 | `report/REPORT.md:107`「224 → 112 → 56 → 28 → 14 → 7（总下采样 32×）」 | 满足 | — |
+| **1.2-F5** 通道数变化 | `report/REPORT.md:107`「3 → 24 → 48 → 96 → 192 → 384」 | 满足 | — |
+| **1.2-F6** RepViT Block | `report/REPORT.md:109-110`（Token Mixer RepVGGDW + Channel Mixer + 残差 + 部分 SE） | 满足 | — |
+| **1.2-F7** Global Average Pooling | `report/REPORT.md:89`「GAP → 384 维」 | 满足 | — |
+| **1.2-F8** 分类头 | `report/REPORT.md:104`（`RepVitClassifier` → `NormLinear(BatchNorm1d + Linear)`） | 满足 | — |
+| **1.2-F9** 最终输出维度 | `report/REPORT.md:104`「→ 37 维」（Pet-37 任务口径）；`tools/report_spec.py` 的 `FIGURE_SPEC` 也把 9 要素写进同一登记项 | 满足 | 输出维度按任务口径写 37；如需同时体现 ImageNet 1000 类口径，可在图注补一行（非必须） |
 
 ### 3.3 基础任务 2：RepViT-M0.9 基础训练（15 分，第 7~9 页，10 条）
 
@@ -204,12 +204,12 @@ PDF 原文（第 3~4 页）§1.3 共 4 组内容：选择型号 4 条、子集�
 
 | 要求原文摘录 | 仓库证据（相对路径或可直接运行的命令） | 判定 | 缺口说明 |
 |---|---|---|---|
-| **2-1**（说明）使用了哪一种实现 | `report/REPORT.md:259`（`impl = timm`、`distillation = False` 单头）；`configs/baseline.yaml`；`configs/baseline_effective` 快照 `outputs/logs/baseline_config_effective.yaml` | 满足 | — |
+| **2-1**（说明）使用了哪一种实现 | `report/REPORT.md:261`（`impl = timm`、`distillation = False` 单头）；`configs/baseline.yaml`；`configs/baseline_effective` 快照 `outputs/logs/baseline_config_effective.yaml` | 满足 | — |
 | **2-2**（说明）环境版本 | `outputs/env_snapshot.json`；`report/REPORT.md:27-30`（Python 3.14.5 / torch 2.14.0+cu126 / timm 1.0.29 / ORT 1.30.0）；`requirements.txt` + `requirements.lock.txt` | 满足 | — |
-| **2-3**（说明）预训练权重来源 | `report/REPORT.md:259`；`README.md:126-138`（官方 Releases v1.0 + 字节数/SHA256 表）；`outputs/metrics/weight_sha256.json` | 满足 | — |
-| **2-4**（说明）与官方代码的差异 | `report/REPORT.md:287-299`（Python/timm 版本、权重载入、训练循环三项对照）；`PROVENANCE.md` §一（官方文件 3 处适配） | 满足 | — |
-| **2-5**（说明）分类头如何从 1000 类修改为 37 类 | `report/REPORT.md:281-285`（`timm.create_model(..., num_classes=37, distillation=False)`，不用 `reset_classifier`）；PPT 第 6 页「正确做法 / 禁止做法」对照 | 满足 | — |
-| **2-6**（说明）权重加载时是否存在缺失或不匹配参数 | `outputs/metrics/weight_load_report.json`（`n_missing = 2`、`n_unexpected = 0`、`missing_keys = classifier.classifier.l.{weight,bias}`）；`report/REPORT.md:284-285` | 满足 | — |
+| **2-3**（说明）预训练权重来源 | `report/REPORT.md:261`；`README.md:126-138`（官方 Releases v1.0 + 字节数/SHA256 表）；`outputs/metrics/weight_sha256.json` | 满足 | — |
+| **2-4**（说明）与官方代码的差异 | `report/REPORT.md:289-301`（Python/timm 版本、权重载入、训练循环三项对照）；`PROVENANCE.md` §一（官方文件 3 处适配） | 满足 | — |
+| **2-5**（说明）分类头如何从 1000 类修改为 37 类 | `report/REPORT.md:270-273`（`timm.create_model(..., num_classes=37, distillation=False)`，不用 `reset_classifier`）；PPT 第 6 页「正确做法 / 禁止做法」对照 | 满足 | — |
+| **2-6**（说明）权重加载时是否存在缺失或不匹配参数 | `outputs/metrics/weight_load_report.json`（`n_missing = 2`、`n_unexpected = 0`、`missing_keys = classifier.classifier.l.{weight,bias}`）；`report/REPORT.md:286-287` | 满足 | — |
 | **2-7** 正确准备训练、验证和测试数据 | `datasets/make_pet_split.py`（唯一划分脚本）+ `datasets/lists/pet_{train,val,test}.txt`（2940 / 740 / 3669 行）+ `datasets/build_pet_class_map.py`；`python tools/assert_data.py --root data/oxford-iiit-pet` → **ALL PASS**（`outputs/metrics/dataset_report.json` 的 `pass: true`） | 满足 | — |
 | **2-8** 检查图片、类别编号和类别名称映射 | `tools/train.py:635-646` 启动即断言（两份类别文件互逆且同序、行数 == K）；`outputs/metrics/pet_label_audit.json`；`tools/selfcheck.py` 的 `data.labels` / `data.classes` PASS | 满足 | — |
 | **2-9** 确保训练集、验证集和测试集不泄漏 | `python datasets/audit_leakage.py` → `outputs/metrics/leakage_check.json`：`stem_intersection` 0/0/0、`md5_intersection` 0/0/0、`internal_duplicates` 空、`orphan_images_used` 空、`pass: true` | 满足 | — |
@@ -222,30 +222,30 @@ PDF 原文（第 3~4 页）§1.3 共 4 组内容：选择型号 4 条、子集�
 | **2-16** 输出部分测试集分类结果 | `outputs/predictions/baseline_test_preds.csv`（**3669 行数据** + 11 列，含 `top5_idx` / `top5_names` / `top5_probs`）；`outputs/predictions/test_top5_baseline_grid8.png` | 满足 | — |
 | **2-17**（硬约束）基础训练必须更新 RepViT 骨干网络参数 | `python tools/check_backbone_updated.py --ckpt checkpoints/baseline_best.pt` → `outputs/metrics/backbone_updated.json`：`changed_tensors = 706`，其中骨干 699；`tools/selfcheck.py` 的 `train.backbone` PASS | 满足 | — |
 | **2-18**（硬约束）不得仅训练最后一个线性分类层作为完整 Baseline | 同 2-17（699 个骨干张量变化）；`configs/baseline.yaml` 无冻结项（`backbone_lr_scale = 0.1 > 0`，`tools/train.py:621` 断言）；`configs/opt_disc.yaml` 才是差异化 lr 的对照臂 | 满足 | — |
-| **2-19**（硬约束）训练轮数不作绝对限制，推荐 30～50 epochs，需说明理由 | 统一 40 epoch；`report/REPORT.md:265-267` 说明「满预算、早停等价于关闭」的理由；`outputs/metrics/same_budget.json` | 满足 | — |
-| **2-20**（硬约束）不得只加载已在 Oxford-IIIT Pet 上训练完成的第三方模型 | 训练起点是 ImageNet-1K 预训练 timm/HF 权重（`timm/repvit_m0_9.dist_300e_in1k`，`report/REPORT.md:259`），非 Pet 预训练；`outputs/metrics/weight_load_report.json` 记录权重来源与 SHA256 | 满足 | — |
+| **2-19**（硬约束）训练轮数不作绝对限制，推荐 30～50 epochs，需说明理由 | 统一 40 epoch；`report/REPORT.md:257-260` 说明「满预算、早停等价于关闭」的理由；`outputs/metrics/same_budget.json` | 满足 | — |
+| **2-20**（硬约束）不得只加载已在 Oxford-IIIT Pet 上训练完成的第三方模型 | 训练起点是 ImageNet-1K 预训练 timm/HF 权重（`timm/repvit_m0_9.dist_300e_in1k`，`report/REPORT.md:261`），非 Pet 预训练；`outputs/metrics/weight_load_report.json` 记录权重来源与 SHA256 | 满足 | — |
 
 ### 3.4 基础任务 3：一项模型优化实验（10 分，第 9~10 页，10 条提交项 + 6 项控制变量）
 
 | 要求原文摘录 | 仓库证据（相对路径或可直接运行的命令） | 判定 | 缺口说明 |
 |---|---|---|---|
-| **3-1** Baseline 当前存在的问题 | `report/REPORT.md:305-309`（2940 张样本 vs 4.73M 参数；Label Smoothing 仅部分缓解；分类头需 1e-3 级 lr；增强缺少旋转/剪切/色调） | 满足 | — |
-| **3-2** 优化方法希望解决的问题 | `report/REPORT.md:311-318`（四方案各列「改动 / 假设 / 预期方向」） | 满足 | — |
-| **3-3** 明确的实验假设 | 同 3-2（每方案一列「假设」）；PPT 第 7 页四张卡片各有「假设」。`report/REPORT.md:398-401` 还记录了「A 的预期（延长收敛）与实测不一致」 | 满足 | — |
+| **3-1** Baseline 当前存在的问题 | `report/REPORT.md:293-295`（2940 张样本 vs 4.73M 参数；Label Smoothing 仅部分缓解；分类头需 1e-3 级 lr；增强缺少旋转/剪切/色调） | 满足 | — |
+| **3-2** 优化方法希望解决的问题 | `report/REPORT.md:299-304`（四方案各列「改动 / 假设 / 预期方向」） | 满足 | — |
+| **3-3** 明确的实验假设 | 同 3-2（每方案一列「假设」）；PPT 第 7 页四张卡片各有「假设」。`report/REPORT.md:408-411` 还记录了「A 的预期（延长收敛）与实测不一致」 | 满足 | — |
 | **3-4** 修改的代码或配置 | `configs/opt_combo.yaml`（12 个差异键）+ 其余 6 份 `configs/opt_*.yaml`；`outputs/logs/opt_*_config_effective.{yaml,json}`（有效配置快照） | 满足 | — |
 | **3-5** Baseline 与优化模型的完整配置 | `outputs/logs/baseline_config_effective.yaml` 与 `outputs/logs/opt_combo_config_effective.yaml`（全字段落盘）；`outputs/report_assets/table_configs.md` | 满足 | — |
 | **3-6** 两组实验的训练预算 | `outputs/metrics/same_budget.json`（8 组均为 `(epochs, steps_per_epoch) = (40, 45)`，`total_iters_equal = True`）；`python tools/same_budget.py` | 满足 | — |
 | **3-7** Top-1、Top-5 和 Macro-F1 结果 | `outputs/metrics/{baseline,opt_combo}_test.json`；`outputs/logs/opt_compare_summary.csv`；`outputs/report_assets/table_training_summary.md` | 满足 | — |
 | **3-8** Baseline 与优化模型训练曲线 | `outputs/curves/opt_compare.png`（5 子图同图）；`outputs/curves/baseline_vs_opt_combo_compare.png` | 满足 | — |
 | **3-9** 同一批图片上的预测对比 | `outputs/predictions/baseline_vs_opt_combo_predict_compare.json`（含 `outputs/predictions/pet_compare_ids.json`，按 `image_id` inner join **不按行号**）；`outputs/predictions/compare_baseline_vs_opt_combo_grid4.png` | 满足 | — |
-| **3-10** 提升或下降的原因分析 | `report/REPORT.md:348-355`（0.6 个点窄带 + 二项分布 95% CI ±0.9 + 重跑波动 ±0.08/±0.40 + 无单调关系 → 结论「未超出随机波动」，负面结论也如实写）；§9.1 组合消融交互项（A 抵消 B 的大部分伤害，`+0.541` 超加性） | 满足 | — |
+| **3-10** 提升或下降的原因分析 | `report/REPORT.md:334-339`（0.6 个点窄带 + 二项分布 95% CI ±0.9 + 重跑波动 ±0.08/±0.40 + 无单调关系 → 结论「未超出随机波动」，负面结论也如实写）；§9.1 组合消融交互项（A 抵消 B 的大部分伤害，`+0.541` 超加性） | 满足 | — |
 | **3-C1**（控制变量）数据划分一致 | 8 组共用 `datasets/lists/pet_{train,val,test}.txt`；`tools/diff_config.py` 叶子级比对不含 data 段差异 | 满足 | — |
-| **3-C2**（控制变量）预训练权重一致 | 8 组 `model.pretrained_tag` / 起点权重相同（`configs/*.yaml` 的 `model` 段无差异键）；`report/REPORT.md:325` | 满足 | — |
+| **3-C2**（控制变量）预训练权重一致 | 8 组 `model.pretrained_tag` / 起点权重相同（`configs/*.yaml` 的 `model` 段无差异键）；`report/REPORT.md:327` | 满足 | — |
 | **3-C3**（控制变量）随机种子一致 | 全部 `seed: 42`；`configs/*.yaml` 的 `_expected_diff_` 不含 seed；`tools/selfcheck.py` 的 `opt.diff` PASS | 满足 | — |
 | **3-C4**（控制变量）训练轮数或等价训练预算一致 | 40 epoch × 45 step 全组一致；`python tools/same_budget.py` | 满足 | — |
 | **3-C5**（控制变量）评价方式一致 | 同一 `tools/evaluate.py` / 同一 test loader；`configs/*.yaml` 的 `aug.val` 段无差异键 | 满足 | — |
 | **3-C6**（控制变量）最佳模型选择标准一致 | `tools/train.py:623` 断言 `metric_for_best == "val_macro_f1"`；`outputs/logs/*_metrics.csv` 均记录 `val_macro_f1` | 满足 | — |
-| **3-N1**（附注）优化结果不一定必须提升准确率，实验真实即可 | `report/REPORT.md:348-355` 直接结论「四项优化方法都没有带来超出随机波动的真实增益」 | 满足 | — |
+| **3-N1**（附注）优化结果不一定必须提升准确率，实验真实即可 | `report/REPORT.md:339` 直接结论「四项优化方法都没有带来超出随机波动的真实增益」 | 满足 | — |
 | **3-N2**（附注）不得将「换成更大的 RepViT 型号」作为基础任务中唯一的优化方法 | 基础任务的优化是训练方法类（增强 / Mixup / RandAugment / 差异化 lr），型号对比另放 §5（进阶任务 1） | 满足 | — |
 
 ### 3.5 基础任务 4：曲线、可解释性与效果分析（8 分，第 10~11 页）
@@ -281,16 +281,16 @@ PDF 原文（第 3~4 页）§1.3 共 4 组内容：选择型号 4 条、子集�
 
 | 要求原文摘录 | 仓库证据（相对路径或可直接运行的命令） | 判定 | 缺口说明 |
 |---|---|---|---|
-| **4-A1** 模型是否正常收敛 | `report/REPORT.md:387-388`（epoch 5 前快速上升、epoch 15 后平台期、末 8 轮 val Top-1 极差 0.95 点） | 满足 | — |
-| **4-A2** 是否存在明显过拟合或欠拟合 | `report/REPORT.md:389-392`（末轮 train_loss 0.736 / val_loss 0.352；val_loss 从 3.65 → 0.35、末 8 轮 0.34~0.35 无持续上升 → 未见过拟合形态；并解释 Label Smoothing 抬高 train loss 的假象） | 满足 | — |
-| **4-A3** 学习率变化与指标变化的关系 | `report/REPORT.md:393-394`（warmup 3 ep 上升最快；cosine 中段 epoch 10~30 为主要增长区间；末段 lr 1e-5 趋平台） | 满足 | — |
-| **4-A4** 优化方法对收敛速度的影响 | `report/REPORT.md:395-401`（按 `val_macro_f1` 最优 epoch：baseline 34、A 31、B 32、A+B 31；首次进入「自身最优 −0.005」平台的 epoch：baseline 15、A/A+B 12、B 15；并写明与 §8.2 预期不一致 + 单种子范围限定） | 满足 | — |
-| **4-A5** 哪些品种之间容易混淆 | `report/REPORT.md:410-419`（按 F1 升序最难三类：Staffordshire Bull Terrier 0.691、American Pit Bull Terrier 0.703、Ragdoll 0.766）；数据 `outputs/confusion_matrix/baseline_per_class.csv` | 满足 | — |
-| **4-A6** 错误来自主体外观、姿态、遮挡还是背景 | `report/REPORT.md:432-436` 三成因①主体外观相似②姿态/视角极端③背景干扰；§11.4 给出背景依赖样本比例约 6.2% | 满足 | — |
-| **4-A7** Grad-CAM 是否关注到合理区域 | `report/REPORT.md:460-465`（正确案例热力图集中头/躯干、背景接近 0；错误案例同时点亮两类共有特征区，定位对但判别力不足） | 满足 | — |
-| **4-A8** 模型是否出现依赖背景的现象 | `report/REPORT.md:467-470`（约 6.2% 样本背景有明显响应；与 §11.5 分布差异 = 外部背景纹理强 24% 互证） | 满足 | — |
-| **4-A9** 实际图片与数据集图片存在什么分布差异 | `report/REPORT.md:472-483`（短边中位数 339.5 → 375.0、亮度均值 0.455 → 0.503、亮度 std 0.218 → 0.256、边缘密度 0.132 → 0.148、背景复杂度比 0.478 → 0.593）；数据 `outputs/predictions/distribution_compare_summary.csv` + `outputs/predictions/distribution_compare_raw.csv` | 满足 | — |
-| **4-A10** 置信度高是否一定代表预测可靠 | `report/REPORT.md:489-493`（存在置信度 > 0.9 的错误预测；ECE 偏高、温度缩放可显著降低）；`outputs/advanced/interp/calibration.json`（`temperature = 0.6149`） | 满足 | — |
+| **4-A1** 模型是否正常收敛 | `report/REPORT.md:361-362`（epoch 5 前快速上升、epoch 15 后平台期、末 8 轮 val Top-1 极差 0.95 点） | 满足 | — |
+| **4-A2** 是否存在明显过拟合或欠拟合 | `report/REPORT.md:363-365`（末轮 train_loss 0.736 / val_loss 0.352；val_loss 从 3.65 → 0.35、末 8 轮 0.34~0.35 无持续上升 → 未见过拟合形态；并解释 Label Smoothing 抬高 train loss 的假象） | 满足 | — |
+| **4-A3** 学习率变化与指标变化的关系 | `report/REPORT.md:403-404`（warmup 3 ep 上升最快；cosine 中段 epoch 10~30 为主要增长区间；末段 lr 1e-5 趋平台） | 满足 | — |
+| **4-A4** 优化方法对收敛速度的影响 | `report/REPORT.md:405-411`（按 `val_macro_f1` 最优 epoch：baseline 34、A 31、B 32、A+B 31；首次进入「自身最优 −0.005」平台的 epoch：baseline 15、A/A+B 12、B 15；并写明与 §8.2 预期不一致 + 单种子范围限定） | 满足 | — |
+| **4-A5** 哪些品种之间容易混淆 | `report/REPORT.md:420-437`（按 F1 升序最难三类：Staffordshire Bull Terrier 0.691、American Pit Bull Terrier 0.703、Ragdoll 0.766）；数据 `outputs/confusion_matrix/baseline_per_class.csv` | 满足 | — |
+| **4-A6** 错误来自主体外观、姿态、遮挡还是背景 | `report/REPORT.md:407-409` 三成因①主体外观相似②姿态/视角极端③背景干扰；§11.4 给出背景依赖样本比例约 6.2% | 满足 | — |
+| **4-A7** Grad-CAM 是否关注到合理区域 | `report/REPORT.md:482-487`（正确案例热力图集中头/躯干、背景接近 0；错误案例同时点亮两类共有特征区，定位对但判别力不足） | 满足 | — |
+| **4-A8** 模型是否出现依赖背景的现象 | `report/REPORT.md:489-492`（约 6.2% 样本背景有明显响应；与 §11.5 分布差异 = 外部背景纹理强 24% 互证） | 满足 | — |
+| **4-A9** 实际图片与数据集图片存在什么分布差异 | `report/REPORT.md:494-505`（短边中位数 339.5 → 375.0、亮度均值 0.455 → 0.503、亮度 std 0.218 → 0.256、边缘密度 0.132 → 0.148、背景复杂度比 0.478 → 0.593）；数据 `outputs/predictions/distribution_compare_summary.csv` + `outputs/predictions/distribution_compare_raw.csv` | 满足 | — |
+| **4-A10** 置信度高是否一定代表预测可靠 | `report/REPORT.md:472-475`（存在置信度 > 0.9 的错误预测；`ece_before` = **0.1603**、拟合温度 **T = 0.6149 < 1**；报告明确只落盘了 `ece_before`、**没有落盘校准后的 ECE**，故**不作「温度缩放把 ECE 降低多少」的量化断言**）；`outputs/advanced/interp/calibration.json`（顶层键 `model` / `n` / `temperature` / `ece_before` / `note`） | 满足 | — |
 
 ### 3.6 基础任务 5：ONNX 多模型基础部署（12 分，第 11~13 页）
 
@@ -312,9 +312,9 @@ PDF 原文（第 3~4 页）§1.3 共 4 组内容：选择型号 4 条、子集�
 | **5.4.3** 精度：FP32 | `outputs/benchmarks/summary.csv` 的 `precision = FP32`；`outputs/metrics/bench.jsonl` 同字段 | 满足 | — |
 | **5.4.4** 使用 ONNX Runtime CPU | `outputs/benchmarks/summary.csv` 的 `provider_actual = ['CPUExecutionProvider']`；`onnxruntime==1.30.0`（`requirements.txt`） | 满足 | — |
 | **5.4.5** 通过参数或配置文件选择模型 | `deploy/model_registry.py`（7 个登记 key 的单一事实来源 `get(key)` / `onnx_path(key)` / `labels_for(key)`）；`deploy/infer_onnx.py --model`、`deploy/benchmark.py --model`（可多次传入） | 满足 | — |
-| **5.4.6** 独立实现图片预处理 | `deploy/infer_onnx.py:12-23` 用 **PIL 手写** `Resize → CenterCrop → ToTensor → Normalize`，显式「不 `import torchvision`」；`report/REPORT.md:594-597` 说明为何必须独立 | 满足 | — |
+| **5.4.6** 独立实现图片预处理 | `deploy/infer_onnx.py:12-23` 用 **PIL 手写** `Resize → CenterCrop → ToTensor → Normalize`，显式「不 `import torchvision`」；`report/REPORT.md:616-619` 说明为何必须独立 | 满足 | — |
 | **5.4.7** 独立实现 ONNX 推理 | `deploy/infer_onnx.py:33-42` 的 `build_session()` + `sess.run()`；不使用任何高层封装 | 满足 | — |
-| **5.4.8** 独立实现 Softmax 和 Top-K 后处理 | `deploy/infer_onnx.py:25-31` 的 `softmax()` 与 `topk()` 均为手写实现；`report/REPORT.md:591-597` | 满足 | — |
+| **5.4.8** 独立实现 Softmax 和 Top-K 后处理 | `deploy/infer_onnx.py:25-31` 的 `softmax()` 与 `topk()` 均为手写实现；`report/REPORT.md:613-619` | 满足 | — |
 | **5.4.9** 正确加载对应类别名称 | `deploy/model_registry.py:80-88` `labels_for()` 读 `labels/` 并按 `num_classes` **硬断言**行数；`labels/imagenet_classes.txt`（1000）/ `labels/pet_classes.txt`（37） | 满足 | — |
 | **5.4.10** 输出 Top-1 和 Top-5 结果 | `deploy/infer_onnx.py:65-86`（`--topk` 默认 5，落盘 `topk=[{rank,index,prob,name}]`）；`outputs/benchmarks/external_top5_repvit_m0_9_pet37.csv` | 满足 | — |
 | **5.4.11** 输出各类别置信度 | `deploy/infer_onnx.py:50` 的 `--dump-probs`（把完整 softmax 向量落盘）+ `softmax 长度 == 标签行数` 断言 | 满足 | — |
@@ -333,7 +333,7 @@ PDF 原文（第 3~4 页）§1.3 共 4 组内容：选择型号 4 条、子集�
 | **5.5.3** Top-1 类别是否一致 | 同文件 `top1_agree_rate = 1.0`、`mismatches = []`、`mismatch_count = 0` | 满足 | — |
 | **5.5.4** Top-5 类别集合是否基本一致 | 同文件 `top5_set_agree_rate = 1.0` | 满足 | — |
 | **5.5.5** 固定测试集上的 Top-1 一致率（推荐 ≥99%） | 同文件 `top1_agree_rate = 1.0`、`verdict = "PASS"`、`threshold = {top1_agree_rate: 0.99, max_abs_logits: 1e-3}`；`tools/selfcheck.py` 的 `onnx.consistency`、`onnx.realimg` PASS；复跑副本 `outputs/verification/consistency_repvit_m0_9_pet37_n12.json` | 满足 | 100% ≥ 99% |
-| **5.5.6**（附注）如未达到 99%，需分析 Resize/Center Crop 顺序、RGB/BGR、插值、mean/std、Softmax 维度、eval 模式、BN 状态、导出方式、数值精度（9 项） | 已达到 99%，无需逐项排查；但 9 项口径在代码层都有对应实现：`deploy/infer_onnx.py:20`（顺序注释「反了差 236/255」）、`:14`（必须 RGB）、`:18`（BICUBIC）、`deploy/model_registry.py` 的 `mean/std`、`deploy/infer_onnx.py:25`（softmax axis）、`deploy/export_onnx.py:13-22`（eval→fuse→eval）、`outputs/reparam/repvit_m0_9_pet37_onnx_nodes.json` 的 `after.BatchNormalization = 0`、`deploy/export_onnx.py` 的 opset | 满足 | `report/REPORT.md:623-625` 的措辞已收敛为「未**观察到**九类典型问题的表现，不等于已排除九类问题」 |
+| **5.5.6**（附注）如未达到 99%，需分析 Resize/Center Crop 顺序、RGB/BGR、插值、mean/std、Softmax 维度、eval 模式、BN 状态、导出方式、数值精度（9 项） | 已达到 99%，无需逐项排查；但 9 项口径在代码层都有对应实现：`deploy/infer_onnx.py:20`（顺序注释「反了差 236/255」）、`:14`（必须 RGB）、`:18`（BICUBIC）、`deploy/model_registry.py` 的 `mean/std`、`deploy/infer_onnx.py:25`（softmax axis）、`deploy/export_onnx.py:13-22`（eval→fuse→eval）、`outputs/reparam/repvit_m0_9_pet37_onnx_nodes.json` 的 `after.BatchNormalization = 0`、`deploy/export_onnx.py` 的 opset | 满足 | `report/REPORT.md:645-647` 的措辞已收敛为「未**观察到**九类典型问题的表现，不等于已排除九类问题」 |
 | **5.5.7** 「对每个 ONNX 模型至少比较」——原记「第 4 个入库 ONNX（`repvit_m1_1_in1k`）无同口径一致性记录」 | `git ls-files onnx/` 有 **5 个**入库 ONNX（其中**官方 ONNX 4 个**）；`outputs/metrics/consistency_*.json` 现有 **5 份**（Pet-37 + M0.9 + M1.0 + M1.1 + M1.5），即 4 个入库官方型号**全部**有同口径 n=12 产物 | 部分 | 本行判定为 t2 审计当时的快照。**2026-09-17 状态：该缺口已闭合**（`consistency_repvit_m1_1_in1k.json` / `consistency_repvit_m1_5_in1k.json` 已补齐），对应 §9 得分项 G-4 可关闭 |
 
 **（d）结构重参数化要求（6 项）**
@@ -363,7 +363,7 @@ PDF 原文（第 3~4 页）§1.3 共 4 组内容：选择型号 4 条、子集�
 | **5.7.7** 打印实际 Execution Provider | `deploy/benchmark.py:57` `print(f"EP(actual) : {sess.get_providers()}")`；同时落盘 `provider_actual` / `ep` 两个同义字段（注释说明「避免验收脚本二义」） | 满足 | — |
 | **5.7.8** 记录模型输入输出节点信息 | `deploy/benchmark.py:58-59` **只打印到控制台**（`input : ...` / `output : ...`）；落盘字段 `onnx_input` / `onnx_output` 未写入 → `outputs/report_assets/table_benchmark_meta.md` 的 `io_nodes` 列显示 `in=NoneNone out=NoneNone`；`tools/check_report_assets.py` 报 `[FAIL] 性能测试元信息[io_nodes]: 缺失` | 部分 | 「记录」未落到交付产物，只在控制台出现且无 console 日志留档；修复见 §9 得分项 G-2 |
 | **5.7.9**（附注）基础任务不要求固定 FPS，只要求流程正确、测试规范、可复现 | `report/REPORT.md` §14.1 协议表 + §14.3 mean/P50/P95 解读；未出现任何 FPS 排名式论述 | 满足 | — |
-| **5.7.10**（附注）官方 iPhone 12 延迟不能与本地 ONNX Runtime CPU 延迟直接比较 | `report/REPORT.md:158-159`、PPT 第 4 页「官方 iPhone 12 延迟（0.9 / 1.0 ms）与本机 CPU 结果不可横向比较」 | 满足 | — |
+| **5.7.10**（附注）官方 iPhone 12 延迟不能与本地 ONNX Runtime CPU 延迟直接比较 | `report/REPORT.md:160-161`、PPT 第 4 页「官方 iPhone 12 延迟（0.9 / 1.0 ms）与本机 CPU 结果不可横向比较」 | 满足 | — |
 
 ### 3.7 基础任务 6：工程、报告与答辩（10 分，第 13~15 页）
 
@@ -379,7 +379,7 @@ PDF 原文（第 3~4 页）§1.3 共 4 组内容：选择型号 4 条、子集�
 | **6.6** `outputs/` 五个指定子目录 | `outputs/curves/`、`outputs/predictions/`、`outputs/gradcam/`、`outputs/confusion_matrix/`、`outputs/benchmarks/` **全部存在且非空** | 满足 | — |
 | **6.7** `checkpoints/` | `checkpoints/baseline_best.pt`、`checkpoints/opt_combo_best.pt`（入库）；本机另有 `*_last.pt` 与其余 6 组 best | 满足 | 入库只保留题目要求的两个权重，取舍理由写在 `.gitignore` 注释与 README 末节 |
 | **6.8** `labels/` | `labels/{imagenet_classes.txt, imagenet_wnid_to_idx.json, pet_classes.txt, pet_class_to_idx.json, pet_species.json, pet_species.txt}` | 满足 | — |
-| **6.9** `README.md` / `requirements.txt` / `report.pdf` | 三者均在仓库根目录（`report.pdf` = 实测 **1,278,020 B** / 26 页；体积为报告链最新一轮重生成后的实测值） | 满足 | — |
+| **6.9** `README.md` / `requirements.txt` / `report.pdf` | 三者均在仓库根目录（`report.pdf` = **31 页**）。**体积不固化**（报告链每次重生成都变：插图前后即 1,278,020 → 1,910,451 B）—— 实测 `python -c "import fitz,os;d=fitz.open('report.pdf');print(d.page_count, os.path.getsize('report.pdf'))"` | 满足 | — |
 | **6.10** 代码清晰、可复现 | `bash tools/run_all.sh`（全流程）+ `sh deploy/run_all.sh` + `_run_m07.sh`；`requirements.lock.txt`（142 行冻结）；`python tools/selfcheck.py` → **34 PASS / 0 FAIL** | 满足 | — |
 | **6.11** 不得在代码中写死个人电脑绝对路径 | `tools/selfcheck.py` 的 `paths` 检查 **0 处**（PASS）；`deploy/compare_torch_onnx.py:12` 的 `repo_rel()` 把一致性 JSON 的 `onnx_path`/`images` 规范为仓库相对路径 | 满足 | 代码层满足；**落盘内容**仍有 **32 个**入库文件含采集机绝对路径（**平台中立的复核命令**：`git grep -lE '[A-Za-z]:\\{1,2}Users'` → **32 个文件**；`git grep -cE '[A-Za-z]:\\{1,2}Users'` → **278 行**），属可移植性问题，见 §9 体验项 X-3 |
 
@@ -418,7 +418,7 @@ PDF 原文（第 3~4 页）§1.3 共 4 组内容：选择型号 4 条、子集�
 | **T-9** 类别名称文件 | `labels/imagenet_classes.txt`（1000 行）+ `labels/pet_classes.txt`（37 行）+ 两份映射 JSON + `labels/pet_species.{json,txt}` | 满足 | — |
 | **T-10** 曲线和可视化结果 | `outputs/curves/`(4)、`outputs/predictions/`(23 PNG + CSV)、`outputs/gradcam/`(15)、`outputs/confusion_matrix/`(8)、`outputs/advanced/interp/`(8) | 满足 | — |
 | **T-11** 性能测试原始记录 | `outputs/metrics/bench.jsonl`（每行一次基准，含 `raw_ms` 50 个原始值）+ `outputs/benchmarks/*_benchmark.json`（逐型号）+ `outputs/benchmarks/summary.csv` | 满足 | `outputs/metrics/bench.jsonl` 存**两批**基准（早批与晚批），README §12 已警告引用时必须写明批次 |
-| **T-12** 项目报告 PDF | `report.pdf`（实测 **1,278,020 B**、26 页，根目录；`report/REPORT.md` 为源文，`report/REPORT.docx` 为导出；体积为报告链最新一轮重生成后的实测值） | 满足 | 页数超出「建议 12～20 页」，见 §9 体验项 X-1 |
+| **T-12** 项目报告 PDF | `report.pdf`（**31 页**，根目录；`report/REPORT.md` 为源文，`report/REPORT.docx` 为导出）。**体积不固化**（报告链每次重生成都变）—— 实测 `python -c "import fitz,os;d=fitz.open('report.pdf');print(d.page_count, os.path.getsize('report.pdf'))"` | 满足 | 正文 23 页 > 建议 12～20 页（不含附录），见 §9 体验项 X-1 |
 | **T-13** 答辩 PPT 源文件 | `report/答辩PPT_RepViT.pptx`（**15 页**）。**体积不固化**（t41 实测：两次重生成 8,119,653 → 8,119,664 B，zip 内含 `docProps/core.xml` 时间戳，字节不可复现）—— 实测 `python -c "import os;print(os.path.getsize('report/答辩PPT_RepViT.pptx'))"`+ `report/ppt_svg/*.svg`（15 份源） | 满足 | — |
 | **T-14** 答辩 PPT 的 PDF 版本 | `report/答辩PPT_RepViT.pdf`（**15 页**）。**体积不固化**（同一轮导出稳定、但随 PPTX 每次重生成而变）—— 实测 `python -c "import os;print(os.path.getsize('report/答辩PPT_RepViT.pdf'))"` | 满足 | — |
 | **T-15**（可选）备用演示视频 | 未提供 | 满足 | 题目原文标注为「**可选**的备用演示视频」，缺省不构成缺口；`report/REPORT.md` 与 PPT 均未声称提供视频 |
@@ -444,7 +444,7 @@ PDF 原文（第 3~4 页）§1.3 共 4 组内容：选择型号 4 条、子集�
 
 | 要求原文摘录 | 仓库证据（相对路径或可直接运行的命令） | 判定 | 缺口说明 |
 |---|---|---|---|
-| **RP-0**（建议）正文控制在 12～20 页，不含附录 | `report.pdf` = **26 页**（PyMuPDF `page_count`；`report/SYNC_NOTES.md` §7.2 记录压缩前 37 页，本轮目标「≤30 页」） | 部分 | 建议性口径，非硬性；超出建议上限 6 页。修复见 §9 体验项 X-1 |
+| **RP-0**（建议）正文控制在 12～20 页，不含附录 | `report.pdf` = **31 页**（PyMuPDF `page_count`；其中**正文 23 页**（p4–p26，不含封面 p1 / 目录 p2 / 空白 p3 与附录 p27–p31）；`report/SYNC_NOTES.md` §7.2 记录压缩前 37 页，本轮目标「≤30 页」） | 部分 | 建议性口径，非硬性；**正文超出建议上限 3 页**。修复见 §9 体验项 X-1 |
 | **RP-1** 任务背景与复现范围 | `report/REPORT.md` 第一节（1.1 背景 / 1.2 复现范围「做/不做」两栏 / 1.3 环境指纹 / 1.4 三个参数量口径） | 满足 | — |
 | **RP-2** RepViT 论文核心思路 | `report/REPORT.md` 第二节（§2.1~§2.3 逐条设计 + `report/sources/literature.yaml` 带 URL 的来源登记） | 满足 | — |
 | **RP-3** RepViT-M0.9 结构 | 第三节（forward hook 现测结构图 + 分辨率/通道链 + 训练态/推理态对比） | 满足 | — |
@@ -466,7 +466,7 @@ PDF 原文（第 3~4 页）§1.3 共 4 组内容：选择型号 4 条、子集�
 | **RP-19** 报告必须区分：**官方权重实际运行结果** | `report/REPORT.md` §4.2/§4.3「本机实测」列（口径 = ImageNetV2 matched-frequency 1000 张固定子集） + `outputs/pretrained_eval/*/metrics.json`；`outputs/report_assets/table_results.md:5` 有该行**但数值列为空** | 部分 | 自动素材表该行未填值（正文有值）；修复见 §9 得分项 G-5 |
 | **RP-20** 报告必须区分：**自行训练 Baseline 结果** | `report/REPORT.md` §7.2/§9 的 Baseline 行 + `outputs/metrics/baseline_test.json`；素材表 `outputs/report_assets/table_results.md:6` 行**数值为空** | 部分 | 同 RP-19 |
 | **RP-21** 报告必须区分：**自行优化模型结果** | `report/REPORT.md` §9 的 opt_* 行 + `outputs/metrics/opt_*_test.json`；素材表 `outputs/report_assets/table_results.md:7` 行**数值为空** | 部分 | 同 RP-19 |
-| **RP-22** 报告必须区分：**PyTorch 结果** | `report/REPORT.md:136`（§4.3 表第 6 行「PyTorch 推理」，PyTorch 侧延迟）、§12.4（PyTorch logits 误差，`report/REPORT.md:477`）；素材表 `outputs/report_assets/table_results.md:8` 行标注口径「batch=1, fp32, 本机 CPU」**但数值列为空** | 部分 | 同 RP-19 |
+| **RP-22** 报告必须区分：**PyTorch 结果** | `report/REPORT.md:138`（§4.3 表第 6 行「PyTorch 推理」，PyTorch 侧延迟）、§12.4（PyTorch logits 误差，`report/REPORT.md:499`）；素材表 `outputs/report_assets/table_results.md:8` 行标注口径「batch=1, fp32, 本机 CPU」**但数值列为空** | 部分 | 同 RP-19 |
 | **RP-23** 报告必须区分：**ONNX 部署结果** | `report/REPORT.md` §13/§14.2；素材表 `outputs/report_assets/table_results.md:9` 行**已填**（文件大小 18.89 MB、mean 7.20 / P50 7.12 / P95 7.69、EP = ORT CPUExecutionProvider） | 满足 | — |
 | **RP-24**（附注）所有主要结论都应能在日志、配置、代码或运行结果中找到依据 | 每个 JSON 带 `command` / `timestamp` / `platform` 元字段；`report/REPORT.md` §16.2 列出去向；`report/LOGITS_AUDIT_FINDINGS.md` 建立了「数值 → 权威产物 → 复跑命令」的映射 | 满足 | — |
 
@@ -530,13 +530,13 @@ PDF 原文（第 3~4 页）§1.3 共 4 组内容：选择型号 4 条、子集�
 |---|---|---|---|
 | **A1-1** 在基础的两个官方型号之外，累计评价并部署**至少四种官方型号** | **评价**：`outputs/pretrained_eval/` 共 5 个官方型号（m0_9 / m1_0 / m1_1 / m1_5 / m2_3）。**部署**：`git ls-files onnx/` = **5 个**，其中**官方 ONNX 4 个**（`repvit_m0_9_in1k` / `repvit_m1_0_in1k` / `repvit_m1_1_in1k` / `repvit_m1_5_in1k`）+ 自训练 Pet-37 1 个（`repvit_m0_9_pet37.onnx`）；`onnx/repvit_m2_3_in1k.onnx` 仍被 `.gitignore` 排除（**唯一**被排除的型号），仅指标与延迟入库 | 满足 | **2026-09-17 判定复核后改判**：`m1_5` 已入库 → 「部署至少四种官方型号」的**部署**半句成立（4 个官方型号随仓库交付）；原记「推送后的仓库只有 3 个」已不适用（依据见下方后记） |
 | **A1-2** 使用相同验证子集 | `outputs/benchmarks/family_summary.csv` 的 `subset_sha256 = d5532205d8f30099`（= ImageNetV2 matched-frequency 清单哈希）对 5 个型号一致 | 满足 | — |
-| **A1-3** 使用相同预处理 | 同表 `transform = "crop_pct=0.95,bicubic,input=224 (timm resolve_data_config)"` 5 行一致 | 满足 | 与基础 2 型号评价用的 `crop_pct=0.875` 是两套口径，`report/REPORT.md:135-137` 已显式警告「不可混用」 |
+| **A1-3** 使用相同预处理 | 同表 `transform = "crop_pct=0.95,bicubic,input=224 (timm resolve_data_config)"` 5 行一致 | 满足 | 与基础 2 型号评价用的 `crop_pct=0.875` 是两套口径，`report/REPORT.md:137-139` 已显式警告「不可混用」 |
 | **A1-4** 使用相同设备和推理后端 | 同表 `runtime = pytorch`、`device = cpu`、`ep = CPUExecutionProvider`、`threads = 4` 5 行一致 | 满足 | — |
 | **A1-5** 统计参数量、MACs、文件大小和延迟 | 同表 `params_M`（含 `param_caliber = infer_fused` 与说明列）、`macs_G`、`onnx_MB`、`lat_mean_ms`/`lat_p50_ms`/`lat_p95_ms`/`lat_max_ms` | 满足 | — |
 | **A1-6** 绘制参数量—准确率关系图 | `outputs/advanced/params_vs_acc.png`（+ `outputs/advanced/macs_vs_acc.png`） | 满足 | — |
 | **A1-7** 绘制延迟—准确率关系图 | `outputs/advanced/latency_vs_acc.png` | 满足 | — |
-| **A1-8** 分析不同型号的帕累托关系 | `outputs/advanced/pareto_summary.json`、`outputs/advanced/marginal_returns.csv`、`outputs/advanced/model_recommendation.csv`；`report/REPORT.md:189-199`（边际收益表 + 帕累托叙述 + 数据来源与「不要混用」警告） | 满足 | — |
-| **A1-9** 推荐一个适合当前部署设备的型号并说明理由 | `report/REPORT.md:192-195`（P50 ≤ 15 ms 预算下推荐 `repvit_m0_9_in1k`，得分 0.9842；放宽到 10 ms 且优先精度时 `repvit_m1_0_in1k` 为帕累托最优）；`outputs/advanced/model_recommendation.csv` | 满足 | — |
+| **A1-8** 分析不同型号的帕累托关系 | `outputs/advanced/pareto_summary.json`、`outputs/advanced/marginal_returns.csv`、`outputs/advanced/model_recommendation.csv`；`report/REPORT.md:191-201`（边际收益表 + 帕累托叙述 + 数据来源与「不要混用」警告） | 满足 | — |
+| **A1-9** 推荐一个适合当前部署设备的型号并说明理由 | `report/REPORT.md:186-188`（P50 ≤ 15 ms 预算下推荐 `repvit_m0_9_in1k`，综合得分 **0.9792**（来源 `outputs/advanced/model_recommendation.csv` 的 `score` 列，与 `pareto_summary.json` 一致）；放宽到 10 ms 且优先精度时 `repvit_m1_0_in1k` 为帕累托最优）；`outputs/advanced/model_recommendation.csv` | 满足 | — |
 | **A1-10**（附注）不得用官方 iPhone 延迟代替本地实际测试 | 全部延迟来自 `outputs/benchmarks/*_benchmark.json`（本机 ORT CPU）；iPhone 12 延迟只作为对照列并标注不可比 | 满足 | — |
 
 > **后记（2026-09-17 追加，任务 t30）**：本节 **A1-1** 的 ONNX 入库计数按现行 `git ls-files onnx/` 更正为 **5 个**（其中**官方 ONNX 4 个** + 自训练 Pet-37 1 个），原「官方 ONNX 只有 3 个、`m1_5` 被 `.gitignore` 排除」属 t3 之前的时点事实（当时 `m2_3` 与 `m1_5` 都被排除）。同一更正已同步到 §3.6 的 `5-M4` / `5.5.7`、§3.7 的 `T-8`、§7 的 `L-7` 与 §9 的 G-6 行。
@@ -555,7 +555,7 @@ PDF 原文（第 3~4 页）§1.3 共 4 组内容：选择型号 4 条、子集�
 | **A2-6** 组合效果 | 同文件 `interactions`（ΔA / ΔB / ΔAB / 交互项 I / verdict）；`report/REPORT.md` §9.1 表 | 满足 | — |
 | **A2-7** 训练曲线 | 四臂的**逐 epoch 曲线数据**齐全（`outputs/logs/opt_abl_{a,b,ab}_metrics.csv`），但**没有把四臂画在同一张图上的产物**（`outputs/curves/` 只有 baseline/opt_combo 相关 4 张） | 部分 | 缺「Baseline/A/B/A+B 同图训练曲线」这一张图；修复见 §9 体验项 X-4 |
 | **A2-8** 指标对比 | `outputs/advanced/ablation_summary.{csv,json}` + `report/REPORT.md` §9 八组表（含四臂 test 三指标） | 满足 | — |
-| **A2-9** 方法之间是否存在叠加或冲突的分析 | `report/REPORT.md:359-368`（val Top-1 交互项 +0.541 判超加性 / val Macro-F1 +0.006 可加；机制解释「B 压低主干 lr、A 提高数据难度，方向相反」）；`ablation_summary.json` 的 `noise` 段给出判据「`\|delta\| > 2σ` 才算真实增益」与单种子 σ 估计 0.8 | 满足 | — |
+| **A2-9** 方法之间是否存在叠加或冲突的分析 | `report/REPORT.md:365-374`（val Top-1 交互项 +0.541 判超加性 / val Macro-F1 +0.006 可加；机制解释「B 压低主干 lr、A 提高数据难度，方向相反」）；`ablation_summary.json` 的 `noise` 段给出判据「`\|delta\| > 2σ` 才算真实增益」与单种子 σ 估计 0.8 | 满足 | — |
 
 ### 5.3 进阶 3：深入结构重参数化分析（4 分，第 21~22 页）
 
@@ -564,13 +564,13 @@ PDF 原文（第 3~4 页）§1.3 共 4 组内容：选择型号 4 条、子集�
 | **A3-1** 输出转换前后的模型结构 | `outputs/reparam/repvit_m0_9_pet37_structure_before.txt`（51,595 B）与 `outputs/reparam/repvit_m0_9_pet37_structure_after.txt`（26,169 B）；`outputs/advanced/repvit_m0_9_pet37_structure_before.txt`（34,065 B）与 `outputs/advanced/repvit_m0_9_pet37_structure_after.txt`（14,187 B）同两份；`report/REPORT.md` §12.5 汇总表 | 满足 | — |
 | **A3-2** 比较 ONNX 计算图节点或算子数量 | `outputs/reparam/repvit_m0_9_pet37_onnx_nodes.json`（before 480 nodes / BN 24 / Conv 126；after 387 / BN 0 / Conv 103；`delta` 段落）；`outputs/advanced/repvit_m0_9_pet37_onnx_nodes.json` | 满足 | 文件另附 `reference_magnitude`（官方实现同口径 682→464）并注明「硬判据是 BN=0 与 Conv −23」 |
 | **A3-3** 比较转换前后的模型文件大小 | `outputs/reparam/repvit_m0_9_pet37_onnx_nodes.json` 的 `before.size_bytes = 19,028,154`（19.028 MB）vs `after.size_bytes = 18,893,159`（18.893 MB）；`outputs/advanced/repvit_m0_9_pet37_reparam_report.json` 的 `onnx.train.file_MB` / `onnx.infer.file_MB` | 满足 | — |
-| **A3-4** 比较转换前后的推理延迟 | `outputs/advanced/repvit_m0_9_pet37_reparam_report.json` 的 `latency_ms.train`（mean 39.25 / P50 37.88 / P95 47.27，n=50）与 `latency_ms.infer`（mean 28.66 / P50 29.47 / P95 35.39，n=50）；`report/REPORT.md:136`（§4.3 表第 6 行「**PyTorch 推理**」）另有融合/未融合 PyTorch 延迟（**8.41 vs 17.15 ms，降 51.0%**；见下方「后记（2026-09-17 追加，任务 t22）」） | 满足 | 两组延迟口径不同（此处是 CPU 训练态 vs 推理态），引用时需写明 |
+| **A3-4** 比较转换前后的推理延迟 | `outputs/advanced/repvit_m0_9_pet37_reparam_report.json` 的 `latency_ms.train`（mean 39.25 / P50 37.88 / P95 47.27，n=50）与 `latency_ms.infer`（mean 28.66 / P50 29.47 / P95 35.39，n=50）；`report/REPORT.md:138`（§4.3 表第 6 行「**PyTorch 推理**」）另有融合/未融合 PyTorch 延迟（**8.41 vs 17.15 ms，降 51.0%**；见下方「后记（2026-09-17 追加，任务 t22）」） | 满足 | 两组延迟口径不同（此处是 CPU 训练态 vs 推理态），引用时需写明 |
 | **A3-5** 比较 logits 数值误差 | B4：`outputs/reparam/logits_diff.json` 的 `max_abs_err = 7.092952728271484e-06` / `mean_abs_err = 2.030726818702533e-06`（32 个固定随机输入） | 满足 | 与 B1（n=12 真实图片 6.199e-06）**分开报告**，见 §3.6 的两处「口径核对」（B1 / B4） |
 | **A3-6** 分析转换后仍然存在的 BatchNorm 或冗余算子 | `outputs/reparam/repvit_m0_9_pet37_onnx_nodes.json` 的 `delta.BatchNormalization = -24`（归零）；`outputs/advanced/repvit_m0_9_pet37_reparam_report.json` 的 `residual` 段逐类给出 Add 53 / Mul 64 / Div 27 / Erf 27 / ReduceMean 11 的来源与「为什么不可再折叠」；`report/REPORT.md` §12.5 文字结论 | 满足 | — |
 | **A3-7** 对至少一个 RepViT Block 给出融合过程说明 | `outputs/advanced/block_22_fusion_report.txt` + `outputs/advanced/repvit_m0_9_pet37_reparam_report.json` 的 `block_fusion_report`（block_index 22、三条分支、四步融合、`C=384`、`params 5760 → 3840`）；`report/REPORT.md` §12.6 以 `stages.0.blocks.0` 为例复述 | 满足 | — |
 | **A3-8**（加分）能独立推导并验证卷积与 BatchNorm 融合公式 | `report/REPORT.md` §12.2 给出完整推导；`tools/reparam_deep.py:11-16` `fuse_conv_bn_manual()`、`:18-52` `fuse_repvggdw_manual()` 为**不调用任何官方 fuse 的独立实现**（注释明示「用于交叉验证」） | 满足 | 独立实现的**数值对齐**没有落盘产物，见 §6.4 拓展 4 |
 
-> **后记（2026-09-17 追加，任务 t22）**：本行引用的 `report/REPORT.md:136`（§4.3 表第 6 行「**PyTorch 推理**」）那组融合/未融合延迟**已按现行产物更正为 8.41 vs 17.15 ms（降 51.0%）**（旧引用 7.97 / 15.51 / 48.6% 来自自建子集那一轮，全仓已无该组值）；`latency_ms.train`（mean 39.25 / P50 37.88 / P95 47.27）与 `latency_ms.infer`（mean 28.66 / P50 29.47 / P95 35.39）取自 `outputs/advanced/repvit_m0_9_pet37_reparam_report.json`，**复核后与现行产物一致、未变**。
+> **后记（2026-09-17 追加，任务 t22）**：本行引用的 `report/REPORT.md:138`（§4.3 表第 6 行「**PyTorch 推理**」）那组融合/未融合延迟**已按现行产物更正为 8.41 vs 17.15 ms（降 51.0%）**（旧引用 7.97 / 15.51 / 48.6% 来自自建子集那一轮，全仓已无该组值）；`latency_ms.train`（mean 39.25 / P50 37.88 / P95 47.27）与 `latency_ms.infer`（mean 28.66 / P50 29.47 / P95 35.39）取自 `outputs/advanced/repvit_m0_9_pet37_reparam_report.json`，**复核后与现行产物一致、未变**。
 > **判定复核（更正数字后重新确认，非默认保留）**：判定**仍为「满足」** —— 两套口径的延迟都仍在落盘产物里，且「转换后延迟下降」在现行数据上同样成立（推理态 28.66 < 训练态 39.25 ms；融合后 8.41 < 未融合 17.15 ms），口径差异已在缺口列写明。
 
 ### 5.4 进阶 4：集成显卡加速部署（4 分，第 22 页）
@@ -612,7 +612,7 @@ PDF 原文（第 3~4 页）§1.3 共 4 组内容：选择型号 4 条、子集�
 
 | 要求原文摘录 | 仓库证据（相对路径或可直接运行的命令） | 判定 | 缺口说明 |
 |---|---|---|---|
-| **E1-1** 完成任意一项：INT8 量化 / 知识蒸馏 / 结构化剪枝 / 通道裁剪 / 分类头轻量化 / 其他合理压缩方法 | 全仓无量化/剪枝/蒸馏脚本：`git grep -lE "quant|prune|distill" -- ':!report/REQUIREMENTS_AUDIT.md'` → **107 个文件**（全部是注释、文档、计划说明或权重二进制的无关命中；`tools/same_budget.py` 并不在这些命中里），仓库内没有任何量化 / 剪枝 / 蒸馏**实现**；`report/REPORT.md:773-775` 把 INT8/蒸馏/剪枝列入「后续计划」 | 缺失 | 可选任务未开展，属**团队已决议的范围外**；不构成必须修复项 |
+| **E1-1** 完成任意一项：INT8 量化 / 知识蒸馏 / 结构化剪枝 / 通道裁剪 / 分类头轻量化 / 其他合理压缩方法 | 全仓无量化/剪枝/蒸馏脚本：`git grep -lE "quant|prune|distill" -- ':!report/REQUIREMENTS_AUDIT.md'` → **107 个文件**（全部是注释、文档、计划说明或权重二进制的无关命中；`tools/same_budget.py` 并不在这些命中里），仓库内没有任何量化 / 剪枝 / 蒸馏**实现**；`report/REPORT.md:795-797` 把 INT8/蒸馏/剪枝列入「后续计划」 | 缺失 | 可选任务未开展，属**团队已决议的范围外**；不构成必须修复项 |
 | **E1-2** 必须比较：参数量 / MACs / 模型文件大小 / 平均延迟 / P50 和 P95 / Top-1 和 Macro-F1 / 各类别性能变化 | 无压缩前后对比 | 缺失 | 同 E1-1 |
 | **E1-3**（附注）只生成压缩文件但没有实际精度和速度验证，不计完整得分 | 未生成压缩文件 | 缺失 | 同 E1-1 |
 
@@ -620,7 +620,7 @@ PDF 原文（第 3~4 页）§1.3 共 4 组内容：选择型号 4 条、子集�
 
 | 要求原文摘录 | 仓库证据（相对路径或可直接运行的命令） | 判定 | 缺口说明 |
 |---|---|---|---|
-| **E2-1** 使用至少 3 个随机种子重复 Baseline 或关键优化实验 | 全部实验 `seed = 42`；`outputs/advanced/ablation_summary.json` 的 `noise` 段用「单种子 σ 估计 = 0.8」代替多种子，`report/REPORT.md:350-353` 用重跑一次（±0.08 / ±0.40）说明波动量级 | 缺失 | 未做 3 种子重复；仓库用重跑与二项置信区间做了**替代性**波动论证（诚实标注为「替代」） |
+| **E2-1** 使用至少 3 个随机种子重复 Baseline 或关键优化实验 | 全部实验 `seed = 42`；`outputs/advanced/ablation_summary.json` 的 `noise` 段用「单种子 σ 估计 = 0.8」代替多种子，`report/REPORT.md:337-338` 用重跑一次（±0.08 / ±0.40）说明波动量级 | 缺失 | 未做 3 种子重复；仓库用重跑与二项置信区间做了**替代性**波动论证（诚实标注为「替代」） |
 | **E2-2** 保持其他配置一致 | 不适用（无多种子产物） | 缺失 | 同 E2-1 |
 | **E2-3** 报告均值和标准差 | 只有单种子结果，无跨种子 mean/std | 缺失 | 同 E2-1 |
 | **E2-4** 分析提升是否超过随机波动 / 说明结论是否稳定 | `ablation_summary.json` 的 `noise.rule`（`\|delta\| > 2σ` 判真实增益）+ `report/REPORT.md` §9 的三条判据 | 部分 | 方法学到位但缺真实多种子证据；不构成必须修复项 |
@@ -629,7 +629,7 @@ PDF 原文（第 3~4 页）§1.3 共 4 组内容：选择型号 4 条、子集�
 
 | 要求原文摘录 | 仓库证据（相对路径或可直接运行的命令） | 判定 | 缺口说明 |
 |---|---|---|---|
-| **E3-1** 完成任意一种：TensorRT / OpenVINO IR / Core ML / Windows ML / Jetson 等边缘设备 / 手机端 / Docker 化推理服务 / Web API 或桌面端 / RepViT-SAM / 语义分割或检测下游 | 全仓无上述任一实现（无 Dockerfile、无 Web API、无 TRT/OpenVINO/CoreML 产物、无下游任务脚本）；`report/REPORT.md:773-775` 列后续计划 | 缺失 | 可选任务未开展；集显后端属进阶 4（同样因设备缺位未完成） |
+| **E3-1** 完成任意一种：TensorRT / OpenVINO IR / Core ML / Windows ML / Jetson 等边缘设备 / 手机端 / Docker 化推理服务 / Web API 或桌面端 / RepViT-SAM / 语义分割或检测下游 | 全仓无上述任一实现（无 Dockerfile、无 Web API、无 TRT/OpenVINO/CoreML 产物、无下游任务脚本）；`report/REPORT.md:795-797` 列后续计划 | 缺失 | 可选任务未开展；集显后端属进阶 4（同样因设备缺位未完成） |
 | **E3-2** 需要提供实际运行证据和性能报告 | 无 | 缺失 | 同 E3-1 |
 | **E3-3**（附注）下游任务不能只运行官方演示，必须包含候选人完成的数据处理、部署改造或实验分析 | 不适用 | 缺失 | 同 E3-1 |
 
@@ -659,13 +659,13 @@ PDF 原文（第 3~4 页）§1.3 共 4 组内容：选择型号 4 条、子集�
 | **L-6** 没有完成自行训练模型的 ONNX 部署 → 总分不超过 65 分 | `onnx/repvit_m0_9_pet37.onnx`（入库）+ `outputs/benchmarks/repvit_m0_9_pet37_benchmark.json` + `deploy/infer_onnx.py --model repvit_m0_9_pet37` | 满足 | 风险不存在 |
 | **L-7** 没有完成多模型 ONNX 部署 → 部署部分最高不超过 60% | `git ls-files onnx/` **5 个**模型（其中**官方 ONNX 4 个**）；`outputs/benchmarks/summary.csv` 6 型号 | 满足 | 风险不存在 |
 | **L-8** 没有验证结构重参数化前后结果 → 部署部分最高不超过 70% | B4：`outputs/reparam/repvit_m0_9_pet37_reparam_report.json` + `outputs/reparam/logits_diff.json`（32 个固定随机输入，`max\|Δ\| = 7.093e-06`，Top-1 32/32，BN 107→0）；`tools/selfcheck.py` 的 `rep.verify`、`onnx.bn` PASS | 满足 | 风险不存在 |
-| **L-9** 没有提交报告或没有参加答辩 → 本次考核不通过 | `report.pdf`（26 页）+ `report/REPORT.md` + `report/REPORT.docx` + PPT 源/PDF 均入库 | 部分 | 「报告已提交」成立；「是否参加答辩」是现场环节，静态不可判定 |
+| **L-9** 没有提交报告或没有参加答辩 → 本次考核不通过 | `report.pdf`（31 页）+ `report/REPORT.md` + `report/REPORT.docx` + PPT 源/PDF 均入库 | 部分 | 「报告已提交」成立；「是否参加答辩」是现场环节，静态不可判定 |
 | **L-10** 无法复现实验结果 → 总分不超过 50 分 | `requirements.lock.txt`（142 行冻结）+ `bash tools/run_all.sh` 全流程 + `python tools/selfcheck.py`（**34 PASS / 0 FAIL**）+ 每个 JSON 带 `command` 元字段 + README 第 13 节「一键复现与耗时」 | 满足 | **但** `tools/check_report_assets.py` 现在跑出 36 条 FAIL（§9 阻断项 A-1），现场运行会直接冲击本条 |
 | **L-11** 无法解释本人修改的代码 → 相关部分最高得分不超过 50% | `PROVENANCE.md`（5 类标注 + 10 行「AI 初稿被实测推翻」表）；`report/REPORT.md` 附录 A（10 类缺陷与处置）；`PROGRESS.md` 决策记录 | 满足 | 「能否解释」是答辩现场环节，静态不可判定；材料齐备 |
 | **L-12** 无法说明曲线来源 → 曲线分析部分最高得分不超过 50% | `report/REPORT.md` §10.1 明写曲线文件与数据源；`report/PPT_CONTENT.md` 每页「来源」行；`outputs/curves/*` 均可用 `python tools/plot_curves.py` 从 `outputs/logs/*_metrics.csv` 重画 | 满足 | — |
 | **L-13** 无法说明实验变量差异 → 优化实验部分最高得分不超过 50% | `tools/diff_config.py`（叶子级 + `_expected_diff_` 声明白名单）+ `configs/expected_diff.yaml` + `outputs/logs/*_config_effective.*` | 满足 | — |
 | **L-14** 现场结果与报告明显不一致且无法解释 → 相关结果不计分 | 静态不可判定；可对照的静态证据：`report/REPORT.md` 的每个数字都带落盘路径，现场命令与该路径一致（README §4~§12 的命令即复跑命令） | 部分 | 现场环节，静态不可判定 |
-| **L-15** 使用 test 进行调参或模型选择 → 测试集结果不计 | 选模标准被硬断言锁定为 `val_macro_f1`（`tools/train.py:623`）；baseline `eval_count = 1`。**但** `opt_combo` / `opt_mix` / `opt_randaug` / `opt_abl_b` 四个臂的 `eval_count = 2`（`outputs/metrics/*_test.json` 与 `outputs/logs/*_test_eval_count.json`），仓库文档中**没有**对这 4 次「第二次 test 评价」的书面归因；`tools/train.py:755-756` 只在运行时打印警告 | 部分 | 存在被评委质疑的风险（尤其 `report/REPORT.md:248` 的绝对表述「`test` 集只被评价过一次」只对 baseline 成立，PPT 第 5 页同样只写「eval_count = 1」）。修复见 §9 得分项 G-1 |
+| **L-15** 使用 test 进行调参或模型选择 → 测试集结果不计 | 选模标准被硬断言锁定为 `val_macro_f1`（`tools/train.py:623`）；baseline `eval_count = 1`。**但** `opt_combo` / `opt_mix` / `opt_randaug` / `opt_abl_b` 四个臂的 `eval_count = 2`（`outputs/metrics/*_test.json` 与 `outputs/logs/*_test_eval_count.json`），仓库文档中**没有**对这 4 次「第二次 test 评价」的书面归因；`tools/train.py:755-756` 只在运行时打印警告 | 部分 | 存在被评委质疑的风险（尤其 `report/REPORT.md:250` 的绝对表述「`test` 集只被评价过一次」只对 baseline 成立，PPT 第 5 页同样只写「eval_count = 1」）。修复见 §9 得分项 G-1 |
 | **L-16** 数据泄漏、指标造假或实验来源不明 → 本次考核不通过 | 泄漏：`outputs/metrics/leakage_check.json`（文件名交集 0/0/0、MD5 交集 0/0/0、`pass: true`）；来源：`outputs/metrics/weight_sha256.json`（5/5 官方 SHA256）、Pet 归档官方 MD5、`external/images_manifest.csv` 逐张登记 + 「不声称原创」声明；口径：`report/LOGITS_AUDIT_FINDINGS.md` 把 8 个无配套产物的孤值明确列为「不得作为结论」 | 满足 | 风险不存在；孤值处理方式反而是加分项 |
 | **L-17**（首句，若单列）出现以下情况时，即使完成进阶或拓展任务，也进行分数限制 | 本节 16 条限制已逐条对照（上文）；`report/REPORT.md` 与 PPT 均未把进阶/拓展完成度当作分数主张 | 满足 | 本行是为对齐契约「17 条」而单列的标题句 |
 
@@ -716,16 +716,16 @@ PDF 原文（第 3~4 页）§1.3 共 4 组内容：选择型号 4 条、子集�
 
 | ID | 现象与证据 | 影响 | 最小修复方案（可直接执行） | 需改动的仓库相对路径 |
 |---|---|---|---|---|
-| **G-1** | 4 个优化臂在 test 上各被评价了 **2 次**（比 baseline 多一次），且文档无归因：`outputs/metrics/{opt_combo,opt_mix,opt_randaug,opt_abl_b}_test.json` 的 `eval_count = 2`（baseline 与 `opt_abl_a`/`opt_disc`/`opt_abl_ab` = 1）；`outputs/logs/opt_*_test_eval_count.json` 的 `count = 2`；`tools/train.py:747-756` 的计数器语义是「跨重跑累计」，且只在运行时打印 `[test][警告]`。而 `report/REPORT.md:248` 写「**`test` 集只被评价过一次**」、PPT 第 5 页写「test 只评价一次 / eval_count = 1」，两处都**未限定为 baseline** | 必要限制 L-15「使用 test 进行调参或模型选择 → 测试集结果不计」的答辩风险；也牵动十、公平性说明第 12 条「报告、代码、日志、模型和现场结果必须能够相互对应」 | **（t2 时点的修复方案，保留为历史记录、不需再执行）** ① 在报告 §6.4 把绝对表述改为按臂列表（给出 8 臂 `eval_count` 一览）；② 补一段归因：这 4 次多出的评价来自「早停预算修正后重训」等重跑，模型选择始终只用 `val_macro_f1`（`tools/train.py:623` 硬断言），两次结果均落盘可查；③ 在 §9 八组表加一列 `eval_count`；④ 同步 README §5/§7 与 PPT 第 5/8 页的措辞；⑤ 重导 `report.pdf` 与 `report/REPORT.docx` **（2026-09-17，任务 t38：该缺口已闭合 —— `report/REPORT.md` §6.4 已按臂列出 `eval_count` 并给出重跑归因（`:232-243`）、§9 八组表已加 `eval_count` 列（`report/REPORT.md:319/330`）；PPT 第 5/6 页措辞均已限定为 Baseline：「Baseline 的 test 只评价 1 次」+ `eval_count = 1`（`report/PPT_CONTENT.md:284/286` 为第 5 页、`:374/376` 为第 6 页），且该限定由生成器强制、重编译不会回退（`tools/update_defense.py:363` 的单向归一化 `("test 只评价一次", "Baseline 的 test 只评价 1 次")`）；实交付 `report/答辩PPT_RepViT.pptx` 第 5/6 页文本经 dump 复核确为「Baseline 的 test 只评价 1 次」/「eval_count = 1」。本行保留为 t2 时点记录。** | `report/REPORT.md`、`README.md`、`report/PPT_CONTENT.md`、`report/答辩PPT_RepViT.pptx`(=`report/ppt_svg/06_data.svg`)、`report.pdf`、`report/REPORT.docx` |
+| **G-1** | 4 个优化臂在 test 上各被评价了 **2 次**（比 baseline 多一次），且文档无归因：`outputs/metrics/{opt_combo,opt_mix,opt_randaug,opt_abl_b}_test.json` 的 `eval_count = 2`（baseline 与 `opt_abl_a`/`opt_disc`/`opt_abl_ab` = 1）；`outputs/logs/opt_*_test_eval_count.json` 的 `count = 2`；`tools/train.py:747-756` 的计数器语义是「跨重跑累计」，且只在运行时打印 `[test][警告]`。而 `report/REPORT.md:250` 写「**`test` 集只被评价过一次**」、PPT 第 5 页写「test 只评价一次 / eval_count = 1」，两处都**未限定为 baseline** | 必要限制 L-15「使用 test 进行调参或模型选择 → 测试集结果不计」的答辩风险；也牵动十、公平性说明第 12 条「报告、代码、日志、模型和现场结果必须能够相互对应」 | **（t2 时点的修复方案，保留为历史记录、不需再执行）** ① 在报告 §6.4 把绝对表述改为按臂列表（给出 8 臂 `eval_count` 一览）；② 补一段归因：这 4 次多出的评价来自「早停预算修正后重训」等重跑，模型选择始终只用 `val_macro_f1`（`tools/train.py:623` 硬断言），两次结果均落盘可查；③ 在 §9 八组表加一列 `eval_count`；④ 同步 README §5/§7 与 PPT 第 5/8 页的措辞；⑤ 重导 `report.pdf` 与 `report/REPORT.docx` **（2026-09-17，任务 t38：该缺口已闭合 —— `report/REPORT.md` §6.4 已按臂列出 `eval_count` 并给出重跑归因（`:232-243`）、§9 八组表已加 `eval_count` 列（`report/REPORT.md:321/330`）；PPT 第 5/6 页措辞均已限定为 Baseline：「Baseline 的 test 只评价 1 次」+ `eval_count = 1`（`report/PPT_CONTENT.md:284/286` 为第 5 页、`:374/376` 为第 6 页），且该限定由生成器强制、重编译不会回退（`tools/update_defense.py:363` 的单向归一化 `("test 只评价一次", "Baseline 的 test 只评价 1 次")`）；实交付 `report/答辩PPT_RepViT.pptx` 第 5/6 页文本经 dump 复核确为「Baseline 的 test 只评价 1 次」/「eval_count = 1」。本行保留为 t2 时点记录。** | `report/REPORT.md`、`README.md`、`report/PPT_CONTENT.md`、`report/答辩PPT_RepViT.pptx`(=`report/ppt_svg/06_data.svg`)、`report.pdf`、`report/REPORT.docx` |
 | **G-2** | 性能测试第 8 条「记录模型输入输出节点信息」只打印不落盘：`deploy/benchmark.py:58-59` 打印 `input:` / `output:`，但 `rep` 字典无 `onnx_input`/`onnx_output` 字段 → `outputs/benchmarks/*_benchmark.json`、`outputs/metrics/bench.jsonl`、`outputs/report_assets/table_benchmark_meta.{csv,md}`（`io_nodes` 列 = `in=NoneNone out=NoneNone`）均无信息；`tools/check_report_assets.py` 报 `[FAIL] 性能测试元信息[io_nodes]: 缺失` | 五-5 性能测试 8 条中的第 8 条（硬性 8 项之一） | ① `deploy/benchmark.py` 的 `rep` 增加 `onnx_input=dict(name=inp.name,shape=list(inp.shape),type=inp.type)`、`onnx_output=dict(...)`、`backend="onnxruntime"`；② 用**只读**方式为现有 6 个 ONNX 补一份节点信息产物（`onnx.load()` 读 `graph.input/output` → `outputs/metrics/onnx_io_nodes.json`），避免为补字段重跑 6 组基准、也就不会改动已发布的延迟数字；③ 把该 JSON 并入 `table_benchmark_meta` 的 `io_nodes` 列 | `deploy/benchmark.py`、`tools/make_report_assets.py`、`outputs/metrics/onnx_io_nodes.json`（新增）、`outputs/report_assets/table_benchmark_meta.{csv,md}` |
-| **G-3** | 基础 1.1 第 7/8 条要求「分析至少 2 个正确案例 / 2 个错误案例」：图片证据齐备（每型号 `outputs/pretrained_eval/<model>/cases/{correct_1,correct_2,wrong_1,wrong_2}.png`），但**文字分析**只有 `report/REPORT.md:164-165` 的 1 个正确案例（beagle 96.8%）与 1 句泛化的错误现象描述（细长体型小型犬混判），未逐例展开 | 五-1（15 分）的案例分项；评委现场可要求逐例说明 | 在 `report/REPORT.md` §4.5 把案例写成 2+2 四条（每条：图片文件名 + 真值 + 预测 + Top-5 置信度 + 一句归因），数字全部取自 `outputs/pretrained_eval/repvit_m0_9/top5_samples.json`（该文件已有 6 条样本、其中 `correct=true` 4 条）；重导 PDF/DOCX | `report/REPORT.md`、`report.pdf`、`report/REPORT.docx` |
+| **G-3** | 基础 1.1 第 7/8 条要求「分析至少 2 个正确案例 / 2 个错误案例」：图片证据齐备（每型号 `outputs/pretrained_eval/<model>/cases/{correct_1,correct_2,wrong_1,wrong_2}.png`），但**文字分析**只有 `report/REPORT.md:166-167` 的 1 个正确案例（beagle 96.8%）与 1 句泛化的错误现象描述（细长体型小型犬混判），未逐例展开 | 五-1（15 分）的案例分项；评委现场可要求逐例说明 | 在 `report/REPORT.md` §4.5 把案例写成 2+2 四条（每条：图片文件名 + 真值 + 预测 + Top-5 置信度 + 一句归因），数字全部取自 `outputs/pretrained_eval/repvit_m0_9/top5_samples.json`（该文件已有 6 条样本、其中 `correct=true` 4 条）；重导 PDF/DOCX | `report/REPORT.md`、`report.pdf`、`report/REPORT.docx` |
 | **G-4** | **（t2 时点现象）**「对**每个** ONNX 模型至少比较 [5 项一致性]」：入库 ONNX 4 个，同口径一致性产物只有 3 个（`outputs/metrics/consistency_{repvit_m0_9_pet37,repvit_m0_9_in1k,repvit_m1_0_in1k}.json`），`repvit_m1_1_in1k` 无。**（后记 2026-09-17，任务 t30：该缺口已闭合 —— `outputs/metrics/consistency_*.json` 现为 5 份，4 个入库官方型号全部有同口径 n=12 产物；见 §3.6 `5.5.7` 与本节顶部状态更新。）** | 五-5 一致性 5 项（部署部分）；严格读法下的覆盖不全 | **（t2 时点的修复方案，保留为历史记录、不需再执行）** 当时计划跑一次 `python deploy/compare_torch_onnx.py --model repvit_m1_1_in1k --images datasets/lists/imagenetv2_mf_1000.txt --limit 12 --out outputs/verification/consistency_repvit_m1_1_in1k_n12.json`（**已按现行唯一口径更正**：`--images` 原写的是已 `git rm` 删除且不得恢复的 `datasets/lists/imagenet_val_subset.txt`；现行命令与 `report/LOGITS_AUDIT.md:77`、`tools/audit_logrefs` 同款 —— 见 `tools/audit_logits_references.py:97` 的 `cmd=`），把结果并入 `report/REPORT.md` §13.3 的表与 `README.md` §11.1 的型号清单。**该缺口已闭合（见本行后记与 §3.6 `5.5.7`），本条不再需要执行。** | `outputs/metrics/consistency_repvit_m1_1_in1k.json`（新增）、`outputs/verification/consistency_repvit_m1_1_in1k_n12.json`（新增）、`report/REPORT.md`、`README.md` |
-| **G-5** | 报告必须区分 7 类来源：正文把「论文公布」与「官方仓库公布」合并为一列（`report/REPORT.md:141` 表头「论文 / 官方公布」）；自动素材表 `outputs/report_assets/table_results.md` 虽有 **7 行数据**，但「官方权重实测 / 自训练 Baseline / 自优化模型 / PyTorch 推理」4 行的数值全为 `—`（第 5~8 行） | 六-1「报告必须区分 7 类来源」（第 16 页硬性要求） | ① 把 §4.3 表头拆成两行/两列（论文公布 78.7% 来自 `report/sources/literature.yaml#paper`；官方仓库公布 78.7%/79.1% 来自 `#official_repo`）；② 把 `outputs/report_assets/table_results.md` 的 4 行按 `outputs/pretrained_eval/*/metrics.json`、`outputs/metrics/baseline_test.json`、`outputs/metrics/opt_combo_test.json`、`outputs/pretrained_eval/*/latency.json` 填满（生成脚本 `tools/make_report_assets.py` 读 `tools/report_spec.py` 的 `CALIBER_ROWS`，注意与阻断项 A-1 一并修） | `report/REPORT.md`、`tools/report_spec.py`、`tools/make_report_assets.py`、`outputs/report_assets/table_results.{csv,md}` |
+| **G-5** | 报告必须区分 7 类来源：正文把「论文公布」与「官方仓库公布」合并为一列（`report/REPORT.md:143` 表头「论文 / 官方公布」）；自动素材表 `outputs/report_assets/table_results.md` 虽有 **7 行数据**，但「官方权重实测 / 自训练 Baseline / 自优化模型 / PyTorch 推理」4 行的数值全为 `—`（第 5~8 行） | 六-1「报告必须区分 7 类来源」（第 16 页硬性要求） | ① 把 §4.3 表头拆成两行/两列（论文公布 78.7% 来自 `report/sources/literature.yaml#paper`；官方仓库公布 78.7%/79.1% 来自 `#official_repo`）；② 把 `outputs/report_assets/table_results.md` 的 4 行按 `outputs/pretrained_eval/*/metrics.json`、`outputs/metrics/baseline_test.json`、`outputs/metrics/opt_combo_test.json`、`outputs/pretrained_eval/*/latency.json` 填满（生成脚本 `tools/make_report_assets.py` 读 `tools/report_spec.py` 的 `CALIBER_ROWS`，注意与阻断项 A-1 一并修） | `report/REPORT.md`、`tools/report_spec.py`、`tools/make_report_assets.py`、`outputs/report_assets/table_results.{csv,md}` |
 | **G-6** | 进阶 1「累计评价并**部署**至少四种官方型号」：**（t2 时点现象）**推送后的仓库当时只有 3 个官方 ONNX（`git ls-files onnx/` = m0_9_in1k / m1_0_in1k / m1_1_in1k / m0_9_pet37），`onnx/repvit_m1_5_in1k.onnx`（56 MB）与 `onnx/repvit_m2_3_in1k.onnx`（92 MB）当时都被 `.gitignore` 排除。**（后记 2026-09-17，任务 t30：本缺口已闭合 —— `repvit_m1_5_in1k.onnx` 已入库，现行 `git ls-files onnx/` = **5 个**、其中**官方 ONNX 4 个**，仅 `m2_3` 仍被排除；本行保留为 t2 时点记录。）** | **（t2 时点影响）** 七-1（4 分）的「部署」半句；当时严格读法下只能算 3 个官方型号已部署 | **（t2 时点的修复方案，保留为历史记录、不需再执行）** 三选一：① 解除 `.gitignore` 对这两个 ONNX 的排除并入库（注意仓库体积 +148 MB，PDF 第 28 页第 12 条「明确的数据和模型提交大小限制」从未下发）——**后续实际执行的是只解除 `m1_5`（t3 的 G-6 处置），`m2_3` 未入库**；② 在 `report/REPORT.md` §1.2 与 §5 显式声明「本机 5 个官方型号均已导出并跑通；**当时**入库仅 3 个，另两个可一条命令复现 `python deploy/export_onnx.py --model repvit_m1_5_in1k repvit_m2_3_in1k`」，把该条从「部署」改述为「评价 + 可复现导出」；③ 在 README 的 ONNX 表里补一行「未入库型号与复现命令」。**（2026-09-17，任务 t34：本缺口已闭合 —— 现行 `git ls-files onnx/` = **5 个**、其中**官方 ONNX 4 个**，选项②的前提「入库仅 3 个」已不适用；`m2_3` 仍可用 `python deploy/export_onnx.py --model repvit_m2_3_in1k` 一键复现。本条为历史记录，不需再执行。）** | `.gitignore` 或 `report/REPORT.md` / `README.md` / `report.pdf` |
-| **G-7** | 报告 26 页 > 建议 12～20 页（`report.pdf` 的 `page_count = 26`） | 六-1「建议正文控制在 12～20 页」（**建议性**，非硬性）；影响观感与评委阅读成本 | 在现有 30 页压缩的基础上再压 6 页：优先把附录 A/C/D/E 中可迁到 PPT 的内容移出正文、把 `report/REPORT.md` §五 与 §14.2 两张重叠的表合并；**不要**为压页数删掉受保护的权威数值 | `report/REPORT.md`、`report.pdf`、`report/REPORT.docx` |
+| **G-7** | 报告正文 23 页 > 建议 12～20 页（`report.pdf` 的 `page_count = 31`，其中正文 p4–p26 = 23 页，不含附录 p27–p31） | 六-1「建议正文控制在 12～20 页」（**建议性**，非硬性）；影响观感与评委阅读成本 | 在现有 30 页压缩的基础上再压 3 页：优先把附录 A/C/D/E 中可迁到 PPT 的内容移出正文、把 `report/REPORT.md` §五 与 §14.2 两张重叠的表合并；**不要**为压页数删掉受保护的权威数值 | `report/REPORT.md`、`report.pdf`、`report/REPORT.docx` |
 | **G-8** | PPT 所有性能图表必须注明 7 项：第 8/9/10/12/13/14 页元信息 7 项齐全，**第 4 页**（官方多型号评价表，含参数量/MACs）只有「1000 张 · 224×224 · batch 64 · FP32 · RTX 4060 Laptop」，缺「推理后端」与「测试次数」 | 六-2「所有性能图表必须注明 7 项」（第 17 页硬性要求） | **（t2 时点的修复方案，保留为历史记录、不需再执行）** 在 `report/ppt_svg/05_pretrained.svg` 的元信息行补「PyTorch 2.14.0+cu126（CUDA）」与「每型号评价 1 次（1000 张）」两段，重新编译该页并重导 PPTX/PDF **（2026-09-17，任务 t38：该缺口已闭合 —— P04 页的 7 项元信息已补齐，落点见 `report/PPT_CONTENT.md:242`（推理后端 + 测试次数）；本行所述的设计源文件名亦已按现行 `report/ppt_svg/` 目录更正为路径列所列的现有文件。本行保留为 t2 时点记录。** | `report/ppt_svg/05_pretrained.svg`、`report/PPT_CONTENT.md`、`report/答辩PPT_RepViT.pptx`、`report/答辩PPT_RepViT.pdf` |
 
-> **后记（2026-09-17 追加，任务 t22）**：本表 **G-3** 行引用的「beagle 96.8%」与 §3.1 的 1.1-7 同源、同样是 t2 时点文字，**该值在现行仓库已无落盘依据**（现行 beagle 命中全部属于**外部实拍图 / 演示路径**这一类：`report/REPORT.md:158` = 94.47%、`:435`/`:773` = 90.32%、`report/PPT_CONTENT.md:613` = 0.903，其余是标签 / 清单 / 命令示例）。现行案例口径以 `outputs/pretrained_eval/repvit_m0_9/top5_samples.json`（ImageNetV2）为准 —— **6 条样本、4 正 + 2 误**，与逐例题材 `outputs/report_assets/table_cases.{csv,md}`（5 型号 × 2 正 + 2 误 = 20 行）一致。**本行的 现象 / 影响 / 最小修复方案保留为 t2 时点记录，不改写历史**；处置结果见 `report/REPORT.md:144` §4.5「Top-5 样例与正误案例（2 正 + 2 误）」。该行的「最小修复方案」第 2 句已经成立（`top5_samples.json` 确有 6 条样本、`correct=true` 4 条），无需再改数字。
+> **后记（2026-09-17 追加，任务 t22）**：本表 **G-3** 行引用的「beagle 96.8%」与 §3.1 的 1.1-7 同源、同样是 t2 时点文字，**该值在现行仓库已无落盘依据**（现行 beagle 命中全部属于**外部实拍图 / 演示路径**这一类：`report/REPORT.md:160` = 94.47%、`:457`/`:795` = 90.32%、`report/PPT_CONTENT.md:613` = 0.903，其余是标签 / 清单 / 命令示例）。现行案例口径以 `outputs/pretrained_eval/repvit_m0_9/top5_samples.json`（ImageNetV2）为准 —— **6 条样本、4 正 + 2 误**，与逐例题材 `outputs/report_assets/table_cases.{csv,md}`（5 型号 × 2 正 + 2 误 = 20 行）一致。**本行的 现象 / 影响 / 最小修复方案保留为 t2 时点记录，不改写历史**；处置结果见 `report/REPORT.md:146` §4.5「Top-5 样例与正误案例（2 正 + 2 误）」。该行的「最小修复方案」第 2 句已经成立（`top5_samples.json` 确有 6 条样本、`correct=true` 4 条），无需再改数字。
 
 ### 9.3 体验项（不影响得分限制，影响交付质量与答辩流畅度）
 
@@ -737,7 +737,7 @@ PDF 原文（第 3~4 页）§1.3 共 4 组内容：选择型号 4 条、子集�
 | **X-4** | 进阶 2 的「训练曲线」没有四臂同图产物：四臂逐 epoch 数据齐全（`outputs/logs/opt_abl_{a,b,ab}_metrics.csv`），但 `outputs/curves/` 只有 baseline/opt_combo 的 4 张图 | 七-2（5 分）的「训练曲线」子项 | `python tools/plot_curves.py --runs baseline=outputs/logs/baseline_metrics.csv opt_abl_a=outputs/logs/opt_abl_a_metrics.csv opt_abl_b=outputs/logs/opt_abl_b_metrics.csv opt_abl_ab=outputs/logs/opt_abl_ab_metrics.csv --out outputs/curves/ablation_curves.png`，并在报告 §9.1 引用 | `outputs/curves/ablation_curves.png`（新增）、`report/REPORT.md` |
 | **X-5** | 进阶 5 鲁棒性方向缺「Grad-CAM 变化」：`outputs/advanced/robustness_repvit_m0_9_pet37.json` 只有 `top1` / `macro_f1` / `mean_conf` / `conf_correct` / `conf_wrong` / `ece`，无 `gradcam` 相关字段（`git grep -F -- "gradcam" -- outputs/advanced/robustness_repvit_m0_9_pet37.json` → **0 命中**） | 七-5（最高 3 分）鲁棒性方向的分析完整性 | 抽 2~3 类扰动 × 2 级 severity 各出 1 张 Grad-CAM 拼图（复用 `tools/gradcam.py` 的挂载点 A/B），落盘 `outputs/advanced/robustness_gradcam.png` 并在附录 C 加一段对比 | `tools/robustness_test.py`、`outputs/advanced/robustness_gradcam.png`（新增）、`report/REPORT.md` |
 | **X-6** | 摄像头/视频演示无实跑产物：`deploy/demo_camera.py` 完整（Top-5 / FPS / 按键切型号 / `--jitter-report`），但 `outputs/benchmarks/realtime_jitter.json` 不存在 | 七-5 的第三方向只有代码没有证据（该方向可自选，故不影响完成度） | 有摄像头时跑一次并落盘 `realtime_jitter.json`；无摄像头时用 `--source <视频文件>` 或直接删除 `--jitter-report` 的默认落盘声明，避免「声称有产物但找不到」 | `deploy/demo_camera.py`、`outputs/benchmarks/realtime_jitter.json`（新增或取消声明） |
-| **X-7** | `report/REPORT.md:248` 与 PPT 第 5 页的「test 只评价一次」未限定为 baseline（与得分项 G-1 同源，此处记录措辞层面） | 同一事实在不同产物里的表述一致性 | **（t2 时点的修复方案，保留为历史记录、不需再执行）** 随 G-1 一并改为「Baseline 的 test 只评价一次（eval_count = 1）；优化臂因重跑累计为 2，模型选择仍只看验证集」 **（2026-09-17，任务 t38：已随 G-1 一并处置 —— 措辞已限定为 baseline 口径，见 `report/PPT_CONTENT.md:284/286`（第 5 页）、`:374/376`（第 6 页）与 `report/REPORT.md:236-237`；生成器侧由 `tools/update_defense.py:363` 的单向归一化保证重编译不回退；本行保留为 t2 时点记录。** | `report/REPORT.md`、`report/ppt_svg/06_data.svg`、`report/PPT_CONTENT.md` |
+| **X-7** | `report/REPORT.md:250` 与 PPT 第 5 页的「test 只评价一次」未限定为 baseline（与得分项 G-1 同源，此处记录措辞层面） | 同一事实在不同产物里的表述一致性 | **（t2 时点的修复方案，保留为历史记录、不需再执行）** 随 G-1 一并改为「Baseline 的 test 只评价一次（eval_count = 1）；优化臂因重跑累计为 2，模型选择仍只看验证集」 **（2026-09-17，任务 t38：已随 G-1 一并处置 —— 措辞已限定为 baseline 口径，见 `report/PPT_CONTENT.md:284/286`（第 5 页）、`:374/376`（第 6 页）与 `report/REPORT.md:238-239`；生成器侧由 `tools/update_defense.py:363` 的单向归一化保证重编译不回退；本行保留为 t2 时点记录。** | `report/REPORT.md`、`report/ppt_svg/06_data.svg`、`report/PPT_CONTENT.md` |
 | **X-8** | 本文件新增后，仓库已登记的「logits 引用清单不动点」会变：`tools/audit_logits_references.py` 扫描 `git ls-files` 全量文件（脚本里 `git ls-files -z` 调用，**现行 L461**），而 `report/SYNC_NOTES.md` 要求维持 `4124 条引用 / 153 个文件`；本报告刻意保留了 `7.093e-06` / `6.199e-06` / `1.501e-06` 等权威值字面量 | 审计文档之间的登记值一致性（不影响得分） | 修完本轮所有缺口后统一执行：`python tools/audit_logits_references.py`（重生成 `outputs/verification/logits_reference_inventory.csv`）→ 用 `--stdout` 读新条数 → 同步更新 `report/LOGITS_AUDIT_FINDINGS.md` §2.3/§2.4、`report/LOGITS_AUDIT.md`、`report/SYNC_NOTES.md`、`report/VERIFICATION_LOGITS_PPT.md` 里登记的「4124 / 153」与 CSV SHA256。**【2026-09-17 状态：本项即任务 t10 的 C 段；因 t19 还将改动 `outputs/benchmarks/family_summary.csv` / Pareto 产物 / PPT 三件套 / `report/REPORT.md`，不动点会在 t19 之后再次变化，故 C 段已转出给 t20 在 t19 落定后统一刷新与登记 —— 本条保留为转出记录。】** | `outputs/verification/logits_reference_inventory.csv`、`report/LOGITS_AUDIT_FINDINGS.md`、`report/LOGITS_AUDIT.md`、`report/SYNC_NOTES.md`、`report/VERIFICATION_LOGITS_PPT.md`（后两者中的登记值同样需要同步；`VERIFICATION_LOGITS_PPT.md` 不在 t10 的写入范围内，由 t20 一并收口） |
 
 ### 9.4 可选增强（**不计入必须修复清单**，仅记录可争取的分数）

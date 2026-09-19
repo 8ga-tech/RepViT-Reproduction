@@ -79,6 +79,8 @@ Relu 等，**没有 MatMul、没有用于注意力的 Softmax**。
 
 > 下图由 `tools/draw_arch.py` 用 forward hook **现测**真实张量形状生成（非论文插图、非手画）。
 
+![图 3-1 RepViT-M0.9 整网结构与 9 要素（输入 224、Stem、四个阶段、分辨率 224→112→56→28→14→7、通道 3→24→48→96→192→384、RepViT Block、GAP、分类头、输出 37 维）。数据源 outputs/architecture/repvit_m0_9_arch.png，由 tools/draw_arch.py 用 forward hook 现测张量形状生成（文字版同目录 repvit_m0_9_arch.md）。](../outputs/architecture/repvit_m0_9_arch.png)
+
 ```
 输入  224×224×3 (RGB)
 Stem  stem.conv1 3×3 s2 → 24ch 112×112 ；stem.conv2 3×3 s2 → 48ch 56×56   ← Early Convolution Stem
@@ -344,6 +346,8 @@ val Macro-F1 **±0.40 个点**；③ 优化方法与结果之间没有单调关�
 估计 **0.8 个点**、判定规则 `|Δ| > 2σ`、观测到的最大组间极差 **0.676 个点**——即 8 组差异
 **没有超过 2σ**。完整交互表与噪声段见**附录 H**。
 
+![图 9-1 Baseline 与 opt_combo 在同 4 组测试图上的预测对比（每组含两模型的 Top-5 与置信度）。数据源 outputs/predictions/baseline_test_preds.csv 与 outputs/predictions/opt_combo_test_preds.csv，由 tools/plot_side_by_side.py 绘制，对照数字见 outputs/predictions/baseline_vs_opt_combo_predict_compare.json。](../outputs/predictions/compare_baseline_vs_opt_combo_grid4.png)
+
 ## 十、曲线与混淆矩阵分析
 
 ### 10.1 五条曲线
@@ -351,6 +355,8 @@ val Macro-F1 **±0.40 个点**；③ 优化方法与结果之间没有单调关�
 `outputs/curves/opt_compare.png` 把 Baseline 与优化模型画在**同一张图、同一坐标范围**内：
 train loss / val loss / val Top-1 / val Macro-F1 / learning rate 五个子图（优化模型训练损失更高
 是**正常现象**：Mixup/CutMix 让标签变软，损失不可直接比）。
+
+![图 10-1 Baseline 与 opt_combo 的五条训练曲线同图对比（train/val loss、val Top-1、val Macro-F1、lr，共用坐标范围）。数据源 outputs/curves/opt_compare.png，由 tools/plot_curves.py 读取 outputs/logs/baseline_metrics.csv 与 outputs/logs/opt_combo_metrics.csv 绘制。](../outputs/curves/opt_compare.png)
 
 - **是否收敛**：val Top-1 在 epoch 5 前快速上升（epoch 4 已到 91.62%）、epoch 15 后进入平台期；
   最后 8 轮极差 **0.95 个百分点**（baseline；组合臂 0.54）→ 已收敛。
@@ -370,6 +376,8 @@ train loss / val loss / val Top-1 / val Macro-F1 / learning rate 五个子图（
 `outputs/confusion_matrix/baseline_cm.{csv,npy,png}`：行归一化 `row_sum = 1.0`、`argmax` 落对角线
 **37/37 = 100%**、对角元均值 **0.9227**（由 `baseline_cm.csv` 实测复算）。
 
+![图 10-2 Baseline 行归一化 37×37 混淆矩阵（row_sum = 1.0）。数据源 outputs/confusion_matrix/baseline_cm.csv 与 baseline_cm.npy，由 tools/check_cm.py 生成。](../outputs/confusion_matrix/baseline_cm.png)
+
 ### 10.3 哪些品种容易混淆
 
 `outputs/confusion_matrix/baseline_per_class.csv` 按 F1 升序排列，最难的三类（数值逐项取自该文件）：
@@ -384,6 +392,8 @@ train loss / val loss / val Top-1 / val Macro-F1 / learning rate 五个子图（
 
 规律：混淆集中在**同物种、外形高度相似**的品种对（斗牛梗类之间、长毛猫之间），
 这是任务本身的难度，而非模型缺陷。
+
+![图 10-3 Baseline 37 类 F1 升序柱状图。数据源 outputs/confusion_matrix/baseline_per_class.csv，由 tools/check_cm.py 生成。](../outputs/confusion_matrix/baseline_per_class_f1.png)
 
 ### 10.4 猫狗块分析（关键结论）
 
@@ -410,10 +420,18 @@ A（默认）= `stages[-1].blocks[-1]`（(B,C,7,7)，残差相加**后**）；B�
 `model.classifier`**（输出 2D，反传抛 `ValueError: Invalid grads shape`）。对比图：
 `outputs/gradcam/gradcam_layer_compare_baseline.png`。
 
+![图 11-6 同一图片在两套挂载层下的 CAM 对比（A 为 stages 末层 blocks 末端，B 为 channel_mixer.conv2）。数据源 outputs/gradcam/gradcam_layer_compare_baseline.png，由 tools/gradcam.py 生成。](../outputs/gradcam/gradcam_layer_compare_baseline.png)
+
 ### 11.2 结果
 
 产物集中在 `outputs/gradcam/`：正确案例与错误案例各 1 张拼图 + 6 张单图（共 12 张，
 6 正 + 6 误），挂载层对比图 1 张，元信息 `outputs/metrics/gradcam_meta.json`。
+
+![图 11-1 Baseline 在测试集上的 8 张预测样例（Top-5 类别与置信度）。数据源 outputs/predictions/baseline_test_preds.csv，由 tools/plot_predictions.py 生成。](../outputs/predictions/test_top5_baseline_grid8.png)
+
+![图 11-2 Baseline 判对案例 6 张（含真值与 Top-5 置信度）。数据源 outputs/predictions/cases_test_baseline.csv，由 tools/plot_predictions.py 生成。](../outputs/predictions/case_correct_baseline.png)
+
+![图 11-3 Baseline 判错案例 6 张（含真值与 Top-5 置信度）。数据源 outputs/predictions/cases_test_baseline.csv，由 tools/plot_predictions.py 生成。](../outputs/predictions/case_wrong_baseline.png)
 
 ### 11.3 Grad-CAM 是否关注到合理区域
 
@@ -422,6 +440,10 @@ A（默认）= `stages[-1].blocks[-1]`（(B,C,7,7)，残差相加**后**）；B�
 Staffordshire Bull Terrier，被以 **92.40 %** 判成 American Pit Bull Terrier）为例，热力图
 **同时点亮两类共有的特征区**（宽厚胸部与方正头部），说明模型抓到的区域本身是对的，
 **但该区域的判别力不足以区分这两个品种**——是任务难度而非定位错误。
+
+![图 11-4 Baseline 判对案例的 Grad-CAM 拼图 6 张。数据源 outputs/gradcam/ 下 6 张单图与 outputs/metrics/gradcam_meta.json，由 tools/gradcam.py 生成。](../outputs/gradcam/gradcam_correct_baseline.png)
+
+![图 11-5 Baseline 判错案例的 Grad-CAM 拼图 6 张。数据源 outputs/gradcam/ 下 6 张单图与 outputs/metrics/gradcam_meta.json，由 tools/gradcam.py 生成。](../outputs/gradcam/gradcam_wrong_baseline.png)
 
 ### 11.4 模型是否出现依赖背景的现象
 
@@ -775,6 +797,8 @@ chihuahua 67.98%、samoyed 83.50%、newfoundland 77.14%、great_pyrenees 86.95%�
 ——全部判到对应品种。落盘：`outputs/predictions/distribution_compare_summary.csv`（明细
 `distribution_compare_raw.csv`）、`outputs/benchmarks/external_top5_repvit_m0_9_pet37.csv`
 （8 张逐张 Top-5）、`outputs/predictions/external_top5_pet37_grid5.png`（拼图）。
+
+![图 F-1 训练集以外的实拍图片 5 张（repvit_m0_9_pet37 的 Top-5 与置信度）。数据源 outputs/benchmarks/external_top5_repvit_m0_9_pet37.csv 与 external/images_manifest.csv，由 tools/plot_predictions.py 生成。](../outputs/predictions/external_top5_pet37_grid5.png)
 
 > **来源声明**：`external/` 图片取自 ImageNet-1K 验证集中与 Pet 同品种的样本（跨集合真实照片）；
 > 执行时 wikimedia 系站点不可达，故用跨数据集真实照片替代，逐张登记在
